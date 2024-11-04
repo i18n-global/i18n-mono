@@ -30,8 +30,11 @@ export interface ScriptConfig {
   sentryDsn?: string;
   /**
    * 파서 타입 선택 (성능 비교용)
-   * - 'babel': @babel/parser 사용 (기준 성능)
-   * - 'swc': @swc/core 사용 (20배 빠름, 기본값)
+   * - 'babel': @babel/parser 사용 (기본값, 권장)
+   * - 'swc': @swc/core 사용 (실험적, 현재 Babel보다 느릴 수 있음)
+   * 
+   * ⚠️ 주의: SWC 옵션은 실험적입니다. SWC AST를 Babel AST로 변환하는 과정에서
+   * 성능 오버헤드가 발생할 수 있습니다. 안정성과 성능을 위해 Babel을 권장합니다.
    */
   parserType?: "babel" | "swc";
 }
@@ -43,7 +46,7 @@ const DEFAULT_CONFIG: Required<ScriptConfig> = {
   constantPatterns: [], // 기본값: 모든 상수 허용
   enablePerformanceMonitoring: process.env.I18N_PERF_MONITOR !== "false",
   sentryDsn: process.env.SENTRY_DSN || "",
-  parserType: "swc", // 기본값: swc (20배 빠름)
+  parserType: "babel", // 기본값: babel (안정적이고 빠름)
 };
 
 export class TranslationWrapper {

@@ -8,8 +8,8 @@ The `i18n-wrapper` command automatically wraps hardcoded strings with `t()` tran
 
 **Two versions available:**
 
-- **`i18n-wrapper`** (Standard) - Uses Babel parser (stable, well-tested)
-- **`i18n-wrapper-swc`** (High-performance) - Uses SWC parser (3-10× faster) **NEW in v1.7.0**
+- **`i18n-wrapper`** (Standard, Recommended) - Uses Babel parser (stable, well-tested, faster)
+- **`i18n-wrapper-swc`** (Experimental) - Uses SWC parser (currently slower due to AST conversion overhead)
 
 ## Basic Usage
 
@@ -21,20 +21,25 @@ npx i18n-wrapper [options]
 npx i18n-wrapper-swc [options]
 ```
 
-## 🚀 Performance Comparison
+## ⚠️ Performance Comparison
 
 ```bash
-# Test with Babel (standard)
+# Test with Babel (standard, recommended)
 I18N_PERF_MONITOR=true I18N_PERF_VERBOSE=true npx i18n-wrapper
 
-# Test with SWC (high-performance)
+# Test with SWC (experimental)
 I18N_PERF_MONITOR=true I18N_PERF_VERBOSE=true npx i18n-wrapper-swc
 ```
 
-**Expected Results:**
-- Small projects (< 100 files): 2-3× faster
-- Medium projects (100-500 files): 3-5× faster  
-- Large projects (> 500 files): 5-10× faster
+**Current Test Results:**
+- **Babel is faster** than SWC in current implementation
+- SWC AST → Babel AST conversion overhead causes performance degradation
+- **Recommendation:** Use `i18n-wrapper` (Babel) for best performance
+
+**Why is SWC slower?**
+- SWC AST structure differs from Babel AST
+- Current implementation uses type casting instead of proper conversion
+- Babel traverse operations may be inefficient with SWC AST
 
 Both versions produce **identical output** - only parsing speed differs.
 

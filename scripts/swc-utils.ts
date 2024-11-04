@@ -12,10 +12,13 @@ import generate from "@babel/generator";
 
 /**
  * swc로 파일 파싱 (Babel parser 대체)
+ * 
+ * ⚠️ 주의: SWC AST는 Babel AST와 구조가 다릅니다.
+ * 실제 변환이 필요하지만, 현재는 성능상 이점이 없어 Babel을 사용하는 것을 권장합니다.
  *
  * @param code - 파싱할 소스 코드
  * @param options - 파싱 옵션
- * @returns Babel 호환 AST
+ * @returns Babel 호환 AST (실제로는 변환 필요)
  */
 export function parseFileWithSwc(
   code: string,
@@ -34,7 +37,13 @@ export function parseFileWithSwc(
   } = options;
 
   try {
-    // swc로 파싱
+    // ⚠️ SWC AST를 Babel AST로 변환하는 실제 구현이 필요합니다.
+    // 현재는 타입 캐스팅만 하고 있어서 Babel traverse와 호환되지 않을 수 있습니다.
+    // 
+    // 대안 1: SWC transform 후 Babel 파싱 (이중 파싱 오버헤드)
+    // 대안 2: SWC AST → Babel AST 변환 라이브러리 사용
+    // 대안 3: Babel만 사용 (현재 성능이 더 좋음)
+    
     const ast = parseSync(code, {
       syntax: tsx ? "typescript" : "ecmascript",
       tsx,
@@ -42,11 +51,10 @@ export function parseFileWithSwc(
       dynamicImport: true,
     });
 
-    // swc AST를 Babel AST로 변환
-    // swc는 이미 Babel 호환 AST를 반환하므로 그대로 사용
+    // ⚠️ 타입 캐스팅만 하고 있음 - 실제 변환 필요
+    // SWC AST와 Babel AST 구조가 다르므로 이 방식은 작동하지 않을 수 있습니다.
     return ast as unknown as t.File;
   } catch (error) {
-    // swc 파싱 실패시 에러 던지기
     throw new Error(`SWC parse error: ${error}`);
   }
 }

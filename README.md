@@ -67,18 +67,20 @@ npx i18n-wrapper --dry-run
 npx i18n-wrapper -p "app/**/*.tsx"
 ```
 
-#### 🚀 High-Performance Version (SWC)
+#### ⚠️ Experimental Version (SWC)
 
-**NEW in v1.7.0** - Up to 3-10× faster than Babel!
+**Experimental** - Currently slower than Babel due to AST conversion overhead.
 
 ```bash
-# Basic usage with SWC
+# Basic usage with SWC (experimental)
 npx i18n-wrapper-swc
 
 # Performance comparison
-I18N_PERF_MONITOR=true npx i18n-wrapper      # Babel version
-I18N_PERF_MONITOR=true npx i18n-wrapper-swc  # SWC version
+I18N_PERF_MONITOR=true npx i18n-wrapper      # Babel version (recommended)
+I18N_PERF_MONITOR=true npx i18n-wrapper-swc  # SWC version (experimental)
 ```
+
+**Note:** Current test results show Babel is faster. SWC AST → Babel AST conversion overhead causes performance degradation. Use `i18n-wrapper` (Babel) for best performance.
 
 **Features:**
 
@@ -88,7 +90,7 @@ I18N_PERF_MONITOR=true npx i18n-wrapper-swc  # SWC version
 - Server component auto-detection
 - Smart constant-based wrapping (excludes API data)
 - `// i18n-ignore` comment support
-- ⚡ **SWC version**: 3-10× faster parsing for large projects
+- ⚡ **Babel version**: Stable and fast (recommended)
 
 ### 2. i18n-extractor - Translation Key Extraction
 
