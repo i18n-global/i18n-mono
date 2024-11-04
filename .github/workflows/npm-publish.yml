@@ -64,7 +64,10 @@ jobs:
               echo "type=$TYPE" >> $GITHUB_OUTPUT
               echo "should_bump=true" >> $GITHUB_OUTPUT
             else
-              echo "should_bump=false" >> $GITHUB_OUTPUT
+              # 버전 타입이 없으면 기본값으로 patch 사용 (사용자 혼동 방지)
+              echo "type=patch" >> $GITHUB_OUTPUT
+              echo "should_bump=true" >> $GITHUB_OUTPUT
+              echo "⚠️  No version type specified in commit message, defaulting to patch"
             fi
           fi
           if [ "$(cat $GITHUB_OUTPUT | grep '^should_bump=' | cut -d'=' -f2)" == "true" ]; then

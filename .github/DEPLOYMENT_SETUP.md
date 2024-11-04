@@ -102,21 +102,20 @@ git push origin main
    - `major`: 1.5.7 → 2.0.0
 5. **Run workflow** 클릭
 
-### 방법 3: 수동 버전 수정 후 배포
+### 방법 3: 버전 타입 없이 커밋 (자동 patch 증가)
+
+버전 타입을 지정하지 않으면 **자동으로 patch 버전이 증가**합니다:
 
 ```bash
-# 1. package.json의 version 수동 수정
-# "version": "1.5.8"
-
-# 2. CHANGELOG.md 업데이트
-
-# 3. commit & push (버전 타입 없이)
+# 버전 타입 없이 커밋하면 자동으로 patch 증가 (1.5.7 → 1.5.8)
 git add .
-git commit -m "Release v1.5.8"
+git commit -m "fix: 버그 수정"
 git push origin main
 
-# ✅ 자동으로 npm에 배포됨 (현재 버전 그대로)
+# ✅ 자동으로 patch 버전 증가 후 npm에 배포됨
 ```
+
+**주의**: 코드 변경이 있으면 항상 새 버전으로 배포되어 사용자 혼동을 방지합니다.
 
 ## 🔍 배포 확인
 
