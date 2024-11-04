@@ -6,6 +6,7 @@
   "types": "dist/index.d.ts",
   "bin": {
     "i18n-wrapper": "dist/bin/i18n-wrapper.js",
+    "i18n-wrapper-swc": "dist/bin/i18n-wrapper-swc.js",
     "i18n-extractor": "dist/bin/i18n-extractor.js",
     "i18n-upload": "dist/bin/i18n-upload.js",
     "i18n-download": "dist/bin/i18n-download.js",
