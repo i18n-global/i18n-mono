@@ -63,21 +63,46 @@ GitHub Release 생성
 
 ## 📦 배포 방법
 
-### 방법 1: 버전 업데이트 후 자동 배포 (권장)
+### 방법 1: 커밋 메시지로 자동 버전 증가 (권장) ⭐
+
+커밋 메시지에 버전 타입을 포함하면 자동으로 버전이 올라갑니다:
 
 ```bash
-# 1. 버전 업데이트
-npm version patch   # 1.5.7 → 1.5.8
-npm version minor   # 1.5.7 → 1.6.0
-npm version major   # 1.5.7 → 2.0.0
-
-# 2. main 브랜치에 push
+# Patch 버전 증가 (1.5.7 → 1.5.8)
+git commit -m "fix: 버그 수정 [patch]"
 git push origin main
 
-# ✅ 자동으로 npm에 배포됨
+# 또는
+git commit -m "fix: 버그 수정 release: patch"
+git push origin main
+
+# Minor 버전 증가 (1.5.7 → 1.6.0)
+git commit -m "feat: 새 기능 추가 [minor]"
+git push origin main
+
+# Major 버전 증가 (1.5.7 → 2.0.0)
+git commit -m "feat: breaking change [major]"
+git push origin main
 ```
 
-### 방법 2: 수동 버전 수정 후 배포
+**커밋 메시지 형식:**
+- `[patch]` 또는 `release: patch` → 1.5.7 → 1.5.8
+- `[minor]` 또는 `release: minor` → 1.5.7 → 1.6.0
+- `[major]` 또는 `release: major` → 1.5.7 → 2.0.0
+
+### 방법 2: GitHub Actions에서 수동 실행
+
+1. GitHub 저장소 → **Actions** 탭
+2. **Publish to npm** 워크플로우 선택
+3. **Run workflow** 클릭
+4. **Version bump type** 선택:
+   - 빈 값: 현재 버전 그대로 사용
+   - `patch`: 1.5.7 → 1.5.8
+   - `minor`: 1.5.7 → 1.6.0
+   - `major`: 1.5.7 → 2.0.0
+5. **Run workflow** 클릭
+
+### 방법 3: 수동 버전 수정 후 배포
 
 ```bash
 # 1. package.json의 version 수동 수정
@@ -85,12 +110,12 @@ git push origin main
 
 # 2. CHANGELOG.md 업데이트
 
-# 3. commit & push
+# 3. commit & push (버전 타입 없이)
 git add .
 git commit -m "Release v1.5.8"
 git push origin main
 
-# ✅ 자동으로 npm에 배포됨
+# ✅ 자동으로 npm에 배포됨 (현재 버전 그대로)
 ```
 
 ## 🔍 배포 확인
