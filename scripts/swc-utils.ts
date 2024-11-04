@@ -12,7 +12,7 @@ import generate from "@babel/generator";
 
 /**
  * swc로 파일 파싱 (Babel parser 대체)
- * 
+ *
  * ⚠️ 주의: SWC AST는 Babel AST와 구조가 다릅니다.
  * 실제 변환이 필요하지만, 현재는 성능상 이점이 없어 Babel을 사용하는 것을 권장합니다.
  *
@@ -39,11 +39,11 @@ export function parseFileWithSwc(
   try {
     // ⚠️ SWC AST를 Babel AST로 변환하는 실제 구현이 필요합니다.
     // 현재는 타입 캐스팅만 하고 있어서 Babel traverse와 호환되지 않을 수 있습니다.
-    // 
+    //
     // 대안 1: SWC transform 후 Babel 파싱 (이중 파싱 오버헤드)
     // 대안 2: SWC AST → Babel AST 변환 라이브러리 사용
     // 대안 3: Babel만 사용 (현재 성능이 더 좋음)
-    
+
     const ast = parseSync(code, {
       syntax: tsx ? "typescript" : "ecmascript",
       tsx,
