@@ -4,6 +4,8 @@ import * as fs from "fs";
 import * as path from "path";
 import { glob } from "glob";
 import { parseFileWithSwc, generateCodeFromAst } from "./swc-utils";
+import { parse as babelParse } from "@babel/parser";
+import generate from "@babel/generator";
 import traverse, { NodePath } from "@babel/traverse";
 import * as t from "@babel/types";
 import { PerformanceMonitor, measureSync } from "./performance-monitor";
@@ -26,6 +28,12 @@ export interface ScriptConfig {
    * Sentry DSN (성능 데이터 전송)
    */
   sentryDsn?: string;
+  /**
+   * 파서 타입 선택 (성능 비교용)
+   * - 'babel': @babel/parser 사용 (기준 성능)
+   * - 'swc': @swc/core 사용 (20배 빠름, 기본값)
+   */
+  parserType?: "babel" | "swc";
 }
 
 const DEFAULT_CONFIG: Required<ScriptConfig> = {
@@ -35,6 +43,7 @@ const DEFAULT_CONFIG: Required<ScriptConfig> = {
   constantPatterns: [], // 기본값: 모든 상수 허용
   enablePerformanceMonitoring: process.env.I18N_PERF_MONITOR !== "false",
   sentryDsn: process.env.SENTRY_DSN || "",
+  parserType: "swc", // 기본값: swc (20배 빠름)
 };
 
 export class TranslationWrapper {
@@ -56,6 +65,62 @@ export class TranslationWrapper {
       environment: process.env.NODE_ENV || "production",
       release: process.env.npm_package_version,
     });
+  }
+
+  /**
+   * 설정된 파서로 파일 파싱
+   */
+  private parseFile(
+    code: string,
+    options: {
+      sourceType?: "module" | "script";
+      jsx?: boolean;
+      tsx?: boolean;
+      decorators?: boolean;
+    } = {}
+  ): t.File {
+    if (this.config.parserType === "babel") {
+      return babelParse(code, {
+        sourceType: options.sourceType || "module",
+        plugins: [
+          "typescript",
+          "jsx",
+          "decorators-legacy",
+          "classProperties",
+          "objectRestSpread",
+        ],
+      });
+    } else {
+      return parseFileWithSwc(code, {
+        sourceType: options.sourceType || "module",
+        tsx: options.tsx !== false,
+        jsx: options.jsx !== false,
+        decorators: options.decorators !== false,
+      });
+    }
+  }
+
+  /**
+   * AST를 코드로 생성
+   */
+  private generateCodeFromAst(
+    ast: t.File,
+    options: {
+      retainLines?: boolean;
+      comments?: boolean;
+    } = {}
+  ): { code: string; map?: any } {
+    if (this.config.parserType === "babel") {
+      return generate(ast, {
+        retainLines: options.retainLines !== false,
+        comments: options.comments !== false,
+      });
+    } else {
+      return generateCodeFromAst(ast, {
+        retainLines: options.retainLines !== false,
+        comments: options.comments !== false,
+      });
+    }
   }
 
   private createUseTranslationHook(): t.VariableDeclaration {
@@ -482,7 +547,7 @@ export class TranslationWrapper {
 
     try {
       const code = fs.readFileSync(filePath, "utf-8");
-      const ast = parseFileWithSwc(code, {
+      const ast = this.parseFile(code, {
         sourceType: "module",
         tsx: true,
         decorators: true,
@@ -754,7 +819,7 @@ export class TranslationWrapper {
               varName = expr.name;
             } else if (t.isMemberExpression(expr)) {
               // user.name → user_name
-              varName = generateCodeFromAst(expr as any).code.replace(
+              varName = this.generateCodeFromAst(expr as any).code.replace(
                 /\./g,
                 "_"
               );
@@ -1074,7 +1139,7 @@ export class TranslationWrapper {
 
       try {
         this.performanceMonitor.start("processFiles:parse", { filePath });
-        const ast = parseFileWithSwc(code, {
+        const ast = this.parseFile(code, {
           sourceType: "module",
           tsx: true,
           decorators: true,
@@ -1216,9 +1281,8 @@ export class TranslationWrapper {
           }
 
           if (!this.config.dryRun) {
-            const output = generateCodeFromAst(ast, {
+            const output = this.generateCodeFromAst(ast, {
               retainLines: true,
-              compact: false,
               comments: true,
             });
 
