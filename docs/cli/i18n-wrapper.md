@@ -6,11 +6,37 @@ Complete reference for the `i18n-wrapper` command.
 
 The `i18n-wrapper` command automatically wraps hardcoded strings with `t()` translation functions and adds necessary import statements and hooks.
 
+**Two versions available:**
+
+- **`i18n-wrapper`** (Standard) - Uses Babel parser (stable, well-tested)
+- **`i18n-wrapper-swc`** (High-performance) - Uses SWC parser (3-10× faster) **NEW in v1.7.0**
+
 ## Basic Usage
 
 ```bash
+# Standard version (Babel)
 npx i18n-wrapper [options]
+
+# High-performance version (SWC) - NEW!
+npx i18n-wrapper-swc [options]
 ```
+
+## 🚀 Performance Comparison
+
+```bash
+# Test with Babel (standard)
+I18N_PERF_MONITOR=true I18N_PERF_VERBOSE=true npx i18n-wrapper
+
+# Test with SWC (high-performance)
+I18N_PERF_MONITOR=true I18N_PERF_VERBOSE=true npx i18n-wrapper-swc
+```
+
+**Expected Results:**
+- Small projects (< 100 files): 2-3× faster
+- Medium projects (100-500 files): 3-5× faster  
+- Large projects (> 500 files): 5-10× faster
+
+Both versions produce **identical output** - only parsing speed differs.
 
 ## Options
 

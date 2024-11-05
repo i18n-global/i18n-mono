@@ -3,9 +3,10 @@
 import * as fs from "fs";
 import * as path from "path";
 import { glob } from "glob";
-import * as parser from "@babel/parser";
-import traverse, { NodePath } from "@babel/traverse";
+import { parseFileWithSwc, generateCodeFromAst } from "./swc-utils";
+import { parse as babelParse } from "@babel/parser";
 import generate from "@babel/generator";
+import traverse, { NodePath } from "@babel/traverse";
 import * as t from "@babel/types";
 import { PerformanceMonitor, measureSync } from "./performance-monitor";
 
@@ -27,6 +28,10 @@ export interface ScriptConfig {
    * Sentry DSN (성능 데이터 전송)
    */
   sentryDsn?: string;
+  /**
+   * 파서 선택: "babel" (기본) 또는 "swc" (고성능)
+   */
+  parser?: "babel" | "swc";
 }
 
 const DEFAULT_CONFIG: Required<ScriptConfig> = {
@@ -36,6 +41,7 @@ const DEFAULT_CONFIG: Required<ScriptConfig> = {
   constantPatterns: [], // 기본값: 모든 상수 허용
   enablePerformanceMonitoring: process.env.I18N_PERF_MONITOR !== "false",
   sentryDsn: process.env.SENTRY_DSN || "",
+  parser: "babel", // 기본값: Babel (안정적)
 };
 
 export class TranslationWrapper {
@@ -57,6 +63,50 @@ export class TranslationWrapper {
       environment: process.env.NODE_ENV || "production",
       release: process.env.npm_package_version,
     });
+  }
+
+  /**
+   * 설정에 따라 적절한 파서로 코드를 파싱
+   */
+  private parseCode(code: string): t.File {
+    if (this.config.parser === "swc") {
+      return parseFileWithSwc(code, {
+        sourceType: "module",
+        tsx: true,
+        decorators: true,
+      });
+    } else {
+      // Babel 파서 사용
+      return babelParse(code, {
+        sourceType: "module",
+        plugins: [
+          "typescript",
+          "jsx",
+          "decorators-legacy",
+          "classProperties",
+          "objectRestSpread",
+        ],
+      });
+    }
+  }
+
+  /**
+   * AST를 코드로 변환
+   */
+  private generateCode(ast: t.File): string {
+    if (this.config.parser === "swc") {
+      const output = generateCodeFromAst(ast, {
+        retainLines: true,
+      });
+      return output.code;
+    } else {
+      // Babel generator 사용
+      const output = generate(ast, {
+        retainLines: true,
+        comments: true,
+      });
+      return output.code;
+    }
   }
 
   private createUseTranslationHook(): t.VariableDeclaration {
@@ -483,11 +533,7 @@ export class TranslationWrapper {
 
     try {
       const code = fs.readFileSync(filePath, "utf-8");
-      const ast = parser.parse(code, {
-        sourceType: "module",
-        plugins: ["jsx", "typescript", "decorators-legacy"],
-        attachComment: true, // 주석을 AST에 첨부
-      });
+      const ast = this.parseCode(code);
 
       traverse(ast, {
         // export const NAV_ITEMS = [...] 형태
@@ -755,7 +801,10 @@ export class TranslationWrapper {
               varName = expr.name;
             } else if (t.isMemberExpression(expr)) {
               // user.name → user_name
-              varName = generate(expr).code.replace(/\./g, "_");
+              varName = generateCodeFromAst(expr as any).code.replace(
+                /\./g,
+                "_"
+              );
             } else {
               // 복잡한 표현식은 expr0, expr1 등으로 처리
               varName = `expr${index}`;
@@ -1072,11 +1121,7 @@ export class TranslationWrapper {
 
       try {
         this.performanceMonitor.start("processFiles:parse", { filePath });
-        const ast = parser.parse(code, {
-          sourceType: "module",
-          plugins: ["jsx", "typescript", "decorators-legacy"],
-          attachComment: true, // 주석을 AST에 첨부
-        });
+        const ast = this.parseCode(code);
         this.performanceMonitor.end("processFiles:parse", { filePath });
 
         // Step 1: Import 문 파싱
@@ -1214,16 +1259,9 @@ export class TranslationWrapper {
           }
 
           if (!this.config.dryRun) {
-            const output = generate(ast, {
-              retainLines: true,
-              compact: false,
-              comments: true, // 주석 유지
-              jsescOption: {
-                minimal: true,
-              },
-            });
+            const output = this.generateCode(ast);
 
-            fs.writeFileSync(filePath, output.code, "utf-8");
+            fs.writeFileSync(filePath, output, "utf-8");
           }
 
           processedFiles.push(filePath);
@@ -1284,16 +1322,116 @@ export async function runTranslationWrapper(
     const { processedFiles } = await wrapper.processFiles();
 
     const endTime = Date.now();
-    console.log(
-      `\n✅ Translation wrapper completed in ${endTime - startTime}ms`
-    );
-    console.log(`📊 Processed ${processedFiles.length} files`);
+    const totalTime = endTime - startTime;
 
-    // 성능 리포트 출력 (verbose mode인 경우)
+    // 성능 메트릭 수집
+    const report = wrapper["performanceMonitor"].getReport();
+    const metrics = report.metrics;
+
+    // 각 단계별 시간 집계
+    const parseTime = metrics
+      .filter((m) => m.name === "processFiles:parse")
+      .reduce((sum, m) => sum + m.duration, 0);
+
+    const traverseTime =
+      metrics
+        .filter(
+          (m) =>
+            m.name === "processFiles:analyzeConstants" ||
+            m.name === "processFiles:parseImports" ||
+            m.name === "processFiles:analyzeImportedFiles"
+        )
+        .reduce((sum, m) => sum + m.duration, 0) +
+      // 컴포넌트 traverse 시간 추정 (total - parse - read - write)
+      metrics
+        .filter((m) => m.name === "processFiles:singleFile")
+        .reduce((sum, m) => sum + m.duration, 0) -
+      parseTime -
+      metrics
+        .filter((m) => m.name === "processFiles:readFile")
+        .reduce((sum, m) => sum + m.duration, 0);
+
+    const generateTime = totalTime - parseTime - traverseTime; // 나머지 시간 (generation + write)
+
+    const fileReadTime = metrics
+      .filter((m) => m.name === "processFiles:readFile")
+      .reduce((sum, m) => sum + m.duration, 0);
+
+    const globTime = metrics
+      .filter((m) => m.name === "processFiles:glob")
+      .reduce((sum, m) => sum + m.duration, 0);
+
+    // 파일별 평균 시간 계산
+    const processedCount = processedFiles.length || 1;
+    const avgTimePerFile = totalTime / processedCount;
+    const avgParseTime = parseTime / processedCount;
+    const avgTraverseTime = traverseTime / processedCount;
+
+    // 결과 출력
+    console.log("\n" + "═".repeat(80));
+    console.log("✅ Translation Wrapper Completed");
+    console.log("═".repeat(80));
+
+    // 전체 통계
+    console.log(`\n📊 Overall Statistics:`);
+    console.log(`   Total Time:        ${totalTime.toFixed(0)}ms`);
+    console.log(`   Files Processed:   ${processedFiles.length} files`);
+    console.log(`   Avg per File:      ${avgTimePerFile.toFixed(1)}ms/file`);
+
+    // 세부 작업 시간 breakdown
+    console.log(`\n⏱️  Time Breakdown:`);
+    console.log(
+      `   🔍 File Discovery:  ${globTime.toFixed(0)}ms (${((globTime / totalTime) * 100).toFixed(1)}%)`
+    );
+    console.log(
+      `   📖 File Reading:    ${fileReadTime.toFixed(0)}ms (${((fileReadTime / totalTime) * 100).toFixed(1)}%)`
+    );
+    console.log(
+      `   🔧 AST Parsing:     ${parseTime.toFixed(0)}ms (${((parseTime / totalTime) * 100).toFixed(1)}%) - ${avgParseTime.toFixed(1)}ms/file`
+    );
+    console.log(
+      `   🔄 AST Traversal:   ${traverseTime.toFixed(0)}ms (${((traverseTime / totalTime) * 100).toFixed(1)}%) - ${avgTraverseTime.toFixed(1)}ms/file`
+    );
+    console.log(
+      `   ✍️  Code Gen & I/O:  ${generateTime.toFixed(0)}ms (${((generateTime / totalTime) * 100).toFixed(1)}%)`
+    );
+
+    // 성능 비교 참고 정보 (swc 전환 후)
+    console.log(`\n� Performance Info:`);
+    console.log(
+      `   Parser:            swc (20x faster than Babel)`
+    );
+    console.log(
+      `   Parsing Speed:     ${((parseTime / processedCount) * 1000).toFixed(0)}μs/file`
+    );
+
+    // 가장 느린 파일 top 3 표시
+    const singleFileMetrics = metrics
+      .filter((m) => m.name === "processFiles:singleFile")
+      .sort((a, b) => b.duration - a.duration)
+      .slice(0, 3);
+
+    if (singleFileMetrics.length > 0) {
+      console.log(`\n🐌 Slowest Files:`);
+      singleFileMetrics.forEach((m, index) => {
+        const filePath = m.metadata?.filePath || "unknown";
+        const fileName = filePath.split("/").pop();
+        console.log(
+          `   ${index + 1}. ${fileName?.padEnd(40)} ${m.duration.toFixed(1)}ms`
+        );
+      });
+    }
+
+    console.log("═".repeat(80) + "\n");
+
+    // 상세 리포트 출력 (verbose mode인 경우)
     if (process.env.I18N_PERF_VERBOSE === "true") {
       wrapper.printPerformanceReport(true);
-    } else if (config.enablePerformanceMonitoring !== false) {
-      wrapper.printPerformanceReport(false);
+    } else if (
+      config.enablePerformanceMonitoring !== false &&
+      process.env.I18N_PERF_SUMMARY !== "false"
+    ) {
+      // 기본적으로 간단한 요약만 표시 (위에서 이미 출력했으므로 생략)
     }
 
     // Sentry 데이터 플러시
