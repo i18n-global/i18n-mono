@@ -4,8 +4,6 @@ import * as fs from "fs";
 import * as path from "path";
 import { glob } from "glob";
 import { parseFileWithSwc, generateCodeFromAst } from "./swc-utils";
-import { parse as babelParse } from "@babel/parser";
-import generate from "@babel/generator";
 import traverse, { NodePath } from "@babel/traverse";
 import * as t from "@babel/types";
 import { PerformanceMonitor, measureSync } from "./performance-monitor";
@@ -28,10 +26,6 @@ export interface ScriptConfig {
    * Sentry DSN (성능 데이터 전송)
    */
   sentryDsn?: string;
-  /**
-   * 파서 선택: "babel" (기본) 또는 "swc" (고성능)
-   */
-  parser?: "babel" | "swc";
 }
 
 const DEFAULT_CONFIG: Required<ScriptConfig> = {
@@ -41,7 +35,6 @@ const DEFAULT_CONFIG: Required<ScriptConfig> = {
   constantPatterns: [], // 기본값: 모든 상수 허용
   enablePerformanceMonitoring: process.env.I18N_PERF_MONITOR !== "false",
   sentryDsn: process.env.SENTRY_DSN || "",
-  parser: "babel", // 기본값: Babel (안정적)
 };
 
 export class TranslationWrapper {
@@ -63,50 +56,6 @@ export class TranslationWrapper {
       environment: process.env.NODE_ENV || "production",
       release: process.env.npm_package_version,
     });
-  }
-
-  /**
-   * 설정에 따라 적절한 파서로 코드를 파싱
-   */
-  private parseCode(code: string): t.File {
-    if (this.config.parser === "swc") {
-      return parseFileWithSwc(code, {
-        sourceType: "module",
-        tsx: true,
-        decorators: true,
-      });
-    } else {
-      // Babel 파서 사용
-      return babelParse(code, {
-        sourceType: "module",
-        plugins: [
-          "typescript",
-          "jsx",
-          "decorators-legacy",
-          "classProperties",
-          "objectRestSpread",
-        ],
-      });
-    }
-  }
-
-  /**
-   * AST를 코드로 변환
-   */
-  private generateCode(ast: t.File): string {
-    if (this.config.parser === "swc") {
-      const output = generateCodeFromAst(ast, {
-        retainLines: true,
-      });
-      return output.code;
-    } else {
-      // Babel generator 사용
-      const output = generate(ast, {
-        retainLines: true,
-        comments: true,
-      });
-      return output.code;
-    }
   }
 
   private createUseTranslationHook(): t.VariableDeclaration {
@@ -533,7 +482,11 @@ export class TranslationWrapper {
 
     try {
       const code = fs.readFileSync(filePath, "utf-8");
-      const ast = this.parseCode(code);
+      const ast = parseFileWithSwc(code, {
+        sourceType: "module",
+        tsx: true,
+        decorators: true,
+      });
 
       traverse(ast, {
         // export const NAV_ITEMS = [...] 형태
@@ -1121,7 +1074,11 @@ export class TranslationWrapper {
 
       try {
         this.performanceMonitor.start("processFiles:parse", { filePath });
-        const ast = this.parseCode(code);
+        const ast = parseFileWithSwc(code, {
+          sourceType: "module",
+          tsx: true,
+          decorators: true,
+        });
         this.performanceMonitor.end("processFiles:parse", { filePath });
 
         // Step 1: Import 문 파싱
@@ -1259,9 +1216,13 @@ export class TranslationWrapper {
           }
 
           if (!this.config.dryRun) {
-            const output = this.generateCode(ast);
+            const output = generateCodeFromAst(ast, {
+              retainLines: true,
+              compact: false,
+              comments: true,
+            });
 
-            fs.writeFileSync(filePath, output, "utf-8");
+            fs.writeFileSync(filePath, output.code, "utf-8");
           }
 
           processedFiles.push(filePath);

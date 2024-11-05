@@ -1,6 +1,7 @@
 # Performance Logging Enhancement
 
 ## Overview
+
 상세한 성능 로깅 기능이 추가되어 wrapping 작업 시 각 단계별 소요 시간을 확인할 수 있습니다.
 
 ## 출력 예시
@@ -36,11 +37,13 @@
 ## 출력 정보 설명
 
 ### Overall Statistics (전체 통계)
+
 - **Total Time**: 전체 작업 소요 시간
 - **Files Processed**: 처리된 파일 수
 - **Avg per File**: 파일당 평균 처리 시간
 
 ### Time Breakdown (시간 분석)
+
 - **File Discovery**: 파일 검색 시간 (glob 패턴 매칭)
 - **File Reading**: 파일 읽기 시간 (I/O)
 - **AST Parsing**: AST 파싱 시간 (swc 사용)
@@ -52,16 +55,19 @@
 - **Code Gen & I/O**: 코드 생성 및 파일 쓰기 시간
 
 ### Performance Info (성능 정보)
+
 - **Parser**: 현재 사용 중인 파서 (swc)
 - **Parsing Speed**: 파일당 파싱 속도 (마이크로초 단위)
 
 ### Slowest Files (가장 느린 파일)
+
 - 처리 시간이 가장 긴 파일 Top 3
 - 최적화가 필요한 파일을 빠르게 파악 가능
 
 ## 환경 변수
 
 ### I18N_PERF_VERBOSE
+
 상세한 성능 리포트를 출력합니다 (모든 메트릭 표시).
 
 ```bash
@@ -69,6 +75,7 @@ I18N_PERF_VERBOSE=true npx i18n-wrapper
 ```
 
 ### I18N_PERF_SUMMARY
+
 기본 성능 요약을 비활성화합니다.
 
 ```bash
@@ -76,6 +83,7 @@ I18N_PERF_SUMMARY=false npx i18n-wrapper
 ```
 
 ### I18N_SENTRY_DEBUG
+
 Sentry 디버그 모드를 활성화합니다 (성능 데이터 전송 과정 확인).
 
 ```bash
@@ -85,11 +93,13 @@ I18N_SENTRY_DEBUG=true npx i18n-wrapper
 ## swc vs Babel 성능 비교
 
 ### Before (Babel)
+
 - AST Parsing: ~22,500ms (75% of total time)
 - Total Time: ~30,200ms for 1,000 files
 
 ### After (swc)
-- AST Parsing: ~1,100ms (15% of total time) 
+
+- AST Parsing: ~1,100ms (15% of total time)
 - Total Time: ~9,000ms for 1,000 files
 - **20x faster parsing, 3.3x overall improvement** ⚡
 
