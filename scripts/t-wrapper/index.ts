@@ -3,51 +3,18 @@
 import * as fs from "fs";
 import * as path from "path";
 import { glob } from "glob";
-import { parseFileWithSwc, generateCodeFromAst } from "./swc-utils";
+import { parseFileWithSwc, generateCodeFromAst } from "../swc-utils";
 import { parse as babelParse } from "@babel/parser";
 import generate from "@babel/generator";
 import traverse, { NodePath } from "@babel/traverse";
 import * as t from "@babel/types";
-import { PerformanceMonitor, measureSync } from "./performance-monitor";
+import { PerformanceMonitor, measureSync } from "../performance-monitor";
+import { ScriptConfig, SCRIPT_CONFIG_DEFAULTS } from "../default-config";
 
-export interface ScriptConfig {
-  sourcePattern?: string;
-  translationImportSource?: string;
-  dryRun?: boolean;
-  /**
-   * 상수로 인식할 네이밍 패턴 (접미사)
-   * 예: ['_ITEMS', '_MENU', '_CONFIG', '_FIELDS']
-   * 비어있으면 모든 ALL_CAPS/PascalCase를 상수로 인식
-   */
-  constantPatterns?: string[];
-  /**
-   * 성능 모니터링 활성화 여부
-   */
-  enablePerformanceMonitoring?: boolean;
-  /**
-   * Sentry DSN (성능 데이터 전송)
-   */
-  sentryDsn?: string;
-  /**
-   * 파서 타입 선택 (성능 비교용)
-   * - 'babel': @babel/parser 사용 (기본값, 권장)
-   * - 'swc': @swc/core 사용 (실험적, 현재 Babel보다 느릴 수 있음)
-   *
-   * ⚠️ 주의: SWC 옵션은 실험적입니다. SWC AST를 Babel AST로 변환하는 과정에서
-   * 성능 오버헤드가 발생할 수 있습니다. 안정성과 성능을 위해 Babel을 권장합니다.
-   */
-  parserType?: "babel" | "swc";
-}
+// ScriptConfig 타입을 re-export (하위 호환성)
+export type { ScriptConfig };
 
-const DEFAULT_CONFIG: Required<ScriptConfig> = {
-  sourcePattern: "src/**/*.{js,jsx,ts,tsx}",
-  translationImportSource: "i18nexus",
-  dryRun: false,
-  constantPatterns: [], // 기본값: 모든 상수 허용
-  enablePerformanceMonitoring: process.env.I18N_PERF_MONITOR !== "false",
-  sentryDsn: process.env.SENTRY_DSN || "",
-  parserType: "babel", // 기본값: babel (안정적이고 빠름)
-};
+const DEFAULT_CONFIG = SCRIPT_CONFIG_DEFAULTS;
 
 export class TranslationWrapper {
   private config: Required<ScriptConfig>;
