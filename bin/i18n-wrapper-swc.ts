@@ -11,7 +11,7 @@ const config: Partial<ScriptConfig> = {
   sourcePattern: projectConfig.sourcePattern,
   translationImportSource: projectConfig.translationImportSource,
   constantPatterns: projectConfig.constantPatterns || [],
-  parser: "swc", // 🚀 SWC 파서 사용
+  parserType: "swc", // 🚀 SWC 파서 사용
 };
 
 for (let i = 0; i < args.length; i++) {
