@@ -54,6 +54,10 @@ Version-specific release notes and changelogs:
 - [v1.5.0](./versions/v1.5.0.md) - Enhanced translation management
 - [v1.4.0](./versions/v1.4.0.md) - Initial major features
 
+### 🧠 Advanced Topics
+
+- [RSC-Aware Hook Selection Design](./advanced/rsc-hook-selection.md) - Planned server/client hook orchestration based on RSC detection
+
 ---
 
 ## 🚀 Quick Links
