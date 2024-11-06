@@ -6,6 +6,7 @@ import { glob } from "glob";
 import * as parser from "@babel/parser";
 import traverse, { NodePath } from "@babel/traverse";
 import * as t from "@babel/types";
+import { COMMON_DEFAULTS } from "./default-config";
 
 export interface ExtractorConfig {
   sourcePattern?: string;
@@ -22,16 +23,16 @@ export interface ExtractorConfig {
 }
 
 const DEFAULT_CONFIG: Required<ExtractorConfig> = {
-  sourcePattern: "src/**/*.{js,jsx,ts,tsx}",
+  sourcePattern: COMMON_DEFAULTS.sourcePattern,
   outputFile: "extracted-translations.json",
-  outputDir: "./locales",
+  outputDir: COMMON_DEFAULTS.localesDir,
   namespace: "",
   includeLineNumbers: false,
   includeFilePaths: false,
   sortKeys: true,
   dryRun: false,
   outputFormat: "json",
-  languages: ["en", "ko"], // 기본 언어
+  languages: [...COMMON_DEFAULTS.languages], // 기본 언어
   force: false, // 기본값: 기존 번역 유지
 };
 
