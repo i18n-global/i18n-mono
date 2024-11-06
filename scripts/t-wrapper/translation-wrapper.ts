@@ -8,6 +8,12 @@ import traverse, { NodePath } from "@babel/traverse";
 import * as t from "@babel/types";
 import { PerformanceMonitor } from "../common/performance-monitor";
 import { ScriptConfig, SCRIPT_CONFIG_DEFAULTS } from "../common/default-config";
+import {
+  hasIgnoreComment,
+  shouldSkipPath,
+  isReactComponent,
+  isServerComponent,
+} from "./ast-helpers";
 
 const DEFAULT_CONFIG = SCRIPT_CONFIG_DEFAULTS;
 
@@ -95,129 +101,19 @@ export class TranslationWrapper {
     ]);
   }
 
-  /**
-   * i18n-ignore 주석이 노드 바로 위에 있는지 확인
-   * 파일의 원본 소스코드를 직접 검사하여 주석 감지
-   */
-  private hasIgnoreComment(path: NodePath, sourceCode?: string): boolean {
-    const node = path.node;
-
-    // 1. AST의 leadingComments 확인
-    if (node.leadingComments) {
-      const hasIgnore = node.leadingComments.some(
-        (comment) =>
-          comment.value.trim() === "i18n-ignore" ||
-          comment.value.trim().startsWith("i18n-ignore")
-      );
-      if (hasIgnore) return true;
-    }
-
-    // 2. 부모 노드의 leadingComments 확인
-    if (path.parentPath?.node?.leadingComments) {
-      const hasIgnore = path.parentPath.node.leadingComments.some(
-        (comment) =>
-          comment.value.trim() === "i18n-ignore" ||
-          comment.value.trim().startsWith("i18n-ignore")
-      );
-      if (hasIgnore) return true;
-    }
-
-    // 3. 소스코드 직접 검사 (node.loc가 있는 경우)
-    if (sourceCode && node.loc) {
-      const startLine = node.loc.start.line;
-      const lines = sourceCode.split("\n");
-
-      // 현재 라인과 바로 위 라인 검사
-      for (let i = Math.max(0, startLine - 3); i < startLine; i++) {
-        const line = lines[i];
-        if (
-          line &&
-          (line.includes("i18n-ignore") ||
-            line.includes("// i18n-ignore") ||
-            line.includes("/* i18n-ignore") ||
-            line.includes("{/* i18n-ignore"))
-        ) {
-          return true;
-        }
-      }
-    }
-
-    return false;
-  }
-
-  private shouldSkipPath(path: NodePath<t.StringLiteral>): boolean {
-    // i18n-ignore 주석이 있는 경우 스킵
-    if (this.hasIgnoreComment(path)) {
-      return true;
-    }
-
-    // 부모 노드에 i18n-ignore 주석이 있는 경우도 스킵
-    if (path.parent && this.hasIgnoreComment(path.parentPath as NodePath)) {
-      return true;
-    }
-
-    // t() 함수로 이미 래핑된 경우 스킵
-    if (
-      t.isCallExpression(path.parent) &&
-      t.isIdentifier(path.parent.callee, { name: "t" })
-    ) {
-      return true;
-    }
-
-    // import 구문은 스킵
-    const importParent = path.findParent((p) => t.isImportDeclaration(p.node));
-    if (importParent?.node && t.isImportDeclaration(importParent.node)) {
-      return true;
-    }
-
-    // 객체 프로퍼티 KEY면 무조건 스킵
-    if (t.isObjectProperty(path.parent) && path.parent.key === path.node) {
-      return true;
-    }
-
-    return false;
-  }
-
-  /**
-   * 함수가 getServerTranslation으로 감싸진 서버 컴포넌트인지 확인
-   */
-  private isServerComponent(path: NodePath<t.Function>): boolean {
-    // 함수 body 내에서 getServerTranslation 호출이 있는지 확인
-    let hasServerTranslation = false;
-
-    path.traverse({
-      CallExpression: (callPath) => {
-        if (
-          t.isIdentifier(callPath.node.callee, {
-            name: "getServerTranslation",
-          }) ||
-          (t.isAwaitExpression(callPath.parent) &&
-            t.isCallExpression(callPath.node) &&
-            t.isIdentifier(callPath.node.callee, {
-              name: "getServerTranslation",
-            }))
-        ) {
-          hasServerTranslation = true;
-          callPath.stop(); // 찾았으면 더 이상 탐색하지 않음
-        }
-      },
-    });
-
-    return hasServerTranslation;
-  }
 
   private processFunctionBody(
     path: NodePath<t.Function>,
     sourceCode: string
   ): { wasModified: boolean; isServerComponent: boolean } {
     let wasModified = false;
-    const isServerComponent = this.isServerComponent(path);
+    const isServerComponentResult = isServerComponent(path);
 
     path.traverse({
       StringLiteral: (subPath) => {
         if (
-          this.shouldSkipPath(subPath) ||
-          this.hasIgnoreComment(subPath, sourceCode)
+          shouldSkipPath(subPath, hasIgnoreComment) ||
+          hasIgnoreComment(subPath, sourceCode)
         ) {
           return;
         }
@@ -245,8 +141,8 @@ export class TranslationWrapper {
       TemplateLiteral: (subPath) => {
         // i18n-ignore 주석이 있는 경우 스킵
         if (
-          this.shouldSkipPath(subPath as any) ||
-          this.hasIgnoreComment(subPath, sourceCode)
+          shouldSkipPath(subPath as any, hasIgnoreComment) ||
+          hasIgnoreComment(subPath, sourceCode)
         ) {
           return;
         }
@@ -335,7 +231,7 @@ export class TranslationWrapper {
       },
       JSXText: (subPath) => {
         // i18n-ignore 주석이 있는 경우 스킵
-        if (this.hasIgnoreComment(subPath, sourceCode)) {
+        if (hasIgnoreComment(subPath, sourceCode)) {
           return;
         }
 
@@ -360,7 +256,7 @@ export class TranslationWrapper {
       },
     });
 
-    return { wasModified, isServerComponent };
+    return { wasModified, isServerComponent: isServerComponentResult };
   }
 
   private addImportIfNeeded(ast: t.File): boolean {
@@ -443,7 +339,7 @@ export class TranslationWrapper {
         traverse(ast, {
           FunctionDeclaration: (path) => {
             const componentName = path.node.id?.name;
-            if (componentName && this.isReactComponent(componentName)) {
+            if (componentName && isReactComponent(componentName)) {
               const result = this.processFunctionBody(path, code);
               if (result.wasModified) {
                 isFileModified = true;
@@ -460,7 +356,7 @@ export class TranslationWrapper {
               t.isIdentifier(path.parent.id)
             ) {
               const componentName = path.parent.id.name;
-              if (componentName && this.isReactComponent(componentName)) {
+              if (componentName && isReactComponent(componentName)) {
                 const result = this.processFunctionBody(path, code);
                 if (result.wasModified) {
                   isFileModified = true;
