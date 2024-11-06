@@ -3,7 +3,7 @@
 import * as fs from "fs";
 import * as path from "path";
 import { TranslationExtractor } from "./extractor";
-import { COMMON_DEFAULTS } from "./default-config";
+import { COMMON_DEFAULTS } from "./common/default-config";
 
 export interface CleanLegacyConfig {
   sourcePattern?: string;

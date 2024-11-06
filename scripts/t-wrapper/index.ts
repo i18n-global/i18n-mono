@@ -8,8 +8,8 @@ import { parse as babelParse } from "@babel/parser";
 import generate from "@babel/generator";
 import traverse, { NodePath } from "@babel/traverse";
 import * as t from "@babel/types";
-import { PerformanceMonitor, measureSync } from "../performance-monitor";
-import { ScriptConfig, SCRIPT_CONFIG_DEFAULTS } from "../default-config";
+import { PerformanceMonitor } from "../common/performance-monitor";
+import { ScriptConfig, SCRIPT_CONFIG_DEFAULTS } from "../common/default-config";
 
 // ScriptConfig 타입을 re-export (하위 호환성)
 export type { ScriptConfig };
@@ -18,7 +18,6 @@ const DEFAULT_CONFIG = SCRIPT_CONFIG_DEFAULTS;
 
 export class TranslationWrapper {
   private config: Required<ScriptConfig>;
-  // 성능 모니터
   private performanceMonitor: PerformanceMonitor;
 
   constructor(config: Partial<ScriptConfig> = {}) {

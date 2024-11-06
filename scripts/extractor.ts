@@ -6,7 +6,7 @@ import { glob } from "glob";
 import * as parser from "@babel/parser";
 import traverse, { NodePath } from "@babel/traverse";
 import * as t from "@babel/types";
-import { COMMON_DEFAULTS } from "./default-config";
+import { COMMON_DEFAULTS } from "./common/default-config";
 
 export interface ExtractorConfig {
   sourcePattern?: string;
