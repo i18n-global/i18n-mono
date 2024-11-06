@@ -5,7 +5,7 @@ import * as pathLib from "path";
 import {
   COMMON_DEFAULTS,
   GOOGLE_SHEETS_DEFAULTS,
-} from "./default-config";
+} from "./common/default-config";
 
 export interface I18nexusConfig {
   languages: string[];
