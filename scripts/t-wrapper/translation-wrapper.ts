@@ -14,6 +14,7 @@ import {
   isReactComponent,
   isServerComponent,
 } from "./ast-helpers";
+import { createUseTranslationHook, addImportIfNeeded } from "./import-manager";
 
 const DEFAULT_CONFIG = SCRIPT_CONFIG_DEFAULTS;
 
@@ -86,21 +87,6 @@ export class TranslationWrapper {
       });
     }
   }
-
-  private createUseTranslationHook(): t.VariableDeclaration {
-    // useTranslation()을 빈 값으로 호출 - 내부적으로 현재 언어 자동 주입
-    const hookCall = t.callExpression(t.identifier("useTranslation"), []);
-
-    return t.variableDeclaration("const", [
-      t.variableDeclarator(
-        t.objectPattern([
-          t.objectProperty(t.identifier("t"), t.identifier("t"), false, true),
-        ]),
-        hookCall
-      ),
-    ]);
-  }
-
 
   private processFunctionBody(
     path: NodePath<t.Function>,
@@ -259,53 +245,6 @@ export class TranslationWrapper {
     return { wasModified, isServerComponent: isServerComponentResult };
   }
 
-  private addImportIfNeeded(ast: t.File): boolean {
-    let hasImport = false;
-
-    traverse(ast, {
-      ImportDeclaration: (path) => {
-        if (path.node.source.value === this.config.translationImportSource) {
-          const hasUseTranslation = path.node.specifiers.some(
-            (spec) =>
-              t.isImportSpecifier(spec) &&
-              t.isIdentifier(spec.imported) &&
-              spec.imported.name === "useTranslation"
-          );
-
-          if (!hasUseTranslation) {
-            path.node.specifiers.push(
-              t.importSpecifier(
-                t.identifier("useTranslation"),
-                t.identifier("useTranslation")
-              )
-            );
-          }
-          hasImport = true;
-        }
-      },
-    });
-
-    if (!hasImport) {
-      const importDeclaration = t.importDeclaration(
-        [
-          t.importSpecifier(
-            t.identifier("useTranslation"),
-            t.identifier("useTranslation")
-          ),
-        ],
-        t.stringLiteral(this.config.translationImportSource)
-      );
-      ast.program.body.unshift(importDeclaration);
-      return true;
-    }
-
-    return false;
-  }
-
-  private isReactComponent(name: string): boolean {
-    return /^[A-Z]/.test(name) || /^use[A-Z]/.test(name);
-  }
-
   public async processFiles(): Promise<{
     processedFiles: string[];
   }> {
@@ -404,10 +343,7 @@ export class TranslationWrapper {
                 });
 
                 if (!hasHook) {
-                  body.unshiftContainer(
-                    "body",
-                    this.createUseTranslationHook()
-                  );
+                  body.unshiftContainer("body", createUseTranslationHook());
                   wasHookAdded = true;
                 }
               }
@@ -416,7 +352,7 @@ export class TranslationWrapper {
 
           // 필요한 경우 import 추가
           if (wasHookAdded) {
-            this.addImportIfNeeded(ast);
+            addImportIfNeeded(ast, this.config.translationImportSource);
           }
 
           if (!this.config.dryRun) {
@@ -473,4 +409,3 @@ export class TranslationWrapper {
     await this.performanceMonitor.flush();
   }
 }
-
