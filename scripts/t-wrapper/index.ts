@@ -2,7 +2,7 @@
 
 import { ScriptConfig } from "../common/default-config";
 import { TranslationWrapper } from "./translation-wrapper";
-import { printCompletionReport } from "./completion-reporter";
+import { PerformanceReporter } from "../common/performance-reporter";
 
 // ScriptConfig 타입을 re-export (하위 호환성)
 export type { ScriptConfig };
@@ -26,7 +26,12 @@ export async function runTranslationWrapper(
 
     // 완료 리포트 출력
     const report = wrapper["performanceMonitor"].getReport();
-    printCompletionReport(report, processedFiles, totalTime);
+    PerformanceReporter.printCompletionReport(
+      report,
+      processedFiles,
+      totalTime,
+      "Translation Wrapper Completed"
+    );
 
     // 상세 리포트 출력 (verbose mode인 경우)
     if (process.env.I18N_PERF_VERBOSE === "true") {
