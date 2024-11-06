@@ -3,6 +3,7 @@
 import * as fs from "fs";
 import * as path from "path";
 import { TranslationExtractor } from "./extractor";
+import { COMMON_DEFAULTS } from "./default-config";
 
 export interface CleanLegacyConfig {
   sourcePattern?: string;
@@ -13,9 +14,9 @@ export interface CleanLegacyConfig {
 }
 
 const DEFAULT_CONFIG: Required<CleanLegacyConfig> = {
-  sourcePattern: "src/**/*.{js,jsx,ts,tsx}",
-  localesDir: "./locales",
-  languages: ["en", "ko"],
+  sourcePattern: COMMON_DEFAULTS.sourcePattern,
+  localesDir: COMMON_DEFAULTS.localesDir,
+  languages: [...COMMON_DEFAULTS.languages],
   dryRun: false,
   backup: true,
 };

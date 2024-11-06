@@ -2,6 +2,10 @@
 
 import * as fs from "fs";
 import * as pathLib from "path";
+import {
+  COMMON_DEFAULTS,
+  GOOGLE_SHEETS_DEFAULTS,
+} from "./default-config";
 
 export interface I18nexusConfig {
   languages: string[];
@@ -9,7 +13,6 @@ export interface I18nexusConfig {
   localesDir: string;
   sourcePattern: string;
   translationImportSource: string;
-  constantPatterns?: string[]; // 상수 패턴 필터링
   googleSheets?: {
     spreadsheetId: string;
     credentialsPath: string;
@@ -18,16 +21,15 @@ export interface I18nexusConfig {
 }
 
 const DEFAULT_CONFIG: I18nexusConfig = {
-  languages: ["en", "ko"],
-  defaultLanguage: "ko",
-  localesDir: "./locales",
-  sourcePattern: "src/**/*.{js,jsx,ts,tsx}",
-  translationImportSource: "i18nexus",
-  constantPatterns: [], // 기본값: 모든 상수 허용
+  languages: [...COMMON_DEFAULTS.languages],
+  defaultLanguage: COMMON_DEFAULTS.defaultLanguage,
+  localesDir: COMMON_DEFAULTS.localesDir,
+  sourcePattern: COMMON_DEFAULTS.sourcePattern,
+  translationImportSource: COMMON_DEFAULTS.translationImportSource,
   googleSheets: {
-    spreadsheetId: "",
-    credentialsPath: "./credentials.json",
-    sheetName: "Translations",
+    spreadsheetId: GOOGLE_SHEETS_DEFAULTS.spreadsheetId,
+    credentialsPath: GOOGLE_SHEETS_DEFAULTS.credentialsPath,
+    sheetName: GOOGLE_SHEETS_DEFAULTS.sheetName,
   },
 };
 
