@@ -10,6 +10,7 @@ import traverse, { NodePath } from "@babel/traverse";
 import * as t from "@babel/types";
 import { PerformanceMonitor } from "../common/performance-monitor";
 import { ScriptConfig, SCRIPT_CONFIG_DEFAULTS } from "../common/default-config";
+import { printCompletionReport } from "./completion-reporter";
 
 // ScriptConfig 타입을 re-export (하위 호환성)
 export type { ScriptConfig };
@@ -583,55 +584,6 @@ export class TranslationWrapper {
   }
 }
 
-/**
- * 작업 완료 후 성능 리포트 출력
- */
-function printCompletionReport(
-  wrapper: TranslationWrapper,
-  processedFiles: string[],
-  totalTime: number
-): void {
-  const report = wrapper["performanceMonitor"].getReport();
-  const metrics = report.metrics;
-  const processedCount = processedFiles.length || 1;
-
-  // 각 파일 처리 시간 집계
-  const fileProcessingTime = metrics
-    .filter((m) => m.name === "file_processing")
-    .reduce((sum, m) => sum + m.duration, 0);
-
-  const avgTimePerFile = fileProcessingTime / processedCount;
-
-  // 가장 느린 파일 top 3
-  const slowestFiles = metrics
-    .filter((m) => m.name === "file_processing")
-    .sort((a, b) => b.duration - a.duration)
-    .slice(0, 3);
-
-  // 결과 출력
-  console.log("\n" + "═".repeat(80));
-  console.log("✅ Translation Wrapper Completed");
-  console.log("═".repeat(80));
-
-  console.log(`\n📊 Overall Statistics:`);
-  console.log(`   Total Time:        ${totalTime.toFixed(0)}ms`);
-  console.log(`   Files Processed:   ${processedFiles.length} files`);
-  console.log(`   Avg per File:      ${avgTimePerFile.toFixed(1)}ms/file`);
-
-  if (slowestFiles.length > 0) {
-    console.log(`\n🐌 Slowest Files:`);
-    slowestFiles.forEach((m, index) => {
-      const filePath = m.metadata?.filePath || "unknown";
-      const fileName = filePath.split("/").pop();
-      console.log(
-        `   ${index + 1}. ${fileName?.padEnd(40)} ${m.duration.toFixed(1)}ms`
-      );
-    });
-  }
-
-  console.log("═".repeat(80) + "\n");
-}
-
 export async function runTranslationWrapper(
   config: Partial<ScriptConfig> = {}
 ) {
@@ -647,7 +599,8 @@ export async function runTranslationWrapper(
     const totalTime = endTime - startTime;
 
     // 완료 리포트 출력
-    printCompletionReport(wrapper, processedFiles, totalTime);
+    const report = wrapper["performanceMonitor"].getReport();
+    printCompletionReport(report, processedFiles, totalTime);
 
     // 상세 리포트 출력 (verbose mode인 경우)
     if (process.env.I18N_PERF_VERBOSE === "true") {
