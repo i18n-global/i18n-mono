@@ -1,13 +1,11 @@
 import * as fs from "fs";
 import * as path from "path";
 import { glob } from "glob";
-import { parseFileWithSwc, generateCodeFromAst } from "../swc-utils";
-import { parse as babelParse } from "@babel/parser";
-import generate from "@babel/generator";
 import traverse, { NodePath } from "@babel/traverse";
 import * as t from "@babel/types";
 import { PerformanceMonitor } from "../common/performance-monitor";
 import { ScriptConfig, SCRIPT_CONFIG_DEFAULTS } from "../common/default-config";
+import { parseFile, generateCode } from "../common/ast/parser-utils";
 import {
   hasIgnoreComment,
   shouldSkipPath,
@@ -32,61 +30,6 @@ export class TranslationWrapper {
     });
   }
 
-  /**
-   * 설정된 파서로 파일 파싱
-   */
-  private parseFile(
-    code: string,
-    options: {
-      sourceType?: "module" | "script";
-      jsx?: boolean;
-      tsx?: boolean;
-      decorators?: boolean;
-    } = {}
-  ): t.File {
-    if (this.config.parserType === "babel") {
-      return babelParse(code, {
-        sourceType: options.sourceType || "module",
-        plugins: [
-          "typescript",
-          "jsx",
-          "decorators-legacy",
-          "classProperties",
-          "objectRestSpread",
-        ],
-      });
-    } else {
-      return parseFileWithSwc(code, {
-        sourceType: options.sourceType || "module",
-        tsx: options.tsx !== false,
-        jsx: options.jsx !== false,
-        decorators: options.decorators !== false,
-      });
-    }
-  }
-
-  /**
-   * AST를 코드로 생성
-   */
-  private generateCodeFromAst(
-    ast: t.File,
-    options: {
-      retainLines?: boolean;
-      comments?: boolean;
-    } = {}
-  ): { code: string; map?: any } {
-    if (this.config.parserType === "babel") {
-      return generate(ast, {
-        retainLines: options.retainLines !== false,
-        comments: options.comments !== false,
-      });
-    } else {
-      return generateCodeFromAst(ast, {
-        retainLines: options.retainLines !== false,
-        comments: options.comments !== false,
-      });
-    }
-  }
 
   private processFunctionBody(
     path: NodePath<t.Function>,
@@ -183,10 +126,19 @@ export class TranslationWrapper {
               varName = expr.name;
             } else if (t.isMemberExpression(expr)) {
               // user.name → user_name
-              varName = this.generateCodeFromAst(expr as any).code.replace(
-                /\./g,
-                "_"
-              );
+              // 간단한 멤버 표현식은 직접 변환
+              const parts: string[] = [];
+              let current: any = expr;
+              while (t.isMemberExpression(current)) {
+                if (t.isIdentifier(current.property)) {
+                  parts.unshift(current.property.name);
+                }
+                current = current.object;
+              }
+              if (t.isIdentifier(current)) {
+                parts.unshift(current.name);
+              }
+              varName = parts.join("_");
             } else {
               // 복잡한 표현식은 expr0, expr1 등으로 처리
               varName = `expr${index}`;
@@ -262,7 +214,7 @@ export class TranslationWrapper {
       const code = fs.readFileSync(filePath, "utf-8");
 
       try {
-        const ast = this.parseFile(code, {
+        const ast = parseFile(code, this.config.parserType, {
           sourceType: "module",
           tsx: true,
           decorators: true,
@@ -356,7 +308,7 @@ export class TranslationWrapper {
           }
 
           if (!this.config.dryRun) {
-            const output = this.generateCodeFromAst(ast, {
+            const output = generateCode(ast, this.config.parserType, {
               retainLines: true,
               comments: true,
             });
