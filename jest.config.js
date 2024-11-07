@@ -6,12 +6,15 @@ module.exports = {
   moduleNameMapper: {
     "^@/(.*)$": "<rootDir>/$1",
   },
-  globals: {
-    "ts-jest": {
-      tsconfig: {
-        types: ["jest", "node"],
+  transform: {
+    "^.+\\.ts$": [
+      "ts-jest",
+      {
+        tsconfig: {
+          types: ["jest", "node"],
+        },
       },
-    },
+    ],
   },
 };
 
