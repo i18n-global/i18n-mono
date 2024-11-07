@@ -6,10 +6,7 @@ import * as t from "@babel/types";
 import { PerformanceMonitor } from "../common/performance-monitor";
 import { ScriptConfig, SCRIPT_CONFIG_DEFAULTS } from "../common/default-config";
 import { parseFile, generateCode } from "../common/ast/parser-utils";
-import {
-  isReactComponent,
-  isServerComponent,
-} from "./ast-helpers";
+import { isReactComponent, isServerComponent } from "./ast-helpers";
 import { createUseTranslationHook, addImportIfNeeded } from "./import-manager";
 import { transformFunctionBody } from "./ast-transformers";
 
@@ -28,7 +25,6 @@ export class TranslationWrapper {
       release: process.env.npm_package_version,
     });
   }
-
 
   private processFunctionBody(
     path: NodePath<t.Function>,
