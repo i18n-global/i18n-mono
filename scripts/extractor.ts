@@ -7,6 +7,11 @@ import * as parser from "@babel/parser";
 import traverse, { NodePath } from "@babel/traverse";
 import * as t from "@babel/types";
 import { COMMON_DEFAULTS } from "./common/default-config";
+import {
+  isTFunction,
+  getDefaultValue,
+  escapeCsvValue,
+} from "./extractor/extractor-utils";
 
 export interface ExtractorConfig {
   sourcePattern?: string;
@@ -90,7 +95,7 @@ export class TranslationExtractor {
     const { node } = path;
 
     // t() 함수 호출 감지
-    if (!this.isTFunction(node.callee)) {
+    if (!isTFunction(node.callee)) {
       return;
     }
 
@@ -101,7 +106,6 @@ export class TranslationExtractor {
       this.addExtractedKey(firstArg.value, node, filePath);
       return;
     }
-
   }
 
   private addExtractedKey(
@@ -114,7 +118,7 @@ export class TranslationExtractor {
 
     const extractedKey: ExtractedKey = {
       key,
-      defaultValue: this.getDefaultValue(
+      defaultValue: getDefaultValue(
         node.arguments.filter(
           (arg): arg is t.Expression =>
             !t.isArgumentPlaceholder(arg) && !t.isSpreadElement(arg)
@@ -145,41 +149,6 @@ export class TranslationExtractor {
     }
   }
 
-
-  private isTFunction(callee: t.Expression | t.V8IntrinsicIdentifier): boolean {
-    // t() 직접 호출
-    if (t.isIdentifier(callee, { name: "t" })) {
-      return true;
-    }
-
-    // useTranslation().t 형태의 호출
-    if (
-      t.isMemberExpression(callee) &&
-      t.isIdentifier(callee.property, { name: "t" })
-    ) {
-      return true;
-    }
-
-    return false;
-  }
-
-  private getDefaultValue(args: t.Expression[]): string | undefined {
-    // 두 번째 인수가 옵션 객체인 경우 defaultValue 추출
-    if (args.length > 1 && t.isObjectExpression(args[1])) {
-      const defaultValueProp = args[1].properties.find(
-        (prop) =>
-          t.isObjectProperty(prop) &&
-          t.isIdentifier(prop.key, { name: "defaultValue" }) &&
-          t.isStringLiteral(prop.value)
-      );
-
-      if (defaultValueProp && t.isObjectProperty(defaultValueProp)) {
-        return (defaultValueProp.value as t.StringLiteral).value;
-      }
-    }
-
-    return undefined;
-  }
 
   private generateOutputData(): any {
     const keys = Array.from(this.extractedKeys.values());
@@ -213,9 +182,9 @@ export class TranslationExtractor {
       const koreanValue = defaultValue || key;
 
       // CSV 이스케이프 처리
-      const escapedKey = this.escapeCsvValue(key);
-      const escapedEnglish = this.escapeCsvValue(englishValue);
-      const escapedKorean = this.escapeCsvValue(koreanValue);
+      const escapedKey = escapeCsvValue(key);
+      const escapedEnglish = escapeCsvValue(englishValue);
+      const escapedKorean = escapeCsvValue(koreanValue);
 
       csvLines.push(`${escapedKey},${escapedEnglish},${escapedKorean}`);
     });
@@ -223,18 +192,6 @@ export class TranslationExtractor {
     return csvLines.join("\n");
   }
 
-  private escapeCsvValue(value: string): string {
-    // CSV에서 특수 문자가 포함된 경우 따옴표로 감싸고, 따옴표는 두 번 반복
-    if (
-      value.includes(",") ||
-      value.includes('"') ||
-      value.includes("\n") ||
-      value.includes("\r")
-    ) {
-      return `"${value.replace(/"/g, '""')}"`;
-    }
-    return value;
-  }
 
   private generateIndexFile(): void {
     const indexPath = pathLib.join(this.config.outputDir, "index.ts");
