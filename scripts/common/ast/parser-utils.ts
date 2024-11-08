@@ -21,21 +21,42 @@ export interface GenerateOptions {
 }
 
 /**
+ * Babel 파서 기본 플러그인 목록
+ */
+export const BABEL_BASE_PLUGINS = [
+  "typescript",
+  "jsx",
+  "decorators-legacy",
+  "classProperties",
+  "objectRestSpread",
+] as const;
+
+/**
+ * Babel 파서 확장 플러그인 목록 (extractor용)
+ */
+export const BABEL_EXTENDED_PLUGINS = [
+  ...BABEL_BASE_PLUGINS,
+  "asyncGenerators",
+  "functionBind",
+  "exportDefaultFrom",
+  "exportNamespaceFrom",
+  "dynamicImport",
+] as const;
+
+/**
  * Babel 파서로 코드 파싱
  */
 export function parseWithBabel(
   code: string,
-  options: ParseOptions = {}
+  options: ParseOptions & { extendedPlugins?: boolean } = {}
 ): t.File {
+  const plugins = options.extendedPlugins
+    ? [...BABEL_EXTENDED_PLUGINS]
+    : [...BABEL_BASE_PLUGINS];
+
   return babelParse(code, {
     sourceType: options.sourceType || "module",
-    plugins: [
-      "typescript",
-      "jsx",
-      "decorators-legacy",
-      "classProperties",
-      "objectRestSpread",
-    ],
+    plugins: plugins as any,
   });
 }
 

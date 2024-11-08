@@ -2,7 +2,7 @@
 
 import * as fs from "fs";
 import * as path from "path";
-import { TranslationExtractor } from "./extractor";
+import { TranslationExtractor } from "./extractor/index";
 import { COMMON_DEFAULTS } from "./common/default-config";
 
 export interface CleanLegacyConfig {
