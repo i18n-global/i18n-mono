@@ -12,6 +12,11 @@ import {
   getDefaultValue,
   escapeCsvValue,
 } from "./extractor/extractor-utils";
+import {
+  extractTranslationKey,
+  createExtractedKey,
+  ExtractedKey,
+} from "./extractor/key-extractor";
 
 export interface ExtractorConfig {
   sourcePattern?: string;
@@ -41,13 +46,8 @@ const DEFAULT_CONFIG: Required<ExtractorConfig> = {
   force: false, // 기본값: 기존 번역 유지
 };
 
-export interface ExtractedKey {
-  key: string;
-  defaultValue?: string;
-  filePath?: string;
-  lineNumber?: number;
-  columnNumber?: number;
-}
+// ExtractedKey는 key-extractor.ts에서 import
+export type { ExtractedKey } from "./extractor/key-extractor";
 
 export class TranslationExtractor {
   private config: Required<ExtractorConfig>;
@@ -80,7 +80,13 @@ export class TranslationExtractor {
       // t() 호출 추출
       traverse(ast, {
         CallExpression: (path) => {
-          this.extractTranslationKey(path, filePath);
+          const extractedKey = extractTranslationKey(path, filePath, {
+            includeFilePaths: this.config.includeFilePaths,
+            includeLineNumbers: this.config.includeLineNumbers,
+          });
+          if (extractedKey) {
+            this.addExtractedKey(extractedKey);
+          }
         },
       });
     } catch (error) {
@@ -88,67 +94,17 @@ export class TranslationExtractor {
     }
   }
 
-  private extractTranslationKey(
-    path: NodePath<t.CallExpression>,
-    filePath: string
-  ): void {
-    const { node } = path;
-
-    // t() 함수 호출 감지
-    if (!isTFunction(node.callee)) {
-      return;
-    }
-
-    const firstArg = node.arguments[0];
-
-    // Case 1: t("문자열") - 직접 문자열
-    if (t.isStringLiteral(firstArg)) {
-      this.addExtractedKey(firstArg.value, node, filePath);
-      return;
-    }
-  }
-
-  private addExtractedKey(
-    key: string,
-    node: t.CallExpression,
-    filePath: string,
-    source?: string
-  ): void {
-    const loc = node.loc;
-
-    const extractedKey: ExtractedKey = {
-      key,
-      defaultValue: getDefaultValue(
-        node.arguments.filter(
-          (arg): arg is t.Expression =>
-            !t.isArgumentPlaceholder(arg) && !t.isSpreadElement(arg)
-        )
-      ),
-    };
-
-    if (this.config.includeFilePaths) {
-      extractedKey.filePath = pathLib.relative(process.cwd(), filePath);
-    }
-
-    if (this.config.includeLineNumbers && loc) {
-      extractedKey.lineNumber = loc.start.line;
-      extractedKey.columnNumber = loc.start.column;
-    }
+  private addExtractedKey(extractedKey: ExtractedKey): void {
+    const { key } = extractedKey;
 
     // 중복 키 처리
     const existingKey = this.extractedKeys.get(key);
     if (existingKey) {
-      console.log(
-        `🔄 Duplicate key found: "${key}" ${source ? `from ${source}` : ""}`
-      );
+      console.log(`🔄 Duplicate key found: "${key}"`);
     } else {
       this.extractedKeys.set(key, extractedKey);
-      if (source) {
-        console.log(`   ✅ Extracted from ${source}: "${key}"`);
-      }
     }
   }
-
 
   private generateOutputData(): any {
     const keys = Array.from(this.extractedKeys.values());
@@ -191,7 +147,6 @@ export class TranslationExtractor {
 
     return csvLines.join("\n");
   }
-
 
   private generateIndexFile(): void {
     const indexPath = pathLib.join(this.config.outputDir, "index.ts");
