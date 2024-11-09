@@ -43,3 +43,6 @@ RUST_*.md
 SENTRY_PERFORMANCE_GUIDE.md
 DEPLOYMENT_NOTES.md
 MIGRATION_SEPARATION_COMPLETE.md
+
+# Testing guidelines (개발자 참고 문서)
+docs/testing-guidelines.md
