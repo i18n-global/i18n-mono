@@ -2,36 +2,9 @@
  * parser-utils 테스트
  */
 
-import { parseWithBabel, parseFile, generateWithBabel, generateCode } from "./parser-utils";
-import * as t from "@babel/types";
+import { parseFile, generateWithBabel, generateCode } from "./parser-utils";
 
 describe("parser-utils", () => {
-  describe("parseWithBabel", () => {
-    it("간단한 코드를 파싱할 수 있어야 함", () => {
-      const code = "const x = 1;";
-      const ast = parseWithBabel(code);
-
-      expect(ast).toBeDefined();
-      expect(ast.type).toBe("File");
-      expect(ast.program.body.length).toBe(1);
-    });
-
-    it("JSX 코드를 파싱할 수 있어야 함", () => {
-      const code = "const Component = () => <div>Hello</div>;";
-      const ast = parseWithBabel(code, { jsx: true });
-
-      expect(ast).toBeDefined();
-      expect(ast.program.body.length).toBe(1);
-    });
-
-    it("TypeScript 코드를 파싱할 수 있어야 함", () => {
-      const code = "const x: number = 1;";
-      const ast = parseWithBabel(code);
-
-      expect(ast).toBeDefined();
-      expect(ast.program.body.length).toBe(1);
-    });
-  });
 
   describe("parseFile", () => {
     it("babel 파서로 파싱할 수 있어야 함", () => {
@@ -55,7 +28,7 @@ describe("parser-utils", () => {
   describe("generateWithBabel", () => {
     it("AST를 코드로 생성할 수 있어야 함", () => {
       const code = "const x = 1;";
-      const ast = parseWithBabel(code);
+      const ast = parseFile(code, "babel");
       const result = generateWithBabel(ast);
 
       expect(result).toBeDefined();
@@ -64,7 +37,7 @@ describe("parser-utils", () => {
 
     it("주석을 유지할 수 있어야 함", () => {
       const code = "// comment\nconst x = 1;";
-      const ast = parseWithBabel(code);
+      const ast = parseFile(code, "babel");
       const result = generateWithBabel(ast, { comments: true });
 
       expect(result.code).toContain("comment");
