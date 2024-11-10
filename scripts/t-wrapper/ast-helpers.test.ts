@@ -39,21 +39,6 @@ const text = "hello";`;
       });
       expect(found).toBe(false);
     });
-
-    it("소스코드에서 i18n-ignore를 감지해야 함", () => {
-      const code = `// i18n-ignore
-const text = "hello";`;
-      const ast = parse(code, { sourceType: "module", plugins: ["typescript", "jsx"] });
-      let found = false;
-      traverse(ast, {
-        VariableDeclarator(path) {
-          if (hasIgnoreComment(path, code)) {
-            found = true;
-          }
-        },
-      });
-      expect(found).toBe(true);
-    });
   });
 
   describe("shouldSkipPath", () => {

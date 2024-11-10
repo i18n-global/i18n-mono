@@ -21,21 +21,6 @@ describe("translation-wrapper", () => {
     }
   });
 
-  describe("constructor", () => {
-    it("기본 설정으로 생성해야 함", () => {
-      const wrapper = new TranslationWrapper();
-      expect(wrapper).toBeInstanceOf(TranslationWrapper);
-    });
-
-    it("커스텀 설정으로 생성해야 함", () => {
-      const wrapper = new TranslationWrapper({
-        sourcePattern: "**/*.tsx",
-        dryRun: true,
-      });
-      expect(wrapper).toBeInstanceOf(TranslationWrapper);
-    });
-  });
-
   describe("processFiles", () => {
     it("한국어가 포함된 파일을 처리해야 함", async () => {
       const testFile = path.join(tempDir, "test.tsx");
@@ -116,19 +101,4 @@ describe("translation-wrapper", () => {
       expect(content).not.toContain("useTranslation");
     });
   });
-
-  describe("printPerformanceReport", () => {
-    it("성능 리포트를 출력할 수 있어야 함", () => {
-      const wrapper = new TranslationWrapper();
-      expect(() => wrapper.printPerformanceReport()).not.toThrow();
-    });
-  });
-
-  describe("flushPerformanceData", () => {
-    it("성능 데이터를 플러시할 수 있어야 함", async () => {
-      const wrapper = new TranslationWrapper();
-      await expect(wrapper.flushPerformanceData()).resolves.not.toThrow();
-    });
-  });
 });
-

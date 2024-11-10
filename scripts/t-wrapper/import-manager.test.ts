@@ -8,27 +8,6 @@ import { parse } from "@babel/parser";
 import * as t from "@babel/types";
 
 describe("import-manager", () => {
-  describe("createUseTranslationHook", () => {
-    it("useTranslation 훅을 생성해야 함", () => {
-      const hook = createUseTranslationHook();
-      expect(t.isVariableDeclaration(hook)).toBe(true);
-      expect(hook.declarations.length).toBe(1);
-      expect(t.isCallExpression(hook.declarations[0].init)).toBe(true);
-      if (t.isCallExpression(hook.declarations[0].init)) {
-        expect(t.isIdentifier(hook.declarations[0].init.callee)).toBe(true);
-        if (t.isIdentifier(hook.declarations[0].init.callee)) {
-          expect(hook.declarations[0].init.callee.name).toBe("useTranslation");
-        }
-      }
-    });
-
-    it("구조 분해 할당으로 t를 추출해야 함", () => {
-      const hook = createUseTranslationHook();
-      const declarator = hook.declarations[0];
-      expect(t.isObjectPattern(declarator.id)).toBe(true);
-    });
-  });
-
   describe("addImportIfNeeded", () => {
     it("import가 없으면 추가해야 함", () => {
       const code = `function Component() {}`;

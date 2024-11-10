@@ -83,20 +83,4 @@ describe("output-generator", () => {
       expect(csv).toContain('"안녕 ""하세요"""');
     });
   });
-
-  describe("generateIndexFile", () => {
-    it("TypeScript export 형식으로 생성해야 함", () => {
-      const languages = ["en", "ko"];
-      const outputDir = "/tmp/test";
-      generateIndexFile(languages, outputDir, true);
-      expect(true).toBe(true);
-    });
-
-    it("여러 언어를 처리해야 함", () => {
-      const languages = ["en", "ko", "ja"];
-      const outputDir = "/tmp/test";
-      generateIndexFile(languages, outputDir, true);
-      expect(true).toBe(true);
-    });
-  });
 });

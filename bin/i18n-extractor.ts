@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-import { runTranslationExtractor, ExtractorConfig } from "../scripts/extractor/index";
+import { runTranslationExtractor, ExtractorConfig } from "../scripts/extractor";
 import { loadConfig } from "../scripts/config-loader";
 
 const args = process.argv.slice(2);

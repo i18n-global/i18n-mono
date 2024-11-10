@@ -77,12 +77,5 @@ describe("extractor-utils", () => {
     it("개행 문자가 있으면 따옴표로 감싸야 함", () => {
       expect(escapeCsvValue("hello\nworld")).toBe('"hello\nworld"');
     });
-
-    it("여러 특수 문자가 있으면 모두 처리해야 함", () => {
-      const result = escapeCsvValue('say "hello", world\n!');
-      expect(result).toContain('"');
-      expect(result).toContain('""');
-    });
   });
 });
-

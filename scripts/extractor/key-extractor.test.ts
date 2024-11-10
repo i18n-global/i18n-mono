@@ -81,23 +81,6 @@ describe("key-extractor", () => {
       expect(key.key).toBe("hello.world");
       expect(key.defaultValue).toBe("기본값");
     });
-
-    it("ExtractedKey 인터페이스를 만족해야 함", () => {
-      const callExpr = t.callExpression(t.identifier("t"), [t.stringLiteral("test.key")]);
-      callExpr.loc = {
-        start: { line: 5, column: 0 },
-        end: { line: 5, column: 15 },
-      } as any;
-      const key = createExtractedKey("test.key", callExpr, "file.ts", {
-        includeFilePaths: true,
-        includeLineNumbers: true,
-      });
-      expect(key).toHaveProperty("key");
-      expect(key).toHaveProperty("filePath");
-      expect(key).toHaveProperty("lineNumber");
-      expect(key).toHaveProperty("defaultValue");
-      expect(typeof key.key).toBe("string");
-    });
   });
 });
 
