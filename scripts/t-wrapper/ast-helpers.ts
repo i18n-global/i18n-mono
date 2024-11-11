@@ -5,6 +5,7 @@
 
 import { NodePath } from "@babel/traverse";
 import * as t from "@babel/types";
+import { STRING_CONSTANTS, REGEX_PATTERNS } from "./constants";
 
 /**
  * i18n-ignore 주석이 노드 바로 위에 있는지 확인
@@ -20,8 +21,8 @@ export function hasIgnoreComment(
   if (node.leadingComments) {
     const hasIgnore = node.leadingComments.some(
       (comment) =>
-        comment.value.trim() === "i18n-ignore" ||
-        comment.value.trim().startsWith("i18n-ignore")
+        comment.value.trim() === STRING_CONSTANTS.I18N_IGNORE ||
+        comment.value.trim().startsWith(STRING_CONSTANTS.I18N_IGNORE)
     );
     if (hasIgnore) return true;
   }
@@ -30,8 +31,8 @@ export function hasIgnoreComment(
   if (path.parentPath?.node?.leadingComments) {
     const hasIgnore = path.parentPath.node.leadingComments.some(
       (comment) =>
-        comment.value.trim() === "i18n-ignore" ||
-        comment.value.trim().startsWith("i18n-ignore")
+        comment.value.trim() === STRING_CONSTANTS.I18N_IGNORE ||
+        comment.value.trim().startsWith(STRING_CONSTANTS.I18N_IGNORE)
     );
     if (hasIgnore) return true;
   }
@@ -46,10 +47,10 @@ export function hasIgnoreComment(
       const line = lines[i];
       if (
         line &&
-        (line.includes("i18n-ignore") ||
-          line.includes("// i18n-ignore") ||
-          line.includes("/* i18n-ignore") ||
-          line.includes("{/* i18n-ignore"))
+        (line.includes(STRING_CONSTANTS.I18N_IGNORE) ||
+          line.includes(STRING_CONSTANTS.I18N_IGNORE_COMMENT) ||
+          line.includes(STRING_CONSTANTS.I18N_IGNORE_BLOCK) ||
+          line.includes(STRING_CONSTANTS.I18N_IGNORE_JSX))
       ) {
         return true;
       }
@@ -79,7 +80,9 @@ export function shouldSkipPath(
   // t() 함수로 이미 래핑된 경우 스킵
   if (
     t.isCallExpression(path.parent) &&
-    t.isIdentifier(path.parent.callee, { name: "t" })
+    t.isIdentifier(path.parent.callee, {
+      name: STRING_CONSTANTS.TRANSLATION_FUNCTION,
+    })
   ) {
     return true;
   }
@@ -102,7 +105,8 @@ export function shouldSkipPath(
  * React 컴포넌트 이름인지 확인
  */
 export function isReactComponent(name: string): boolean {
-  return /^[A-Z]/.test(name) || /^use[A-Z]/.test(name);
+  return REGEX_PATTERNS.REACT_COMPONENT.test(name) ||
+    REGEX_PATTERNS.REACT_HOOK.test(name);
 }
 
 /**
@@ -116,12 +120,12 @@ export function isServerComponent(path: NodePath<t.Function>): boolean {
     CallExpression: (callPath) => {
       if (
         t.isIdentifier(callPath.node.callee, {
-          name: "getServerTranslation",
+          name: STRING_CONSTANTS.GET_SERVER_TRANSLATION,
         }) ||
         (t.isAwaitExpression(callPath.parent) &&
           t.isCallExpression(callPath.node) &&
           t.isIdentifier(callPath.node.callee, {
-            name: "getServerTranslation",
+            name: STRING_CONSTANTS.GET_SERVER_TRANSLATION,
           }))
       ) {
         hasServerTranslation = true;

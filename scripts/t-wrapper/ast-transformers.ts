@@ -6,6 +6,7 @@
 import { NodePath } from "@babel/traverse";
 import * as t from "@babel/types";
 import { hasIgnoreComment, shouldSkipPath } from "./ast-helpers";
+import { STRING_CONSTANTS, REGEX_PATTERNS } from "./constants";
 
 export interface TransformResult {
   wasModified: boolean;
@@ -36,11 +37,12 @@ export function transformFunctionBody(
       }
 
       // 한국어 텍스트가 포함된 문자열만 처리
-      if (/[가-힣]/.test(subPath.node.value)) {
+      if (REGEX_PATTERNS.KOREAN_TEXT.test(subPath.node.value)) {
         wasModified = true;
-        const replacement = t.callExpression(t.identifier("t"), [
-          t.stringLiteral(subPath.node.value),
-        ]);
+        const replacement = t.callExpression(
+          t.identifier(STRING_CONSTANTS.TRANSLATION_FUNCTION),
+          [t.stringLiteral(subPath.node.value)]
+        );
 
         if (t.isJSXAttribute(subPath.parent)) {
           subPath.replaceWith(t.jsxExpressionContainer(replacement));
@@ -61,14 +63,16 @@ export function transformFunctionBody(
       // 이미 t()로 래핑된 경우 스킵
       if (
         t.isCallExpression(subPath.parent) &&
-        t.isIdentifier(subPath.parent.callee, { name: "t" })
+        t.isIdentifier(subPath.parent.callee, {
+          name: STRING_CONSTANTS.TRANSLATION_FUNCTION,
+        })
       ) {
         return;
       }
 
       // 템플릿 리터럴의 모든 부분에 하나라도 한국어가 있는지 확인
       const hasKorean = subPath.node.quasis.some((quasi) =>
-        /[가-힣]/.test(quasi.value.raw)
+        REGEX_PATTERNS.KOREAN_TEXT.test(quasi.value.raw)
       );
 
       if (!hasKorean) {
@@ -85,9 +89,10 @@ export function transformFunctionBody(
 
       // 표현식이 없으면 단순 문자열로 처리
       if (expressions.length === 0) {
-        const replacement = t.callExpression(t.identifier("t"), [
-          t.stringLiteral(quasis[0].value.raw),
-        ]);
+        const replacement = t.callExpression(
+          t.identifier(STRING_CONSTANTS.TRANSLATION_FUNCTION),
+          [t.stringLiteral(quasis[0].value.raw)]
+        );
         subPath.replaceWith(replacement);
         return;
       }
@@ -120,14 +125,14 @@ export function transformFunctionBody(
             if (t.isIdentifier(current)) {
               parts.unshift(current.name);
             }
-            varName = parts.join("_");
+            varName = parts.join(STRING_CONSTANTS.MEMBER_SEPARATOR);
           } else {
             // 복잡한 표현식은 expr0, expr1 등으로 처리
-            varName = `expr${index}`;
+            varName = `${STRING_CONSTANTS.EXPR_PREFIX}${index}`;
           }
 
           // i18next 형식: {{varName}}
-          i18nextString += `{{${varName}}}`;
+          i18nextString += `${STRING_CONSTANTS.INTERPOLATION_START}${varName}${STRING_CONSTANTS.INTERPOLATION_END}`;
 
           // interpolation 객체에 추가
           interpolationVars.push(
@@ -146,7 +151,10 @@ export function transformFunctionBody(
         args.push(t.objectExpression(interpolationVars));
       }
 
-      const replacement = t.callExpression(t.identifier("t"), args);
+      const replacement = t.callExpression(
+        t.identifier(STRING_CONSTANTS.TRANSLATION_FUNCTION),
+        args
+      );
       subPath.replaceWith(replacement);
     },
     JSXText: (subPath) => {
@@ -163,12 +171,14 @@ export function transformFunctionBody(
       }
 
       // 한국어가 포함된 텍스트만 처리
-      if (/[가-힣]/.test(text)) {
+      if (REGEX_PATTERNS.KOREAN_TEXT.test(text)) {
         wasModified = true;
 
         // t() 함수 호출로 감싸기
         const replacement = t.jsxExpressionContainer(
-          t.callExpression(t.identifier("t"), [t.stringLiteral(text)])
+          t.callExpression(t.identifier(STRING_CONSTANTS.TRANSLATION_FUNCTION), [
+            t.stringLiteral(text),
+          ])
         );
 
         subPath.replaceWith(replacement);

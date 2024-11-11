@@ -4,18 +4,27 @@
 
 import traverse from "@babel/traverse";
 import * as t from "@babel/types";
+import { STRING_CONSTANTS } from "./constants";
 
 /**
  * useTranslation 훅을 생성하는 AST 노드 생성
  */
 export function createUseTranslationHook(): t.VariableDeclaration {
   // useTranslation()을 빈 값으로 호출 - 내부적으로 현재 언어 자동 주입
-  const hookCall = t.callExpression(t.identifier("useTranslation"), []);
+  const hookCall = t.callExpression(
+    t.identifier(STRING_CONSTANTS.USE_TRANSLATION),
+    []
+  );
 
-  return t.variableDeclaration("const", [
+  return t.variableDeclaration(STRING_CONSTANTS.VARIABLE_KIND, [
     t.variableDeclarator(
       t.objectPattern([
-        t.objectProperty(t.identifier("t"), t.identifier("t"), false, true),
+        t.objectProperty(
+          t.identifier(STRING_CONSTANTS.TRANSLATION_FUNCTION),
+          t.identifier(STRING_CONSTANTS.TRANSLATION_FUNCTION),
+          false,
+          true
+        ),
       ]),
       hookCall
     ),
@@ -38,14 +47,14 @@ export function addImportIfNeeded(
           (spec) =>
             t.isImportSpecifier(spec) &&
             t.isIdentifier(spec.imported) &&
-            spec.imported.name === "useTranslation"
+            spec.imported.name === STRING_CONSTANTS.USE_TRANSLATION
         );
 
         if (!hasUseTranslation) {
           path.node.specifiers.push(
             t.importSpecifier(
-              t.identifier("useTranslation"),
-              t.identifier("useTranslation")
+              t.identifier(STRING_CONSTANTS.USE_TRANSLATION),
+              t.identifier(STRING_CONSTANTS.USE_TRANSLATION)
             )
           );
         }
@@ -58,8 +67,8 @@ export function addImportIfNeeded(
     const importDeclaration = t.importDeclaration(
       [
         t.importSpecifier(
-          t.identifier("useTranslation"),
-          t.identifier("useTranslation")
+          t.identifier(STRING_CONSTANTS.USE_TRANSLATION),
+          t.identifier(STRING_CONSTANTS.USE_TRANSLATION)
         ),
       ],
       t.stringLiteral(translationImportSource)

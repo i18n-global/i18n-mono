@@ -3,6 +3,12 @@
 import { ScriptConfig } from "../common/default-config";
 import { TranslationWrapper } from "./translation-wrapper";
 import { PerformanceReporter } from "../common/performance-reporter";
+import {
+  CONSOLE_MESSAGES,
+  CLI_OPTIONS,
+  CLI_HELP,
+  STRING_CONSTANTS,
+} from "./constants";
 
 // ScriptConfig 타입을 re-export (하위 호환성)
 export type { ScriptConfig };
@@ -15,7 +21,7 @@ export async function runTranslationWrapper(
 ) {
   const wrapper = new TranslationWrapper(config);
 
-  console.log("🚀 Starting translation wrapper...");
+  console.log(CONSOLE_MESSAGES.START);
   const startTime = Date.now();
 
   try {
@@ -30,7 +36,7 @@ export async function runTranslationWrapper(
       report,
       processedFiles,
       totalTime,
-      "Translation Wrapper Completed"
+      STRING_CONSTANTS.COMPLETION_TITLE
     );
 
     // 상세 리포트 출력 (verbose mode인 경우)
@@ -41,7 +47,7 @@ export async function runTranslationWrapper(
     // Sentry 데이터 플러시
     await wrapper.flushPerformanceData();
   } catch (error) {
-    console.error("❌ Fatal error:", error);
+    console.error(CONSOLE_MESSAGES.FATAL_ERROR, error);
     await wrapper.flushPerformanceData();
     throw error;
   }
@@ -54,28 +60,22 @@ if (require.main === module) {
 
   for (let i = 0; i < args.length; i++) {
     switch (args[i]) {
-      case "--pattern":
-      case "-p":
+      case CLI_OPTIONS.PATTERN:
+      case CLI_OPTIONS.PATTERN_SHORT:
         config.sourcePattern = args[++i];
         break;
-      case "--dry-run":
-      case "-d":
+      case CLI_OPTIONS.DRY_RUN:
+      case CLI_OPTIONS.DRY_RUN_SHORT:
         config.dryRun = true;
         break;
-      case "--help":
-      case "-h":
+      case CLI_OPTIONS.HELP:
+      case CLI_OPTIONS.HELP_SHORT:
         console.log(`
-Usage: t-wrapper [options]
+${CLI_HELP.USAGE}
 
-Options:
-  -p, --pattern <pattern>    Source file pattern (default: "src/**/*.{js,jsx,ts,tsx}")
-  -d, --dry-run             Preview changes without modifying files
-  -h, --help                Show this help message
+${CLI_HELP.OPTIONS}
 
-Examples:
-  t-wrapper
-  t-wrapper -p "app/**/*.tsx"
-  t-wrapper --dry-run
+${CLI_HELP.EXAMPLES}
         `);
         process.exit(0);
         break;

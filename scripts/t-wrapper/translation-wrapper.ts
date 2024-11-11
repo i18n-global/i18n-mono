@@ -9,6 +9,7 @@ import { parseFile, generateCode } from "../common/ast/parser-utils";
 import { isReactComponent, isServerComponent } from "./ast-helpers";
 import { createUseTranslationHook, addImportIfNeeded } from "./import-manager";
 import { transformFunctionBody } from "./ast-transformers";
+import { CONSOLE_MESSAGES, STRING_CONSTANTS } from "./constants";
 
 const DEFAULT_CONFIG = SCRIPT_CONFIG_DEFAULTS;
 
@@ -21,7 +22,7 @@ export class TranslationWrapper {
     this.performanceMonitor = new PerformanceMonitor({
       enabled: this.config.enablePerformanceMonitoring,
       sentryDsn: this.config.sentryDsn,
-      environment: process.env.NODE_ENV || "production",
+      environment: process.env.NODE_ENV || STRING_CONSTANTS.DEFAULT_ENV,
       release: process.env.npm_package_version,
     });
   }
@@ -47,7 +48,7 @@ export class TranslationWrapper {
     const filePaths = await glob(this.config.sourcePattern);
     const processedFiles: string[] = [];
 
-    console.log(`📁 Found ${filePaths.length} files to process...`);
+    console.log(CONSOLE_MESSAGES.FILES_FOUND(filePaths.length));
 
     for (const filePath of filePaths) {
       this.performanceMonitor.start("file_processing", { filePath });
@@ -112,12 +113,12 @@ export class TranslationWrapper {
             ({ path: componentPath, isServerComponent }) => {
               // 서버 컴포넌트는 useTranslation 훅을 추가하지 않음
               if (isServerComponent) {
-                console.log(
-                  `     🔵 Server component detected - skipping useTranslation hook`
-                );
+                console.log(CONSOLE_MESSAGES.SERVER_COMPONENT_SKIP);
                 return;
               }
-              if (componentPath.scope.hasBinding("t")) {
+              if (
+                componentPath.scope.hasBinding(STRING_CONSTANTS.TRANSLATION_FUNCTION)
+              ) {
                 return;
               }
 
@@ -128,7 +129,7 @@ export class TranslationWrapper {
                   CallExpression: (path) => {
                     if (
                       t.isIdentifier(path.node.callee, {
-                        name: "useTranslation",
+                        name: STRING_CONSTANTS.USE_TRANSLATION,
                       })
                     ) {
                       hasHook = true;
@@ -160,9 +161,7 @@ export class TranslationWrapper {
 
           processedFiles.push(filePath);
           console.log(
-            `🔧 ${filePath} - ${
-              this.config.dryRun ? "Would be modified" : "Modified"
-            }`
+            CONSOLE_MESSAGES.FILE_MODIFIED(filePath, this.config.dryRun)
           );
         }
         this.performanceMonitor.end("file_processing", {
@@ -170,7 +169,7 @@ export class TranslationWrapper {
           modified: isFileModified,
         });
       } catch (error) {
-        console.error(`❌ Error processing ${filePath}:`, error);
+        console.error(CONSOLE_MESSAGES.ERROR_PROCESSING(filePath), error);
         this.performanceMonitor.captureError(error as Error, { filePath });
         this.performanceMonitor.end("file_processing", {
           filePath,
