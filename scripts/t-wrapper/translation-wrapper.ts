@@ -48,8 +48,6 @@ export class TranslationWrapper {
     const filePaths = await glob(this.config.sourcePattern);
     const processedFiles: string[] = [];
 
-    console.log(CONSOLE_MESSAGES.FILES_FOUND(filePaths.length));
-
     for (const filePath of filePaths) {
       this.performanceMonitor.start("file_processing", { filePath });
 
@@ -113,7 +111,6 @@ export class TranslationWrapper {
             ({ path: componentPath, isServerComponent }) => {
               // 서버 컴포넌트는 useTranslation 훅을 추가하지 않음
               if (isServerComponent) {
-                console.log(CONSOLE_MESSAGES.SERVER_COMPONENT_SKIP);
                 return;
               }
               if (
@@ -160,9 +157,6 @@ export class TranslationWrapper {
           }
 
           processedFiles.push(filePath);
-          console.log(
-            CONSOLE_MESSAGES.FILE_MODIFIED(filePath, this.config.dryRun)
-          );
         }
         this.performanceMonitor.end("file_processing", {
           filePath,

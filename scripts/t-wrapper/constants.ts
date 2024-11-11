@@ -3,17 +3,10 @@
  * 모든 상수를 중앙화하고 Object.freeze로 불변성 보장
  */
 
-// Console 메시지
+// Console 메시지 (에러만 출력)
 export const CONSOLE_MESSAGES = Object.freeze({
-  START: "🚀 Starting translation wrapper...",
-  FILES_FOUND: (count: number) => `📁 Found ${count} files to process...`,
-  SERVER_COMPONENT_SKIP: "     🔵 Server component detected - skipping useTranslation hook",
-  FILE_MODIFIED: (filePath: string, isDryRun: boolean) =>
-    `🔧 ${filePath} - ${isDryRun ? "Would be modified" : "Modified"}`,
   ERROR_PROCESSING: (filePath: string) => `❌ Error processing ${filePath}:`,
   FATAL_ERROR: "❌ Fatal error:",
-  WOULD_BE_MODIFIED: "Would be modified",
-  MODIFIED: "Modified",
 } as const);
 
 // CLI 옵션
@@ -64,10 +57,4 @@ export const REGEX_PATTERNS = Object.freeze({
   KOREAN_TEXT: /[가-힣]/,
 } as const);
 
-// AST 노드 이름
-export const AST_NODE_NAMES = Object.freeze({
-  T: "t",
-  USE_TRANSLATION: "useTranslation",
-  GET_SERVER_TRANSLATION: "getServerTranslation",
-} as const);
 

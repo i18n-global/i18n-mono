@@ -11,10 +11,7 @@ import { STRING_CONSTANTS, REGEX_PATTERNS } from "./constants";
  * i18n-ignore 주석이 노드 바로 위에 있는지 확인
  * 파일의 원본 소스코드를 직접 검사하여 주석 감지
  */
-export function hasIgnoreComment(
-  path: NodePath,
-  sourceCode?: string
-): boolean {
+export function hasIgnoreComment(path: NodePath, sourceCode?: string): boolean {
   const node = path.node;
 
   // 1. AST의 leadingComments 확인
@@ -105,8 +102,10 @@ export function shouldSkipPath(
  * React 컴포넌트 이름인지 확인
  */
 export function isReactComponent(name: string): boolean {
-  return REGEX_PATTERNS.REACT_COMPONENT.test(name) ||
-    REGEX_PATTERNS.REACT_HOOK.test(name);
+  return (
+    REGEX_PATTERNS.REACT_COMPONENT.test(name) ||
+    REGEX_PATTERNS.REACT_HOOK.test(name)
+  );
 }
 
 /**
@@ -136,4 +135,3 @@ export function isServerComponent(path: NodePath<t.Function>): boolean {
 
   return hasServerTranslation;
 }
-
