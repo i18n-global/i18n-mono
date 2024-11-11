@@ -21,6 +21,11 @@ import {
   generateOutputData,
   writeOutputFile,
 } from "./output-generator";
+import {
+  CONSOLE_MESSAGES,
+  STRING_CONSTANTS,
+  OUTPUT_FORMATS,
+} from "./constants";
 
 export interface ExtractorConfig {
   sourcePattern?: string;
@@ -38,14 +43,14 @@ export interface ExtractorConfig {
 
 const DEFAULT_CONFIG: Required<ExtractorConfig> = {
   sourcePattern: COMMON_DEFAULTS.sourcePattern,
-  outputFile: "extracted-translations.json",
+  outputFile: STRING_CONSTANTS.DEFAULT_OUTPUT_FILE,
   outputDir: COMMON_DEFAULTS.localesDir,
-  namespace: "",
+  namespace: STRING_CONSTANTS.DEFAULT_NAMESPACE,
   includeLineNumbers: false,
   includeFilePaths: false,
   sortKeys: true,
   dryRun: false,
-  outputFormat: "json",
+  outputFormat: OUTPUT_FORMATS.JSON,
   languages: [...COMMON_DEFAULTS.languages], // 기본 언어
   force: false, // 기본값: 기존 번역 유지
 };
@@ -84,7 +89,7 @@ export class TranslationExtractor {
         },
       });
     } catch (error) {
-      console.warn(`⚠️  Failed to parse ${filePath}:`, error);
+      console.warn(CONSOLE_MESSAGES.PARSE_FAILED(filePath), error);
     }
   }
 
@@ -93,9 +98,7 @@ export class TranslationExtractor {
 
     // 중복 키 처리
     const existingKey = this.extractedKeys.get(key);
-    if (existingKey) {
-      console.log(`🔄 Duplicate key found: "${key}"`);
-    } else {
+    if (!existingKey) {
       this.extractedKeys.set(key, extractedKey);
     }
   }
@@ -125,31 +128,22 @@ export class TranslationExtractor {
 
       return this.getExtractedKeys();
     } catch (error) {
-      console.error("❌ Key extraction failed:", error);
+      console.error(CONSOLE_MESSAGES.KEY_EXTRACTION_FAILED, error);
       throw error;
     }
   }
 
   public async extract(): Promise<void> {
-    console.log("🔍 Starting translation key extraction...");
-    console.log(`📁 Pattern: ${this.config.sourcePattern}`);
-
     try {
       const files = await glob(this.config.sourcePattern);
 
       if (files.length === 0) {
-        console.warn(
-          "⚠️  No files found matching pattern:",
-          this.config.sourcePattern
-        );
+        console.warn(CONSOLE_MESSAGES.NO_FILES_FOUND(this.config.sourcePattern));
         return;
       }
 
-      console.log(`📂 Found ${files.length} files to analyze`);
-
       // 파일 분석
       files.forEach((file) => {
-        console.log(`📄 Analyzing: ${file}`);
         this.parseFile(file);
       });
 
@@ -165,10 +159,6 @@ export class TranslationExtractor {
         dryRun: this.config.dryRun,
       });
 
-      console.log(
-        `🔑 Found ${this.extractedKeys.size} unique translation keys`
-      );
-
       // 출력 파일 작성
       writeOutputFile(outputData, {
         outputFormat: this.config.outputFormat,
@@ -178,10 +168,8 @@ export class TranslationExtractor {
         force: this.config.force,
         dryRun: this.config.dryRun,
       });
-
-      console.log("✅ Translation extraction completed");
     } catch (error) {
-      console.error("❌ Extraction failed:", error);
+      console.error(CONSOLE_MESSAGES.EXTRACTION_FAILED, error);
       throw error;
     }
   }

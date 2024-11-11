@@ -6,6 +6,12 @@ import * as fs from "fs";
 import * as pathLib from "path";
 import { ExtractedKey } from "./key-extractor";
 import { escapeCsvValue } from "./extractor-utils";
+import {
+  CONSOLE_MESSAGES,
+  STRING_CONSTANTS,
+  CSV_CONSTANTS,
+  FILE_EXTENSIONS,
+} from "./constants";
 
 export interface OutputConfig {
   sortKeys?: boolean;
@@ -48,11 +54,11 @@ export function generateOutputData(
  */
 export function generateGoogleSheetsCSV(keys: ExtractedKey[]): string {
   // CSV 헤더: Key, English, Korean
-  const csvLines = ["Key,English,Korean"];
+  const csvLines = [CSV_CONSTANTS.HEADER];
 
   keys.forEach(({ key, defaultValue }) => {
     // CSV 라인: key, 빈값(영어), defaultValue 또는 key(한국어)
-    const englishValue = "";
+    const englishValue = STRING_CONSTANTS.EMPTY_STRING;
     const koreanValue = defaultValue || key;
 
     // CSV 이스케이프 처리
@@ -60,10 +66,12 @@ export function generateGoogleSheetsCSV(keys: ExtractedKey[]): string {
     const escapedEnglish = escapeCsvValue(englishValue);
     const escapedKorean = escapeCsvValue(koreanValue);
 
-    csvLines.push(`${escapedKey},${escapedEnglish},${escapedKorean}`);
+    csvLines.push(
+      `${escapedKey}${CSV_CONSTANTS.SEPARATOR}${escapedEnglish}${CSV_CONSTANTS.SEPARATOR}${escapedKorean}`
+    );
   });
 
-  return csvLines.join("\n");
+  return csvLines.join(CSV_CONSTANTS.NEWLINE);
 }
 
 /**
@@ -74,7 +82,7 @@ export function generateIndexFile(
   outputDir: string,
   dryRun: boolean
 ): void {
-  const indexPath = pathLib.join(outputDir, "index.ts");
+  const indexPath = pathLib.join(outputDir, STRING_CONSTANTS.INDEX_FILE);
 
   // Import 문 생성
   const imports = languages
@@ -93,9 +101,6 @@ ${exportObj}
 
   if (!dryRun) {
     fs.writeFileSync(indexPath, content, "utf-8");
-    console.log(`📝 Generated index file: ${indexPath}`);
-  } else {
-    console.log(`📄 Dry run - index file would be written to: ${indexPath}`);
   }
 }
 
@@ -113,19 +118,16 @@ export function writeOutputFile(
 
   if (config.outputFormat === "csv") {
     // CSV 파일로 출력
-    const csvFileName = config.outputFile!.replace(/\.json$/, ".csv");
+    const csvFileName = config.outputFile!.replace(
+      FILE_EXTENSIONS.JSON,
+      FILE_EXTENSIONS.CSV
+    );
     const outputPath = pathLib.join(config.outputDir!, csvFileName);
     const content = data; // CSV는 이미 문자열
 
-    if (config.dryRun) {
-      console.log("📄 Dry run - output would be written to:", outputPath);
-      console.log("📄 Content preview:");
-      console.log(content.substring(0, 500) + "...");
-      return;
+    if (!config.dryRun) {
+      fs.writeFileSync(outputPath, content);
     }
-
-    fs.writeFileSync(outputPath, content);
-    console.log(`📝 Extracted translations written to: ${outputPath}`);
   } else {
     // JSON 파일로 출력 - 각 언어별로 파일 생성
     config.languages!.forEach((lang) => {
@@ -138,9 +140,7 @@ export function writeOutputFile(
           const existingContent = fs.readFileSync(langFile, "utf-8");
           existingTranslations = JSON.parse(existingContent);
         } catch (error) {
-          console.warn(
-            `⚠️  Failed to parse existing ${langFile}, will overwrite`
-          );
+          console.warn(CONSOLE_MESSAGES.PARSE_EXISTING_FAILED(langFile));
         }
       }
 
@@ -148,21 +148,18 @@ export function writeOutputFile(
 
       if (config.force) {
         // Force 모드: 기존 값을 모두 덮어씀
-        console.log(
-          `🔄 Force mode: Overwriting all translations in ${langFile}`
-        );
         mergedTranslations = {};
 
         Object.keys(data).forEach((key) => {
-          if (lang === "ko") {
+          if (lang === STRING_CONSTANTS.DEFAULT_LANG_KO) {
             // 한국어는 키를 그대로 또는 defaultValue 사용
             mergedTranslations[key] = data[key] || key;
-          } else if (lang === "en") {
+          } else if (lang === STRING_CONSTANTS.DEFAULT_LANG_EN) {
             // 영어는 빈 문자열
-            mergedTranslations[key] = "";
+            mergedTranslations[key] = STRING_CONSTANTS.EMPTY_STRING;
           } else {
             // 기타 언어도 빈 문자열
-            mergedTranslations[key] = "";
+            mergedTranslations[key] = STRING_CONSTANTS.EMPTY_STRING;
           }
         });
       } else {
@@ -173,35 +170,24 @@ export function writeOutputFile(
         Object.keys(data).forEach((key) => {
           if (!mergedTranslations.hasOwnProperty(key)) {
             newKeysCount++;
-            if (lang === "ko") {
+            if (lang === STRING_CONSTANTS.DEFAULT_LANG_KO) {
               // 한국어는 키를 그대로 또는 defaultValue 사용
               mergedTranslations[key] = data[key] || key;
-            } else if (lang === "en") {
+            } else if (lang === STRING_CONSTANTS.DEFAULT_LANG_EN) {
               // 영어는 빈 문자열
-              mergedTranslations[key] = "";
+              mergedTranslations[key] = STRING_CONSTANTS.EMPTY_STRING;
             } else {
               // 기타 언어도 빈 문자열
-              mergedTranslations[key] = "";
+              mergedTranslations[key] = STRING_CONSTANTS.EMPTY_STRING;
             }
           }
         });
-
-        if (newKeysCount > 0) {
-          console.log(`➕ Added ${newKeysCount} new keys to ${langFile}`);
-        } else {
-          console.log(`✓ No new keys to add to ${langFile}`);
-        }
       }
 
       const content = JSON.stringify(mergedTranslations, null, 2);
 
-      if (config.dryRun) {
-        console.log(`📄 Dry run - output would be written to: ${langFile}`);
-        console.log(`📄 Content preview (${lang}):`);
-        console.log(content.substring(0, 500) + "...");
-      } else {
+      if (!config.dryRun) {
         fs.writeFileSync(langFile, content);
-        console.log(`📝 Extracted translations written to: ${langFile}`);
       }
     });
 

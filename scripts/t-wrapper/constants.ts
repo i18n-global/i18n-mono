@@ -56,5 +56,3 @@ export const REGEX_PATTERNS = Object.freeze({
   REACT_HOOK: /^use[A-Z]/,
   KOREAN_TEXT: /[가-힣]/,
 } as const);
-
-

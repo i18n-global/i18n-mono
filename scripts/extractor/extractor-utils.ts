@@ -4,6 +4,7 @@
  */
 
 import * as t from "@babel/types";
+import { STRING_CONSTANTS, CSV_CONSTANTS } from "./constants";
 
 /**
  * t() 함수 호출인지 확인
@@ -12,14 +13,16 @@ export function isTFunction(
   callee: t.Expression | t.V8IntrinsicIdentifier
 ): boolean {
   // t() 직접 호출
-  if (t.isIdentifier(callee, { name: "t" })) {
+  if (t.isIdentifier(callee, { name: STRING_CONSTANTS.TRANSLATION_FUNCTION })) {
     return true;
   }
 
   // useTranslation().t 형태의 호출
   if (
     t.isMemberExpression(callee) &&
-    t.isIdentifier(callee.property, { name: "t" })
+    t.isIdentifier(callee.property, {
+      name: STRING_CONSTANTS.TRANSLATION_FUNCTION,
+    })
   ) {
     return true;
   }
@@ -36,7 +39,9 @@ export function getDefaultValue(args: t.Expression[]): string | undefined {
     const defaultValueProp = args[1].properties.find(
       (prop) =>
         t.isObjectProperty(prop) &&
-        t.isIdentifier(prop.key, { name: "defaultValue" }) &&
+        t.isIdentifier(prop.key, {
+          name: STRING_CONSTANTS.DEFAULT_VALUE,
+        }) &&
         t.isStringLiteral(prop.value)
     );
 
@@ -53,13 +58,15 @@ export function getDefaultValue(args: t.Expression[]): string | undefined {
  */
 export function escapeCsvValue(value: string): string {
   // CSV에서 특수 문자가 포함된 경우 따옴표로 감싸고, 따옴표는 두 번 반복
-  if (
-    value.includes(",") ||
-    value.includes('"') ||
-    value.includes("\n") ||
-    value.includes("\r")
-  ) {
-    return `"${value.replace(/"/g, '""')}"`;
+  const hasSpecialChars = CSV_CONSTANTS.SPECIAL_CHARS.some((char) =>
+    value.includes(char)
+  );
+
+  if (hasSpecialChars) {
+    return `${CSV_CONSTANTS.QUOTE}${value.replace(
+      /"/g,
+      CSV_CONSTANTS.QUOTE_ESCAPED
+    )}${CSV_CONSTANTS.QUOTE}`;
   }
   return value;
 }
