@@ -21,7 +21,6 @@ export async function runTranslationWrapper(
 ) {
   const wrapper = new TranslationWrapper(config);
 
-  console.log(CONSOLE_MESSAGES.START);
   const startTime = Date.now();
 
   try {

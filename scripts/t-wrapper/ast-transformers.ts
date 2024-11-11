@@ -176,9 +176,10 @@ export function transformFunctionBody(
 
         // t() 함수 호출로 감싸기
         const replacement = t.jsxExpressionContainer(
-          t.callExpression(t.identifier(STRING_CONSTANTS.TRANSLATION_FUNCTION), [
-            t.stringLiteral(text),
-          ])
+          t.callExpression(
+            t.identifier(STRING_CONSTANTS.TRANSLATION_FUNCTION),
+            [t.stringLiteral(text)]
+          )
         );
 
         subPath.replaceWith(replacement);
@@ -188,4 +189,3 @@ export function transformFunctionBody(
 
   return { wasModified };
 }
-
