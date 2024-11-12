@@ -54,7 +54,7 @@ export function generateOutputData(
  */
 export function generateGoogleSheetsCSV(keys: ExtractedKey[]): string {
   // CSV 헤더: Key, English, Korean
-  const csvLines = [CSV_CONSTANTS.HEADER];
+  const csvLines: string[] = [CSV_CONSTANTS.HEADER];
 
   keys.forEach(({ key, defaultValue }) => {
     // CSV 라인: key, 빈값(영어), defaultValue 또는 key(한국어)

@@ -17,10 +17,7 @@ import {
   createExtractedKey,
   ExtractedKey,
 } from "./key-extractor";
-import {
-  generateOutputData,
-  writeOutputFile,
-} from "./output-generator";
+import { generateOutputData, writeOutputFile } from "./output-generator";
 import {
   CONSOLE_MESSAGES,
   STRING_CONSTANTS,
@@ -138,7 +135,9 @@ export class TranslationExtractor {
       const files = await glob(this.config.sourcePattern);
 
       if (files.length === 0) {
-        console.warn(CONSOLE_MESSAGES.NO_FILES_FOUND(this.config.sourcePattern));
+        console.warn(
+          CONSOLE_MESSAGES.NO_FILES_FOUND(this.config.sourcePattern)
+        );
         return;
       }
 
