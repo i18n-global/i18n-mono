@@ -1,5 +1,7 @@
 # Version 1.7.5 Release Notes
 
+> 릴리즈 노트는 커밋할 때마다 업데이트됩니다.
+
 ## 🎯 주요 변경사항
 
 ### Refactoring & Code Quality
@@ -37,6 +39,12 @@
 - 📦 TypeScript 버전과 동일한 모듈 구조
 - 🧪 초기 테스트 코드 셋업 완료
 
+### Documentation
+
+#### 문서 정리
+- 🗑️ 불필요한 개발자용 문서 제거
+- 📝 릴리즈 노트 작성 시작
+
 ---
 
 ## 📝 상세 변경사항
@@ -48,6 +56,7 @@
 - `scripts/t-wrapper/index.e2e.test.ts` - t-wrapper E2E 테스트
 - `scripts/extractor/index.e2e.test.ts` - extractor E2E 테스트
 - `scripts/t-wrapper-rust/` - Rust 구현 초기 셋업
+- `RELEASE_v1.7.5.md` - 릴리즈 노트
 
 ### Changed
 
@@ -58,7 +67,7 @@
 ### Removed
 
 - 불필요한 테스트 케이스 (5개)
-- 개발자용 문서들 (MIGRATION, DEPLOYMENT, PERFORMANCE 등)
+- 개발자용 문서들 (MIGRATION_SEPARATION_COMPLETE.md, DEPLOYMENT_NOTES.md, PERFORMANCE_LOGGING.md, PERFORMANCE_MONITORING.md, RELEASE_v1.7.0.md, test.md)
 
 ---
 
