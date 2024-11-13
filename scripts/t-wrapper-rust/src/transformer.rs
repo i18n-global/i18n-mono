@@ -1,0 +1,24 @@
+/// AST 변환 모듈
+/// 한국어 문자열을 t() 함수로 변환
+
+pub struct Transformer {
+    // TODO: 설정 필드 추가
+}
+
+impl Transformer {
+    pub fn new() -> Self {
+        Self {}
+    }
+
+    pub fn transform(&self, _ast: ()) -> anyhow::Result<()> {
+        // TODO: AST 변환 로직 구현
+        Ok(())
+    }
+}
+
+impl Default for Transformer {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
