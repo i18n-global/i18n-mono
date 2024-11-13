@@ -1,0 +1,19 @@
+[package]
+name = "t-wrapper-rust"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+# SWC 의존성 - 버전 호환성 확인 후 활성화 필요
+# swc_ecma_parser = "1.0"
+# swc_ecma_ast = "1.0"
+# swc_ecma_visit = "1.0"
+# swc_common = "1.0"
+glob = "0.3"
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+anyhow = "1.0"
+thiserror = "1.0"
+
+[dev-dependencies]
+
