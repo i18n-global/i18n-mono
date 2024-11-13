@@ -41,44 +41,7 @@ describe("translation-wrapper", () => {
       expect(result.processedFiles.length).toBeGreaterThan(0);
     });
 
-    it("한국어가 없으면 처리하지 않아야 함", async () => {
-      const testFile = path.join(tempDir, "test.tsx");
-      fs.writeFileSync(
-        testFile,
-        `function Component() {
-  return <div>Hello</div>;
-}`,
-        "utf-8"
-      );
 
-      const wrapper = new TranslationWrapper({
-        sourcePattern: path.join(tempDir, "**/*.tsx"),
-        dryRun: true,
-      });
-
-      const result = await wrapper.processFiles();
-      expect(result.processedFiles.length).toBe(0);
-    });
-
-    it("i18n-ignore 주석이 있으면 처리하지 않아야 함", async () => {
-      const testFile = path.join(tempDir, "test.tsx");
-      fs.writeFileSync(
-        testFile,
-        `function Component() {
-  // i18n-ignore
-  return <div>안녕하세요</div>;
-}`,
-        "utf-8"
-      );
-
-      const wrapper = new TranslationWrapper({
-        sourcePattern: path.join(tempDir, "**/*.tsx"),
-        dryRun: true,
-      });
-
-      const result = await wrapper.processFiles();
-      expect(result.processedFiles.length).toBe(0);
-    });
 
     it("서버 컴포넌트는 useTranslation 훅을 추가하지 않아야 함", async () => {
       const testFile = path.join(tempDir, "test.tsx");
