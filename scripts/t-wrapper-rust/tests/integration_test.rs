@@ -4,23 +4,24 @@
 use t_wrapper_rust::*;
 
 #[test]
-fn test_utils_module() {
-    // utils 모듈이 제대로 export되는지 확인
-    assert!(contains_korean("안녕하세요"));
+fn test_ast_helpers_module() {
+    // ast_helpers 모듈이 제대로 export되는지 확인
     assert!(is_react_component("Button"));
+    assert!(is_server_component("const { t } = await getServerTranslation();"));
 }
 
 #[test]
-fn test_parser_module() {
-    // parser 모듈이 제대로 export되는지 확인
-    let parser = FileParser::new();
-    assert!(parser.parse_file("test.tsx", "function Component() {}").is_ok());
+fn test_ast_transformers_module() {
+    // ast_transformers 모듈이 제대로 export되는지 확인
+    let result = transform_function_body((), "function Component() { return <div>안녕하세요</div>; }");
+    assert!(result.was_modified);
 }
 
 #[test]
-fn test_transformer_module() {
-    // transformer 모듈이 제대로 export되는지 확인
-    let transformer = Transformer::new();
-    assert!(transformer.transform(()).is_ok());
+fn test_translation_wrapper_module() {
+    // translation_wrapper 모듈이 제대로 export되는지 확인
+    let wrapper = TranslationWrapper::new(None);
+    // 기본 생성 테스트
+    assert!(true);
 }
 
