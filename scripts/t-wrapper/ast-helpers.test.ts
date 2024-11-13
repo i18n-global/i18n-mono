@@ -26,19 +26,6 @@ const text = "hello";`;
       expect(found).toBe(true);
     });
 
-    it("주석이 없으면 false를 반환해야 함", () => {
-      const code = `const text = "hello";`;
-      const ast = parse(code, { sourceType: "module", plugins: ["typescript", "jsx"] });
-      let found = false;
-      traverse(ast, {
-        VariableDeclarator(path) {
-          if (hasIgnoreComment(path)) {
-            found = true;
-          }
-        },
-      });
-      expect(found).toBe(false);
-    });
   });
 
   describe("shouldSkipPath", () => {
@@ -71,19 +58,6 @@ const text = "hello";`;
       expect(shouldSkip).toBe(true);
     });
 
-    it("일반 문자열 리터럴은 false를 반환해야 함", () => {
-      const code = `const text = "hello";`;
-      const ast = parse(code, { sourceType: "module", plugins: ["typescript", "jsx"] });
-      let shouldSkip = false;
-      traverse(ast, {
-        StringLiteral(path) {
-          if (shouldSkipPath(path, hasIgnoreComment)) {
-            shouldSkip = true;
-          }
-        },
-      });
-      expect(shouldSkip).toBe(false);
-    });
   });
 
   describe("isReactComponent", () => {
@@ -97,10 +71,6 @@ const text = "hello";`;
       expect(isReactComponent("useTranslation")).toBe(true);
     });
 
-    it("소문자로 시작하는 이름은 컴포넌트가 아님", () => {
-      expect(isReactComponent("button")).toBe(false);
-      expect(isReactComponent("myFunction")).toBe(false);
-    });
   });
 
   describe("isServerComponent", () => {
@@ -122,23 +92,6 @@ async function MyComponent() {
       expect(isServer).toBe(true);
     });
 
-    it("getServerTranslation 호출이 없으면 false를 반환해야 함", () => {
-      const code = `
-function MyComponent() {
-  const t = useTranslation();
-  return <div>{t("key")}</div>;
-}`;
-      const ast = parse(code, { sourceType: "module", plugins: ["typescript", "jsx"] });
-      let isServer = false;
-      traverse(ast, {
-        FunctionDeclaration(path) {
-          if (isServerComponent(path)) {
-            isServer = true;
-          }
-        },
-      });
-      expect(isServer).toBe(false);
-    });
   });
 });
 

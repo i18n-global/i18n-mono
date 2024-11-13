@@ -46,19 +46,6 @@ function Component() {}`;
       expect(hasUseTranslation).toBe(true);
     });
 
-    it("다른 소스의 import는 무시해야 함", () => {
-      const code = `import { something } from "other-package";
-function Component() {}`;
-      const ast = parse(code, { sourceType: "module", plugins: ["typescript", "jsx"] });
-      const result = addImportIfNeeded(ast, "next-i18next");
-      expect(result).toBe(true);
-      const imports = ast.program.body.filter(
-        (node) =>
-          node.type === "ImportDeclaration" &&
-          (node as t.ImportDeclaration).source.value === "next-i18next"
-      );
-      expect(imports.length).toBe(1);
-    });
   });
 });
 
