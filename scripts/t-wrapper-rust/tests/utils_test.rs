@@ -1,16 +1,15 @@
-/// utils 모듈 통합 테스트
+/// ast_helpers 모듈 통합 테스트
 
-use t_wrapper_rust::contains_korean;
 use t_wrapper_rust::is_react_component;
+use t_wrapper_rust::is_server_component;
 
 #[test]
-fn test_contains_korean_integration() {
-    assert!(contains_korean("안녕하세요"));
-    assert!(contains_korean("Hello 안녕"));
-    assert!(contains_korean("한글"));
-    assert!(!contains_korean("Hello"));
-    assert!(!contains_korean("123"));
-    assert!(!contains_korean(""));
+fn test_is_server_component_integration() {
+    let code = "const { t } = await getServerTranslation();";
+    assert!(is_server_component(code));
+    
+    let code = "const { t } = useTranslation();";
+    assert!(!is_server_component(code));
 }
 
 #[test]
