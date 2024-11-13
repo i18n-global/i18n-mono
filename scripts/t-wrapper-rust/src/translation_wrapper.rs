@@ -61,13 +61,10 @@ impl TranslationWrapper {
 
         for file_path in file_paths {
             let code = fs::read_to_string(&file_path)?;
-            let _is_file_modified = false;
-
             // TODO: SWC로 파싱 및 변환
             let (was_modified, is_server_component) = self.process_function_body((), &code);
 
             if was_modified {
-                is_file_modified = true;
 
                 // 서버 컴포넌트는 useTranslation 훅을 추가하지 않음
                 if !is_server_component {
