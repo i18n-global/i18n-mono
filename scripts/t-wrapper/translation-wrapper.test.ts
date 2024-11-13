@@ -41,8 +41,6 @@ describe("translation-wrapper", () => {
       expect(result.processedFiles.length).toBeGreaterThan(0);
     });
 
-
-
     it("서버 컴포넌트는 useTranslation 훅을 추가하지 않아야 함", async () => {
       const testFile = path.join(tempDir, "test.tsx");
       fs.writeFileSync(

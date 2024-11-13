@@ -3,7 +3,12 @@
  * 순수 함수들 테스트
  */
 
-import { hasIgnoreComment, shouldSkipPath, isReactComponent, isServerComponent } from "./ast-helpers";
+import {
+  hasIgnoreComment,
+  shouldSkipPath,
+  isReactComponent,
+  isServerComponent,
+} from "./ast-helpers";
 import { NodePath } from "@babel/traverse";
 import * as t from "@babel/types";
 import { parse } from "@babel/parser";
@@ -14,7 +19,10 @@ describe("ast-helpers", () => {
     it("leadingComments에 i18n-ignore가 있으면 true를 반환해야 함", () => {
       const code = `// i18n-ignore
 const text = "hello";`;
-      const ast = parse(code, { sourceType: "module", plugins: ["typescript", "jsx"] });
+      const ast = parse(code, {
+        sourceType: "module",
+        plugins: ["typescript", "jsx"],
+      });
       let found = false;
       traverse(ast, {
         VariableDeclarator(path) {
@@ -25,14 +33,16 @@ const text = "hello";`;
       });
       expect(found).toBe(true);
     });
-
   });
 
   describe("shouldSkipPath", () => {
     it("i18n-ignore 주석이 있으면 true를 반환해야 함", () => {
       const code = `// i18n-ignore
 const text = "hello";`;
-      const ast = parse(code, { sourceType: "module", plugins: ["typescript", "jsx"] });
+      const ast = parse(code, {
+        sourceType: "module",
+        plugins: ["typescript", "jsx"],
+      });
       let shouldSkip = false;
       traverse(ast, {
         StringLiteral(path) {
@@ -46,7 +56,10 @@ const text = "hello";`;
 
     it("이미 t()로 래핑된 경우 true를 반환해야 함", () => {
       const code = `const text = t("key");`;
-      const ast = parse(code, { sourceType: "module", plugins: ["typescript", "jsx"] });
+      const ast = parse(code, {
+        sourceType: "module",
+        plugins: ["typescript", "jsx"],
+      });
       let shouldSkip = false;
       traverse(ast, {
         StringLiteral(path) {
@@ -57,7 +70,6 @@ const text = "hello";`;
       });
       expect(shouldSkip).toBe(true);
     });
-
   });
 
   describe("isReactComponent", () => {
@@ -70,7 +82,6 @@ const text = "hello";`;
       expect(isReactComponent("useState")).toBe(true);
       expect(isReactComponent("useTranslation")).toBe(true);
     });
-
   });
 
   describe("isServerComponent", () => {
@@ -80,7 +91,10 @@ async function MyComponent() {
   const t = await getServerTranslation();
   return <div>{t("key")}</div>;
 }`;
-      const ast = parse(code, { sourceType: "module", plugins: ["typescript", "jsx"] });
+      const ast = parse(code, {
+        sourceType: "module",
+        plugins: ["typescript", "jsx"],
+      });
       let isServer = false;
       traverse(ast, {
         FunctionDeclaration(path) {
@@ -91,7 +105,5 @@ async function MyComponent() {
       });
       expect(isServer).toBe(true);
     });
-
   });
 });
-
