@@ -22,3 +22,22 @@ impl Default for Transformer {
     }
 }
 
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_transformer_new() {
+        let transformer = Transformer::new();
+        // 기본 생성 테스트
+        assert!(true);
+    }
+
+    #[test]
+    fn test_transform() {
+        let transformer = Transformer::new();
+        let result = transformer.transform(());
+        assert!(result.is_ok());
+    }
+}
+

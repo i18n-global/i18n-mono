@@ -26,3 +26,22 @@ impl Default for FileParser {
     }
 }
 
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_file_parser_new() {
+        let parser = FileParser::new();
+        // 기본 생성 테스트
+        assert!(true);
+    }
+
+    #[test]
+    fn test_parse_file() {
+        let parser = FileParser::new();
+        let result = parser.parse_file("test.tsx", "function Component() {}");
+        assert!(result.is_ok());
+    }
+}
+
