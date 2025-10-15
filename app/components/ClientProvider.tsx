@@ -16,7 +16,7 @@ export default function ClientProvider({
     defaultLanguage: "ko",
     availableLanguages: [{
       code: "ko",
-      name: t("한국어"),
+      name: String(t("한국어")),
       flag: "🇰🇷"
     }, {
       code: "en",

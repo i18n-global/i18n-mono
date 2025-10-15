@@ -229,7 +229,7 @@ export default function HomePage() {
                   className="flex items-center justify-between p-4 bg-slate-950 rounded-lg border border-slate-800"
                 >
                   <span className="text-slate-500 text-sm font-mono">
-                    t(&quot;{[&quot;환영합니다&quot;, &quot;Quick Start&quot;, &quot;Why i18nexus?&quot;, &quot;Cookie Persistence&quot;][i]}&quot;)
+                    {`t("${["환영합니다", "Quick Start", "Why i18nexus?", "Cookie Persistence"][i]}")`}
                   </span>
                   <span className="text-white font-medium">{text}</span>
                 </div>
