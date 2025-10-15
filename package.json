@@ -1,0 +1,57 @@
+{
+  "name": "i18nexus-demo",
+  "version": "1.0.0",
+  "description": "i18nexus Demo Application - Complete React i18n toolkit demonstration",
+  "private": false,
+  "main": "index.js",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint",
+    "export": "next export",
+    "i18n:pull": "i18nexus pull",
+    "i18n:import": "i18nexus import ./lib/translations/ko.json",
+    "i18n:listen": "i18nexus listen"
+  },
+  "dependencies": {
+    "i18next": "^25.5.2",
+    "i18nexus": "file:../i18nexus",
+    "next": "15.5.4",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-i18next": "^16.0.0"
+  },
+  "devDependencies": {
+    "@eslint/eslintrc": "^3",
+    "@tailwindcss/postcss": "^4",
+    "@types/node": "^20",
+    "@types/react": "^18",
+    "@types/react-dom": "^18",
+    "eslint": "^9",
+    "eslint-config-next": "15.5.4",
+    "i18nexus-tools": "^1.1.1",
+    "null-loader": "^4.0.1",
+    "tailwindcss": "^4",
+    "typescript": "^5"
+  },
+  "keywords": [
+    "i18n",
+    "internationalization",
+    "react",
+    "nextjs",
+    "demo",
+    "translation"
+  ],
+  "author": "i18nexus Team",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/manNomi/i18nexus.git",
+    "directory": "packages/i18nexus-demo"
+  },
+  "bugs": {
+    "url": "https://github.com/manNomi/i18nexus/issues"
+  },
+  "homepage": "https://github.com/manNomi/i18nexus#readme"
+}
