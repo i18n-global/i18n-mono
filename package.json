@@ -16,7 +16,7 @@
   },
   "dependencies": {
     "i18next": "^25.5.2",
-    "i18nexus": "file:../i18nexus",
+    "i18nexus": "^2.5.1",
     "next": "15.5.4",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
@@ -30,7 +30,7 @@
     "@types/react-dom": "^18",
     "eslint": "^9",
     "eslint-config-next": "15.5.4",
-    "i18nexus-tools": "^1.1.1",
+    "i18nexus-tools": "^1.4.0",
     "null-loader": "^4.0.1",
     "tailwindcss": "^4",
     "typescript": "^5"
