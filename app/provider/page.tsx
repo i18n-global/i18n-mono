@@ -18,13 +18,17 @@ export default function ProviderPage() {
           I18nProvider
         </h1>
         <p className="text-xl text-slate-300">
-          {t("React Context provider with cookie-based language persistence and SSR support")}
+          {t(
+            "React Context provider with cookie-based language persistence and SSR support"
+          )}
         </p>
       </div>
 
       {/* Features Grid */}
       <section className="mb-16">
-        <h2 className="text-2xl font-bold text-white mb-8">{t("Key Features")}</h2>
+        <h2 className="text-2xl font-bold text-white mb-8">
+          {t("Key Features")}
+        </h2>
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
           <div className="bg-gradient-to-br from-blue-950/50 to-blue-900/30 border border-blue-800/50 rounded-xl p-6">
             <div className="w-12 h-12 bg-blue-500/20 rounded-lg flex items-center justify-center mb-4">
@@ -78,7 +82,9 @@ export default function ProviderPage() {
 
       {/* Setup Steps */}
       <section className="mb-16">
-        <h2 className="text-2xl font-bold text-white mb-8">{t("Basic Setup")}</h2>
+        <h2 className="text-2xl font-bold text-white mb-8">
+          {t("Basic Setup")}
+        </h2>
 
         <div className="space-y-6">
           {/* Step 1 */}
@@ -199,8 +205,7 @@ export default function HomePage() {
                       currentLanguage === lang.code
                         ? "bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-lg shadow-blue-500/30 scale-105"
                         : "bg-slate-800 text-slate-300 hover:bg-slate-700 border border-slate-700"
-                    }`}
-                  >
+                    }`}>
                     <div className="text-2xl mb-1">{lang.flag}</div>
                     <div className="text-sm">{lang.name}</div>
                   </button>
@@ -226,8 +231,7 @@ export default function HomePage() {
               ].map((text, i) => (
                 <div
                   key={i}
-                  className="flex items-center justify-between p-4 bg-slate-950 rounded-lg border border-slate-800"
-                >
+                  className="flex items-center justify-between p-4 bg-slate-950 rounded-lg border border-slate-800">
                   <span className="text-slate-500 text-sm font-mono">
                     {`t("${["환영합니다", "Quick Start", "Why i18nexus?", "Cookie Persistence"][i]}")`}
                   </span>
@@ -241,7 +245,9 @@ export default function HomePage() {
 
       {/* API Reference */}
       <section>
-        <h2 className="text-2xl font-bold text-white mb-8">{t("API Reference")}</h2>
+        <h2 className="text-2xl font-bold text-white mb-8">
+          {t("API Reference")}
+        </h2>
 
         <div className="grid md:grid-cols-2 gap-8">
           <div className="bg-slate-900 rounded-xl border border-slate-800 p-6">
@@ -256,7 +262,9 @@ t("key")
 t("한국어 텍스트")`}</code>
             </pre>
             <p className="text-slate-400 text-sm">
-              {t("Hook for accessing translation function in client components")}
+              {t(
+                "Hook for accessing translation function in client components"
+              )}
             </p>
           </div>
 
