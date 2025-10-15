@@ -273,7 +273,7 @@ lib/
               {t("Client Components")}
             </h4>
             <p className="text-slate-400 text-sm">
-              {t("Use 'use client' with useTranslation() hook")}
+              {t("Use &apos;use client&apos; with useTranslation() hook")}
             </p>
           </div>
           <div className="bg-purple-950/30 border border-purple-800/50 rounded-xl p-6">

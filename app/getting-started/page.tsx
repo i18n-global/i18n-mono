@@ -191,7 +191,7 @@ export const translations = {
                   </strong>
                   <br />
                   {t(
-                    "If the file is a Server Component (no 'use client'), you need to use server utilities instead of hooks"
+                    "If the file is a Server Component (no &apos;use client&apos;), you need to use server utilities instead of hooks"
                   )}
                 </li>
                 <li>
@@ -200,7 +200,7 @@ export const translations = {
                   </strong>
                   <br />
                   {t(
-                    "Check the error and decide whether to add 'use client' or use createServerTranslation()"
+                    "Check the error and decide whether to add &apos;use client&apos; or use createServerTranslation()"
                   )}
                 </li>
               </ol>
@@ -282,7 +282,7 @@ export default async function Page() {
             </p>
             <div className="bg-slate-950 rounded-lg p-4 mt-3">
               <code className="text-green-400 text-sm">
-                npx i18n-extractor -p "app/**/*.tsx"
+                npx i18n-extractor -p &quot;app/**/*.tsx&quot;
               </code>
             </div>
           </div>
