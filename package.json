@@ -30,7 +30,7 @@
     "@types/react-dom": "^18",
     "eslint": "^9",
     "eslint-config-next": "15.5.4",
-    "i18nexus-tools": "^1.4.0",
+    "i18nexus-tools": "^1.5.0",
     "null-loader": "^4.0.1",
     "tailwindcss": "^4",
     "typescript": "^5"

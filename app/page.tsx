@@ -44,17 +44,17 @@ export default function HomePage() {
       {/* Feature Cards */}
       <div className="grid md:grid-cols-2 gap-8 mb-20">
         <Link
-          href="/provider"
+          href="/docs/i18nexus"
           className="group relative bg-gradient-to-br from-slate-900 to-slate-800 rounded-2xl border border-slate-700 hover:border-blue-500 p-8 transition-all duration-300 hover:shadow-lg hover:shadow-blue-500/20 hover:-translate-y-1">
           <div className="absolute top-4 right-4 w-12 h-12 bg-blue-500/10 rounded-xl flex items-center justify-center group-hover:bg-blue-500/20 transition-colors">
             <span className="text-3xl">🎨</span>
           </div>
           <h2 className="text-2xl font-bold text-white mb-3">
-            {t("I18nProvider")}
+            {t("i18nexus Library")}
           </h2>
           <p className="text-slate-400 mb-6 leading-relaxed">
             {t(
-              "React Context provider with cookie-based language persistence and SSR support"
+              "React library with I18nProvider, hooks, and server components support"
             )}
           </p>
           <div className="space-y-2">
@@ -72,7 +72,7 @@ export default function HomePage() {
             </div>
           </div>
           <div className="mt-6 inline-flex items-center text-blue-400 font-medium group-hover:text-blue-300">
-            {t("Learn more")}{" "}
+            {t("View Documentation")}{" "}
             <span className="ml-2 group-hover:translate-x-1 transition-transform">
               →
             </span>
@@ -80,7 +80,7 @@ export default function HomePage() {
         </Link>
 
         <Link
-          href="/cli"
+          href="/docs/i18nexus-tools"
           className="group relative bg-gradient-to-br from-slate-900 to-slate-800 rounded-2xl border border-slate-700 hover:border-indigo-500 p-8 transition-all duration-300 hover:shadow-lg hover:shadow-indigo-500/20 hover:-translate-y-1">
           <div className="absolute top-4 right-4 w-12 h-12 bg-indigo-500/10 rounded-xl flex items-center justify-center group-hover:bg-indigo-500/20 transition-colors">
             <span className="text-3xl">⚡</span>
@@ -108,7 +108,7 @@ export default function HomePage() {
             </div>
           </div>
           <div className="mt-6 inline-flex items-center text-indigo-400 font-medium group-hover:text-indigo-300">
-            {t("Learn more")}{" "}
+            {t("View Documentation")}{" "}
             <span className="ml-2 group-hover:translate-x-1 transition-transform">
               →
             </span>
