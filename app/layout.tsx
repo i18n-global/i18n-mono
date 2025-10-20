@@ -6,6 +6,8 @@ import { headers } from "next/headers";
 import { getServerLanguage } from "i18nexus/server";
 
 import { I18nProvider } from "i18nexus";
+import Script from "next/script";
+import Analytics from "./components/Analytics";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -36,8 +38,23 @@ export default async function RootLayout({
     <html lang={language}>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+        {/* Google Analytics: gtag.js (GA4) - uses NEXT_PUBLIC_GA_ID */}
+        {process.env.NEXT_PUBLIC_GA_ID ? (
+          <>
+            <Script
+              src={`https://www.googletagmanager.com/gtag/js?id=${process.env.NEXT_PUBLIC_GA_ID}`}
+              strategy="afterInteractive"
+            />
+            <Script id="gtag-init" strategy="afterInteractive">
+              {`window.dataLayer = window.dataLayer || []; function gtag(){dataLayer.push(arguments);} gtag('js', new Date()); gtag('config', '${process.env.NEXT_PUBLIC_GA_ID}');`}
+            </Script>
+          </>
+        ) : null}
+
         <I18nProvider initialLanguage={language} translations={translations}>
           {children}
+          {/* Client-side analytics tracker */}
+          <Analytics />
         </I18nProvider>
       </body>
     </html>

@@ -104,7 +104,9 @@ export default function I18nexusToolsPage() {
           {t("Home")}
         </Link>
         <span className="text-slate-500 mx-2">/</span>
-        <span className="text-slate-300">{t("i18nexus-tools Documentation")}</span>
+        <span className="text-slate-300">
+          {t("i18nexus-tools Documentation")}
+        </span>
       </div>
 
       {/* Header */}
@@ -130,13 +132,19 @@ export default function I18nexusToolsPage() {
         </h2>
         <div className="space-y-4">
           <div>
-            <p className="text-slate-400 mb-2">{t("Install globally (recommended)")}:</p>
+            <p className="text-slate-400 mb-2">
+              {t("Install globally (recommended)")}:
+            </p>
             <div className="bg-slate-950 rounded-lg p-4 font-mono text-sm">
-              <code className="text-green-400">npm install -g i18nexus-tools</code>
+              <code className="text-green-400">
+                npm install -g i18nexus-tools
+              </code>
             </div>
           </div>
           <div>
-            <p className="text-slate-400 mb-2">{t("Or use without installing")}:</p>
+            <p className="text-slate-400 mb-2">
+              {t("Or use without installing")}:
+            </p>
             <div className="bg-slate-950 rounded-lg p-4 font-mono text-sm">
               <code className="text-blue-400">npx i18nexus-tools@latest</code>
             </div>
@@ -216,20 +224,25 @@ export default function I18nexusToolsPage() {
         </h2>
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
           {tools.map((tool) => {
-            const colors = colorClasses[tool.color as keyof typeof colorClasses];
+            const colors =
+              colorClasses[tool.color as keyof typeof colorClasses];
             return (
               <Link
                 key={tool.href}
                 href={tool.href}
                 className={`group bg-slate-900 rounded-xl border ${colors.border} p-6 transition-all hover:shadow-lg ${colors.shadow} hover:-translate-y-1`}>
-                <div className={`inline-flex items-center justify-center w-12 h-12 ${colors.bg} ${colors.hover} rounded-lg mb-4 transition-colors`}>
+                <div
+                  className={`inline-flex items-center justify-center w-12 h-12 ${colors.bg} ${colors.hover} rounded-lg mb-4 transition-colors`}>
                   <span className="text-2xl">{tool.icon}</span>
                 </div>
                 <h3 className="text-xl font-bold text-white mb-2">
                   {t(tool.title)}
                 </h3>
-                <p className="text-slate-400 mb-4 text-sm">{t(tool.description)}</p>
-                <div className={`inline-flex items-center ${colors.text} font-medium text-sm`}>
+                <p className="text-slate-400 mb-4 text-sm">
+                  {t(tool.description)}
+                </p>
+                <div
+                  className={`inline-flex items-center ${colors.text} font-medium text-sm`}>
                   {t("View documentation")}{" "}
                   <span className="ml-2 group-hover:translate-x-1 transition-transform">
                     →
@@ -243,10 +256,16 @@ export default function I18nexusToolsPage() {
 
       {/* Configuration File */}
       <section className="mb-12">
-        <h2 className="text-3xl font-bold text-white mb-6">{t("Configuration File")}</h2>
+        <h2 className="text-3xl font-bold text-white mb-6">
+          {t("Configuration File")}
+        </h2>
         <div className="bg-slate-900 rounded-xl border border-slate-700 p-6">
           <p className="text-slate-300 mb-4">
-            {t("All CLI tools read from")} <code className="text-blue-400 bg-slate-950 px-2 py-1 rounded">i18nexus.config.json</code> {t("in your project root")}:
+            {t("All CLI tools read from")}{" "}
+            <code className="text-blue-400 bg-slate-950 px-2 py-1 rounded">
+              i18nexus.config.json
+            </code>{" "}
+            {t("in your project root")}:
           </p>
           <pre className="bg-slate-950 rounded-lg p-6 overflow-x-auto">
             <code className="text-sm text-slate-300">{`{
@@ -263,7 +282,11 @@ export default function I18nexusToolsPage() {
           </pre>
           <div className="mt-4 bg-blue-900/20 border border-blue-500/30 rounded-lg p-4">
             <p className="text-blue-300 text-sm">
-              <strong>💡 {t("Tip")}:</strong> {t("Run")} <code className="bg-slate-950 px-2 py-1 rounded">npx i18n-sheets init</code> {t("to automatically create this file")}
+              <strong>💡 {t("Tip")}:</strong> {t("Run")}{" "}
+              <code className="bg-slate-950 px-2 py-1 rounded">
+                npx i18n-sheets init
+              </code>{" "}
+              {t("to automatically create this file")}
             </p>
           </div>
         </div>
@@ -271,7 +294,9 @@ export default function I18nexusToolsPage() {
 
       {/* Features */}
       <section>
-        <h2 className="text-3xl font-bold text-white mb-6">{t("Key Features")}</h2>
+        <h2 className="text-3xl font-bold text-white mb-6">
+          {t("Key Features")}
+        </h2>
         <div className="grid md:grid-cols-2 gap-6">
           <div className="bg-slate-900 rounded-xl border border-slate-700 p-6">
             <h3 className="text-xl font-semibold text-white mb-3 flex items-center">
@@ -344,7 +369,9 @@ export default function I18nexusToolsPage() {
             <ul className="space-y-2 text-slate-300">
               <li className="flex items-start">
                 <span className="text-green-400 mr-2">✓</span>
-                <span>{t("Simple file structure: locales/en.json, locales/ko.json")}</span>
+                <span>
+                  {t("Simple file structure: locales/en.json, locales/ko.json")}
+                </span>
               </li>
               <li className="flex items-start">
                 <span className="text-green-400 mr-2">✓</span>

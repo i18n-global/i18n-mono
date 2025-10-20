@@ -16,7 +16,9 @@ export default function UseTranslationPage() {
           {t("Home")}
         </Link>
         <span className="text-slate-500 mx-2">/</span>
-        <Link href="/docs/i18nexus" className="text-blue-400 hover:text-blue-300">
+        <Link
+          href="/docs/i18nexus"
+          className="text-blue-400 hover:text-blue-300">
           {t("i18nexus")}
         </Link>
         <span className="text-slate-500 mx-2">/</span>
@@ -29,7 +31,9 @@ export default function UseTranslationPage() {
           useTranslation
         </h1>
         <p className="text-xl text-slate-400">
-          {t("React hook for accessing translation functions in client components")}
+          {t(
+            "React hook for accessing translation functions in client components"
+          )}
         </p>
       </div>
 
@@ -54,12 +58,12 @@ export default function UseTranslationPage() {
           </div>
           <div className="bg-slate-950 rounded-lg p-6 border border-slate-700">
             <div className="text-sm text-slate-500 mb-2">{t("Result")}:</div>
-            <div className="text-2xl font-bold text-white">
-              {t(demoKey)}
-            </div>
+            <div className="text-2xl font-bold text-white">{t(demoKey)}</div>
           </div>
           <div className="mt-4 text-sm text-slate-400">
-            <p>💡 {t("Try entering: Welcome, Getting Started, CLI Tools, etc.")}</p>
+            <p>
+              💡 {t("Try entering: Welcome, Getting Started, CLI Tools, etc.")}
+            </p>
           </div>
         </div>
       </section>
@@ -69,25 +73,37 @@ export default function UseTranslationPage() {
         <h2 className="text-3xl font-bold text-white mb-6">{t("Overview")}</h2>
         <div className="bg-slate-900 rounded-xl border border-slate-700 p-6">
           <p className="text-slate-300 mb-4">
-            <code className="text-blue-400 bg-slate-950 px-2 py-1 rounded">useTranslation</code>
-            {t(" is a React hook that provides access to the translation function (t) and current language state. It can only be used in Client Components.")}
+            <code className="text-blue-400 bg-slate-950 px-2 py-1 rounded">
+              useTranslation
+            </code>
+            {t(
+              " is a React hook that provides access to the translation function (t) and current language state. It can only be used in Client Components."
+            )}
           </p>
           <div className="space-y-2">
             <div className="flex items-start">
               <span className="text-green-400 mr-2">✓</span>
-              <span className="text-slate-300">{t("Simple API with t() function")}</span>
+              <span className="text-slate-300">
+                {t("Simple API with t() function")}
+              </span>
             </div>
             <div className="flex items-start">
               <span className="text-green-400 mr-2">✓</span>
-              <span className="text-slate-300">{t("Automatic re-rendering on language change")}</span>
+              <span className="text-slate-300">
+                {t("Automatic re-rendering on language change")}
+              </span>
             </div>
             <div className="flex items-start">
               <span className="text-green-400 mr-2">✓</span>
-              <span className="text-slate-300">{t("Fallback to key if translation missing")}</span>
+              <span className="text-slate-300">
+                {t("Fallback to key if translation missing")}
+              </span>
             </div>
             <div className="flex items-start">
               <span className="text-green-400 mr-2">✓</span>
-              <span className="text-slate-300">{t("Type-safe with TypeScript")}</span>
+              <span className="text-slate-300">
+                {t("Type-safe with TypeScript")}
+              </span>
             </div>
           </div>
         </div>
@@ -95,17 +111,25 @@ export default function UseTranslationPage() {
 
       {/* API Reference */}
       <section className="mb-12">
-        <h2 className="text-3xl font-bold text-white mb-6">{t("API Reference")}</h2>
-        
+        <h2 className="text-3xl font-bold text-white mb-6">
+          {t("API Reference")}
+        </h2>
+
         <div className="bg-slate-900 rounded-xl border border-slate-700 p-6 mb-6">
-          <h3 className="text-xl font-semibold text-white mb-4">{t("Return Value")}</h3>
+          <h3 className="text-xl font-semibold text-white mb-4">
+            {t("Return Value")}
+          </h3>
           <div className="space-y-4">
             <div className="border-l-4 border-blue-500 pl-4">
               <div className="mb-2">
-                <code className="text-green-400 text-lg">t(key: string): string</code>
+                <code className="text-green-400 text-lg">
+                  t(key: string): string
+                </code>
               </div>
               <p className="text-slate-300 mb-2">
-                {t("Translation function that returns the translated string for the given key.")}
+                {t(
+                  "Translation function that returns the translated string for the given key."
+                )}
               </p>
               <pre className="bg-slate-950 rounded-lg p-3 overflow-x-auto">
                 <code className="text-sm text-slate-400">{`const { t } = useTranslation();
@@ -115,7 +139,9 @@ const welcomeText = t("Welcome"); // "환영합니다" or "Welcome"`}</code>
 
             <div className="border-l-4 border-purple-500 pl-4">
               <div className="mb-2">
-                <code className="text-green-400 text-lg">currentLanguage: string</code>
+                <code className="text-green-400 text-lg">
+                  currentLanguage: string
+                </code>
               </div>
               <p className="text-slate-300 mb-2">
                 {t("The currently active language code.")}
@@ -131,7 +157,9 @@ console.log(currentLanguage); // "ko" or "en"`}</code>
 
       {/* Usage Examples */}
       <section className="mb-12">
-        <h2 className="text-3xl font-bold text-white mb-6">{t("Usage Examples")}</h2>
+        <h2 className="text-3xl font-bold text-white mb-6">
+          {t("Usage Examples")}
+        </h2>
 
         {/* Basic Usage */}
         <div className="mb-8">
@@ -244,7 +272,9 @@ export default function ProductCard({ product }: { product: Product }) {
 
       {/* Best Practices */}
       <section className="mb-12">
-        <h2 className="text-3xl font-bold text-white mb-6">{t("Best Practices")}</h2>
+        <h2 className="text-3xl font-bold text-white mb-6">
+          {t("Best Practices")}
+        </h2>
         <div className="space-y-4">
           <div className="bg-green-900/20 border border-green-500/30 rounded-lg p-6">
             <h4 className="text-lg font-semibold text-green-400 mb-2 flex items-center">
@@ -252,7 +282,9 @@ export default function ProductCard({ product }: { product: Product }) {
               {t("Do: Use descriptive keys")}
             </h4>
             <p className="text-slate-300 mb-2">
-              {t("Use clear, descriptive translation keys that indicate the content.")}
+              {t(
+                "Use clear, descriptive translation keys that indicate the content."
+              )}
             </p>
             <pre className="bg-slate-950 rounded-lg p-3 overflow-x-auto">
               <code className="text-sm text-slate-400">{`// Good
@@ -271,7 +303,9 @@ t("msg")`}</code>
               {t("Do: Handle missing translations gracefully")}
             </h4>
             <p className="text-slate-300">
-              {t("i18nexus automatically returns the key if translation is missing, making debugging easier.")}
+              {t(
+                "i18nexus automatically returns the key if translation is missing, making debugging easier."
+              )}
             </p>
           </div>
 
@@ -281,7 +315,9 @@ t("msg")`}</code>
               {t("Don't: Use in Server Components")}
             </h4>
             <p className="text-slate-300 mb-2">
-              {t("useTranslation is a client-side hook. For Server Components, use createServerTranslation().")}
+              {t(
+                "useTranslation is a client-side hook. For Server Components, use createServerTranslation()."
+              )}
             </p>
             <pre className="bg-slate-950 rounded-lg p-3 overflow-x-auto">
               <code className="text-sm text-slate-400">{`// ❌ Wrong - Server Component

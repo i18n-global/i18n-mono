@@ -9,14 +9,16 @@ export default function I18nexusDocsPage() {
   const features = [
     {
       title: "I18nProvider",
-      description: "React Context provider with cookie-based language persistence",
+      description:
+        "React Context provider with cookie-based language persistence",
       icon: "🎨",
       href: "/docs/i18nexus/provider",
       color: "blue",
     },
     {
       title: "useTranslation",
-      description: "Hook for accessing translation functions in client components",
+      description:
+        "Hook for accessing translation functions in client components",
       icon: "🔤",
       href: "/docs/i18nexus/use-translation",
       color: "green",
@@ -118,20 +120,23 @@ export default function I18nexusDocsPage() {
         </h2>
         <div className="grid md:grid-cols-2 gap-6">
           {features.map((feature) => {
-            const colors = colorClasses[feature.color as keyof typeof colorClasses];
+            const colors =
+              colorClasses[feature.color as keyof typeof colorClasses];
             return (
               <Link
                 key={feature.href}
                 href={feature.href}
                 className={`group bg-slate-900 rounded-xl border ${colors.border} p-6 transition-all hover:shadow-lg ${colors.shadow} hover:-translate-y-1`}>
-                <div className={`inline-flex items-center justify-center w-12 h-12 ${colors.bg} ${colors.hover} rounded-lg mb-4 transition-colors`}>
+                <div
+                  className={`inline-flex items-center justify-center w-12 h-12 ${colors.bg} ${colors.hover} rounded-lg mb-4 transition-colors`}>
                   <span className="text-2xl">{feature.icon}</span>
                 </div>
                 <h3 className="text-xl font-bold text-white mb-2">
                   {t(feature.title)}
                 </h3>
                 <p className="text-slate-400 mb-4">{t(feature.description)}</p>
-                <div className={`inline-flex items-center ${colors.text} font-medium`}>
+                <div
+                  className={`inline-flex items-center ${colors.text} font-medium`}>
                   {t("Learn more")}{" "}
                   <span className="ml-2 group-hover:translate-x-1 transition-transform">
                     →
@@ -149,7 +154,7 @@ export default function I18nexusDocsPage() {
           <span className="mr-3">🚀</span>
           {t("Quick Start")}
         </h2>
-        
+
         <div className="space-y-6">
           <div>
             <h3 className="text-lg font-semibold text-blue-400 mb-2">

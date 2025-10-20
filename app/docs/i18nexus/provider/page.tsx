@@ -14,7 +14,9 @@ export default function I18nProviderPage() {
           {t("Home")}
         </Link>
         <span className="text-slate-500 mx-2">/</span>
-        <Link href="/docs/i18nexus" className="text-blue-400 hover:text-blue-300">
+        <Link
+          href="/docs/i18nexus"
+          className="text-blue-400 hover:text-blue-300">
           {t("i18nexus")}
         </Link>
         <span className="text-slate-500 mx-2">/</span>
@@ -27,7 +29,9 @@ export default function I18nProviderPage() {
           I18nProvider
         </h1>
         <p className="text-xl text-slate-400">
-          {t("React Context provider with cookie-based language persistence and SSR support")}
+          {t(
+            "React Context provider with cookie-based language persistence and SSR support"
+          )}
         </p>
       </div>
 
@@ -36,25 +40,37 @@ export default function I18nProviderPage() {
         <h2 className="text-3xl font-bold text-white mb-6">{t("Overview")}</h2>
         <div className="bg-slate-900 rounded-xl border border-slate-700 p-6">
           <p className="text-slate-300 mb-4">
-            <code className="text-blue-400 bg-slate-950 px-2 py-1 rounded">I18nProvider</code>
-            {t(" is the root component that provides internationalization context to your entire application. It manages language state, handles cookie persistence, and ensures zero hydration mismatch in SSR.")}
+            <code className="text-blue-400 bg-slate-950 px-2 py-1 rounded">
+              I18nProvider
+            </code>
+            {t(
+              " is the root component that provides internationalization context to your entire application. It manages language state, handles cookie persistence, and ensures zero hydration mismatch in SSR."
+            )}
           </p>
           <div className="space-y-2">
             <div className="flex items-start">
               <span className="text-green-400 mr-2">✓</span>
-              <span className="text-slate-300">{t("Cookie-based language persistence")}</span>
+              <span className="text-slate-300">
+                {t("Cookie-based language persistence")}
+              </span>
             </div>
             <div className="flex items-start">
               <span className="text-green-400 mr-2">✓</span>
-              <span className="text-slate-300">{t("Zero hydration mismatch in Next.js")}</span>
+              <span className="text-slate-300">
+                {t("Zero hydration mismatch in Next.js")}
+              </span>
             </div>
             <div className="flex items-start">
               <span className="text-green-400 mr-2">✓</span>
-              <span className="text-slate-300">{t("Type-safe language management")}</span>
+              <span className="text-slate-300">
+                {t("Type-safe language management")}
+              </span>
             </div>
             <div className="flex items-start">
               <span className="text-green-400 mr-2">✓</span>
-              <span className="text-slate-300">{t("Automatic language detection from cookies")}</span>
+              <span className="text-slate-300">
+                {t("Automatic language detection from cookies")}
+              </span>
             </div>
           </div>
         </div>
@@ -62,32 +78,46 @@ export default function I18nProviderPage() {
 
       {/* API Reference */}
       <section className="mb-12">
-        <h2 className="text-3xl font-bold text-white mb-6">{t("API Reference")}</h2>
-        
+        <h2 className="text-3xl font-bold text-white mb-6">
+          {t("API Reference")}
+        </h2>
+
         {/* Props */}
         <div className="bg-slate-900 rounded-xl border border-slate-700 p-6 mb-6">
-          <h3 className="text-xl font-semibold text-white mb-4">{t("Props")}</h3>
+          <h3 className="text-xl font-semibold text-white mb-4">
+            {t("Props")}
+          </h3>
           <div className="space-y-4">
             <div className="border-l-4 border-blue-500 pl-4">
               <div className="flex items-start justify-between mb-2">
                 <code className="text-green-400 text-lg">initialLanguage</code>
-                <span className="text-sm text-slate-500">{t("string (required)")}</span>
+                <span className="text-sm text-slate-500">
+                  {t("string (required)")}
+                </span>
               </div>
               <p className="text-slate-300">
-                {t("The initial language code to use. Should match one of the keys in translations object.")}
+                {t(
+                  "The initial language code to use. Should match one of the keys in translations object."
+                )}
               </p>
               <pre className="bg-slate-950 rounded-lg p-3 mt-2 overflow-x-auto">
-                <code className="text-sm text-slate-400">initialLanguage="ko"</code>
+                <code className="text-sm text-slate-400">
+                  initialLanguage="ko"
+                </code>
               </pre>
             </div>
 
             <div className="border-l-4 border-purple-500 pl-4">
               <div className="flex items-start justify-between mb-2">
                 <code className="text-green-400 text-lg">translations</code>
-                <span className="text-sm text-slate-500">{t("object (required)")}</span>
+                <span className="text-sm text-slate-500">
+                  {t("object (required)")}
+                </span>
               </div>
               <p className="text-slate-300">
-                {t("Object containing translation keys and values for all supported languages.")}
+                {t(
+                  "Object containing translation keys and values for all supported languages."
+                )}
               </p>
               <pre className="bg-slate-950 rounded-lg p-3 mt-2 overflow-x-auto">
                 <code className="text-sm text-slate-400">{`translations={{
@@ -100,17 +130,25 @@ export default function I18nProviderPage() {
             <div className="border-l-4 border-orange-500 pl-4">
               <div className="flex items-start justify-between mb-2">
                 <code className="text-green-400 text-lg">children</code>
-                <span className="text-sm text-slate-500">{t("ReactNode (required)")}</span>
+                <span className="text-sm text-slate-500">
+                  {t("ReactNode (required)")}
+                </span>
               </div>
               <p className="text-slate-300">
-                {t("Your application components that need access to translations.")}
+                {t(
+                  "Your application components that need access to translations."
+                )}
               </p>
             </div>
 
             <div className="border-l-4 border-green-500 pl-4">
               <div className="flex items-start justify-between mb-2">
-                <code className="text-green-400 text-lg">languageManagerOptions</code>
-                <span className="text-sm text-slate-500">{t("object (optional)")}</span>
+                <code className="text-green-400 text-lg">
+                  languageManagerOptions
+                </code>
+                <span className="text-sm text-slate-500">
+                  {t("object (optional)")}
+                </span>
               </div>
               <p className="text-slate-300">
                 {t("Additional configuration for language management.")}
@@ -131,7 +169,9 @@ export default function I18nProviderPage() {
 
       {/* Usage Examples */}
       <section className="mb-12">
-        <h2 className="text-3xl font-bold text-white mb-6">{t("Usage Examples")}</h2>
+        <h2 className="text-3xl font-bold text-white mb-6">
+          {t("Usage Examples")}
+        </h2>
 
         {/* Basic Usage */}
         <div className="mb-8">
@@ -193,7 +233,10 @@ export default async function RootLayout({ children }) {
           </pre>
           <div className="mt-4 bg-blue-900/20 border border-blue-500/30 rounded-lg p-4">
             <p className="text-blue-300">
-              <strong>💡 {t("Why this matters")}:</strong> {t("By reading the language from cookies on the server, you ensure that the initial HTML matches what the client expects, preventing hydration mismatches.")}
+              <strong>💡 {t("Why this matters")}:</strong>{" "}
+              {t(
+                "By reading the language from cookies on the server, you ensure that the initial HTML matches what the client expects, preventing hydration mismatches."
+              )}
             </p>
           </div>
         </div>
@@ -239,7 +282,9 @@ export default function RootLayout({ children }) {
 
       {/* Best Practices */}
       <section className="mb-12">
-        <h2 className="text-3xl font-bold text-white mb-6">{t("Best Practices")}</h2>
+        <h2 className="text-3xl font-bold text-white mb-6">
+          {t("Best Practices")}
+        </h2>
         <div className="space-y-4">
           <div className="bg-green-900/20 border border-green-500/30 rounded-lg p-6">
             <h4 className="text-lg font-semibold text-green-400 mb-2 flex items-center">
@@ -247,7 +292,9 @@ export default function RootLayout({ children }) {
               {t("Do: Place at the root of your app")}
             </h4>
             <p className="text-slate-300">
-              {t("Always wrap your entire application with I18nProvider at the root layout level to ensure all components have access to translations.")}
+              {t(
+                "Always wrap your entire application with I18nProvider at the root layout level to ensure all components have access to translations."
+              )}
             </p>
           </div>
 
@@ -257,7 +304,9 @@ export default function RootLayout({ children }) {
               {t("Do: Use server-side language detection")}
             </h4>
             <p className="text-slate-300">
-              {t("For Next.js applications, always read the language from cookies on the server to prevent hydration mismatches.")}
+              {t(
+                "For Next.js applications, always read the language from cookies on the server to prevent hydration mismatches."
+              )}
             </p>
           </div>
 
@@ -267,7 +316,9 @@ export default function RootLayout({ children }) {
               {t("Don't: Nest multiple providers")}
             </h4>
             <p className="text-slate-300">
-              {t("Avoid nesting I18nProvider components. Use only one provider at the root level.")}
+              {t(
+                "Avoid nesting I18nProvider components. Use only one provider at the root level."
+              )}
             </p>
           </div>
 
@@ -277,7 +328,9 @@ export default function RootLayout({ children }) {
               {t("Don't: Change initialLanguage dynamically")}
             </h4>
             <p className="text-slate-300">
-              {t("The initialLanguage prop should be set once. Use changeLanguage() from useLanguageSwitcher to change languages dynamically.")}
+              {t(
+                "The initialLanguage prop should be set once. Use changeLanguage() from useLanguageSwitcher to change languages dynamically."
+              )}
             </p>
           </div>
         </div>
