@@ -199,6 +199,56 @@ GA4을 연결하려면 프로젝트 환경 변수에 Measurement ID를 추가하
 
 위 값을 설정하면 `app/layout.tsx`에서 자동으로 gtag 스크립트를 로드하고 클라이언트 측 라우트 변경을 추적합니다.
 
+---
+
+## 🌍 Showcase 기능 (Firebase)
+
+이 데모 앱은 i18nexus를 사용하는 프로젝트를 등록하고 관리하는 쇼케이스 시스템이 내장되어 있습니다.
+
+### 주요 기능
+
+- **자동 메타데이터 추출**: URL만 입력하면 제목, 설명, 썸네일을 자동으로 생성
+- **실시간 미리보기**: 제출 전에 카드 미리보기로 확인 가능
+- **관리자 승인 시스템**: Firebase Auth로 보호된 관리자 대시보드
+- **Firestore 저장**: 모든 제출은 Firestore에 안전하게 저장
+
+### Firebase 설정
+
+`.env.local` 파일에 Firebase 설정 추가:
+
+```bash
+NEXT_PUBLIC_FIREBASE_API_KEY=your_api_key
+NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=your_project.firebaseapp.com
+NEXT_PUBLIC_FIREBASE_PROJECT_ID=your_project_id
+NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET=your_project.appspot.com
+NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=your_sender_id
+NEXT_PUBLIC_FIREBASE_APP_ID=your_app_id
+```
+
+### 사용 가능한 페이지
+
+- `/showcase` - 승인된 프로젝트 목록 (공개)
+- `/showcase/submit` - 프로젝트 제출 페이지 (공개)
+- `/admin/login` - 관리자 로그인
+- `/admin/dashboard` - 제출 승인/거부 대시보드 (인증 필요)
+
+### Firestore 컬렉션 구조
+
+컬렉션: `submissions`
+
+```json
+{
+  "url": "https://myapp.vercel.app",
+  "projectName": "My Project",
+  "autoTitle": "Auto-extracted Title",
+  "autoDescription": "Auto-extracted description",
+  "thumbnailUrl": "https://...",
+  "contactEmail": "user@example.com",
+  "approved": false,
+  "submittedAt": "Timestamp"
+}
+```
+
 ## ❓ 자주 묻는 질문
 
 **Q: 정말 3개 명령어면 끝인가요?**  

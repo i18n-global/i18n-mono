@@ -8,6 +8,9 @@ import { getServerLanguage } from "i18nexus/server";
 import { I18nProvider } from "i18nexus";
 import Script from "next/script";
 import Analytics from "./components/Analytics";
+import FirebaseStatus from "./components/FirebaseStatus";
+import Header from "./components/Header";
+import { GlobalErrorProvider } from "./components/GlobalErrorProvider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -52,9 +55,14 @@ export default async function RootLayout({
         ) : null}
 
         <I18nProvider initialLanguage={language} translations={translations}>
-          {children}
-          {/* Client-side analytics tracker */}
-          <Analytics />
+          <GlobalErrorProvider>
+            <Header />
+            {children}
+            {/* Client-side analytics tracker */}
+            <Analytics />
+            {/* Firebase connection status indicator */}
+            <FirebaseStatus />
+          </GlobalErrorProvider>
         </I18nProvider>
       </body>
     </html>

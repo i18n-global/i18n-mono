@@ -15,6 +15,7 @@
     "i18n:listen": "i18nexus listen"
   },
   "dependencies": {
+    "firebase": "^12.4.0",
     "i18next": "^25.5.2",
     "i18nexus": "^2.5.1",
     "next": "15.5.4",
