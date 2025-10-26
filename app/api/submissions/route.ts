@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { revalidatePath } from "next/cache";
 import { db } from "@/lib/firebase";
 import {
   collection,
@@ -47,6 +48,10 @@ export async function POST(request: NextRequest) {
     };
 
     const docRef = await addDoc(collection(db, "submissions"), submissionData);
+
+    // On-Demand Revalidation: 새 제출이 추가되면 showcase 페이지 갱신
+    // (승인되지 않았으므로 showcase에는 표시되지 않지만, 나중에 승인될 수 있음)
+    revalidatePath("/showcase");
 
     return NextResponse.json({
       id: docRef.id,
@@ -183,6 +188,11 @@ export async function PATCH(request: NextRequest) {
 
     await updateDoc(docRef, updateData);
 
+    // On-Demand Revalidation: 승인 상태가 변경되면 showcase 페이지 갱신
+    if (approved !== undefined) {
+      revalidatePath("/showcase");
+    }
+
     return NextResponse.json({ success: true, id });
   } catch (error) {
     console.error("Submission update error:", error);
@@ -207,6 +217,9 @@ export async function DELETE(request: NextRequest) {
     }
 
     await deleteDoc(doc(db, "submissions", id));
+
+    // On-Demand Revalidation: 제출이 삭제되면 showcase 페이지 갱신
+    revalidatePath("/showcase");
 
     return NextResponse.json({ success: true, id });
   } catch (error) {

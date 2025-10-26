@@ -35,8 +35,9 @@ async function getApprovedProjects(): Promise<Submission[]> {
   }
 }
 
-// ISR: 60초마다 재검증
-export const revalidate = 60;
+// ISR을 비활성화하고 On-Demand Revalidation만 사용
+// 데이터 변경(추가/삭제/수정) 시에만 재검증
+export const revalidate = false;
 
 export default async function ShowcasePage() {
   const projects = await getApprovedProjects();

@@ -15,8 +15,8 @@ importers:
         specifier: ^25.5.2
         version: 25.6.0(typescript@5.9.3)
       i18nexus:
-        specifier: ^2.5.1
-        version: 2.5.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+        specifier: ^2.5.2
+        version: 2.5.2(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       next:
         specifier: 15.5.4
         version: 15.5.4(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -52,8 +52,8 @@ importers:
         specifier: 15.5.4
         version: 15.5.4(eslint@9.38.0(jiti@2.6.1))(typescript@5.9.3)
       i18nexus-tools:
-        specifier: ^1.5.0
-        version: 1.5.0
+        specifier: ^1.5.6
+        version: 1.5.6
       null-loader:
         specifier: ^4.0.1
         version: 4.0.1(webpack@5.102.1)
@@ -1673,12 +1673,12 @@ packages:
       typescript:
         optional: true
 
-  i18nexus-tools@1.5.0:
-    resolution: {integrity: sha512-E6r2sBLiwFzlMKHJOmR5ttsiDusXjXSLGvfNYtchCMZwI+j+HDbD0E4d8GVX8aSnul7MptUcPfLjBQIhh/BNXw==}
+  i18nexus-tools@1.5.6:
+    resolution: {integrity: sha512-WRKP5dYsIiO3bAoVcvLIvcIfDqa/AkJYeO7KqAgyMvxUfg0CZ0CxUfH4Y0Q7ASSEjsf3f0Rmfr3Q4QC+RTSvKg==}
     hasBin: true
 
-  i18nexus@2.5.1:
-    resolution: {integrity: sha512-FMZtBhoAxb39FzhhhTMndlIMXcYRfPYliM4K0a16hxyQznLUnSGTPikKKi3OlO2zIMA7bG3+R9Em9/pMUdUUBw==}
+  i18nexus@2.5.2:
+    resolution: {integrity: sha512-Ids4o4R0u6j0t2a3pYMz9zJI6h5qdZfpgrn0JfFaI3HiAQbW+5zPgimY9EU0gD/hNqx/cXxdBtPzFJGfoYLI0A==}
     engines: {node: '>=16.0.0', npm: '>=8.0.0'}
     peerDependencies:
       react: '>=16.8.0'
@@ -4560,7 +4560,7 @@ snapshots:
     optionalDependencies:
       typescript: 5.9.3
 
-  i18nexus-tools@1.5.0:
+  i18nexus-tools@1.5.6:
     dependencies:
       '@babel/generator': 7.28.3
       '@babel/parser': 7.28.4
@@ -4576,7 +4576,7 @@ snapshots:
       - encoding
       - supports-color
 
-  i18nexus@2.5.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
+  i18nexus@2.5.2(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
     dependencies:
       '@babel/generator': 7.28.3
       '@babel/parser': 7.28.4
