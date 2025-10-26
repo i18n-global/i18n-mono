@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Geist, Geist_Mono, Noto_Sans_KR } from "next/font/google";
 import "./globals.css";
 import { headers } from "next/headers";
 import { getServerLanguage } from "i18nexus/server";
@@ -10,7 +10,6 @@ import Analytics from "./components/Analytics";
 import FirebaseStatus from "./components/FirebaseStatus";
 import Header from "./components/Header";
 import { GlobalErrorProvider } from "./components/GlobalErrorProvider";
-import { translations } from "@/locales";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -20,6 +19,12 @@ const geistSans = Geist({
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
+});
+
+const notoSansKR = Noto_Sans_KR({
+  variable: "--font-noto-sans-kr",
+  subsets: ["latin"],
+  weight: ["300", "400", "500", "700"],
 });
 
 export const metadata: Metadata = {
@@ -40,7 +45,7 @@ export default async function RootLayout({
   return (
     <html lang={language}>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+        className={`${geistSans.variable} ${geistMono.variable} ${notoSansKR.variable} antialiased`}>
         {/* Google Analytics: gtag.js (GA4) - uses NEXT_PUBLIC_GA_ID */}
         {process.env.NEXT_PUBLIC_GA_ID ? (
           <>
@@ -54,7 +59,7 @@ export default async function RootLayout({
           </>
         ) : null}
 
-        <I18nProvider initialLanguage={language} translations={translations}>
+        <I18nProvider initialLanguage={language}>
           <GlobalErrorProvider>
             <Header />
             {children}
