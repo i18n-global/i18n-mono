@@ -118,6 +118,11 @@ Complete documentation for i18nexus - Type-safe React i18n toolkit.
   - Server-side utilities
   - Zero hydration mismatch
 
+- **[v2.0.6](./releases/v2.0.6.md)** - Initial Release
+  - Basic I18n components
+  - CLI tools
+  - Google Sheets integration
+
 ### Version History
 
 See [CHANGELOG.md](../CHANGELOG.md) for complete version history.

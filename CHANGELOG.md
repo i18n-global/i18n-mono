@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.7.0] - 2025-10-26
+
 ### 🌐 Accept-Language Auto-Detection
 
 - **NEW**: `parseAcceptLanguage()` function to parse Accept-Language headers
@@ -111,7 +113,33 @@ t("Hello {{name}}", { name: "World" });
 - **IMPROVED**: Package excludes test files, examples, and documentation
 - **IMPROVED**: Smaller package size with optimized file inclusion
 
-## [2.5.0] - 2025-01-15
+---
+
+## [2.6.0] - 2025-10-26
+
+### 🎨 Variable Interpolation
+
+- **NEW**: Variable interpolation support with `{{variable}}` syntax
+- **NEW**: Works in both Client Components (`useTranslation`) and Server Components (`createServerTranslation`)
+- **NEW**: `ServerTranslationVariables` type for server-side translations
+- **NEW**: Support for string and number variables
+- **NEW**: Styled variables in Client Components with CSS styles
+- **NEW**: Multiple variables in single translation string
+- **NEW**: Backwards compatible fallback parameter support
+
+### 🚀 CI/CD Automation
+
+- **NEW**: GitHub Actions workflow for automatic npm publishing
+- **NEW**: CI workflow for automated testing on Pull Requests
+- **NEW**: Version check to prevent duplicate publishing
+- **NEW**: Automatic Git tag and GitHub Release creation
+
+### 📦 Package Optimization
+
+- **NEW**: `.npmignore` file for cleaner npm package
+- **IMPROVED**: Smaller package size with optimized file inclusion
+
+---
 
 ## [2.5.2] - 2025-10-20
 
@@ -337,5 +365,10 @@ export default async function Page() {
 
 ---
 
+## Version Links
+
+[2.7.0]: https://github.com/manNomi/i18nexus/releases/tag/v2.7.0
+[2.6.0]: https://github.com/manNomi/i18nexus/releases/tag/v2.6.0
+[2.5.2]: https://github.com/manNomi/i18nexus/releases/tag/v2.5.2
 [2.1.0]: https://github.com/manNomi/i18nexus/compare/v2.0.6...v2.1.0
 [2.0.6]: https://github.com/manNomi/i18nexus/releases/tag/v2.0.6
