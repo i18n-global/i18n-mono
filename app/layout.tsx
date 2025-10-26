@@ -60,8 +60,8 @@ export default async function RootLayout({
             {children}
             {/* Client-side analytics tracker */}
             <Analytics />
-            {/* Firebase connection status indicator */}
-            <FirebaseStatus />
+            {/* Firebase connection status indicator - dev only */}
+            {process.env.NODE_ENV === "development" && <FirebaseStatus />}
           </GlobalErrorProvider>
         </I18nProvider>
       </body>
