@@ -267,6 +267,70 @@ package-lock.json 파일이 없거나 워크플로우가 `npm ci`를 사용
 
 ---
 
+## ❌ Tag already exists
+
+### 에러 메시지
+```
+fatal: tag 'v2.7.0' already exists
+Error: Process completed with exit code 128
+```
+
+### 원인
+Git 태그가 이미 존재합니다. 동일한 버전을 다시 배포하려고 시도했습니다.
+
+### 해결 방법
+
+#### 권장: 버전 업데이트
+
+**A. package.json 버전 증가**
+```json
+{
+  "version": "2.8.0"  // 2.7.0 → 2.8.0
+}
+```
+
+**B. 커밋 & 푸시**
+```bash
+git add package.json
+git commit -m "chore: bump version to 2.8.0"
+git push origin main
+```
+
+#### 대안 1: 기존 태그 삭제 (권장하지 않음)
+
+```bash
+# 로컬 태그 삭제
+git tag -d v2.7.0
+
+# 원격 태그 삭제
+git push origin :refs/tags/v2.7.0
+
+# 다시 푸시
+git push origin main
+```
+
+⚠️ **주의:** 이미 배포된 버전의 태그를 삭제하는 것은 권장하지 않습니다.
+
+#### 대안 2: 태그를 강제로 업데이트 (권장하지 않음)
+
+```bash
+# 로컬에서 태그 강제 생성
+git tag -f v2.7.0
+
+# 원격에 강제 푸시
+git push origin v2.7.0 --force
+```
+
+⚠️ **주의:** 이미 존재하는 태그를 강제로 변경하는 것은 문제를 일으킬 수 있습니다.
+
+### 예방
+
+워크플로우가 이미 업데이트되어 이 문제를 자동으로 처리합니다:
+- 태그가 이미 있으면 건너뛰기
+- 에러 대신 경고 메시지만 표시
+
+---
+
 ## ❌ 403 Forbidden
 
 ### 에러 메시지
