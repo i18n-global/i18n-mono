@@ -50,7 +50,7 @@ export default async function ShowcasePage() {
           <span className="text-white font-bold text-3xl">🌍</span>
         </div>
         <h1 className="text-5xl md:text-6xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-blue-500 to-indigo-600 mb-6">
-          i18nexus Showcase
+          i18nexus 쇼케이스
         </h1>
         <p className="text-xl md:text-2xl text-slate-300 mb-8 max-w-3xl mx-auto">
           i18nexus와 i18nexus-tools를 사용하는 실제 프로젝트들

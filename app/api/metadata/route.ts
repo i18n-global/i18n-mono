@@ -1,6 +1,6 @@
-import { NextRequest, NextResponse } from "next/server";
+import { useTranslation } from "i18nexus";import { NextRequest, NextResponse } from "next/server";
 
-export async function POST(request: NextRequest) {
+export async function POST(request: NextRequest) {const { t } = useTranslation();
   try {
     const { url } = await request.json();
 
@@ -27,10 +27,10 @@ export async function POST(request: NextRequest) {
     const response = await fetch(microlinkUrl, {
       headers: {
         "User-Agent": "i18nexus-showcase/1.0",
-        Accept: "application/json",
+        Accept: "application/json"
       },
       // 15초 타임아웃 (스크린샷 생성 시간 고려)
-      signal: AbortSignal.timeout(15000),
+      signal: AbortSignal.timeout(15000)
     });
 
     if (!response.ok) {
@@ -44,8 +44,8 @@ export async function POST(request: NextRequest) {
       if (response.status === 429) {
         return NextResponse.json(
           {
-            error: "메타데이터 서비스의 요청 한도를 초과했습니다",
-            details: "잠시 후 다시 시도해주세요",
+            error: t("메타데이터 서비스의 요청 한도를 초과했습니다"),
+            details: t("잠시 후 다시 시도해주세요")
           },
           { status: 429 }
         );
@@ -53,8 +53,8 @@ export async function POST(request: NextRequest) {
 
       return NextResponse.json(
         {
-          error: "메타데이터 서비스에서 오류가 발생했습니다",
-          details: `HTTP ${response.status}: ${response.statusText}`,
+          error: t("메타데이터 서비스에서 오류가 발생했습니다"),
+          details: `HTTP ${response.status}: ${response.statusText}`
         },
         { status: 500 }
       );
@@ -68,8 +68,8 @@ export async function POST(request: NextRequest) {
       console.error("❌ Unexpected content type:", contentType);
       return NextResponse.json(
         {
-          error: "메타데이터 서비스가 예상치 못한 응답을 반환했습니다",
-          details: `Expected JSON but got ${contentType}`,
+          error: t("메타데이터 서비스가 예상치 못한 응답을 반환했습니다"),
+          details: `Expected JSON but got ${contentType}`
         },
         { status: 500 }
       );
@@ -85,8 +85,8 @@ export async function POST(request: NextRequest) {
       if (data.status === "fail" && data.message?.includes("ENOTFOUND")) {
         return NextResponse.json(
           {
-            error: "URL에 접근할 수 없습니다",
-            details: "도메인이 존재하지 않거나 접근할 수 없습니다",
+            error: t("URL에 접근할 수 없습니다"),
+            details: t("도메인이 존재하지 않거나 접근할 수 없습니다")
           },
           { status: 400 }
         );
@@ -94,8 +94,8 @@ export async function POST(request: NextRequest) {
 
       return NextResponse.json(
         {
-          error: "메타데이터 추출에 실패했습니다",
-          details: data.message || "Unknown error from metadata service",
+          error: t("메타데이터 추출에 실패했습니다"),
+          details: data.message || "Unknown error from metadata service"
         },
         { status: 500 }
       );
@@ -105,30 +105,30 @@ export async function POST(request: NextRequest) {
     // og:image를 우선 사용하고, 없으면 스크린샷 사용
     const ogImage = data.data?.image?.url;
     const screenshotImage = data.data?.screenshot?.url;
-    
+
     const metadata = {
       autoTitle: data.data?.title || data.data?.url || "Untitled Project",
       autoDescription: data.data?.description || "No description available",
       thumbnailUrl: ogImage || screenshotImage || "/default-thumbnail.svg",
       screenshotUrl: screenshotImage || null, // 상세보기용 스크린샷
       ogImageUrl: ogImage || null, // 원본 메타 이미지
-      url,
+      url
     };
 
     console.log("✅ Metadata extracted successfully:", {
       hasOgImage: !!ogImage,
-      hasScreenshot: !!screenshotImage,
+      hasScreenshot: !!screenshotImage
     });
     return NextResponse.json(metadata);
   } catch (error: unknown) {
     console.error("❌ Metadata fetch error:", error);
 
-    const errorObj = error as { message?: string };
+    const errorObj = error as {message?: string;};
 
     return NextResponse.json(
       {
         error: "Failed to fetch metadata",
-        details: errorObj.message || "Unknown error",
+        details: errorObj.message || "Unknown error"
       },
       { status: 500 }
     );

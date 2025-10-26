@@ -14,7 +14,7 @@ import {
   deleteDoc,
 } from "firebase/firestore";
 
-// POST: Create a new submission
+// POST: 새 제출 생성
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
@@ -30,7 +30,7 @@ export async function POST(request: NextRequest) {
 
     if (!url || !autoTitle) {
       return NextResponse.json(
-        { error: "URL and autoTitle are required" },
+        { error: "URL과 제목이 필요합니다" },
         { status: 400 }
       );
     }
@@ -58,7 +58,7 @@ export async function POST(request: NextRequest) {
       ...submissionData,
     });
   } catch (error: unknown) {
-    console.error("Submission creation error:", error);
+    console.error("제출 생성 오류:", error);
 
     const errorObj = error as { code?: string; message?: string };
 
@@ -79,15 +79,15 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json(
       {
-        error: "Failed to create submission",
-        message: errorObj.message || "Unknown error",
+        error: "제출 생성에 실패했습니다",
+        message: errorObj.message || "알 수 없는 오류",
       },
       { status: 500 }
     );
   }
 }
 
-// GET: Fetch submissions (with optional filter)
+// GET: 제출 목록 가져오기 (필터 옵션 포함)
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
@@ -115,7 +115,7 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json(submissions);
   } catch (error: unknown) {
-    console.error("Submissions fetch error:", error);
+    console.error("제출 목록 가져오기 오류:", error);
 
     const errorObj = error as { code?: string; message?: string };
 
@@ -158,15 +158,15 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json(
       {
-        error: "Failed to fetch submissions",
-        message: errorObj.message || "Unknown error",
+        error: "제출 목록을 가져오는데 실패했습니다",
+        message: errorObj.message || "알 수 없는 오류",
       },
       { status: 500 }
     );
   }
 }
 
-// PATCH: Update submission (approve/reject)
+// PATCH: 제출 업데이트 (승인/거부)
 export async function PATCH(request: NextRequest) {
   try {
     const body = await request.json();
@@ -174,7 +174,7 @@ export async function PATCH(request: NextRequest) {
 
     if (!id) {
       return NextResponse.json(
-        { error: "Submission ID is required" },
+        { error: "제출 ID가 필요합니다" },
         { status: 400 }
       );
     }
@@ -195,15 +195,15 @@ export async function PATCH(request: NextRequest) {
 
     return NextResponse.json({ success: true, id });
   } catch (error) {
-    console.error("Submission update error:", error);
+    console.error("제출 업데이트 오류:", error);
     return NextResponse.json(
-      { error: "Failed to update submission" },
+      { error: "제출 업데이트에 실패했습니다" },
       { status: 500 }
     );
   }
 }
 
-// DELETE: Delete a submission
+// DELETE: 제출 삭제
 export async function DELETE(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
@@ -211,7 +211,7 @@ export async function DELETE(request: NextRequest) {
 
     if (!id) {
       return NextResponse.json(
-        { error: "Submission ID is required" },
+        { error: "제출 ID가 필요합니다" },
         { status: 400 }
       );
     }
@@ -223,9 +223,9 @@ export async function DELETE(request: NextRequest) {
 
     return NextResponse.json({ success: true, id });
   } catch (error) {
-    console.error("Submission deletion error:", error);
+    console.error("제출 삭제 오류:", error);
     return NextResponse.json(
-      { error: "Failed to delete submission" },
+      { error: "제출 삭제에 실패했습니다" },
       { status: 500 }
     );
   }

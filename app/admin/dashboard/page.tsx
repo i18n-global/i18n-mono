@@ -1,4 +1,4 @@
-"use client";
+"use client";import { useTranslation } from "i18nexus";
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
@@ -17,10 +17,10 @@ interface Submission {
   screenshotUrl?: string | null;
   contactEmail: string | null;
   approved: boolean;
-  submittedAt: { seconds: number };
+  submittedAt: {seconds: number;};
 }
 
-export default function AdminDashboardPage() {
+export default function AdminDashboardPage() {const { t } = useTranslation();
   const { setError } = useError();
   const [user, setUser] = useState<unknown>(null);
   const [loading, setLoading] = useState(true);
@@ -52,11 +52,11 @@ export default function AdminDashboardPage() {
   const fetchSubmissions = async () => {
     try {
       const approvedParam =
-        filter === "pending" ? "false" : filter === "approved" ? "true" : "";
+      filter === "pending" ? "false" : filter === "approved" ? "true" : "";
       const url =
-        filter === "all"
-          ? "/api/submissions"
-          : `/api/submissions?approved=${approvedParam}`;
+      filter === "all" ?
+      "/api/submissions" :
+      `/api/submissions?approved=${approvedParam}`;
 
       const response = await fetch(url);
       const data = await response.json();
@@ -71,27 +71,27 @@ export default function AdminDashboardPage() {
         // 에러 메시지 표시
         if (data.code === "FIRESTORE_INDEX_REQUIRED") {
           // 인덱스 생성 링크가 있으면 표시
-          const message = data.indexUrl
-            ? `Firestore 인덱스가 필요합니다. 링크를 클릭하여 생성해주세요: ${data.indexUrl}`
-            : data.error;
+          const message = data.indexUrl ?
+          `Firestore 인덱스가 필요합니다. 링크를 클릭하여 생성해주세요: ${data.indexUrl}` :
+          data.error;
           setError(message);
 
           // 콘솔에도 링크 출력
           if (data.indexUrl) {
-            console.log("🔗 Firestore 인덱스 생성 링크:", data.indexUrl);
+            console.log(t("🔗 Firestore 인덱스 생성 링크:"), data.indexUrl);
           }
         } else if (data.code === "FIRESTORE_NOT_CONFIGURED") {
-          setError(
-            "Firestore Database가 설정되지 않았습니다. FIREBASE_QUICK_SETUP.md를 참고하세요."
+          setError(t("Firestore Database가 설정되지 않았습니다. FIREBASE_QUICK_SETUP.md를 참고하세요.")
+
           );
         } else {
-          setError(data.error || "제출 목록을 불러오는데 실패했습니다.");
+          setError(data.error || t("제출 목록을 불러오는데 실패했습니다."));
         }
       }
     } catch (error) {
       console.error("Failed to fetch submissions:", error);
       setSubmissions([]);
-      setError("제출 목록을 불러오는데 실패했습니다.");
+      setError(t("제출 목록을 불러오는데 실패했습니다."));
     }
   };
 
@@ -100,36 +100,36 @@ export default function AdminDashboardPage() {
       const response = await fetch("/api/submissions", {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ id, approved: true }),
+        body: JSON.stringify({ id, approved: true })
       });
 
       if (response.ok) {
         fetchSubmissions();
       } else {
-        setError("승인에 실패했습니다.");
+        setError(t("승인에 실패했습니다."));
       }
     } catch (error) {
       console.error("Failed to approve:", error);
-      setError("승인 중 오류가 발생했습니다.");
+      setError(t("승인 중 오류가 발생했습니다."));
     }
   };
 
   const handleDelete = async (id: string) => {
-    if (!confirm("정말 삭제하시겠습니까?")) return;
+    if (!confirm(t("정말 삭제하시겠습니까?"))) return;
 
     try {
       const response = await fetch(`/api/submissions?id=${id}`, {
-        method: "DELETE",
+        method: "DELETE"
       });
 
       if (response.ok) {
         fetchSubmissions();
       } else {
-        setError("삭제에 실패했습니다.");
+        setError(t("삭제에 실패했습니다."));
       }
     } catch (error) {
       console.error("Failed to delete:", error);
-      setError("삭제 중 오류가 발생했습니다.");
+      setError(t("삭제 중 오류가 발생했습니다."));
     }
   };
 
@@ -145,11 +145,11 @@ export default function AdminDashboardPage() {
   if (loading) {
     return (
       <main className="min-h-screen flex items-center justify-center">
-        <div className="text-2xl text-slate-300 animate-pulse">
-          ⏳ 로딩 중...
+        <div className="text-2xl text-slate-300 animate-pulse">{t("⏳ 로딩 중...")}
+
         </div>
-      </main>
-    );
+      </main>);
+
   }
 
   return (
@@ -157,15 +157,15 @@ export default function AdminDashboardPage() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-12">
         <div>
-          <h1 className="text-4xl md:text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 via-purple-500 to-pink-600 mb-2">
-            관리자 대시보드
+          <h1 className="text-4xl md:text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 via-purple-500 to-pink-600 mb-2">{t("관리자 대시보드")}
+
           </h1>
-          <p className="text-slate-400">Showcase 제출 관리</p>
+          <p className="text-slate-400">{t("Showcase 제출 관리")}</p>
         </div>
         <button
           onClick={handleLogout}
-          className="bg-gradient-to-r from-slate-700 to-slate-600 hover:from-slate-600 hover:to-slate-500 text-white px-6 py-3 rounded-xl font-semibold transition-all hover:scale-105 shadow-lg">
-          🚪 로그아웃
+          className="bg-gradient-to-r from-slate-700 to-slate-600 hover:from-slate-600 hover:to-slate-500 text-white px-6 py-3 rounded-xl font-semibold transition-all hover:scale-105 shadow-lg">{t("🚪 로그아웃")}
+
         </button>
       </div>
 
@@ -174,29 +174,29 @@ export default function AdminDashboardPage() {
         <button
           onClick={() => setFilter("pending")}
           className={`px-6 py-3 rounded-xl font-semibold transition-all ${
-            filter === "pending"
-              ? "bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-lg shadow-blue-500/30"
-              : "bg-gradient-to-br from-slate-900 to-slate-800 border border-slate-700 text-slate-300 hover:border-blue-500"
-          }`}>
-          ⏳ 승인 대기 중
+          filter === "pending" ?
+          "bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-lg shadow-blue-500/30" :
+          "bg-gradient-to-br from-slate-900 to-slate-800 border border-slate-700 text-slate-300 hover:border-blue-500"}`
+          }>{t("⏳ 승인 대기 중")}
+
         </button>
         <button
           onClick={() => setFilter("approved")}
           className={`px-6 py-3 rounded-xl font-semibold transition-all ${
-            filter === "approved"
-              ? "bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-lg shadow-blue-500/30"
-              : "bg-gradient-to-br from-slate-900 to-slate-800 border border-slate-700 text-slate-300 hover:border-blue-500"
-          }`}>
-          ✅ 승인됨
+          filter === "approved" ?
+          "bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-lg shadow-blue-500/30" :
+          "bg-gradient-to-br from-slate-900 to-slate-800 border border-slate-700 text-slate-300 hover:border-blue-500"}`
+          }>{t("✅ 승인됨")}
+
         </button>
         <button
           onClick={() => setFilter("all")}
           className={`px-6 py-3 rounded-xl font-semibold transition-all ${
-            filter === "all"
-              ? "bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-lg shadow-blue-500/30"
-              : "bg-gradient-to-br from-slate-900 to-slate-800 border border-slate-700 text-slate-300 hover:border-blue-500"
-          }`}>
-          📋 전체
+          filter === "all" ?
+          "bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-lg shadow-blue-500/30" :
+          "bg-gradient-to-br from-slate-900 to-slate-800 border border-slate-700 text-slate-300 hover:border-blue-500"}`
+          }>{t("📋 전체")}
+
         </button>
       </div>
 
@@ -207,58 +207,58 @@ export default function AdminDashboardPage() {
             {submissions.length}
           </div>
           <div className="text-slate-400 text-sm mt-1">
-            {filter === "pending"
-              ? "대기 중"
-              : filter === "approved"
-                ? "승인됨"
-                : "전체 제출"}
+            {filter === "pending" ? t("대기 중") :
+
+            filter === "approved" ? t("승인됨") : t("전체 제출")
+
+            }
           </div>
         </div>
       </div>
 
       {/* Submissions Grid */}
-      {submissions.length === 0 ? (
-        <div className="bg-gradient-to-br from-slate-900 to-slate-800 rounded-2xl border border-slate-700 p-12 text-center">
+      {submissions.length === 0 ?
+      <div className="bg-gradient-to-br from-slate-900 to-slate-800 rounded-2xl border border-slate-700 p-12 text-center">
           <div className="text-6xl mb-4">📭</div>
-          <p className="text-xl text-slate-300 font-semibold mb-2">
-            제출된 프로젝트가 없습니다
-          </p>
+          <p className="text-xl text-slate-300 font-semibold mb-2">{t("제출된 프로젝트가 없습니다")}
+
+        </p>
           <p className="text-slate-500">
-            {filter === "pending" && "승인 대기 중인 프로젝트가 없습니다"}
-            {filter === "approved" && "승인된 프로젝트가 없습니다"}
-            {filter === "all" && "아직 제출된 프로젝트가 없습니다"}
+            {filter === "pending" && t("승인 대기 중인 프로젝트가 없습니다")}
+            {filter === "approved" && t("승인된 프로젝트가 없습니다")}
+            {filter === "all" && t("아직 제출된 프로젝트가 없습니다")}
           </p>
-        </div>
-      ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {submissions.map((submission) => (
-            <div key={submission.id} className="relative">
+        </div> :
+
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {submissions.map((submission) =>
+        <div key={submission.id} className="relative">
               <ProjectCard
-                url={submission.url}
-                projectName={submission.projectName}
-                autoTitle={submission.autoTitle}
-                autoDescription={submission.autoDescription}
-                thumbnailUrl={submission.thumbnailUrl}
-                screenshotUrl={submission.screenshotUrl}
-                showActions={true}
-                isApproved={submission.approved}
-                onApprove={!submission.approved ? () => handleApprove(submission.id) : undefined}
-                onDelete={() => handleDelete(submission.id)}
-              />
-              {submission.approved && (
-                <div className="absolute top-4 right-4 bg-gradient-to-r from-green-500 to-green-400 text-white px-4 py-2 rounded-full text-sm font-bold shadow-lg shadow-green-500/30 z-10">
-                  ✓ 승인됨
-                </div>
-              )}
-              {submission.contactEmail && (
-                <div className="mt-3 px-4 py-2 bg-slate-900/50 border border-slate-700 rounded-lg text-xs text-slate-400">
+            url={submission.url}
+            projectName={submission.projectName}
+            autoTitle={submission.autoTitle}
+            autoDescription={submission.autoDescription}
+            thumbnailUrl={submission.thumbnailUrl}
+            screenshotUrl={submission.screenshotUrl}
+            showActions={true}
+            isApproved={submission.approved}
+            onApprove={!submission.approved ? () => handleApprove(submission.id) : undefined}
+            onDelete={() => handleDelete(submission.id)} />
+
+              {submission.approved &&
+          <div className="absolute top-4 right-4 bg-gradient-to-r from-green-500 to-green-400 text-white px-4 py-2 rounded-full text-sm font-bold shadow-lg shadow-green-500/30 z-10">{t("✓ 승인됨")}
+
+          </div>
+          }
+              {submission.contactEmail &&
+          <div className="mt-3 px-4 py-2 bg-slate-900/50 border border-slate-700 rounded-lg text-xs text-slate-400">
                   📧 {submission.contactEmail}
                 </div>
-              )}
+          }
             </div>
-          ))}
+        )}
         </div>
-      )}
-    </main>
-  );
+      }
+    </main>);
+
 }

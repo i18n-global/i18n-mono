@@ -1,11 +1,11 @@
-"use client";
+"use client";import { useTranslation } from "i18nexus";
 
 import { useEffect, useState } from "react";
 import { auth, db } from "@/lib/firebase";
 import { onAuthStateChanged } from "firebase/auth";
 import { collection, getDocs, limit, query } from "firebase/firestore";
 
-export default function FirebaseStatus() {
+export default function FirebaseStatus() {const { t } = useTranslation();
   const [status, setStatus] = useState<{
     auth: boolean;
     firestore: boolean;
@@ -13,7 +13,7 @@ export default function FirebaseStatus() {
   }>({
     auth: false,
     firestore: false,
-    user: null,
+    user: null
   });
   const [loading, setLoading] = useState(true);
 
@@ -25,7 +25,7 @@ export default function FirebaseStatus() {
           setStatus((prev) => ({
             ...prev,
             auth: true,
-            user: user?.email || null,
+            user: user?.email || null
           }));
         });
 
@@ -55,10 +55,10 @@ export default function FirebaseStatus() {
       <div className="fixed bottom-4 right-4 bg-slate-800 text-white px-4 py-2 rounded-lg shadow-lg">
         <div className="flex items-center space-x-2">
           <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
-          <span className="text-sm">Firebase 연결 확인 중...</span>
+          <span className="text-sm">{t("Firebase 연결 확인 중...")}</span>
         </div>
-      </div>
-    );
+      </div>);
+
   }
 
   return (
@@ -78,13 +78,13 @@ export default function FirebaseStatus() {
             {status.firestore ? "✓ Connected" : "⚠ Setup Needed"}
           </span>
         </div>
-        {status.user && (
-          <div className="pt-2 mt-2 border-t border-slate-700">
+        {status.user &&
+        <div className="pt-2 mt-2 border-t border-slate-700">
             <span className="text-slate-400">Logged in: </span>
             <span className="text-blue-400">{status.user}</span>
           </div>
-        )}
+        }
       </div>
-    </div>
-  );
+    </div>);
+
 }
