@@ -1,8 +1,8 @@
 import { headers } from "next/headers";
 import { getServerLanguage, createServerTranslation } from "i18nexus/server";
-import { translations } from "@/lib/i18n";
-import Link from "next/link";
 
+import Link from "next/link";
+import { translations } from "@/locales";
 // ✅ Server Component - "use client" 없음!
 export default async function ServerExamplePage() {
   // 1. 서버에서 쿠키를 읽어 현재 언어 가져오기

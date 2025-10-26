@@ -4,7 +4,7 @@ import { db } from "@/lib/firebase";
 import { collection, getDocs, query, where, orderBy } from "firebase/firestore";
 import { createServerTranslation, getServerLanguage } from "i18nexus/server";
 import { headers } from "next/headers";
-import { translations } from "@/lib/i18n";
+import { translations } from "@/locales";
 
 interface Submission {
   id: string;
