@@ -10,6 +10,7 @@ import Analytics from "./components/Analytics";
 import FirebaseStatus from "./components/FirebaseStatus";
 import Header from "./components/Header";
 import { GlobalErrorProvider } from "./components/GlobalErrorProvider";
+import { translations } from "@/locales";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -53,7 +54,7 @@ export default async function RootLayout({
           </>
         ) : null}
 
-        <I18nProvider initialLanguage={language}>
+        <I18nProvider initialLanguage={language} translations={translations}>
           <GlobalErrorProvider>
             <Header />
             {children}

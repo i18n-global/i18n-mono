@@ -1,11 +1,13 @@
-"use client";import { useTranslation } from "i18nexus";
+"use client";
+import { useTranslation } from "i18nexus";
 
 import { useEffect, useState } from "react";
 import { auth, db } from "@/lib/firebase";
 import { onAuthStateChanged } from "firebase/auth";
 import { collection, getDocs, limit, query } from "firebase/firestore";
 
-export default function FirebaseStatus() {const { t } = useTranslation();
+export default function FirebaseStatus() {
+  const { t } = useTranslation();
   const [status, setStatus] = useState<{
     auth: boolean;
     firestore: boolean;
@@ -13,7 +15,7 @@ export default function FirebaseStatus() {const { t } = useTranslation();
   }>({
     auth: false,
     firestore: false,
-    user: null
+    user: null,
   });
   const [loading, setLoading] = useState(true);
 
@@ -25,7 +27,7 @@ export default function FirebaseStatus() {const { t } = useTranslation();
           setStatus((prev) => ({
             ...prev,
             auth: true,
-            user: user?.email || null
+            user: user?.email || null,
           }));
         });
 
@@ -57,8 +59,8 @@ export default function FirebaseStatus() {const { t } = useTranslation();
           <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
           <span className="text-sm">{t("Firebase 연결 확인 중...")}</span>
         </div>
-      </div>);
-
+      </div>
+    );
   }
 
   return (
@@ -78,13 +80,13 @@ export default function FirebaseStatus() {const { t } = useTranslation();
             {status.firestore ? "✓ Connected" : "⚠ Setup Needed"}
           </span>
         </div>
-        {status.user &&
-        <div className="pt-2 mt-2 border-t border-slate-700">
+        {status.user && (
+          <div className="pt-2 mt-2 border-t border-slate-700">
             <span className="text-slate-400">Logged in: </span>
             <span className="text-blue-400">{status.user}</span>
           </div>
-        }
+        )}
       </div>
-    </div>);
-
+    </div>
+  );
 }
