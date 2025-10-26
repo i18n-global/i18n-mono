@@ -4,13 +4,16 @@ on:
   pull_request:
     branches:
       - main
-    paths:
-      - "packages/i18nexus/**"
-      - "!packages/i18nexus/**.md"
-      - "!packages/i18nexus/examples/**"
   push:
-    branches-ignore:
+    branches:
       - main
+    paths:
+      - "src/**"
+      - "**.ts"
+      - "**.tsx"
+      - "**.js"
+      - "package.json"
+      - "tsconfig.json"
 
 jobs:
   test:
@@ -29,24 +32,42 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
           cache: "npm"
-          cache-dependency-path: packages/i18nexus/package-lock.json
 
       - name: Install dependencies
-        working-directory: packages/i18nexus
-        run: npm ci
+        run: npm install
 
       - name: Run linter
-        working-directory: packages/i18nexus
         run: npm run lint
 
       - name: Run tests
-        working-directory: packages/i18nexus
         run: npm test
 
       - name: Build package
-        working-directory: packages/i18nexus
         run: npm run build
 
-      - name: Check package can be published
-        working-directory: packages/i18nexus
-        run: npm run publish:dry
+  coverage:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run tests with coverage
+        run: npm test -- --coverage
+
+      - name: Upload coverage reports
+        uses: codecov/codecov-action@v3
+        with:
+          files: ./coverage/lcov.info
+          flags: unittests
+          name: codecov-umbrella
+          fail_ci_if_error: false

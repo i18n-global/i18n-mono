@@ -4,16 +4,17 @@ on:
   push:
     branches:
       - main
-    paths:
-      - "packages/i18nexus/**"
-      - "!packages/i18nexus/**.md"
-      - "!packages/i18nexus/examples/**"
+    paths-ignore:
+      - "**.md"
+      - "docs/**"
+      - "examples/**"
+      - ".github/workflows/ci.yml"
 
 jobs:
   publish:
     runs-on: ubuntu-latest
     permissions:
-      contents: read
+      contents: write
       id-token: write
 
     steps:
@@ -27,24 +28,18 @@ jobs:
         with:
           node-version: "20"
           registry-url: "https://registry.npmjs.org"
-          cache: "npm"
-          cache-dependency-path: packages/i18nexus/package-lock.json
 
       - name: Install dependencies
-        working-directory: packages/i18nexus
-        run: npm ci
+        run: npm install
 
       - name: Run tests
-        working-directory: packages/i18nexus
         run: npm test
 
       - name: Build package
-        working-directory: packages/i18nexus
         run: npm run build
 
       - name: Check if version has been updated
         id: version-check
-        working-directory: packages/i18nexus
         run: |
           PACKAGE_VERSION=$(node -p "require('./package.json').version")
           echo "version=$PACKAGE_VERSION" >> $GITHUB_OUTPUT
@@ -60,7 +55,6 @@ jobs:
 
       - name: Publish to NPM
         if: steps.version-check.outputs.should_publish == 'true'
-        working-directory: packages/i18nexus
         run: npm publish --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
@@ -78,15 +72,26 @@ jobs:
 
       - name: Create GitHub Release
         if: steps.version-check.outputs.should_publish == 'true'
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        uses: softprops/action-gh-release@v1
         with:
           tag_name: v${{ steps.version-check.outputs.version }}
-          release_name: Release v${{ steps.version-check.outputs.version }}
+          name: Release v${{ steps.version-check.outputs.version }}
           body: |
-            ## Changes in v${{ steps.version-check.outputs.version }}
+            ## 🎉 Release v${{ steps.version-check.outputs.version }}
 
-            See [CHANGELOG.md](https://github.com/manNomi/i18nexus/blob/main/packages/i18nexus/CHANGELOG.md) for details.
+            See [CHANGELOG.md](https://github.com/${{ github.repository }}/blob/main/docs/CHANGELOG.md) for details.
+
+            ### 📦 Installation
+
+            \`\`\`bash
+            npm install i18nexus@${{ steps.version-check.outputs.version }}
+            \`\`\`
+
+            ### 🔗 Links
+
+            - 📖 [Documentation](https://github.com/${{ github.repository }}/tree/main/docs)
+            - 📦 [npm Package](https://www.npmjs.com/package/i18nexus/v/${{ steps.version-check.outputs.version }})
           draft: false
           prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

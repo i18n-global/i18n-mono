@@ -79,9 +79,7 @@ export default async function RootLayout({ children }) {
   return (
     <html lang={language}>
       <body>
-        <I18nProvider initialLanguage={language}>
-          {children}
-        </I18nProvider>
+        <I18nProvider initialLanguage={language}>{children}</I18nProvider>
       </body>
     </html>
   );
@@ -133,20 +131,24 @@ export default function ClientComponent() {
 ## 📚 문서
 
 ### 📖 완전한 문서
+
 - **[문서 허브](./docs/README.md)** - 중앙 문서 포털
 
 ### 🎯 기능 가이드
+
 - [🌐 Accept-Language 감지](./docs/guides/accept-language.md) - 브라우저 언어 자동 감지
 - [🎨 변수 삽입](./docs/guides/interpolation.md) - 번역 내 동적 값
 - [🎯 타입 안전 설정](./docs/guides/typed-config.md) - TypeScript 설정 구성
 - [🛠️ 개발자 도구](./docs/guides/devtools.md) - 시각적 디버깅 도구
 
 ### 📚 API 레퍼런스
+
 - [서버 사이드 API](./docs/api/server.md) - `createServerI18n`, `getServerLanguage` 등
 - [클라이언트 사이드 API](./docs/api/client.md) - `useTranslation`, `useLanguageSwitcher` 등
 - [TypeScript 타입](./docs/api/types.md) - 완전한 타입 정의
 
 ### 📋 릴리즈 노트
+
 - [v2.7.0](./docs/releases/v2.7.0.md) - Accept-Language 자동 감지 (최신)
 - [v2.6.0](./docs/releases/v2.6.0.md) - 변수 삽입 & CI/CD
 - [v2.5.2](./docs/releases/v2.5.2.md) - 개발자 도구
@@ -179,16 +181,17 @@ const { t, language } = await createServerI18n({
 
 ```tsx
 // 기본
-t("안녕하세요 {{name}}", { name: "세계" })
+t("안녕하세요 {{name}}", { name: "세계" });
 
 // 여러 변수
-t("{{count}}/{{total}} 완료", { count: 7, total: 10 })
+t("{{count}}/{{total}} 완료", { count: 7, total: 10 });
 
 // 스타일 적용 (Client Component)
-t("가격: {{amount}}", 
-  { amount: 100 }, 
+t(
+  "가격: {{amount}}",
+  { amount: 100 },
   { amount: { color: "red", fontWeight: "bold" } }
-)
+);
 ```
 
 ### 🎯 타입 안전 언어
@@ -211,7 +214,7 @@ import { I18NexusDevtools } from "i18nexus";
 <I18nProvider>
   <App />
   <I18NexusDevtools /> {/* Dev 모드에서만 */}
-</I18nProvider>
+</I18nProvider>;
 ```
 
 ---
@@ -260,4 +263,3 @@ MIT License - 자세한 내용은 [LICENSE](./LICENSE)를 참고하세요.
 [⭐ GitHub에서 Star 주기](https://github.com/manNomi/i18nexus) • [📦 npm에서 보기](https://www.npmjs.com/package/i18nexus)
 
 </div>
-

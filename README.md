@@ -79,9 +79,7 @@ export default async function RootLayout({ children }) {
   return (
     <html lang={language}>
       <body>
-        <I18nProvider initialLanguage={language}>
-          {children}
-        </I18nProvider>
+        <I18nProvider initialLanguage={language}>{children}</I18nProvider>
       </body>
     </html>
   );
@@ -133,20 +131,24 @@ export default function ClientComponent() {
 ## 📚 Documentation
 
 ### 📖 Complete Documentation
+
 - **[Documentation Hub](./docs/README.md)** - Central documentation portal
 
 ### 🎯 Feature Guides
+
 - [🌐 Accept-Language Detection](./docs/guides/accept-language.md) - Browser language auto-detection
 - [🎨 Variable Interpolation](./docs/guides/interpolation.md) - Dynamic values in translations
 - [🎯 Type-Safe Configuration](./docs/guides/typed-config.md) - TypeScript config setup
 - [🛠️ Developer Tools](./docs/guides/devtools.md) - Visual debugging tools
 
 ### 📚 API Reference
+
 - [Server-Side API](./docs/api/server.md) - `createServerI18n`, `getServerLanguage`, etc.
 - [Client-Side API](./docs/api/client.md) - `useTranslation`, `useLanguageSwitcher`, etc.
 - [TypeScript Types](./docs/api/types.md) - Complete type definitions
 
 ### 📋 Release Notes
+
 - [v2.7.0](./docs/releases/v2.7.0.md) - Accept-Language auto-detection (Latest)
 - [v2.6.0](./docs/releases/v2.6.0.md) - Variable interpolation & CI/CD
 - [v2.5.2](./docs/releases/v2.5.2.md) - Developer tools
@@ -179,16 +181,17 @@ Insert dynamic values with `{{variable}}` syntax:
 
 ```tsx
 // Basic
-t("Hello {{name}}", { name: "World" })
+t("Hello {{name}}", { name: "World" });
 
 // Multiple variables
-t("{{count}} of {{total}} done", { count: 7, total: 10 })
+t("{{count}} of {{total}} done", { count: 7, total: 10 });
 
 // With styles (Client Component)
-t("Price: {{amount}}", 
-  { amount: 100 }, 
+t(
+  "Price: {{amount}}",
+  { amount: 100 },
   { amount: { color: "red", fontWeight: "bold" } }
-)
+);
 ```
 
 ### 🎯 Type-Safe Languages
@@ -211,7 +214,7 @@ import { I18NexusDevtools } from "i18nexus";
 <I18nProvider>
   <App />
   <I18NexusDevtools /> {/* Dev mode only */}
-</I18nProvider>
+</I18nProvider>;
 ```
 
 ---
