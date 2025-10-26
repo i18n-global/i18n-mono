@@ -122,7 +122,7 @@ export default function DownloadStats({
           <span className="text-white font-bold text-xl">📦</span>
         </div>
       </div>
-      <p className="text-xs text-slate-500 mt-3">{t("Downloads last month")}</p>
+      <p className="text-xs text-slate-500 mt-3">{t("Total downloads")}</p>
     </div>
   );
 }

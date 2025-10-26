@@ -232,20 +232,12 @@ export default function HomePage() {
 
         <div className="bg-slate-950 rounded-xl p-6 mb-8 border border-slate-800">
           <pre className="text-slate-300 text-sm font-mono">
-            <code>{`app/
-├── layout.tsx          # I18nProvider 설정 (서버)
-├── page.tsx            # useTranslation() (클라이언트)
-├── provider/
-│   └── page.tsx        # Provider 문서
-├── cli/
-│   └── page.tsx        # CLI 도구 문서
-└── components/
-    └── Header.tsx      # 언어 전환 컴포넌트
-
-lib/
-└── translations/
-    ├── en.json         # 영어 번역
-    └── ko.json         # 한국어 번역`}</code>
+            <code>{`
+├── locales/
+│   ├── index.ts            
+│   ├── en.json             # 영어 번역
+│   └── ko.json             # 한국어 번역
+└── i18nexus.config.json    # i18nexus 설정 파일`}</code>
           </pre>
         </div>
 

@@ -3,7 +3,7 @@
 import { useLanguageSwitcher, useTranslation } from "i18nexus";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 export default function Header() {
   const { t } = useTranslation();
@@ -11,11 +11,29 @@ export default function Header() {
     useLanguageSwitcher();
   const pathname = usePathname();
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [cliExpanded, setCliExpanded] = useState(false);
+  const [docsExpanded, setDocsExpanded] = useState(false);
+
+  // 현재 선택된 섹션 확인
+  const isCliSelected =
+    pathname === "/cli" || pathname?.startsWith("/docs/i18nexus-tools");
+  const isDocsSelected =
+    pathname?.startsWith("/docs/i18nexus") &&
+    !pathname?.startsWith("/docs/i18nexus-tools");
+
+  // 페이지 이동 시 확장 상태 유지
+  useEffect(() => {
+    if (isCliSelected && !cliExpanded) {
+      setCliExpanded(true);
+    }
+    if (isDocsSelected && !docsExpanded) {
+      setDocsExpanded(true);
+    }
+  }, [pathname, isCliSelected, isDocsSelected]);
 
   const navItems = [
     { href: "/", label: t("홈"), emoji: "🏠" },
     { href: "/getting-started", label: t("시작하기"), emoji: "🚀" },
-    { href: "/provider", label: t("Provider"), emoji: "🎨" },
     { href: "/server-example", label: t("서버 예제"), emoji: "🖥️" },
     { href: "/showcase", label: t("쇼케이스"), emoji: "🌍" },
     { href: "/showcase/submit", label: t("프로젝트 등록"), emoji: "📝" },
@@ -25,29 +43,39 @@ export default function Header() {
     { href: "/cli", label: t("CLI 개요"), emoji: "⚡" },
     {
       href: "/docs/i18nexus-tools/wrapper",
-      label: "i18n-wrapper",
+      label: "wrapper",
       emoji: "🔧",
     },
     {
       href: "/docs/i18nexus-tools/extractor",
-      label: "i18n-extractor",
+      label: "extractor",
       emoji: "🔍",
     },
-    { href: "/docs/i18nexus-tools/upload", label: "i18n-upload", emoji: "📤" },
+    { href: "/docs/i18nexus-tools/upload", label: "upload", emoji: "📤" },
     {
       href: "/docs/i18nexus-tools/download",
-      label: "i18n-download",
+      label: "download",
       emoji: "📥",
     },
     {
       href: "/docs/i18nexus-tools/download-force",
-      label: "i18n-download-force",
+      label: "download-force",
       emoji: "🔄",
     },
     {
       href: "/docs/i18nexus-tools/google-sheets",
       label: "Google Sheets",
       emoji: "📊",
+    },
+  ];
+
+  const docsItems = [
+    { href: "/docs/i18nexus", label: t("문서 개요"), emoji: "📚" },
+    { href: "/docs/i18nexus/provider", label: "Provider", emoji: "🎨" },
+    {
+      href: "/docs/i18nexus/use-translation",
+      label: "useTranslation",
+      emoji: "🔤",
     },
   ];
 
@@ -119,47 +147,135 @@ export default function Header() {
               ))}
             </div>
 
-            {/* CLI Tools Section */}
+            {/* CLI Section with Hover Dropdown */}
             <div className="mt-8 pt-8 border-t border-slate-800">
               <h3 className="px-4 mb-2 text-xs font-semibold text-slate-500 uppercase tracking-wider">
-                {t("CLI 도구")}
+                {t("문서")}
               </h3>
               <div className="space-y-1">
-                {cliItems.map((item) => (
-                  <Link
-                    key={item.href}
-                    href={item.href}
-                    onClick={() => setSidebarOpen(false)}
-                    className={`flex items-center space-x-3 px-4 py-3 rounded-lg text-sm font-medium transition-all ${
-                      pathname === item.href
-                        ? "bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-lg"
-                        : "text-slate-400 hover:text-white hover:bg-slate-800"
-                    }`}>
-                    <span className="text-xl">{item.emoji}</span>
-                    <span>{item.label}</span>
-                  </Link>
-                ))}
-              </div>
-            </div>
+                {/* CLI Menu with Dropdown */}
+                <div className="relative">
+                  <div className="flex items-stretch">
+                    <Link
+                      href="/cli"
+                      onClick={() => setSidebarOpen(false)}
+                      className={`flex-1 flex items-center space-x-3 px-4 py-3 rounded-l-lg text-sm font-medium transition-all ${
+                        isCliSelected
+                          ? "bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-lg"
+                          : "text-slate-400 hover:text-white hover:bg-slate-800"
+                      }`}>
+                      <span className="text-xl">⚡</span>
+                      <span>{t("CLI")}</span>
+                    </Link>
+                    <button
+                      onClick={() => setCliExpanded(!cliExpanded)}
+                      className={`flex items-center justify-center px-3 rounded-r-lg text-sm font-medium transition-all ${
+                        isCliSelected
+                          ? "bg-gradient-to-r from-purple-600 to-indigo-600 text-white shadow-lg"
+                          : "text-slate-400 hover:text-white hover:bg-slate-800"
+                      }`}>
+                      <svg
+                        className={`w-4 h-4 transition-transform ${
+                          cliExpanded || isCliSelected ? "rotate-90" : ""
+                        }`}
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24">
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M9 5l7 7-7 7"
+                        />
+                      </svg>
+                    </button>
+                  </div>
 
-            {/* Documentation Section */}
-            <div className="mt-8 pt-8 border-t border-slate-800">
-              <h3 className="px-4 mb-2 text-xs font-semibold text-slate-500 uppercase tracking-wider">
-                {t("라이브러리 문서")}
-              </h3>
-              <div className="space-y-1">
-                {/* i18nexus Library */}
-                <Link
-                  href="/docs/i18nexus"
-                  onClick={() => setSidebarOpen(false)}
-                  className={`flex items-center space-x-3 px-4 py-3 rounded-lg text-sm font-medium transition-all ${
-                    pathname?.startsWith("/docs/i18nexus")
-                      ? "bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-lg"
-                      : "text-slate-400 hover:text-white hover:bg-slate-800"
-                  }`}>
-                  <span className="text-xl">📚</span>
-                  <span>i18nexus</span>
-                </Link>
+                  {/* CLI Dropdown */}
+                  {(cliExpanded || isCliSelected) && (
+                    <div className="ml-4 mt-1 space-y-1 border-l-2 border-indigo-500 pl-4">
+                      {cliItems.map((item) => (
+                        <Link
+                          key={item.href}
+                          href={item.href}
+                          onClick={() => setSidebarOpen(false)}
+                          className="group flex items-center space-x-3 px-4 py-2 rounded-lg text-sm font-medium transition-all text-slate-400 hover:text-white hover:bg-slate-800">
+                          <span className="text-base">{item.emoji}</span>
+                          <span
+                            className={
+                              pathname === item.href
+                                ? "underline underline-offset-2 text-white font-semibold"
+                                : "group-hover:underline underline-offset-2"
+                            }>
+                            {item.label}
+                          </span>
+                        </Link>
+                      ))}
+                    </div>
+                  )}
+                </div>
+
+                {/* Provider Menu with Dropdown */}
+                <div className="relative">
+                  <div className="flex items-stretch">
+                    <Link
+                      href="/docs/i18nexus"
+                      onClick={() => setSidebarOpen(false)}
+                      className={`flex-1 flex items-center space-x-3 px-4 py-3 rounded-l-lg text-sm font-medium transition-all ${
+                        isDocsSelected
+                          ? "bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-lg"
+                          : "text-slate-400 hover:text-white hover:bg-slate-800"
+                      }`}>
+                      <span className="text-xl">📚</span>
+                      <span>{t("Provider")}</span>
+                    </Link>
+                    <button
+                      onClick={() => setDocsExpanded(!docsExpanded)}
+                      className={`flex items-center justify-center px-3 rounded-r-lg text-sm font-medium transition-all ${
+                        isDocsSelected
+                          ? "bg-gradient-to-r from-indigo-600 to-blue-600 text-white shadow-lg"
+                          : "text-slate-400 hover:text-white hover:bg-slate-800"
+                      }`}>
+                      <svg
+                        className={`w-4 h-4 transition-transform ${
+                          docsExpanded || isDocsSelected ? "rotate-90" : ""
+                        }`}
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24">
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M9 5l7 7-7 7"
+                        />
+                      </svg>
+                    </button>
+                  </div>
+
+                  {/* Provider Dropdown */}
+                  {(docsExpanded || isDocsSelected) && (
+                    <div className="ml-4 mt-1 space-y-1 border-l-2 border-blue-500 pl-4">
+                      {docsItems.map((item) => (
+                        <Link
+                          key={item.href}
+                          href={item.href}
+                          onClick={() => setSidebarOpen(false)}
+                          className="group flex items-center space-x-3 px-4 py-2 rounded-lg text-sm font-medium transition-all text-slate-400 hover:text-white hover:bg-slate-800">
+                          <span className="text-base">{item.emoji}</span>
+                          <span
+                            className={
+                              pathname === item.href
+                                ? "underline underline-offset-2 text-white font-semibold"
+                                : "group-hover:underline underline-offset-2"
+                            }>
+                            {item.label}
+                          </span>
+                        </Link>
+                      ))}
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
 

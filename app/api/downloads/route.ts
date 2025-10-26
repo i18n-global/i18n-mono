@@ -7,6 +7,12 @@ interface NpmDownloads {
   end: string;
 }
 
+// 패키지 생성일 (변하지 않는 값)
+const PACKAGE_START_DATES: Record<string, string> = {
+  i18nexus: "2025-09-28",
+  "i18nexus-tools": "2025-09-29",
+};
+
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const packageName = searchParams.get("package");
@@ -18,8 +24,17 @@ export async function GET(request: Request) {
     );
   }
 
+  const startDate = PACKAGE_START_DATES[packageName];
+
+  if (!startDate) {
+    return NextResponse.json({ error: "Package not found" }, { status: 404 });
+  }
+
   try {
-    const url = `https://api.npmjs.org/downloads/point/last-month/${packageName}`;
+    // 패키지 생성일부터 현재까지의 다운로드 수 가져오기
+    const endDate = new Date().toISOString().split("T")[0];
+    const url = `https://api.npmjs.org/downloads/point/${startDate}:${endDate}/${packageName}`;
+
     const response = await fetch(url, {
       next: { revalidate: 3600 }, // Cache for 1 hour
     });
