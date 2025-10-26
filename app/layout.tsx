@@ -5,7 +5,7 @@ import { translations } from "@/lib/i18n";
 import { headers } from "next/headers";
 import { getServerLanguage } from "i18nexus/server";
 
-import { I18nProvider } from "i18nexus";
+import { I18nProvider, I18NexusDevtools } from "i18nexus";
 import Script from "next/script";
 import Analytics from "./components/Analytics";
 import FirebaseStatus from "./components/FirebaseStatus";
@@ -62,6 +62,7 @@ export default async function RootLayout({
             <Analytics />
             {/* Firebase connection status indicator - dev only */}
             {process.env.NODE_ENV === "development" && <FirebaseStatus />}
+            {process.env.NODE_ENV === "development" && <I18NexusDevtools />}
           </GlobalErrorProvider>
         </I18nProvider>
       </body>
