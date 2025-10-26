@@ -1,0 +1,97 @@
+name: Publish to npm
+
+on:
+  push:
+    branches:
+      - main
+    paths-ignore:
+      - "**.md"
+      - "docs/**"
+      - "test-*.tsx"
+      - "src/test-*.tsx"
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          registry-url: "https://registry.npmjs.org"
+
+      - name: Get package version
+        id: package-version
+        run: echo "version=$(node -p "require('./package.json').version")" >> $GITHUB_OUTPUT
+
+      - name: Check if version exists on npm
+        id: check-version
+        run: |
+          if npm view i18nexus-tools@${{ steps.package-version.outputs.version }} version 2>/dev/null; then
+            echo "exists=true" >> $GITHUB_OUTPUT
+            echo "Version ${{ steps.package-version.outputs.version }} already exists on npm"
+          else
+            echo "exists=false" >> $GITHUB_OUTPUT
+            echo "Version ${{ steps.package-version.outputs.version }} is new"
+          fi
+        continue-on-error: true
+
+      - name: Install dependencies
+        if: steps.check-version.outputs.exists != 'true'
+        run: npm ci
+
+      - name: Build
+        if: steps.check-version.outputs.exists != 'true'
+        run: npm run build
+
+      - name: Run tests (if available)
+        if: steps.check-version.outputs.exists != 'true'
+        run: npm test --if-present
+        continue-on-error: true
+
+      - name: Publish to npm
+        if: steps.check-version.outputs.exists != 'true'
+        run: npm publish --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Create Git tag
+        if: steps.check-version.outputs.exists != 'true'
+        run: |
+          git config user.name "GitHub Actions"
+          git config user.email "actions@github.com"
+          git tag -a "v${{ steps.package-version.outputs.version }}" -m "Release v${{ steps.package-version.outputs.version }}"
+          git push origin "v${{ steps.package-version.outputs.version }}"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Create GitHub Release
+        if: steps.check-version.outputs.exists != 'true'
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: v${{ steps.package-version.outputs.version }}
+          release_name: Release v${{ steps.package-version.outputs.version }}
+          body: |
+            ## Changes in v${{ steps.package-version.outputs.version }}
+
+            See [CHANGELOG.md](https://github.com/${{ github.repository }}/blob/main/CHANGELOG.md) for details.
+
+            ### Installation
+            ```bash
+            npm install -g i18nexus-tools@${{ steps.package-version.outputs.version }}
+            ```
+          draft: false
+          prerelease: false
+
+      - name: Skip - Version already published
+        if: steps.check-version.outputs.exists == 'true'
+        run: |
+          echo "⏭️  Skipping publish - version ${{ steps.package-version.outputs.version }} already exists on npm"

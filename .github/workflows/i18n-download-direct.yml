@@ -1,0 +1,45 @@
+name: Download Translations (Direct Commit)
+
+on:
+  schedule:
+    - cron: "0 0 * * *" # Daily at midnight UTC
+  workflow_dispatch: # Allow manual trigger
+
+jobs:
+  download:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Setup Google credentials
+        run: |
+          echo "${{ secrets.GOOGLE_CREDENTIALS }}" > credentials.json
+          chmod 600 credentials.json
+
+      - name: Download translations
+        run: npx i18n-download
+
+      - name: Cleanup credentials
+        if: always()
+        run: rm -f credentials.json
+
+      - name: Commit and push changes
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add locales/
+          git diff --staged --quiet || git commit -m "chore: update translations from Google Sheets [skip ci]"
+          git push
