@@ -16,6 +16,10 @@
   --font-bmhanna: var(--font-bmhanna-pro);
 }
 
+html {
+  background: #000000;
+}
+
 body {
   background: linear-gradient(to bottom, #020617, #0f172a);
   color: var(--foreground);
