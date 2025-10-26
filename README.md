@@ -222,7 +222,12 @@ import { I18NexusDevtools } from "i18nexus";
 
 ## 🤝 Contributing
 
-See [CONTRIBUTING.md](./CONTRIBUTING.md) for contribution guidelines.
+We welcome contributions! Please see our contribution guidelines:
+
+- 📖 [Contributing Guide (English)](./CONTRIBUTING.md)
+- 📖 [기여 가이드 (한국어)](./CONTRIBUTING.ko.md)
+
+Whether you're fixing bugs, adding features, or improving documentation, your help is appreciated!
 
 ---
 

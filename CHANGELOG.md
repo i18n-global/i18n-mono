@@ -445,6 +445,7 @@ export default async function Page() {
 ## Version Links
 
 ### 2.x Series
+
 [2.7.0]: https://github.com/manNomi/i18nexus/releases/tag/v2.7.0
 [2.6.0]: https://github.com/manNomi/i18nexus/releases/tag/v2.6.0
 [2.5.2]: https://github.com/manNomi/i18nexus/releases/tag/v2.5.2
@@ -452,6 +453,7 @@ export default async function Page() {
 [2.0.6]: https://github.com/manNomi/i18nexus/releases/tag/v2.0.6
 
 ### 1.x Series
+
 [1.3.1]: https://www.npmjs.com/package/i18nexus/v/1.3.1
 [1.3.0]: https://www.npmjs.com/package/i18nexus/v/1.3.0
 [1.2.0]: https://www.npmjs.com/package/i18nexus/v/1.2.0
