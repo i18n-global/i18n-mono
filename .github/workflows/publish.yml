@@ -1,0 +1,92 @@
+name: Publish to NPM
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "packages/i18nexus/**"
+      - "!packages/i18nexus/**.md"
+      - "!packages/i18nexus/examples/**"
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          registry-url: "https://registry.npmjs.org"
+          cache: "npm"
+          cache-dependency-path: packages/i18nexus/package-lock.json
+
+      - name: Install dependencies
+        working-directory: packages/i18nexus
+        run: npm ci
+
+      - name: Run tests
+        working-directory: packages/i18nexus
+        run: npm test
+
+      - name: Build package
+        working-directory: packages/i18nexus
+        run: npm run build
+
+      - name: Check if version has been updated
+        id: version-check
+        working-directory: packages/i18nexus
+        run: |
+          PACKAGE_VERSION=$(node -p "require('./package.json').version")
+          echo "version=$PACKAGE_VERSION" >> $GITHUB_OUTPUT
+
+          # Check if this version is already published
+          if npm view i18nexus@$PACKAGE_VERSION version 2>/dev/null; then
+            echo "Version $PACKAGE_VERSION is already published"
+            echo "should_publish=false" >> $GITHUB_OUTPUT
+          else
+            echo "Version $PACKAGE_VERSION is not published yet"
+            echo "should_publish=true" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Publish to NPM
+        if: steps.version-check.outputs.should_publish == 'true'
+        working-directory: packages/i18nexus
+        run: npm publish --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Create Git Tag
+        if: steps.version-check.outputs.should_publish == 'true'
+        run: |
+          VERSION=${{ steps.version-check.outputs.version }}
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git tag -a "v$VERSION" -m "Release v$VERSION"
+          git push origin "v$VERSION"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Create GitHub Release
+        if: steps.version-check.outputs.should_publish == 'true'
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: v${{ steps.version-check.outputs.version }}
+          release_name: Release v${{ steps.version-check.outputs.version }}
+          body: |
+            ## Changes in v${{ steps.version-check.outputs.version }}
+
+            See [CHANGELOG.md](https://github.com/manNomi/i18nexus/blob/main/packages/i18nexus/CHANGELOG.md) for details.
+          draft: false
+          prerelease: false

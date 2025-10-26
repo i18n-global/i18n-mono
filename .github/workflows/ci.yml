@@ -1,0 +1,52 @@
+name: CI
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - "packages/i18nexus/**"
+      - "!packages/i18nexus/**.md"
+      - "!packages/i18nexus/examples/**"
+  push:
+    branches-ignore:
+      - main
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [16, 18, 20]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: "npm"
+          cache-dependency-path: packages/i18nexus/package-lock.json
+
+      - name: Install dependencies
+        working-directory: packages/i18nexus
+        run: npm ci
+
+      - name: Run linter
+        working-directory: packages/i18nexus
+        run: npm run lint
+
+      - name: Run tests
+        working-directory: packages/i18nexus
+        run: npm test
+
+      - name: Build package
+        working-directory: packages/i18nexus
+        run: npm run build
+
+      - name: Check package can be published
+        working-directory: packages/i18nexus
+        run: npm run publish:dry
