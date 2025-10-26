@@ -292,7 +292,7 @@ None - This is a backwards compatible release
 
 ## [2.0.6] - 2024-12-XX
 
-### Initial Release
+### Initial Public Release (2.x Series)
 
 - Basic I18nProvider with cookie-based language management
 - useTranslation and useLanguageSwitcher hooks
@@ -300,6 +300,83 @@ None - This is a backwards compatible release
 - Google Sheets integration
 - TypeScript support
 - Next.js compatibility
+
+---
+
+## [1.3.1] - 2025-09-29
+
+### 🐛 Bug Fixes & Polish
+
+Final patch release in the 1.x series.
+
+- Fixed CLI tool path resolution issues
+- Improved error handling in `i18n-wrapper`
+- Better TypeScript type definitions
+- Enhanced stability for production use
+- Performance optimizations
+
+---
+
+## [1.3.0] - 2025-09-29
+
+### ✨ Feature Enhancements
+
+- Improved `i18n-wrapper` with better string detection
+- Enhanced `i18n-extractor` performance
+- Better error messages and logging
+- Improved Google Sheets integration
+- Faster translation loading
+- Optimized bundle size
+
+---
+
+## [1.2.0] - 2025-09-29
+
+### 🎯 Minor Feature Release
+
+- Enhanced `i18n-sheets` command
+- Better synchronization with Google Sheets
+- Improved authentication flow
+- Support for multiple sheets
+- Better error handling
+- Improved Windows compatibility
+
+#### Patch Releases
+
+- **v1.2.5** - Final bug fixes and optimizations
+- **v1.2.1 - v1.2.4** - Minor bug fixes and stability improvements
+
+---
+
+## [1.1.0] - 2025-09-29
+
+### 🚀 New CLI Tool
+
+- **NEW**: `i18n-sheets` command for Google Sheets management
+- Improved `i18n-wrapper` with better JSX handling
+- Enhanced `i18n-extractor` with more patterns
+- Better TypeScript support
+- Enhanced type definitions
+- Improved cookie management
+
+---
+
+## [1.0.4] - 2025-09-28
+
+### 🎉 First Stable Release
+
+Initial stable release of i18nexus.
+
+#### Core Features
+
+- `I18nProvider` component
+- `useTranslation()` hook
+- `useLanguageSwitcher()` hook
+- Cookie-based language persistence
+- CLI tools: i18n-wrapper, i18n-extractor, i18n-upload, i18n-download
+- Google Sheets integration
+- Full TypeScript support
+- React >=16.8.0 support
 
 ---
 
@@ -367,8 +444,16 @@ export default async function Page() {
 
 ## Version Links
 
+### 2.x Series
 [2.7.0]: https://github.com/manNomi/i18nexus/releases/tag/v2.7.0
 [2.6.0]: https://github.com/manNomi/i18nexus/releases/tag/v2.6.0
 [2.5.2]: https://github.com/manNomi/i18nexus/releases/tag/v2.5.2
 [2.1.0]: https://github.com/manNomi/i18nexus/compare/v2.0.6...v2.1.0
 [2.0.6]: https://github.com/manNomi/i18nexus/releases/tag/v2.0.6
+
+### 1.x Series
+[1.3.1]: https://www.npmjs.com/package/i18nexus/v/1.3.1
+[1.3.0]: https://www.npmjs.com/package/i18nexus/v/1.3.0
+[1.2.0]: https://www.npmjs.com/package/i18nexus/v/1.2.0
+[1.1.0]: https://www.npmjs.com/package/i18nexus/v/1.1.0
+[1.0.4]: https://www.npmjs.com/package/i18nexus/v/1.0.4
