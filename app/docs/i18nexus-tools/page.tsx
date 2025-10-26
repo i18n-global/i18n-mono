@@ -154,60 +154,85 @@ export default function I18nexusToolsPage() {
           <span className="mr-3">🚀</span>
           {t("빠른 워크플로우")}
         </h2>
-        <div className="space-y-4">
+        <div className="space-y-6">
           <div className="flex items-start">
-            <div className="flex-shrink-0 w-8 h-8 bg-blue-500/20 rounded-full flex items-center justify-center text-blue-400 font-bold mr-4">
+            <div className="flex-shrink-0 w-10 h-10 bg-gradient-to-br from-blue-600 to-blue-700 rounded-xl flex items-center justify-center text-white font-bold mr-4 shadow-lg">
               1
             </div>
-            <div>
-              <h4 className="text-lg font-semibold text-white mb-1">
-                {t("설정 파일 생성")}
+            <div className="flex-1">
+              <h4 className="text-lg font-semibold text-blue-300 mb-2">
+                {t("한국어 텍스트 자동 래핑")}
               </h4>
-              <code className="text-sm text-green-400 bg-slate-950 px-3 py-1 rounded">
-                npx i18n-sheets init
-              </code>
+              <p className="text-slate-400 text-sm mb-2">
+                {t("코드에 하드코딩된 한국어 문자열을 t()로 자동 감싸기")}
+              </p>
+              <pre className="bg-slate-950 rounded-lg p-3 text-sm border border-slate-800 overflow-x-auto">
+                <code className="text-green-400">
+                  npx i18n-wrapper --pattern "app/**/*.tsx"
+                </code>
+              </pre>
             </div>
           </div>
+
           <div className="flex items-start">
-            <div className="flex-shrink-0 w-8 h-8 bg-green-500/20 rounded-full flex items-center justify-center text-green-400 font-bold mr-4">
+            <div className="flex-shrink-0 w-10 h-10 bg-gradient-to-br from-green-600 to-emerald-700 rounded-xl flex items-center justify-center text-white font-bold mr-4 shadow-lg">
               2
             </div>
-            <div>
-              <h4 className="text-lg font-semibold text-white mb-1">
-                {t("하드코딩된 문자열 자동 래핑")}
+            <div className="flex-1">
+              <h4 className="text-lg font-semibold text-green-300 mb-2">
+                {t("번역 키 추출 및 병합")}
               </h4>
-              <code className="text-sm text-green-400 bg-slate-950 px-3 py-1 rounded">
-                npx i18n-wrapper
-              </code>
+              <p className="text-slate-400 text-sm mb-2">
+                {t("래핑된 텍스트에서 번역 파일을 생성하고 기존 번역과 병합")}
+              </p>
+              <pre className="bg-slate-950 rounded-lg p-3 text-sm border border-slate-800 overflow-x-auto">
+                <code className="text-green-400">
+                  npx i18n-extractor -p "app/**/*.tsx" -d "./locales"
+                </code>
+              </pre>
             </div>
           </div>
+
           <div className="flex items-start">
-            <div className="flex-shrink-0 w-8 h-8 bg-purple-500/20 rounded-full flex items-center justify-center text-purple-400 font-bold mr-4">
+            <div className="flex-shrink-0 w-10 h-10 bg-gradient-to-br from-purple-600 to-purple-700 rounded-xl flex items-center justify-center text-white font-bold mr-4 shadow-lg">
               3
             </div>
-            <div>
-              <h4 className="text-lg font-semibold text-white mb-1">
-                {t("번역 키 추출")}
+            <div className="flex-1">
+              <h4 className="text-lg font-semibold text-purple-300 mb-2">
+                {t("영어 번역 추가")}
               </h4>
-              <code className="text-sm text-green-400 bg-slate-950 px-3 py-1 rounded">
-                npx i18n-extractor
-              </code>
+              <p className="text-slate-400 text-sm mb-2">
+                {t("en.json 파일을 열어 영어 번역을 추가하세요")}
+              </p>
+              <pre className="bg-slate-950 rounded-lg p-3 text-sm border border-slate-800 overflow-x-auto">
+                <code className="text-slate-300">{`// locales/en.json
+{
+  "환영합니다": "Welcome",
+  "시작하기": "Get Started"
+}`}</code>
+              </pre>
             </div>
           </div>
-          <div className="flex items-start">
-            <div className="flex-shrink-0 w-8 h-8 bg-orange-500/20 rounded-full flex items-center justify-center text-orange-400 font-bold mr-4">
+
+          <div className="flex items-start opacity-75">
+            <div className="flex-shrink-0 w-10 h-10 bg-gradient-to-br from-yellow-600 to-orange-600 rounded-xl flex items-center justify-center text-white font-bold mr-4 shadow-lg">
               4
             </div>
-            <div>
-              <h4 className="text-lg font-semibold text-white mb-1">
-                {t("Google Sheets와 동기화 (선택사항)")}
+            <div className="flex-1">
+              <h4 className="text-lg font-semibold text-yellow-300 mb-2">
+                {t("Google Sheets와 동기화")}{" "}
+                <span className="text-sm text-slate-500">
+                  ({t("선택사항")})
+                </span>
               </h4>
-              <code className="text-sm text-green-400 bg-slate-950 px-3 py-1 rounded mr-2">
-                npx i18n-upload
-              </code>
-              <code className="text-sm text-blue-400 bg-slate-950 px-3 py-1 rounded">
-                npx i18n-download
-              </code>
+              <p className="text-slate-400 text-sm mb-2">
+                {t("팀 협업을 위해 번역을 Google Sheets로 업로드")}
+              </p>
+              <pre className="bg-slate-950 rounded-lg p-3 text-sm border border-slate-800 overflow-x-auto">
+                <code className="text-green-400">
+                  npx i18n-upload --spreadsheet-id "YOUR_ID"
+                </code>
+              </pre>
             </div>
           </div>
         </div>
