@@ -1,20 +1,26 @@
-// Minimal wrapper for Google Analytics (GA4) using gtag
-export const GA_ID = process.env.NEXT_PUBLIC_GA_ID || "";
+// Google Analytics utility functions
+// This file provides helper functions for tracking page views and events with GA4
 
 declare global {
   interface Window {
-    dataLayer: unknown[];
-    gtag?: (...args: unknown[]) => void;
+    gtag: (
+      command: string,
+      targetId: string,
+      config?: Record<string, unknown>
+    ) => void;
   }
 }
 
+// Track page views
 export const pageview = (url: string) => {
-  if (!GA_ID) return;
-  window.gtag?.("config", GA_ID, {
-    page_path: url,
-  });
+  if (typeof window !== "undefined" && window.gtag) {
+    window.gtag("config", process.env.NEXT_PUBLIC_GA_ID || "", {
+      page_path: url,
+    });
+  }
 };
 
+// Track custom events
 export const event = ({
   action,
   category,
@@ -26,10 +32,12 @@ export const event = ({
   label?: string;
   value?: number;
 }) => {
-  if (!GA_ID) return;
-  window.gtag?.("event", action, {
-    event_category: category,
-    event_label: label,
-    value,
-  });
+  if (typeof window !== "undefined" && window.gtag) {
+    window.gtag("event", action, {
+      event_category: category,
+      event_label: label,
+      value: value,
+    });
+  }
 };
+

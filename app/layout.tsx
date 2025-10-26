@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import { translations } from "@/lib/i18n";
 import { headers } from "next/headers";
 import { getServerLanguage } from "i18nexus/server";
 
@@ -54,7 +53,7 @@ export default async function RootLayout({
           </>
         ) : null}
 
-        <I18nProvider initialLanguage={language} translations={translations}>
+        <I18nProvider initialLanguage={language}>
           <GlobalErrorProvider>
             <Header />
             {children}

@@ -1,8 +1,3 @@
-// 번역 데이터만 export (서버/클라이언트 공통)
-import en from "./translations/en.json";
-import ko from "./translations/ko.json";
+// Re-export from locales for backward compatibility
+export { translations } from "../locales";
 
-export const translations = {
-  ko,
-  en,
-};
