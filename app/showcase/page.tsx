@@ -12,6 +12,7 @@ interface Submission {
   autoTitle: string;
   autoDescription: string;
   thumbnailUrl: string;
+  screenshotUrl?: string | null;
   approved: boolean;
 }
 
@@ -126,6 +127,7 @@ export default function ShowcasePage() {
               autoTitle={project.autoTitle}
               autoDescription={project.autoDescription}
               thumbnailUrl={project.thumbnailUrl}
+              screenshotUrl={project.screenshotUrl}
             />
           ))}
         </div>

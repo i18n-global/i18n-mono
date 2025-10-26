@@ -102,14 +102,23 @@ export async function POST(request: NextRequest) {
     }
 
     // Extract metadata from microlink response
+    // og:image를 우선 사용하고, 없으면 스크린샷 사용
+    const ogImage = data.data?.image?.url;
+    const screenshotImage = data.data?.screenshot?.url;
+    
     const metadata = {
       autoTitle: data.data?.title || data.data?.url || "Untitled Project",
       autoDescription: data.data?.description || "No description available",
-      thumbnailUrl: data.data?.screenshot?.url || "/default-thumbnail.svg",
+      thumbnailUrl: ogImage || screenshotImage || "/default-thumbnail.svg",
+      screenshotUrl: screenshotImage || null, // 상세보기용 스크린샷
+      ogImageUrl: ogImage || null, // 원본 메타 이미지
       url,
     };
 
-    console.log("✅ Metadata extracted successfully");
+    console.log("✅ Metadata extracted successfully:", {
+      hasOgImage: !!ogImage,
+      hasScreenshot: !!screenshotImage,
+    });
     return NextResponse.json(metadata);
   } catch (error: unknown) {
     console.error("❌ Metadata fetch error:", error);

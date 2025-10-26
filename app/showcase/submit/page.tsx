@@ -8,6 +8,7 @@ interface MetadataPreview {
   autoTitle: string;
   autoDescription: string;
   thumbnailUrl: string;
+  screenshotUrl?: string | null;
   url: string;
 }
 
@@ -118,6 +119,7 @@ export default function ShowcaseSubmitPage() {
           autoTitle: preview.autoTitle,
           autoDescription: preview.autoDescription,
           thumbnailUrl: preview.thumbnailUrl,
+          screenshotUrl: preview.screenshotUrl,
           contactEmail: contactEmail || null,
         }),
       });
@@ -240,6 +242,7 @@ export default function ShowcaseSubmitPage() {
               autoTitle={preview.autoTitle}
               autoDescription={preview.autoDescription}
               thumbnailUrl={preview.thumbnailUrl}
+              screenshotUrl={preview.screenshotUrl}
             />
           </div>
         )}

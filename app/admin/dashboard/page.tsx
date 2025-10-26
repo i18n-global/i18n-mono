@@ -14,6 +14,7 @@ interface Submission {
   autoTitle: string;
   autoDescription: string;
   thumbnailUrl: string;
+  screenshotUrl?: string | null;
   contactEmail: string | null;
   approved: boolean;
   submittedAt: { seconds: number };
@@ -238,12 +239,14 @@ export default function AdminDashboardPage() {
                 autoTitle={submission.autoTitle}
                 autoDescription={submission.autoDescription}
                 thumbnailUrl={submission.thumbnailUrl}
-                showActions={!submission.approved}
-                onApprove={() => handleApprove(submission.id)}
+                screenshotUrl={submission.screenshotUrl}
+                showActions={true}
+                isApproved={submission.approved}
+                onApprove={!submission.approved ? () => handleApprove(submission.id) : undefined}
                 onDelete={() => handleDelete(submission.id)}
               />
               {submission.approved && (
-                <div className="absolute top-4 right-4 bg-gradient-to-r from-green-500 to-green-400 text-white px-4 py-2 rounded-full text-sm font-bold shadow-lg shadow-green-500/30">
+                <div className="absolute top-4 right-4 bg-gradient-to-r from-green-500 to-green-400 text-white px-4 py-2 rounded-full text-sm font-bold shadow-lg shadow-green-500/30 z-10">
                   ✓ 승인됨
                 </div>
               )}

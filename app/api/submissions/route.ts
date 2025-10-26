@@ -23,6 +23,7 @@ export async function POST(request: NextRequest) {
       autoTitle,
       autoDescription,
       thumbnailUrl,
+      screenshotUrl,
       contactEmail,
     } = body;
 
@@ -39,6 +40,7 @@ export async function POST(request: NextRequest) {
       autoTitle,
       autoDescription: autoDescription || "",
       thumbnailUrl: thumbnailUrl || "/default-thumbnail.svg",
+      screenshotUrl: screenshotUrl || null,
       contactEmail: contactEmail || null,
       approved: false,
       submittedAt: Timestamp.now(),
