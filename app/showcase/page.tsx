@@ -2,6 +2,9 @@ import ProjectCard from "@/app/components/ProjectCard";
 import Link from "next/link";
 import { db } from "@/lib/firebase";
 import { collection, getDocs, query, where, orderBy } from "firebase/firestore";
+import { getServerTranslations, getServerLanguage } from "i18nexus/server";
+import { headers } from "next/headers";
+import { translations } from "@/lib/i18n";
 
 interface Submission {
   id: string;
@@ -40,6 +43,9 @@ async function getApprovedProjects(): Promise<Submission[]> {
 export const revalidate = false;
 
 export default async function ShowcasePage() {
+  const headersList = await headers();
+  const language = getServerLanguage(headersList);
+  const t = await getServerTranslations(language, translations);
   const projects = await getApprovedProjects();
 
   return (
@@ -50,15 +56,15 @@ export default async function ShowcasePage() {
           <span className="text-white font-bold text-3xl">🌍</span>
         </div>
         <h1 className="text-5xl md:text-6xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-blue-500 to-indigo-600 mb-6">
-          i18nexus 쇼케이스
+          {t["i18nexus 쇼케이스"] || "i18nexus 쇼케이스"}
         </h1>
         <p className="text-xl md:text-2xl text-slate-300 mb-8 max-w-3xl mx-auto">
-          i18nexus와 i18nexus-tools를 사용하는 실제 프로젝트들
+          {t["i18nexus와 i18nexus-tools를 사용하는 실제 프로젝트들"] || "i18nexus와 i18nexus-tools를 사용하는 실제 프로젝트들"}
         </p>
         <Link
           href="/showcase/submit"
           className="inline-flex items-center px-8 py-4 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-bold text-lg rounded-xl shadow-lg shadow-blue-500/30 hover:shadow-blue-500/50 transition-all hover:scale-105">
-          <span className="mr-3 text-2xl">📝</span>내 프로젝트 등록하기
+          <span className="mr-3 text-2xl">📝</span>{t["내 프로젝트 등록하기"] || "내 프로젝트 등록하기"}
           <span className="ml-3">→</span>
         </Link>
       </div>
@@ -70,15 +76,15 @@ export default async function ShowcasePage() {
             <span className="text-5xl">📦</span>
           </div>
           <h3 className="text-2xl font-bold text-white mb-3">
-            아직 등록된 프로젝트가 없습니다
+            {t["아직 등록된 프로젝트가 없습니다"] || "아직 등록된 프로젝트가 없습니다"}
           </h3>
           <p className="text-slate-400 mb-8">
-            첫 번째 프로젝트를 등록하고 커뮤니티에 공유해보세요!
+            {t["첫 번째 프로젝트를 등록하고 커뮤니티에 공유해보세요!"] || "첫 번째 프로젝트를 등록하고 커뮤니티에 공유해보세요!"}
           </p>
           <Link
             href="/showcase/submit"
             className="inline-flex items-center px-6 py-3 bg-blue-600 hover:bg-blue-500 text-white font-semibold rounded-lg transition-colors">
-            첫 번째 프로젝트 등록하기 →
+            {t["첫 번째 프로젝트 등록하기"] || "첫 번째 프로젝트 등록하기"} →
           </Link>
         </div>
       ) : (
