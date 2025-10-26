@@ -40,27 +40,28 @@ i18nexus is a comprehensive React internationalization toolkit that **automates 
 
 ```bash
 npm install i18nexus
+npm install -D i18nexus-tools  # Recommended for CLI tools
 ```
 
-### 1. Initialize Config (Optional but Recommended)
+### 1. Initialize Config (Recommended)
 
 ```bash
-npx i18n-sheets init --typescript
+npx i18n-sheets init
 ```
 
-Creates `i18nexus.config.ts`:
+Creates `i18nexus.config.json`:
 
-```typescript
-import { defineConfig } from "i18nexus";
-
-export const config = defineConfig({
-  languages: ["en", "ko", "ja"] as const,
-  defaultLanguage: "en",
-  localesDir: "./locales",
-});
-
-export type AppLanguages = (typeof config.languages)[number];
+```json
+{
+  "languages": ["en", "ko", "ja"],
+  "defaultLanguage": "en",
+  "localesDir": "./locales",
+  "sourcePattern": "app/**/*.{ts,tsx}",
+  "translationImportSource": "i18nexus"
+}
 ```
+
+**Note:** `i18nexus.config.json` is the recommended configuration format. TypeScript config (`.ts`) is legacy and not recommended for new projects.
 
 ### 2. Setup Provider (Next.js App Router)
 
@@ -193,6 +194,9 @@ t("Price: {{amount}}",
 ### 🎯 Type-Safe Languages
 
 ```typescript
+// Define your language type
+type AppLanguages = "en" | "ko" | "ja";
+
 const { changeLanguage } = useLanguageSwitcher<AppLanguages>();
 
 changeLanguage("en"); // ✅ Autocomplete!

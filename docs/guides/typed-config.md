@@ -1,47 +1,51 @@
-# Typed Language Configuration
+# Configuration Guide
 
-i18nexus now supports TypeScript config files with full type safety for language codes!
+i18nexus supports configuration files for managing your internationalization settings.
 
-## Quick Start
+> **⚠️ Important:** `i18nexus.config.json` is the **recommended** configuration format. TypeScript config files (`.ts`) are legacy and not recommended for new projects.
 
-### 1. Create a TypeScript Config File
+---
 
-Create `i18nexus.config.ts` (instead of `.json`):
+## Quick Start (Recommended)
 
-```typescript
-import { defineConfig } from "i18nexus";
+### 1. Install i18nexus-tools
 
-export const config = defineConfig({
-  languages: ["en", "ko", "ja"] as const, // Use 'as const' for type inference
-  defaultLanguage: "en",
-  localesDir: "./locales",
-  sourcePattern: "src/**/*.{ts,tsx}",
-  translationImportSource: "i18nexus",
-});
-
-// Export the language union type
-export type AppLanguages = (typeof config.languages)[number]; // "en" | "ko" | "ja"
+```bash
+npm install -D i18nexus-tools
 ```
 
-### 2. Use Typed Hooks in Your App
+### 2. Initialize Configuration
+
+```bash
+npx i18n-sheets init
+```
+
+This creates `i18nexus.config.json`:
+
+```json
+{
+  "languages": ["en", "ko", "ja"],
+  "defaultLanguage": "en",
+  "localesDir": "./locales",
+  "sourcePattern": "app/**/*.{ts,tsx}",
+  "translationImportSource": "i18nexus"
+}
+```
+
+### 3. Use Type-Safe Language Switching
+
+Define your language type manually:
 
 ```typescript
-import { I18nProvider, useLanguageSwitcher } from "i18nexus";
-import { config, AppLanguages } from "./i18nexus.config";
+// types/i18n.ts
+export type AppLanguages = "en" | "ko" | "ja";
+```
 
-function App() {
-  return (
-    <I18nProvider<AppLanguages>
-      languageManagerOptions={{
-        defaultLanguage: config.defaultLanguage,
-        availableLanguages: config.languages.map(code => ({ code, name: code })),
-      }}
-      translations={translations}
-    >
-      <LanguageSwitcher />
-    </I18nProvider>
-  );
-}
+Then use it in your components:
+
+```typescript
+import { useLanguageSwitcher } from "i18nexus";
+import type { AppLanguages } from "./types/i18n";
 
 function LanguageSwitcher() {
   const { changeLanguage, currentLanguage } = useLanguageSwitcher<AppLanguages>();
@@ -64,13 +68,91 @@ function LanguageSwitcher() {
 }
 ```
 
-### 3. Alternative: Extract Type Helper
+---
 
-You can also use the `ExtractLanguages` helper:
+## Configuration Options
+
+### i18nexus.config.json
+
+```json
+{
+  "languages": ["en", "ko", "ja"],
+  "defaultLanguage": "en",
+  "localesDir": "./locales",
+  "sourcePattern": "app/**/*.{ts,tsx}",
+  "translationImportSource": "i18nexus"
+}
+```
+
+| Option | Type | Description |
+|--------|------|-------------|
+| `languages` | `string[]` | Array of supported language codes |
+| `defaultLanguage` | `string` | Default language for your app |
+| `localesDir` | `string` | Directory containing translation files |
+| `sourcePattern` | `string` | Glob pattern for source files to scan |
+| `translationImportSource` | `string` | Module name to import translation functions from |
+
+---
+
+## Type Safety with JSON Config
+
+While JSON config doesn't provide automatic type inference, you can still achieve full type safety:
+
+### 1. Define Language Type
 
 ```typescript
-// i18nexus.config.ts
-import { defineConfig, ExtractLanguages } from "i18nexus";
+// types/i18n.ts
+export type AppLanguages = "en" | "ko" | "ja";
+```
+
+### 2. Use in Components
+
+```typescript
+import { useTranslation, useLanguageSwitcher } from "i18nexus";
+import type { AppLanguages } from "./types/i18n";
+
+function MyComponent() {
+  const { t } = useTranslation();
+  const { changeLanguage } = useLanguageSwitcher<AppLanguages>();
+
+  return (
+    <div>
+      <h1>{t("Welcome")}</h1>
+      <button onClick={() => changeLanguage("ko")}>한국어</button>
+    </div>
+  );
+}
+```
+
+### 3. Benefits
+
+✅ **Autocomplete**: Your IDE will suggest valid language codes  
+✅ **Type Safety**: TypeScript catches invalid language codes at compile time  
+✅ **Refactoring**: Easy to update when adding/removing languages  
+✅ **Consistency**: Single source of truth for language types
+
+---
+
+## File Priority
+
+i18nexus looks for config files in this order:
+
+1. `i18nexus.config.json` ✅ **Recommended**
+2. `i18nexus.config.js` (JavaScript module)
+3. `i18nexus.config.ts` ⚠️ **Legacy - Not recommended**
+
+The first file found will be used.
+
+---
+
+## Legacy: TypeScript Config (Not Recommended)
+
+> **⚠️ Deprecated:** TypeScript config files are legacy and not recommended for new projects. Use `i18nexus.config.json` instead.
+
+If you're maintaining a legacy project with `i18nexus.config.ts`:
+
+```typescript
+import { defineConfig } from "i18nexus";
 
 export const config = defineConfig({
   languages: ["en", "ko", "ja"] as const,
@@ -80,94 +162,137 @@ export const config = defineConfig({
   translationImportSource: "i18nexus",
 });
 
-export type AppLanguages = ExtractLanguages<typeof config>;
+export type AppLanguages = (typeof config.languages)[number];
 ```
 
-## Benefits
+### Migration to JSON (Recommended)
 
-### ✅ Autocomplete
-
-Your IDE will suggest valid language codes:
-
-```typescript
-const { changeLanguage } = useLanguageSwitcher<AppLanguages>();
-changeLanguage(/* IDE shows: "en" | "ko" | "ja" */);
-```
-
-### ✅ Type Safety
-
-TypeScript will catch errors at compile time:
-
-```typescript
-changeLanguage("fr"); // ❌ Error: Argument of type '"fr"' is not assignable to parameter of type '"en" | "ko" | "ja"'
-```
-
-### ✅ Refactoring Support
-
-If you add or remove a language from the config, TypeScript will help you update all usage sites:
-
-```typescript
-// Before: languages: ["en", "ko", "ja"]
-// After: languages: ["en", "ko"] (removed "ja")
-
-// TypeScript will now error wherever "ja" is used:
-changeLanguage("ja"); // ❌ Error: '"ja"' is not assignable to type '"en" | "ko"'
-```
-
-## Migration from JSON Config
-
-If you're using `i18nexus.config.json`, you can migrate to TypeScript:
-
-### Before (i18nexus.config.json):
-
-```json
-{
-  "languages": ["en", "ko"],
-  "defaultLanguage": "en",
-  "localesDir": "./locales",
-  "sourcePattern": "src/**/*.{ts,tsx}",
-  "translationImportSource": "i18nexus"
-}
-```
-
-### After (i18nexus.config.ts):
+**Before (i18nexus.config.ts):**
 
 ```typescript
 import { defineConfig } from "i18nexus";
 
 export const config = defineConfig({
-  languages: ["en", "ko"] as const, // Add 'as const'
+  languages: ["en", "ko"] as const,
   defaultLanguage: "en",
   localesDir: "./locales",
-  sourcePattern: "src/**/*.{ts,tsx}",
-  translationImportSource: "i18nexus",
 });
 
 export type AppLanguages = (typeof config.languages)[number];
 ```
 
-Then update your app:
+**After (i18nexus.config.json):**
+
+```json
+{
+  "languages": ["en", "ko"],
+  "defaultLanguage": "en",
+  "localesDir": "./locales"
+}
+```
+
+**Create separate type file:**
+
+```typescript
+// types/i18n.ts
+export type AppLanguages = "en" | "ko";
+```
+
+**Update your app:**
 
 ```typescript
 // Before
-const { changeLanguage } = useLanguageSwitcher();
+import { config, AppLanguages } from "./i18nexus.config";
 
 // After
-const { changeLanguage } = useLanguageSwitcher<AppLanguages>();
+import type { AppLanguages } from "./types/i18n";
 ```
 
-## File Priority
+---
 
-i18nexus will look for config files in this order:
+## CLI Tools
 
-1. `i18nexus.config.ts` (TypeScript, with type inference)
-2. `i18nexus.config.js` (JavaScript module)
-3. `i18nexus.config.json` (JSON)
+i18nexus-tools provides powerful CLI commands:
 
-The first file found will be used.
+```bash
+# Initialize config
+npx i18n-sheets init
 
-## Notes
+# Wrap hardcoded strings with t()
+npx i18n-wrapper app/
 
-- Don't forget `as const` on the languages array for proper type inference
-- TypeScript config files require the `defineConfig` helper or explicit typing
-- JSON config files will still work but won't provide type inference
+# Extract translation keys
+npx i18n-extractor app/ locales/
+
+# Upload to Google Sheets
+npx i18n-sheets upload
+
+# Download from Google Sheets
+npx i18n-sheets download
+```
+
+---
+
+## Best Practices
+
+1. ✅ Use `i18nexus.config.json` for new projects
+2. ✅ Define language types in a separate TypeScript file
+3. ✅ Install `i18nexus-tools` as a dev dependency
+4. ✅ Use type parameters with hooks for autocomplete
+5. ❌ Don't use TypeScript config files (`.ts`) for new projects
+
+---
+
+## Examples
+
+### Complete Setup Example
+
+**1. Install:**
+
+```bash
+npm install i18nexus
+npm install -D i18nexus-tools
+```
+
+**2. Initialize:**
+
+```bash
+npx i18n-sheets init
+```
+
+**3. Define types:**
+
+```typescript
+// types/i18n.ts
+export type AppLanguages = "en" | "ko" | "ja";
+```
+
+**4. Use in app:**
+
+```typescript
+// app/components/LanguageSwitcher.tsx
+"use client";
+import { useLanguageSwitcher } from "i18nexus";
+import type { AppLanguages } from "@/types/i18n";
+
+export function LanguageSwitcher() {
+  const { language, changeLanguage } = useLanguageSwitcher<AppLanguages>();
+
+  return (
+    <select value={language} onChange={(e) => changeLanguage(e.target.value as AppLanguages)}>
+      <option value="en">English</option>
+      <option value="ko">한국어</option>
+      <option value="ja">日本語</option>
+    </select>
+  );
+}
+```
+
+---
+
+## Summary
+
+- **Recommended:** `i18nexus.config.json` + manual type definitions
+- **Legacy:** `i18nexus.config.ts` (not recommended for new projects)
+- **CLI Tools:** Install `i18nexus-tools` for automation
+- **Type Safety:** Define language types manually for full IDE support

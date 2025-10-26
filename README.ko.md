@@ -40,27 +40,28 @@ i18nexus는 **완전한 타입 안전성**을 갖춘 **i18n 워크플로우를 �
 
 ```bash
 npm install i18nexus
+npm install -D i18nexus-tools  # CLI 도구를 위해 권장
 ```
 
-### 1. 설정 초기화 (선택사항이지만 권장)
+### 1. 설정 초기화 (권장)
 
 ```bash
-npx i18n-sheets init --typescript
+npx i18n-sheets init
 ```
 
-`i18nexus.config.ts` 생성:
+`i18nexus.config.json` 생성:
 
-```typescript
-import { defineConfig } from "i18nexus";
-
-export const config = defineConfig({
-  languages: ["en", "ko", "ja"] as const,
-  defaultLanguage: "ko",
-  localesDir: "./locales",
-});
-
-export type AppLanguages = (typeof config.languages)[number];
+```json
+{
+  "languages": ["en", "ko", "ja"],
+  "defaultLanguage": "ko",
+  "localesDir": "./locales",
+  "sourcePattern": "app/**/*.{ts,tsx}",
+  "translationImportSource": "i18nexus"
+}
 ```
+
+**참고:** `i18nexus.config.json`이 권장되는 설정 형식입니다. TypeScript 설정 파일(`.ts`)은 레거시 방식이며 새 프로젝트에는 권장하지 않습니다.
 
 ### 2. Provider 설정 (Next.js App Router)
 
@@ -193,6 +194,9 @@ t("가격: {{amount}}",
 ### 🎯 타입 안전 언어
 
 ```typescript
+// 언어 타입 정의
+type AppLanguages = "en" | "ko" | "ja";
+
 const { changeLanguage } = useLanguageSwitcher<AppLanguages>();
 
 changeLanguage("ko"); // ✅ 자동완성!
