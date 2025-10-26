@@ -106,9 +106,7 @@ export default function I18nexusToolsPage() {
           {t("홈")}
         </Link>
         <span className="text-slate-500 mx-2">/</span>
-        <span className="text-slate-300">
-          {t("i18nexus-tools 문서")}
-        </span>
+        <span className="text-slate-300">{t("i18nexus-tools 문서")}</span>
       </div>
 
       {/* Header */}
@@ -120,7 +118,9 @@ export default function I18nexusToolsPage() {
           {t("i18nexus-tools")}
         </h1>
         <p className="text-xl text-slate-400 max-w-2xl mx-auto">
-          {t("코드 변환부터 Google Sheets 통합까지 i18n 워크플로우를 자동화하는 강력한 CLI 도구")}
+          {t(
+            "코드 변환부터 Google Sheets 통합까지 i18n 워크플로우를 자동화하는 강력한 CLI 도구"
+          )}
         </p>
       </div>
 
@@ -132,9 +132,7 @@ export default function I18nexusToolsPage() {
         </h2>
         <div className="space-y-4">
           <div>
-            <p className="text-slate-400 mb-2">
-              {t("전역 설치 (권장)")}:
-            </p>
+            <p className="text-slate-400 mb-2">{t("전역 설치 (권장)")}:</p>
             <div className="bg-slate-950 rounded-lg p-4 font-mono text-sm">
               <code className="text-green-400">
                 npm install -g i18nexus-tools
@@ -142,9 +140,7 @@ export default function I18nexusToolsPage() {
             </div>
           </div>
           <div>
-            <p className="text-slate-400 mb-2">
-              {t("또는 설치 없이 사용")}:
-            </p>
+            <p className="text-slate-400 mb-2">{t("또는 설치 없이 사용")}:</p>
             <div className="bg-slate-950 rounded-lg p-4 font-mono text-sm">
               <code className="text-blue-400">npx i18nexus-tools@latest</code>
             </div>
@@ -256,9 +252,7 @@ export default function I18nexusToolsPage() {
 
       {/* Configuration File */}
       <section className="mb-12">
-        <h2 className="text-3xl font-bold text-white mb-6">
-          {t("설정 파일")}
-        </h2>
+        <h2 className="text-3xl font-bold text-white mb-6">{t("설정 파일")}</h2>
         <div className="bg-slate-900 rounded-xl border border-slate-700 p-6">
           <p className="text-slate-300 mb-4">
             {t("모든 CLI 도구는 프로젝트 루트의")}{" "}
@@ -294,9 +288,7 @@ export default function I18nexusToolsPage() {
 
       {/* Features */}
       <section>
-        <h2 className="text-3xl font-bold text-white mb-6">
-          {t("주요 기능")}
-        </h2>
+        <h2 className="text-3xl font-bold text-white mb-6">{t("주요 기능")}</h2>
         <div className="grid md:grid-cols-2 gap-6">
           <div className="bg-slate-900 rounded-xl border border-slate-700 p-6">
             <h3 className="text-xl font-semibold text-white mb-3 flex items-center">
