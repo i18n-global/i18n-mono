@@ -16,10 +16,39 @@ export default function Header() {
     { href: "/", label: t("홈"), emoji: "🏠" },
     { href: "/getting-started", label: t("시작하기"), emoji: "🚀" },
     { href: "/provider", label: t("Provider"), emoji: "🎨" },
-    { href: "/cli", label: t("CLI 도구"), emoji: "⚡" },
     { href: "/server-example", label: t("서버 예제"), emoji: "🖥️" },
     { href: "/showcase", label: t("쇼케이스"), emoji: "🌍" },
     { href: "/showcase/submit", label: t("프로젝트 등록"), emoji: "📝" },
+  ];
+
+  const cliItems = [
+    { href: "/cli", label: t("CLI 개요"), emoji: "⚡" },
+    {
+      href: "/docs/i18nexus-tools/wrapper",
+      label: "i18n-wrapper",
+      emoji: "🔧",
+    },
+    {
+      href: "/docs/i18nexus-tools/extractor",
+      label: "i18n-extractor",
+      emoji: "🔍",
+    },
+    { href: "/docs/i18nexus-tools/upload", label: "i18n-upload", emoji: "📤" },
+    {
+      href: "/docs/i18nexus-tools/download",
+      label: "i18n-download",
+      emoji: "📥",
+    },
+    {
+      href: "/docs/i18nexus-tools/download-force",
+      label: "i18n-download-force",
+      emoji: "🔄",
+    },
+    {
+      href: "/docs/i18nexus-tools/google-sheets",
+      label: "Google Sheets",
+      emoji: "📊",
+    },
   ];
 
   return (
@@ -90,10 +119,33 @@ export default function Header() {
               ))}
             </div>
 
+            {/* CLI Tools Section */}
+            <div className="mt-8 pt-8 border-t border-slate-800">
+              <h3 className="px-4 mb-2 text-xs font-semibold text-slate-500 uppercase tracking-wider">
+                {t("CLI 도구")}
+              </h3>
+              <div className="space-y-1">
+                {cliItems.map((item) => (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    onClick={() => setSidebarOpen(false)}
+                    className={`flex items-center space-x-3 px-4 py-3 rounded-lg text-sm font-medium transition-all ${
+                      pathname === item.href
+                        ? "bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-lg"
+                        : "text-slate-400 hover:text-white hover:bg-slate-800"
+                    }`}>
+                    <span className="text-xl">{item.emoji}</span>
+                    <span>{item.label}</span>
+                  </Link>
+                ))}
+              </div>
+            </div>
+
             {/* Documentation Section */}
             <div className="mt-8 pt-8 border-t border-slate-800">
               <h3 className="px-4 mb-2 text-xs font-semibold text-slate-500 uppercase tracking-wider">
-                {t("문서")}
+                {t("라이브러리 문서")}
               </h3>
               <div className="space-y-1">
                 {/* i18nexus Library */}
@@ -106,20 +158,7 @@ export default function Header() {
                       : "text-slate-400 hover:text-white hover:bg-slate-800"
                   }`}>
                   <span className="text-xl">📚</span>
-                  <span>{t("i18nexus 라이브러리")}</span>
-                </Link>
-
-                {/* i18nexus-tools */}
-                <Link
-                  href="/docs/i18nexus-tools"
-                  onClick={() => setSidebarOpen(false)}
-                  className={`flex items-center space-x-3 px-4 py-3 rounded-lg text-sm font-medium transition-all ${
-                    pathname?.startsWith("/docs/i18nexus-tools")
-                      ? "bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-lg"
-                      : "text-slate-400 hover:text-white hover:bg-slate-800"
-                  }`}>
-                  <span className="text-xl">⚡</span>
-                  <span>{t("i18nexus-tools CLI")}</span>
+                  <span>i18nexus</span>
                 </Link>
               </div>
             </div>
@@ -155,28 +194,6 @@ export default function Header() {
               </div>
             </div>
           </nav>
-
-          {/* Language Switcher in Sidebar */}
-          <div className="p-4 border-t border-slate-800">
-            <h3 className="px-4 mb-2 text-xs font-semibold text-slate-500 uppercase tracking-wider">
-              {t("언어")}
-            </h3>
-            <div className="space-y-2">
-              {availableLanguages.map((lang) => (
-                <button
-                  key={lang.code}
-                  onClick={() => changeLanguage(lang.code)}
-                  className={`w-full px-4 py-2 rounded-lg text-sm font-medium transition-all ${
-                    currentLanguage === lang.code
-                      ? "bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-lg"
-                      : "bg-slate-800 text-slate-400 hover:text-white hover:bg-slate-700"
-                  }`}>
-                  <span className="mr-2">{lang.flag}</span>
-                  {lang.name}
-                </button>
-              ))}
-            </div>
-          </div>
         </div>
       </aside>
 
@@ -225,7 +242,7 @@ export default function Header() {
                   onClick={() => changeLanguage(lang.code)}
                   className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
                     currentLanguage === lang.code
-                      ? "bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-lg shadow-blue-500/30 scale-105"
+                      ? "bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-lg shadow-blue-500/30"
                       : "bg-slate-800 text-slate-400 hover:text-white hover:bg-slate-700 border border-slate-700"
                   }`}>
                   <span className="mr-1.5">{lang.flag}</span>
