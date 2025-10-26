@@ -1,9 +1,7 @@
-"use client";
-
-import { useEffect, useState } from "react";
 import ProjectCard from "@/app/components/ProjectCard";
 import Link from "next/link";
-import { useError } from "@/app/components/GlobalErrorProvider";
+import { db } from "@/lib/firebase";
+import { collection, getDocs, query, where, orderBy } from "firebase/firestore";
 
 interface Submission {
   id: string;
@@ -16,67 +14,32 @@ interface Submission {
   approved: boolean;
 }
 
-export default function ShowcasePage() {
-  const { setError } = useError();
-  const [projects, setProjects] = useState<Submission[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    fetchApprovedProjects();
-  }, []);
-
-  const fetchApprovedProjects = async () => {
-    try {
-      const response = await fetch("/api/submissions?approved=true");
-      const data = await response.json();
-
-      // 데이터가 배열인지 확인
-      if (Array.isArray(data)) {
-        setProjects(data);
-      } else {
-        console.error("Invalid data format:", data);
-        setProjects([]);
-
-        // 에러 메시지 표시
-        if (data.code === "FIRESTORE_INDEX_REQUIRED") {
-          const message = data.indexUrl
-            ? `Firestore 인덱스가 필요합니다. 링크를 클릭하여 생성해주세요: ${data.indexUrl}`
-            : data.error;
-          setError(message);
-
-          // 콘솔에도 링크 출력
-          if (data.indexUrl) {
-            console.log("🔗 Firestore 인덱스 생성 링크:", data.indexUrl);
-          }
-        } else if (data.code === "FIRESTORE_NOT_CONFIGURED") {
-          setError(
-            "Firestore Database가 설정되지 않았습니다. FIREBASE_QUICK_SETUP.md를 참고하세요."
-          );
-        } else if (data.error) {
-          setError(data.error);
-        }
-      }
-    } catch (error) {
-      console.error("Failed to fetch projects:", error);
-      setProjects([]);
-      setError("프로젝트 목록을 불러오는데 실패했습니다.");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  if (loading) {
-    return (
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-        <div className="flex items-center justify-center min-h-[60vh]">
-          <div className="text-center">
-            <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-blue-500 mx-auto mb-4"></div>
-            <div className="text-xl text-slate-300">로딩 중...</div>
-          </div>
-        </div>
-      </main>
+async function getApprovedProjects(): Promise<Submission[]> {
+  try {
+    const q = query(
+      collection(db, "submissions"),
+      where("approved", "==", true),
+      orderBy("submittedAt", "desc")
     );
+
+    const querySnapshot = await getDocs(q);
+    const submissions = querySnapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    })) as Submission[];
+
+    return submissions;
+  } catch (error) {
+    console.error("Failed to fetch projects:", error);
+    return [];
   }
+}
+
+// ISR: 60초마다 재검증
+export const revalidate = 60;
+
+export default async function ShowcasePage() {
+  const projects = await getApprovedProjects();
 
   return (
     <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
