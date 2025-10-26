@@ -18,12 +18,10 @@ export default function HomePage() {
           i18nexus
         </h1>
         <p className="text-2xl md:text-3xl text-slate-300 mb-4 font-light">
-          {t("Complete React i18n Toolkit")}
+          {t("완전한 React i18n 툴킷")}
         </p>
         <p className="text-lg text-slate-400 max-w-3xl mx-auto leading-relaxed">
-          {t(
-            "Automate your internationalization workflow with intelligent tools"
-          )}
+          {t("지능형 도구로 다국어화 작업을 자동화하세요")}
         </p>
       </div>
 
@@ -33,11 +31,11 @@ export default function HomePage() {
           href="/getting-started"
           className="inline-flex items-center px-8 py-4 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-bold text-lg rounded-xl shadow-lg shadow-blue-500/30 hover:shadow-blue-500/50 transition-all hover:scale-105">
           <span className="mr-3 text-2xl">🚀</span>
-          {t("Getting Started")}
+          {t("시작하기")}
           <span className="ml-3">→</span>
         </Link>
         <p className="text-slate-400 mt-4">
-          {t("Complete step-by-step guide to setup i18nexus in your project")}
+          {t("프로젝트에 i18nexus를 설정하는 완전한 단계별 가이드")}
         </p>
       </div>
 
@@ -50,29 +48,27 @@ export default function HomePage() {
             <span className="text-3xl">🎨</span>
           </div>
           <h2 className="text-2xl font-bold text-white mb-3">
-            {t("i18nexus Library")}
+            {t("i18nexus 라이브러리")}
           </h2>
           <p className="text-slate-400 mb-6 leading-relaxed">
-            {t(
-              "React library with I18nProvider, hooks, and server components support"
-            )}
+            {t("I18nProvider, 훅, 서버 컴포넌트를 지원하는 React 라이브러리")}
           </p>
           <div className="space-y-2">
             <div className="flex items-center text-sm text-slate-300">
               <span className="text-green-400 mr-2">✓</span>
-              {t("Cookie-based persistence")}
+              {t("쿠키 기반 영속성")}
             </div>
             <div className="flex items-center text-sm text-slate-300">
               <span className="text-green-400 mr-2">✓</span>
-              {t("Zero hydration mismatch")}
+              {t("하이드레이션 불일치 제로")}
             </div>
             <div className="flex items-center text-sm text-slate-300">
               <span className="text-green-400 mr-2">✓</span>
-              {t("TypeScript support")}
+              {t("TypeScript 지원")}
             </div>
           </div>
           <div className="mt-6 inline-flex items-center text-blue-400 font-medium group-hover:text-blue-300">
-            {t("View Documentation")}{" "}
+            {t("문서 보기")}{" "}
             <span className="ml-2 group-hover:translate-x-1 transition-transform">
               →
             </span>
@@ -86,29 +82,27 @@ export default function HomePage() {
             <span className="text-3xl">⚡</span>
           </div>
           <h2 className="text-2xl font-bold text-white mb-3">
-            {t("CLI Tools")}
+            {t("CLI 도구")}
           </h2>
           <p className="text-slate-400 mb-6 leading-relaxed">
-            {t(
-              "Powerful automation tools for wrapping text and managing translations"
-            )}
+            {t("텍스트 래핑과 번역 관리를 위한 강력한 자동화 도구")}
           </p>
           <div className="space-y-2">
             <div className="flex items-center text-sm text-slate-300">
               <span className="text-green-400 mr-2">✓</span>
-              {t("Auto wrap Korean text")}
+              {t("한국어 텍스트 자동 래핑")}
             </div>
             <div className="flex items-center text-sm text-slate-300">
               <span className="text-green-400 mr-2">✓</span>
-              {t("Extract translation keys")}
+              {t("번역 키 추출")}
             </div>
             <div className="flex items-center text-sm text-slate-300">
               <span className="text-green-400 mr-2">✓</span>
-              {t("Google Sheets sync")}
+              {t("Google Sheets 동기화")}
             </div>
           </div>
           <div className="mt-6 inline-flex items-center text-indigo-400 font-medium group-hover:text-indigo-300">
-            {t("View Documentation")}{" "}
+            {t("문서 보기")}{" "}
             <span className="ml-2 group-hover:translate-x-1 transition-transform">
               →
             </span>
@@ -122,7 +116,7 @@ export default function HomePage() {
           <div className="w-14 h-14 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-2xl flex items-center justify-center mr-4 shadow-lg shadow-blue-500/30">
             <span className="text-white font-bold text-2xl">🚀</span>
           </div>
-          <h2 className="text-3xl font-bold text-white">{t("Quick Start")}</h2>
+          <h2 className="text-3xl font-bold text-white">{t("빠른 시작")}</h2>
         </div>
 
         <div className="grid md:grid-cols-3 gap-6">
@@ -131,7 +125,7 @@ export default function HomePage() {
               <span className="text-blue-400 font-bold">1</span>
             </div>
             <h3 className="text-lg font-semibold text-white mb-2">
-              {t("Install")}
+              {t("설치")}
             </h3>
             <pre className="bg-slate-950 text-slate-300 p-3 rounded-lg text-xs overflow-x-auto">
               <code>npm install i18nexus</code>
@@ -143,10 +137,10 @@ export default function HomePage() {
               <span className="text-indigo-400 font-bold">2</span>
             </div>
             <h3 className="text-lg font-semibold text-white mb-2">
-              {t("Setup Provider")}
+              {t("Provider 설정")}
             </h3>
             <p className="text-sm text-slate-400">
-              {t("Add I18nProvider to layout.tsx")}
+              {t("layout.tsx에 I18nProvider 추가")}
             </p>
           </div>
 
@@ -155,10 +149,10 @@ export default function HomePage() {
               <span className="text-purple-400 font-bold">3</span>
             </div>
             <h3 className="text-lg font-semibold text-white mb-2">
-              {t("Use Hooks")}
+              {t("훅 사용")}
             </h3>
             <p className="text-sm text-slate-400">
-              {t("Use useTranslation() in components")}
+              {t("컴포넌트에서 useTranslation() 사용")}
             </p>
           </div>
         </div>
@@ -167,31 +161,31 @@ export default function HomePage() {
       {/* Why i18nexus Section */}
       <section className="mb-20">
         <h2 className="text-3xl font-bold text-white mb-10 text-center">
-          {t("Why i18nexus?")}
+          {t("왜 i18nexus인가?")}
         </h2>
 
         <div className="grid md:grid-cols-2 gap-8">
           <div className="bg-slate-900 rounded-2xl border border-red-900/50 p-8">
             <h3 className="text-xl font-semibold text-red-400 mb-6 flex items-center">
               <span className="mr-2">❌</span>
-              {t("Traditional i18n Problems")}
+              {t("전통적인 i18n 문제점")}
             </h3>
             <ul className="space-y-3 text-slate-300">
               <li className="flex items-start">
                 <span className="text-red-500 mr-3 mt-0.5">•</span>
-                <span>{t("Manual text wrapping")}</span>
+                <span>{t("수동 텍스트 래핑")}</span>
               </li>
               <li className="flex items-start">
                 <span className="text-red-500 mr-3 mt-0.5">•</span>
-                <span>{t("Hydration issues in SSR")}</span>
+                <span>{t("SSR에서의 하이드레이션 문제")}</span>
               </li>
               <li className="flex items-start">
                 <span className="text-red-500 mr-3 mt-0.5">•</span>
-                <span>{t("Complex configuration")}</span>
+                <span>{t("복잡한 설정")}</span>
               </li>
               <li className="flex items-start">
                 <span className="text-red-500 mr-3 mt-0.5">•</span>
-                <span>{t("Manual file management")}</span>
+                <span>{t("수동 파일 관리")}</span>
               </li>
             </ul>
           </div>
@@ -199,24 +193,24 @@ export default function HomePage() {
           <div className="bg-slate-900 rounded-2xl border border-green-900/50 p-8">
             <h3 className="text-xl font-semibold text-green-400 mb-6 flex items-center">
               <span className="mr-2">✅</span>
-              {t("i18nexus Solutions")}
+              {t("i18nexus 솔루션")}
             </h3>
             <ul className="space-y-3 text-slate-300">
               <li className="flex items-start">
                 <span className="text-green-500 mr-3 mt-0.5">•</span>
-                <span>{t("Automatic text wrapping with CLI")}</span>
+                <span>{t("CLI로 자동 텍스트 래핑")}</span>
               </li>
               <li className="flex items-start">
                 <span className="text-green-500 mr-3 mt-0.5">•</span>
-                <span>{t("Zero hydration issues")}</span>
+                <span>{t("하이드레이션 문제 제로")}</span>
               </li>
               <li className="flex items-start">
                 <span className="text-green-500 mr-3 mt-0.5">•</span>
-                <span>{t("Simple setup with defaults")}</span>
+                <span>{t("기본값으로 간단한 설정")}</span>
               </li>
               <li className="flex items-start">
                 <span className="text-green-500 mr-3 mt-0.5">•</span>
-                <span>{t("Smart file merging")}</span>
+                <span>{t("스마트 파일 병합")}</span>
               </li>
             </ul>
           </div>
@@ -230,30 +224,30 @@ export default function HomePage() {
             <span className="text-white font-bold text-2xl">📁</span>
           </div>
           <h2 className="text-3xl font-bold text-white">
-            {t("Recommended Structure")}
+            {t("권장 구조")}
           </h2>
         </div>
 
         <p className="text-slate-300 mb-6 text-lg">
-          {t("This demo follows the recommended Next.js App Router structure:")}
+          {t("이 데모는 권장되는 Next.js App Router 구조를 따릅니다:")}
         </p>
 
         <div className="bg-slate-950 rounded-xl p-6 mb-8 border border-slate-800">
           <pre className="text-slate-300 text-sm font-mono">
             <code>{`app/
-├── layout.tsx          # I18nProvider setup (server)
-├── page.tsx            # useTranslation() (client)
+├── layout.tsx          # I18nProvider 설정 (서버)
+├── page.tsx            # useTranslation() (클라이언트)
 ├── provider/
-│   └── page.tsx        # Provider documentation
+│   └── page.tsx        # Provider 문서
 ├── cli/
-│   └── page.tsx        # CLI tools documentation
+│   └── page.tsx        # CLI 도구 문서
 └── components/
-    └── Header.tsx      # Language switcher component
+    └── Header.tsx      # 언어 전환 컴포넌트
 
 lib/
 └── translations/
-    ├── en.json         # English translations
-    └── ko.json         # Korean translations`}</code>
+    ├── en.json         # 영어 번역
+    └── ko.json         # 한국어 번역`}</code>
           </pre>
         </div>
 
@@ -261,28 +255,28 @@ lib/
           <div className="bg-blue-950/30 border border-blue-800/50 rounded-xl p-6">
             <h4 className="font-semibold text-blue-300 mb-2 flex items-center">
               <span className="mr-2">🔧</span>
-              {t("Server Components")}
+              {t("서버 컴포넌트")}
             </h4>
             <p className="text-slate-400 text-sm">
-              {t("Setup I18nProvider in layout.tsx with cookie detection")}
+              {t("layout.tsx에서 쿠키 감지와 함께 I18nProvider 설정")}
             </p>
           </div>
           <div className="bg-indigo-950/30 border border-indigo-800/50 rounded-xl p-6">
             <h4 className="font-semibold text-indigo-300 mb-2 flex items-center">
               <span className="mr-2">⚡</span>
-              {t("Client Components")}
+              {t("클라이언트 컴포넌트")}
             </h4>
             <p className="text-slate-400 text-sm">
-              {t("Use &apos;use client&apos; with useTranslation() hook")}
+              {t("useTranslation() 훅과 함께 'use client' 사용")}
             </p>
           </div>
           <div className="bg-purple-950/30 border border-purple-800/50 rounded-xl p-6">
             <h4 className="font-semibold text-purple-300 mb-2 flex items-center">
               <span className="mr-2">📄</span>
-              {t("Translation Files")}
+              {t("번역 파일")}
             </h4>
             <p className="text-slate-400 text-sm">
-              {t("Store in lib/translations/ as JSON")}
+              {t("lib/translations/에 JSON 형식으로 저장")}
             </p>
           </div>
         </div>
@@ -292,10 +286,10 @@ lib/
       <section className="mb-20">
         <div className="text-center mb-10">
           <h2 className="text-3xl font-bold text-white mb-3">
-            {t("Download Statistics")}
+            {t("다운로드 통계")}
           </h2>
           <p className="text-slate-400">
-            {t("Real-time download stats from npm registry")}
+            {t("npm 레지스트리의 실시간 다운로드 통계")}
           </p>
         </div>
 
@@ -314,7 +308,7 @@ lib/
 
         <div className="text-center mt-8">
           <p className="text-sm text-slate-500">
-            {t("Data updated hourly from npm public API")}
+            {t("npm 공개 API에서 매시간 업데이트되는 데이터")}
           </p>
         </div>
       </section>

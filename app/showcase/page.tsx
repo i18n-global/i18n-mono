@@ -59,12 +59,14 @@ export default async function ShowcasePage() {
           {t["i18nexus 쇼케이스"] || "i18nexus 쇼케이스"}
         </h1>
         <p className="text-xl md:text-2xl text-slate-300 mb-8 max-w-3xl mx-auto">
-          {t["i18nexus와 i18nexus-tools를 사용하는 실제 프로젝트들"] || "i18nexus와 i18nexus-tools를 사용하는 실제 프로젝트들"}
+          {t["i18nexus와 i18nexus-tools를 사용하는 실제 프로젝트들"] ||
+            "i18nexus와 i18nexus-tools를 사용하는 실제 프로젝트들"}
         </p>
         <Link
           href="/showcase/submit"
           className="inline-flex items-center px-8 py-4 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-bold text-lg rounded-xl shadow-lg shadow-blue-500/30 hover:shadow-blue-500/50 transition-all hover:scale-105">
-          <span className="mr-3 text-2xl">📝</span>{t["내 프로젝트 등록하기"] || "내 프로젝트 등록하기"}
+          <span className="mr-3 text-2xl">📝</span>
+          {t["내 프로젝트 등록하기"] || "내 프로젝트 등록하기"}
           <span className="ml-3">→</span>
         </Link>
       </div>
@@ -76,10 +78,12 @@ export default async function ShowcasePage() {
             <span className="text-5xl">📦</span>
           </div>
           <h3 className="text-2xl font-bold text-white mb-3">
-            {t["아직 등록된 프로젝트가 없습니다"] || "아직 등록된 프로젝트가 없습니다"}
+            {t["아직 등록된 프로젝트가 없습니다"] ||
+              "아직 등록된 프로젝트가 없습니다"}
           </h3>
           <p className="text-slate-400 mb-8">
-            {t["첫 번째 프로젝트를 등록하고 커뮤니티에 공유해보세요!"] || "첫 번째 프로젝트를 등록하고 커뮤니티에 공유해보세요!"}
+            {t["첫 번째 프로젝트를 등록하고 커뮤니티에 공유해보세요!"] ||
+              "첫 번째 프로젝트를 등록하고 커뮤니티에 공유해보세요!"}
           </p>
           <Link
             href="/showcase/submit"
