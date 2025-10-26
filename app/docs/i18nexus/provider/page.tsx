@@ -29,9 +29,7 @@ export default function I18nProviderPage() {
           I18nProvider
         </h1>
         <p className="text-xl text-slate-400">
-          {t(
-            "쿠키 기반 언어 영속성 및 SSR 지원을 갖춘 React Context Provider"
-          )}
+          {t("쿠키 기반 언어 영속성 및 SSR 지원을 갖춘 React Context Provider")}
         </p>
       </div>
 
@@ -62,9 +60,7 @@ export default function I18nProviderPage() {
             </div>
             <div className="flex items-start">
               <span className="text-green-400 mr-2">✓</span>
-              <span className="text-slate-300">
-                {t("타입 안전 언어 관리")}
-              </span>
+              <span className="text-slate-300">{t("타입 안전 언어 관리")}</span>
             </div>
             <div className="flex items-start">
               <span className="text-green-400 mr-2">✓</span>
@@ -102,7 +98,7 @@ export default function I18nProviderPage() {
               </p>
               <pre className="bg-slate-950 rounded-lg p-3 mt-2 overflow-x-auto">
                 <code className="text-sm text-slate-400">
-                  initialLanguage="ko"
+                  &quot;initialLanguage=&quot;ko&quot;
                 </code>
               </pre>
             </div>
@@ -135,9 +131,7 @@ export default function I18nProviderPage() {
                 </span>
               </div>
               <p className="text-slate-300">
-                {t(
-                  "번역에 접근해야 하는 애플리케이션 컴포넌트들입니다."
-                )}
+                {t("번역에 접근해야 하는 애플리케이션 컴포넌트들입니다.")}
               </p>
             </div>
 
@@ -169,9 +163,7 @@ export default function I18nProviderPage() {
 
       {/* Usage Examples */}
       <section className="mb-12">
-        <h2 className="text-3xl font-bold text-white mb-6">
-          {t("사용 예제")}
-        </h2>
+        <h2 className="text-3xl font-bold text-white mb-6">{t("사용 예제")}</h2>
 
         {/* Basic Usage */}
         <div className="mb-8">
@@ -282,9 +274,7 @@ export default function RootLayout({ children }) {
 
       {/* Best Practices */}
       <section className="mb-12">
-        <h2 className="text-3xl font-bold text-white mb-6">
-          {t("모범 사례")}
-        </h2>
+        <h2 className="text-3xl font-bold text-white mb-6">{t("모범 사례")}</h2>
         <div className="space-y-4">
           <div className="bg-green-900/20 border border-green-500/30 rounded-lg p-6">
             <h4 className="text-lg font-semibold text-green-400 mb-2 flex items-center">

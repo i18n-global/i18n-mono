@@ -8,43 +8,43 @@ export default function I18nexusToolsPage() {
 
   const tools = [
     {
-      title: "i18n-wrapper",
-      description: "Automatically wrap Korean/English text with t() function",
+      title: t("i18n-wrapper"),
+      description: t("Automatically wrap Korean/English text with t() function"),
       icon: "🎁",
       href: "/docs/i18nexus-tools/wrapper",
       color: "blue",
     },
     {
-      title: "i18n-extractor",
-      description: "Extract translation keys from your codebase",
+      title: t("i18n-extractor"),
+      description: t("Extract translation keys from your codebase"),
       icon: "🔍",
       href: "/docs/i18nexus-tools/extractor",
       color: "green",
     },
     {
-      title: "i18n-upload",
-      description: "Upload local translations to Google Sheets",
+      title: t("i18n-upload"),
+      description: t("Upload local translations to Google Sheets"),
       icon: "📤",
       href: "/docs/i18nexus-tools/upload",
       color: "purple",
     },
     {
-      title: "i18n-download",
-      description: "Download translations from Google Sheets (incremental)",
+      title: t("i18n-download"),
+      description: t("Download translations from Google Sheets (incremental)"),
       icon: "📥",
       href: "/docs/i18nexus-tools/download",
       color: "orange",
     },
     {
-      title: "i18n-download-force",
-      description: "Force overwrite all translations from Google Sheets",
+      title: t("i18n-download-force"),
+      description: t("Force overwrite all translations from Google Sheets"),
       icon: "🔄",
       href: "/docs/i18nexus-tools/download-force",
       color: "red",
     },
     {
-      title: "Google Sheets Setup",
-      description: "Configure Google Sheets integration",
+      title: t("Google Sheets Setup"),
+      description: t("Configure Google Sheets integration"),
       icon: "📊",
       href: "/docs/i18nexus-tools/google-sheets",
       color: "indigo",
@@ -236,10 +236,10 @@ export default function I18nexusToolsPage() {
                   <span className="text-2xl">{tool.icon}</span>
                 </div>
                 <h3 className="text-xl font-bold text-white mb-2">
-                  {t(tool.title)}
+                  {tool.title}
                 </h3>
                 <p className="text-slate-400 mb-4 text-sm">
-                  {t(tool.description)}
+                  {tool.description}
                 </p>
                 <div
                   className={`inline-flex items-center ${colors.text} font-medium text-sm`}>

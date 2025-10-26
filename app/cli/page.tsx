@@ -13,7 +13,7 @@ export default function CLIPage() {
           <span className="text-white font-bold text-2xl">⚡</span>
         </div>
         <h1 className="text-4xl md:text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-purple-500 mb-4">
-          CLI Tools
+          {t("CLI Tools")}
         </h1>
         <p className="text-xl text-slate-300">
           {t("텍스트 래핑 및 번역 관리를 위한 강력한 자동화 도구")}
