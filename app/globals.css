@@ -13,12 +13,20 @@
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
   --font-korean: var(--font-noto-sans-kr);
+  --font-bmhanna: var(--font-bmhanna-pro);
 }
 
 body {
   background: linear-gradient(to bottom, #020617, #0f172a);
   color: var(--foreground);
-  font-family: var(--font-noto-sans-kr), var(--font-geist-sans), -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-family:
+    var(--font-bmhanna-pro),
+    var(--font-noto-sans-kr),
+    var(--font-geist-sans),
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
   min-height: 100vh;
 }
 
@@ -43,12 +51,13 @@ body {
 
 /* Code blocks */
 pre {
-  font-family: 'Fira Code', 'Monaco', 'Courier New', monospace;
+  font-family: "Fira Code", "Monaco", "Courier New", monospace;
 }
 
 /* Smooth transitions */
 * {
-  transition-property: color, background-color, border-color, transform, box-shadow;
+  transition-property:
+    color, background-color, border-color, transform, box-shadow;
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   transition-duration: 150ms;
 }

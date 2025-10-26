@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono, Noto_Sans_KR } from "next/font/google";
+import localFont from "next/font/local";
 import "./globals.css";
 import { headers } from "next/headers";
 import { getServerLanguage } from "i18nexus/server";
@@ -27,6 +28,12 @@ const notoSansKR = Noto_Sans_KR({
   weight: ["300", "400", "500", "700"],
 });
 
+const bmHannaPro = localFont({
+  src: "../public/font/BMHANNAProOTF.otf",
+  variable: "--font-bmhanna-pro",
+  display: "swap",
+});
+
 export const metadata: Metadata = {
   title: "i18nexus - Complete React i18n toolkit",
   description:
@@ -45,7 +52,7 @@ export default async function RootLayout({
   return (
     <html lang={language}>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} ${notoSansKR.variable} antialiased`}>
+        className={`${geistSans.variable} ${geistMono.variable} ${notoSansKR.variable} ${bmHannaPro.variable} antialiased`}>
         {/* Google Analytics: gtag.js (GA4) - uses NEXT_PUBLIC_GA_ID */}
         {process.env.NEXT_PUBLIC_GA_ID ? (
           <>
