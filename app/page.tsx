@@ -310,6 +310,90 @@ lib/
           </p>
         </div>
       </section>
+
+      {/* Documentation Links Section */}
+      <section className="mb-20">
+        <div className="text-center mb-10">
+          <h2 className="text-3xl font-bold text-white mb-3">{t("문서")}</h2>
+          <p className="text-slate-400">
+            {t("상세한 사용법과 API 레퍼런스를 확인하세요")}
+          </p>
+        </div>
+
+        <div className="grid md:grid-cols-2 gap-6 max-w-5xl mx-auto">
+          {/* i18nexus Library Docs */}
+          <Link
+            href="/docs/i18nexus"
+            className="group bg-gradient-to-br from-slate-900 to-slate-800 rounded-2xl border border-slate-700 hover:border-blue-500 p-8 transition-all hover:shadow-xl hover:shadow-blue-500/20 hover:-translate-y-1">
+            <div className="flex items-center mb-4">
+              <div className="w-14 h-14 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-2xl flex items-center justify-center mr-4 shadow-lg shadow-blue-500/30 group-hover:shadow-blue-500/50 transition-all">
+                <span className="text-white font-bold text-2xl">📚</span>
+              </div>
+              <h3 className="text-2xl font-bold text-white group-hover:text-blue-400 transition-colors">
+                {t("i18nexus 라이브러리")}
+              </h3>
+            </div>
+            <p className="text-slate-400 mb-4">
+              {t(
+                "쿠키 기반 언어 관리 및 SSR 지원을 갖춘 완전한 React i18n 툴킷"
+              )}
+            </p>
+            <div className="flex flex-wrap gap-2 mb-4">
+              <span className="text-xs bg-blue-500/20 text-blue-300 px-3 py-1 rounded-full">
+                I18nProvider
+              </span>
+              <span className="text-xs bg-blue-500/20 text-blue-300 px-3 py-1 rounded-full">
+                useTranslation
+              </span>
+              <span className="text-xs bg-blue-500/20 text-blue-300 px-3 py-1 rounded-full">
+                {t("서버 컴포넌트")}
+              </span>
+            </div>
+            <div className="flex items-center text-blue-400 font-medium">
+              {t("문서 보기")}
+              <span className="ml-2 group-hover:translate-x-2 transition-transform">
+                →
+              </span>
+            </div>
+          </Link>
+
+          {/* i18nexus-tools CLI Docs */}
+          <Link
+            href="/docs/i18nexus-tools"
+            className="group bg-gradient-to-br from-slate-900 to-slate-800 rounded-2xl border border-slate-700 hover:border-indigo-500 p-8 transition-all hover:shadow-xl hover:shadow-indigo-500/20 hover:-translate-y-1">
+            <div className="flex items-center mb-4">
+              <div className="w-14 h-14 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-2xl flex items-center justify-center mr-4 shadow-lg shadow-indigo-500/30 group-hover:shadow-indigo-500/50 transition-all">
+                <span className="text-white font-bold text-2xl">⚡</span>
+              </div>
+              <h3 className="text-2xl font-bold text-white group-hover:text-indigo-400 transition-colors">
+                i18nexus-tools CLI
+              </h3>
+            </div>
+            <p className="text-slate-400 mb-4">
+              {t(
+                "코드 변환부터 Google Sheets 통합까지 i18n 워크플로우를 자동화하는 강력한 CLI 도구"
+              )}
+            </p>
+            <div className="flex flex-wrap gap-2 mb-4">
+              <span className="text-xs bg-indigo-500/20 text-indigo-300 px-3 py-1 rounded-full">
+                i18n-wrapper
+              </span>
+              <span className="text-xs bg-indigo-500/20 text-indigo-300 px-3 py-1 rounded-full">
+                i18n-extractor
+              </span>
+              <span className="text-xs bg-indigo-500/20 text-indigo-300 px-3 py-1 rounded-full">
+                Google Sheets
+              </span>
+            </div>
+            <div className="flex items-center text-indigo-400 font-medium">
+              {t("문서 보기")}
+              <span className="ml-2 group-hover:translate-x-2 transition-transform">
+                →
+              </span>
+            </div>
+          </Link>
+        </div>
+      </section>
     </main>
   );
 }
