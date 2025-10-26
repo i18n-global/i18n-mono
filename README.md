@@ -12,6 +12,8 @@
 
 [Features](#-features) • [Quick Start](#-quick-start) • [Documentation](#-documentation) • [API Reference](#-api-reference)
 
+**English** | [한국어](./README.ko.md)
+
 </div>
 
 ---
@@ -148,7 +150,7 @@ export default function ClientComponent() {
 - [v2.6.0](./docs/releases/v2.6.0.md) - Variable interpolation & CI/CD
 - [v2.5.2](./docs/releases/v2.5.2.md) - Developer tools
 - [v2.1.0](./docs/releases/v2.1.0.md) - Server Components support
-- [Full Changelog](./CHANGELOG.md)
+- [Full Changelog](./docs/CHANGELOG.md)
 
 ---
 
@@ -224,8 +226,8 @@ import { I18NexusDevtools } from "i18nexus";
 
 We welcome contributions! Please see our contribution guidelines:
 
-- 📖 [Contributing Guide (English)](./CONTRIBUTING.md)
-- 📖 [기여 가이드 (한국어)](./CONTRIBUTING.ko.md)
+- 📖 [Contributing Guide (English)](./docs/CONTRIBUTING.md)
+- 📖 [기여 가이드 (한국어)](./docs/CONTRIBUTING.ko.md)
 
 Whether you're fixing bugs, adding features, or improving documentation, your help is appreciated!
 

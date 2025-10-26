@@ -145,7 +145,7 @@ Complete documentation for i18nexus - Type-safe React i18n toolkit.
 
 ### Version History
 
-See [CHANGELOG.md](../CHANGELOG.md) for complete version history.
+See [CHANGELOG.md](./CHANGELOG.md) for complete version history.
 
 ---
 

@@ -4,7 +4,7 @@ Thank you for your interest in contributing to i18nexus! 🎉
 
 We welcome contributions of all kinds: bug reports, feature requests, documentation improvements, and code contributions.
 
-[한국어 버전](./CONTRIBUTING.ko.md) | [English Version](#)
+**English** | [한국어](./CONTRIBUTING.ko.md)
 
 ---
 

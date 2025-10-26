@@ -4,7 +4,7 @@ i18nexus에 기여해주셔서 감사합니다! 🎉
 
 버그 리포트, 기능 요청, 문서 개선, 코드 기여 등 모든 형태의 기여를 환영합니다.
 
-[한국어 버전](#) | [English Version](./CONTRIBUTING.md)
+[English](./CONTRIBUTING.md) | **한국어**
 
 ---
 
