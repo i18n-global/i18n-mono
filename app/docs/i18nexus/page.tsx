@@ -7,35 +7,35 @@ export default function I18nexusDocsPage() {
   const { t } = useTranslation();
 
   const features = [
-    {
-      title: "I18nProvider",
-      description: "쿠키 기반 언어 영속성을 갖춘 React Context Provider",
-      icon: "🎨",
-      href: "/docs/i18nexus/provider",
-      color: "blue",
-    },
-    {
-      title: "useTranslation",
-      description: "클라이언트 컴포넌트에서 번역 함수에 접근하기 위한 훅",
-      icon: "🔤",
-      href: "/docs/i18nexus/use-translation",
-      color: "green",
-    },
-    {
-      title: "useLanguageSwitcher",
-      description: "쿠키 영속성을 통한 언어 변경 훅",
-      icon: "🌐",
-      href: "/docs/i18nexus/use-language-switcher",
-      color: "purple",
-    },
-    {
-      title: "Server Components",
-      description: "하이드레이션 불일치 제로의 서버 사이드 번역",
-      icon: "🖥️",
-      href: "/docs/i18nexus/server-components",
-      color: "orange",
-    },
-  ];
+  {
+    title: "I18nProvider",
+    description: t("쿠키 기반 언어 영속성을 갖춘 React Context Provider"),
+    icon: "🎨",
+    href: "/docs/i18nexus/provider",
+    color: "blue"
+  },
+  {
+    title: "useTranslation",
+    description: t("클라이언트 컴포넌트에서 번역 함수에 접근하기 위한 훅"),
+    icon: "🔤",
+    href: "/docs/i18nexus/use-translation",
+    color: "green"
+  },
+  {
+    title: "useLanguageSwitcher",
+    description: t("쿠키 영속성을 통한 언어 변경 훅"),
+    icon: "🌐",
+    href: "/docs/i18nexus/use-language-switcher",
+    color: "purple"
+  },
+  {
+    title: "Server Components",
+    description: t("하이드레이션 불일치 제로의 서버 사이드 번역"),
+    icon: "🖥️",
+    href: "/docs/i18nexus/server-components",
+    color: "orange"
+  }];
+
 
   const colorClasses = {
     blue: {
@@ -43,29 +43,29 @@ export default function I18nexusDocsPage() {
       bg: "bg-blue-500/10",
       hover: "hover:bg-blue-500/20",
       text: "text-blue-400",
-      shadow: "shadow-blue-500/20",
+      shadow: "shadow-blue-500/20"
     },
     green: {
       border: "border-green-500",
       bg: "bg-green-500/10",
       hover: "hover:bg-green-500/20",
       text: "text-green-400",
-      shadow: "shadow-green-500/20",
+      shadow: "shadow-green-500/20"
     },
     purple: {
       border: "border-purple-500",
       bg: "bg-purple-500/10",
       hover: "hover:bg-purple-500/20",
       text: "text-purple-400",
-      shadow: "shadow-purple-500/20",
+      shadow: "shadow-purple-500/20"
     },
     orange: {
       border: "border-orange-500",
       bg: "bg-orange-500/10",
       hover: "hover:bg-orange-500/20",
       text: "text-orange-400",
-      shadow: "shadow-orange-500/20",
-    },
+      shadow: "shadow-orange-500/20"
+    }
   };
 
   return (
@@ -88,9 +88,7 @@ export default function I18nexusDocsPage() {
           {t("i18nexus 라이브러리")}
         </h1>
         <p className="text-xl text-slate-400 max-w-2xl mx-auto">
-          {t(
-            "쿠키 기반 언어 관리 및 SSR 지원을 갖춘 완전한 React i18n 툴킷"
-          )}
+          {t("쿠키 기반 언어 관리 및 SSR 지원을 갖춘 완전한 React i18n 툴킷")}
         </p>
       </div>
 
@@ -113,13 +111,11 @@ export default function I18nexusDocsPage() {
 
       {/* Features Grid */}
       <div className="mb-16">
-        <h2 className="text-3xl font-bold text-white mb-8">
-          {t("핵심 기능")}
-        </h2>
+        <h2 className="text-3xl font-bold text-white mb-8">{t("핵심 기능")}</h2>
         <div className="grid md:grid-cols-2 gap-6">
           {features.map((feature) => {
             const colors =
-              colorClasses[feature.color as keyof typeof colorClasses];
+            colorClasses[feature.color as keyof typeof colorClasses];
             return (
               <Link
                 key={feature.href}
@@ -140,8 +136,8 @@ export default function I18nexusDocsPage() {
                     →
                   </span>
                 </div>
-              </Link>
-            );
+              </Link>);
+
           })}
         </div>
       </div>
@@ -198,6 +194,6 @@ export default function MyComponent() {
           </div>
         </div>
       </div>
-    </main>
-  );
+    </main>);
+
 }

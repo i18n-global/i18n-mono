@@ -5,7 +5,7 @@ import { useTranslation, useLanguageSwitcher } from "i18nexus";
 export default function ProviderPage() {
   const { t } = useTranslation();
   const { currentLanguage, changeLanguage, availableLanguages } =
-    useLanguageSwitcher();
+  useLanguageSwitcher();
 
   return (
     <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -180,8 +180,8 @@ export default function HomePage() {
                 </div>
                 <p className="text-slate-300 text-lg">
                   {
-                    availableLanguages.find((l) => l.code === currentLanguage)
-                      ?.name
+                  availableLanguages.find((l) => l.code === currentLanguage)?.
+                  name
                   }
                 </p>
               </div>
@@ -193,19 +193,19 @@ export default function HomePage() {
                 {t("언어 전환")}
               </h3>
               <div className="flex gap-4">
-                {availableLanguages.map((lang) => (
-                  <button
-                    key={lang.code}
-                    onClick={() => changeLanguage(lang.code)}
-                    className={`flex-1 px-6 py-4 rounded-xl font-semibold transition-all duration-300 ${
-                      currentLanguage === lang.code
-                        ? "bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-lg shadow-blue-500/30 scale-105"
-                        : "bg-slate-800 text-slate-300 hover:bg-slate-700 border border-slate-700"
-                    }`}>
+                {availableLanguages.map((lang) =>
+                <button
+                  key={lang.code}
+                  onClick={() => changeLanguage(lang.code)}
+                  className={`flex-1 px-6 py-4 rounded-xl font-semibold transition-all duration-300 ${
+                  currentLanguage === lang.code ?
+                  "bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-lg shadow-blue-500/30 scale-105" :
+                  "bg-slate-800 text-slate-300 hover:bg-slate-700 border border-slate-700"}`
+                  }>
                     <div className="text-2xl mb-1">{lang.flag}</div>
                     <div className="text-sm">{lang.name}</div>
                   </button>
-                ))}
+                )}
               </div>
               <p className="text-sm text-slate-400 text-center mt-4">
                 💡 {t("전환해보세요 - 쿠키에 저장됩니다!")}
@@ -220,20 +220,20 @@ export default function HomePage() {
             </h3>
             <div className="grid gap-3">
               {[
-                t("환영합니다"),
-                t("빠른 시작"),
-                t("왜 i18nexus인가?"),
-                t("쿠키 영속성"),
-              ].map((text, i) => (
-                <div
-                  key={i}
-                  className="flex items-center justify-between p-4 bg-slate-950 rounded-lg border border-slate-800">
+              t("환영합니다"),
+              t("빠른 시작"),
+              t("왜 i18nexus인가?"),
+              t("쿠키 영속성")].
+              map((text, i) =>
+              <div
+                key={i}
+                className="flex items-center justify-between p-4 bg-slate-950 rounded-lg border border-slate-800">
                   <span className="text-slate-500 text-sm font-mono">
-                    {`t("${[t("환영합니다"), "빠른 시작", "왜 i18nexus인가?", "쿠키 영속성"][i]}")`}
+                    {`t("${[t("환영합니다"), t("빠른 시작"), t("왜 i18nexus인가?"), t("쿠키 영속성")][i]}")`}
                   </span>
                   <span className="text-white font-medium">{text}</span>
                 </div>
-              ))}
+              )}
             </div>
           </div>
         </div>
@@ -281,6 +281,6 @@ changeLanguage("en")`}</code>
           </div>
         </div>
       </section>
-    </main>
-  );
+    </main>);
+
 }

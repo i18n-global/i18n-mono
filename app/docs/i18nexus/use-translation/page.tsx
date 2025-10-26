@@ -13,7 +13,7 @@ export default function UseTranslationPage() {
       {/* Breadcrumb */}
       <div className="mb-8">
         <Link href="/" className="text-blue-400 hover:text-blue-300">
-          {t("Home")}
+          {t("홈")}
         </Link>
         <span className="text-slate-500 mx-2">/</span>
         <Link
@@ -32,7 +32,7 @@ export default function UseTranslationPage() {
         </h1>
         <p className="text-xl text-slate-400">
           {t(
-            "React hook for accessing translation functions in client components"
+            "클라이언트 컴포넌트에서 번역 함수에 접근하기 위한 React 훅"
           )}
         </p>
       </div>
@@ -41,28 +41,28 @@ export default function UseTranslationPage() {
       <section className="mb-12">
         <h2 className="text-3xl font-bold text-white mb-6">
           <span className="mr-2">🎮</span>
-          {t("Interactive Demo")}
+          {t("인터랙티브 데모")}
         </h2>
         <div className="bg-gradient-to-br from-slate-900 to-slate-800 rounded-xl border border-slate-700 p-6">
           <div className="mb-4">
             <label className="block text-sm font-medium text-slate-300 mb-2">
-              {t("Translation Key")}:
+              {t("번역 키")}:
             </label>
             <input
               type="text"
               value={demoKey}
               onChange={(e) => setDemoKey(e.target.value)}
               className="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-2 text-white focus:border-blue-500 focus:outline-none"
-              placeholder="Enter a translation key"
+              placeholder="번역 키를 입력하세요"
             />
           </div>
           <div className="bg-slate-950 rounded-lg p-6 border border-slate-700">
-            <div className="text-sm text-slate-500 mb-2">{t("Result")}:</div>
+            <div className="text-sm text-slate-500 mb-2">{t("결과")}:</div>
             <div className="text-2xl font-bold text-white">{t(demoKey)}</div>
           </div>
           <div className="mt-4 text-sm text-slate-400">
             <p>
-              💡 {t("Try entering: Welcome, Getting Started, CLI Tools, etc.")}
+              💡 {t("입력해보세요: Welcome, Getting Started, CLI Tools 등")}
             </p>
           </div>
         </div>
@@ -70,7 +70,7 @@ export default function UseTranslationPage() {
 
       {/* Overview */}
       <section className="mb-12">
-        <h2 className="text-3xl font-bold text-white mb-6">{t("Overview")}</h2>
+        <h2 className="text-3xl font-bold text-white mb-6">{t("개요")}</h2>
         <div className="bg-slate-900 rounded-xl border border-slate-700 p-6">
           <p className="text-slate-300 mb-4">
             <code className="text-blue-400 bg-slate-950 px-2 py-1 rounded">

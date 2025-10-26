@@ -11,7 +11,7 @@ export default function I18nProviderPage() {
       {/* Breadcrumb */}
       <div className="mb-8">
         <Link href="/" className="text-blue-400 hover:text-blue-300">
-          {t("Home")}
+          {t("홈")}
         </Link>
         <span className="text-slate-500 mx-2">/</span>
         <Link
@@ -30,46 +30,46 @@ export default function I18nProviderPage() {
         </h1>
         <p className="text-xl text-slate-400">
           {t(
-            "React Context provider with cookie-based language persistence and SSR support"
+            "쿠키 기반 언어 영속성 및 SSR 지원을 갖춘 React Context Provider"
           )}
         </p>
       </div>
 
       {/* Overview */}
       <section className="mb-12">
-        <h2 className="text-3xl font-bold text-white mb-6">{t("Overview")}</h2>
+        <h2 className="text-3xl font-bold text-white mb-6">{t("개요")}</h2>
         <div className="bg-slate-900 rounded-xl border border-slate-700 p-6">
           <p className="text-slate-300 mb-4">
             <code className="text-blue-400 bg-slate-950 px-2 py-1 rounded">
               I18nProvider
             </code>
             {t(
-              " is the root component that provides internationalization context to your entire application. It manages language state, handles cookie persistence, and ensures zero hydration mismatch in SSR."
+              "는 전체 애플리케이션에 국제화 컨텍스트를 제공하는 루트 컴포넌트입니다. 언어 상태를 관리하고, 쿠키 영속성을 처리하며, SSR에서 하이드레이션 불일치가 없음을 보장합니다."
             )}
           </p>
           <div className="space-y-2">
             <div className="flex items-start">
               <span className="text-green-400 mr-2">✓</span>
               <span className="text-slate-300">
-                {t("Cookie-based language persistence")}
+                {t("쿠키 기반 언어 영속성")}
               </span>
             </div>
             <div className="flex items-start">
               <span className="text-green-400 mr-2">✓</span>
               <span className="text-slate-300">
-                {t("Zero hydration mismatch in Next.js")}
+                {t("Next.js에서 하이드레이션 불일치 제로")}
               </span>
             </div>
             <div className="flex items-start">
               <span className="text-green-400 mr-2">✓</span>
               <span className="text-slate-300">
-                {t("Type-safe language management")}
+                {t("타입 안전 언어 관리")}
               </span>
             </div>
             <div className="flex items-start">
               <span className="text-green-400 mr-2">✓</span>
               <span className="text-slate-300">
-                {t("Automatic language detection from cookies")}
+                {t("쿠키에서 자동 언어 감지")}
               </span>
             </div>
           </div>
@@ -79,7 +79,7 @@ export default function I18nProviderPage() {
       {/* API Reference */}
       <section className="mb-12">
         <h2 className="text-3xl font-bold text-white mb-6">
-          {t("API Reference")}
+          {t("API 레퍼런스")}
         </h2>
 
         {/* Props */}
@@ -92,12 +92,12 @@ export default function I18nProviderPage() {
               <div className="flex items-start justify-between mb-2">
                 <code className="text-green-400 text-lg">initialLanguage</code>
                 <span className="text-sm text-slate-500">
-                  {t("string (required)")}
+                  {t("문자열 (필수)")}
                 </span>
               </div>
               <p className="text-slate-300">
                 {t(
-                  "The initial language code to use. Should match one of the keys in translations object."
+                  "사용할 초기 언어 코드입니다. translations 객체의 키 중 하나와 일치해야 합니다."
                 )}
               </p>
               <pre className="bg-slate-950 rounded-lg p-3 mt-2 overflow-x-auto">
@@ -111,12 +111,12 @@ export default function I18nProviderPage() {
               <div className="flex items-start justify-between mb-2">
                 <code className="text-green-400 text-lg">translations</code>
                 <span className="text-sm text-slate-500">
-                  {t("object (required)")}
+                  {t("객체 (필수)")}
                 </span>
               </div>
               <p className="text-slate-300">
                 {t(
-                  "Object containing translation keys and values for all supported languages."
+                  "지원되는 모든 언어에 대한 번역 키와 값을 포함하는 객체입니다."
                 )}
               </p>
               <pre className="bg-slate-950 rounded-lg p-3 mt-2 overflow-x-auto">
@@ -131,12 +131,12 @@ export default function I18nProviderPage() {
               <div className="flex items-start justify-between mb-2">
                 <code className="text-green-400 text-lg">children</code>
                 <span className="text-sm text-slate-500">
-                  {t("ReactNode (required)")}
+                  {t("ReactNode (필수)")}
                 </span>
               </div>
               <p className="text-slate-300">
                 {t(
-                  "Your application components that need access to translations."
+                  "번역에 접근해야 하는 애플리케이션 컴포넌트들입니다."
                 )}
               </p>
             </div>
@@ -147,11 +147,11 @@ export default function I18nProviderPage() {
                   languageManagerOptions
                 </code>
                 <span className="text-sm text-slate-500">
-                  {t("object (optional)")}
+                  {t("객체 (선택사항)")}
                 </span>
               </div>
               <p className="text-slate-300">
-                {t("Additional configuration for language management.")}
+                {t("언어 관리를 위한 추가 설정입니다.")}
               </p>
               <pre className="bg-slate-950 rounded-lg p-3 mt-2 overflow-x-auto">
                 <code className="text-sm text-slate-400">{`languageManagerOptions={{
@@ -170,13 +170,13 @@ export default function I18nProviderPage() {
       {/* Usage Examples */}
       <section className="mb-12">
         <h2 className="text-3xl font-bold text-white mb-6">
-          {t("Usage Examples")}
+          {t("사용 예제")}
         </h2>
 
         {/* Basic Usage */}
         <div className="mb-8">
           <h3 className="text-xl font-semibold text-blue-400 mb-4">
-            {t("Basic Setup (Client Components Only)")}
+            {t("기본 설정 (클라이언트 컴포넌트만)")}
           </h3>
           <pre className="bg-slate-950 rounded-lg p-6 overflow-x-auto border border-slate-800">
             <code className="text-sm text-slate-300">{`// app/layout.tsx
@@ -203,7 +203,7 @@ export default function RootLayout({ children }) {
         {/* SSR Usage */}
         <div className="mb-8">
           <h3 className="text-xl font-semibold text-green-400 mb-4">
-            {t("Server-Side Rendering (Next.js App Router)")}
+            {t("서버 사이드 렌더링 (Next.js App Router)")}
           </h3>
           <pre className="bg-slate-950 rounded-lg p-6 overflow-x-auto border border-slate-800">
             <code className="text-sm text-slate-300">{`// app/layout.tsx
@@ -233,9 +233,9 @@ export default async function RootLayout({ children }) {
           </pre>
           <div className="mt-4 bg-blue-900/20 border border-blue-500/30 rounded-lg p-4">
             <p className="text-blue-300">
-              <strong>💡 {t("Why this matters")}:</strong>{" "}
+              <strong>💡 {t("왜 중요한가")}:</strong>{" "}
               {t(
-                "By reading the language from cookies on the server, you ensure that the initial HTML matches what the client expects, preventing hydration mismatches."
+                "서버에서 쿠키로부터 언어를 읽음으로써, 초기 HTML이 클라이언트가 예상하는 것과 일치하도록 보장하여 하이드레이션 불일치를 방지합니다."
               )}
             </p>
           </div>
@@ -244,7 +244,7 @@ export default async function RootLayout({ children }) {
         {/* Advanced Usage */}
         <div>
           <h3 className="text-xl font-semibold text-purple-400 mb-4">
-            {t("Advanced Configuration")}
+            {t("고급 설정")}
           </h3>
           <pre className="bg-slate-950 rounded-lg p-6 overflow-x-auto border border-slate-800">
             <code className="text-sm text-slate-300">{`// app/layout.tsx
@@ -283,17 +283,17 @@ export default function RootLayout({ children }) {
       {/* Best Practices */}
       <section className="mb-12">
         <h2 className="text-3xl font-bold text-white mb-6">
-          {t("Best Practices")}
+          {t("모범 사례")}
         </h2>
         <div className="space-y-4">
           <div className="bg-green-900/20 border border-green-500/30 rounded-lg p-6">
             <h4 className="text-lg font-semibold text-green-400 mb-2 flex items-center">
               <span className="mr-2">✅</span>
-              {t("Do: Place at the root of your app")}
+              {t("권장: 앱의 루트에 배치")}
             </h4>
             <p className="text-slate-300">
               {t(
-                "Always wrap your entire application with I18nProvider at the root layout level to ensure all components have access to translations."
+                "모든 컴포넌트가 번역에 접근할 수 있도록 루트 레이아웃 레벨에서 항상 전체 애플리케이션을 I18nProvider로 감싸세요."
               )}
             </p>
           </div>
@@ -301,11 +301,11 @@ export default function RootLayout({ children }) {
           <div className="bg-green-900/20 border border-green-500/30 rounded-lg p-6">
             <h4 className="text-lg font-semibold text-green-400 mb-2 flex items-center">
               <span className="mr-2">✅</span>
-              {t("Do: Use server-side language detection")}
+              {t("권장: 서버 사이드 언어 감지 사용")}
             </h4>
             <p className="text-slate-300">
               {t(
-                "For Next.js applications, always read the language from cookies on the server to prevent hydration mismatches."
+                "Next.js 애플리케이션의 경우, 하이드레이션 불일치를 방지하기 위해 항상 서버에서 쿠키로부터 언어를 읽으세요."
               )}
             </p>
           </div>
@@ -313,11 +313,11 @@ export default function RootLayout({ children }) {
           <div className="bg-red-900/20 border border-red-500/30 rounded-lg p-6">
             <h4 className="text-lg font-semibold text-red-400 mb-2 flex items-center">
               <span className="mr-2">❌</span>
-              {t("Don't: Nest multiple providers")}
+              {t("비권장: 여러 provider 중첩")}
             </h4>
             <p className="text-slate-300">
               {t(
-                "Avoid nesting I18nProvider components. Use only one provider at the root level."
+                "I18nProvider 컴포넌트를 중첩하지 마세요. 루트 레벨에서 하나의 provider만 사용하세요."
               )}
             </p>
           </div>
@@ -325,11 +325,11 @@ export default function RootLayout({ children }) {
           <div className="bg-red-900/20 border border-red-500/30 rounded-lg p-6">
             <h4 className="text-lg font-semibold text-red-400 mb-2 flex items-center">
               <span className="mr-2">❌</span>
-              {t("Don't: Change initialLanguage dynamically")}
+              {t("비권장: initialLanguage를 동적으로 변경")}
             </h4>
             <p className="text-slate-300">
               {t(
-                "The initialLanguage prop should be set once. Use changeLanguage() from useLanguageSwitcher to change languages dynamically."
+                "initialLanguage prop은 한 번만 설정해야 합니다. 언어를 동적으로 변경하려면 useLanguageSwitcher의 changeLanguage()를 사용하세요."
               )}
             </p>
           </div>
@@ -338,7 +338,7 @@ export default function RootLayout({ children }) {
 
       {/* See Also */}
       <section>
-        <h2 className="text-3xl font-bold text-white mb-6">{t("See Also")}</h2>
+        <h2 className="text-3xl font-bold text-white mb-6">{t("참고 자료")}</h2>
         <div className="grid md:grid-cols-2 gap-4">
           <Link
             href="/docs/i18nexus/use-translation"
@@ -347,7 +347,7 @@ export default function RootLayout({ children }) {
               useTranslation →
             </h4>
             <p className="text-slate-400 text-sm">
-              {t("Learn how to use translations in your components")}
+              {t("컴포넌트에서 번역을 사용하는 방법 알아보기")}
             </p>
           </Link>
           <Link
@@ -357,7 +357,7 @@ export default function RootLayout({ children }) {
               useLanguageSwitcher →
             </h4>
             <p className="text-slate-400 text-sm">
-              {t("Learn how to change languages dynamically")}
+              {t("언어를 동적으로 변경하는 방법 알아보기")}
             </p>
           </Link>
         </div>

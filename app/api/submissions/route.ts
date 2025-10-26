@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from "next/server";
+import { useTranslation } from "i18nexus";import { NextRequest, NextResponse } from "next/server";
 import { revalidatePath } from "next/cache";
 import { db } from "@/lib/firebase";
 import {
@@ -11,11 +11,11 @@ import {
   Timestamp,
   updateDoc,
   doc,
-  deleteDoc,
-} from "firebase/firestore";
+  deleteDoc } from
+"firebase/firestore";
 
 // POST: 새 제출 생성
-export async function POST(request: NextRequest) {
+export async function POST(request: NextRequest) {const { t } = useTranslation();
   try {
     const body = await request.json();
     const {
@@ -25,12 +25,12 @@ export async function POST(request: NextRequest) {
       autoDescription,
       thumbnailUrl,
       screenshotUrl,
-      contactEmail,
+      contactEmail
     } = body;
 
     if (!url || !autoTitle) {
       return NextResponse.json(
-        { error: "URL과 제목이 필요합니다" },
+        { error: t("URL과 제목이 필요합니다") },
         { status: 400 }
       );
     }
@@ -44,7 +44,7 @@ export async function POST(request: NextRequest) {
       screenshotUrl: screenshotUrl || null,
       contactEmail: contactEmail || null,
       approved: false,
-      submittedAt: Timestamp.now(),
+      submittedAt: Timestamp.now()
     };
 
     const docRef = await addDoc(collection(db, "submissions"), submissionData);
@@ -55,23 +55,23 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({
       id: docRef.id,
-      ...submissionData,
+      ...submissionData
     });
   } catch (error: unknown) {
-    console.error("제출 생성 오류:", error);
+    console.error(t("제출 생성 오류:"), error);
 
-    const errorObj = error as { code?: string; message?: string };
+    const errorObj = error as {code?: string;message?: string;};
 
     // Firestore 관련 에러 감지
     if (
-      errorObj.code?.includes("firestore") ||
-      errorObj.message?.includes("Firestore")
-    ) {
+    errorObj.code?.includes("firestore") ||
+    errorObj.message?.includes("Firestore"))
+    {
       return NextResponse.json(
         {
-          error:
-            "Firestore Database가 설정되지 않았습니다. Firebase Console에서 Firestore Database를 생성해주세요.",
-          code: "FIRESTORE_NOT_CONFIGURED",
+          error: t("Firestore Database가 설정되지 않았습니다. Firebase Console에서 Firestore Database를 생성해주세요."),
+
+          code: "FIRESTORE_NOT_CONFIGURED"
         },
         { status: 503 }
       );
@@ -79,8 +79,8 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json(
       {
-        error: "제출 생성에 실패했습니다",
-        message: errorObj.message || "알 수 없는 오류",
+        error: t("제출 생성에 실패했습니다"),
+        message: errorObj.message || t("알 수 없는 오류")
       },
       { status: 500 }
     );
@@ -88,7 +88,7 @@ export async function POST(request: NextRequest) {
 }
 
 // GET: 제출 목록 가져오기 (필터 옵션 포함)
-export async function GET(request: NextRequest) {
+export async function GET(request: NextRequest) {const { t } = useTranslation();
   try {
     const { searchParams } = new URL(request.url);
     const approvedFilter = searchParams.get("approved");
@@ -110,32 +110,32 @@ export async function GET(request: NextRequest) {
     const querySnapshot = await getDocs(q);
     const submissions = querySnapshot.docs.map((doc) => ({
       id: doc.id,
-      ...doc.data(),
+      ...doc.data()
     }));
 
     return NextResponse.json(submissions);
   } catch (error: unknown) {
-    console.error("제출 목록 가져오기 오류:", error);
+    console.error(t("제출 목록 가져오기 오류:"), error);
 
-    const errorObj = error as { code?: string; message?: string };
+    const errorObj = error as {code?: string;message?: string;};
 
     // Firestore 인덱스 에러 감지
     if (
-      errorObj.message?.includes("index") ||
-      errorObj.message?.includes("Index")
-    ) {
+    errorObj.message?.includes("index") ||
+    errorObj.message?.includes("Index"))
+    {
       // 에러 메시지에서 인덱스 생성 URL 추출
       const indexUrl = errorObj.message.match(/https:\/\/[^\s]+/)?.[0];
 
       return NextResponse.json(
         {
-          error:
-            "Firestore 인덱스가 필요합니다. 아래 링크를 클릭하여 인덱스를 생성해주세요.",
+          error: t("Firestore 인덱스가 필요합니다. 아래 링크를 클릭하여 인덱스를 생성해주세요."),
+
           code: "FIRESTORE_INDEX_REQUIRED",
           indexUrl:
-            indexUrl ||
-            "https://console.firebase.google.com/u/0/project/i18nexus/firestore/indexes",
-          message: errorObj.message,
+          indexUrl ||
+          "https://console.firebase.google.com/u/0/project/i18nexus/firestore/indexes",
+          message: errorObj.message
         },
         { status: 500 }
       );
@@ -143,14 +143,14 @@ export async function GET(request: NextRequest) {
 
     // Firestore 관련 에러 감지
     if (
-      errorObj.code?.includes("firestore") ||
-      errorObj.message?.includes("Firestore")
-    ) {
+    errorObj.code?.includes("firestore") ||
+    errorObj.message?.includes("Firestore"))
+    {
       return NextResponse.json(
         {
-          error:
-            "Firestore Database가 설정되지 않았습니다. Firebase Console에서 Firestore Database를 생성해주세요.",
-          code: "FIRESTORE_NOT_CONFIGURED",
+          error: t("Firestore Database가 설정되지 않았습니다. Firebase Console에서 Firestore Database를 생성해주세요."),
+
+          code: "FIRESTORE_NOT_CONFIGURED"
         },
         { status: 503 }
       );
@@ -158,8 +158,8 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json(
       {
-        error: "제출 목록을 가져오는데 실패했습니다",
-        message: errorObj.message || "알 수 없는 오류",
+        error: t("제출 목록을 가져오는데 실패했습니다"),
+        message: errorObj.message || t("알 수 없는 오류")
       },
       { status: 500 }
     );
@@ -167,14 +167,14 @@ export async function GET(request: NextRequest) {
 }
 
 // PATCH: 제출 업데이트 (승인/거부)
-export async function PATCH(request: NextRequest) {
+export async function PATCH(request: NextRequest) {const { t } = useTranslation();
   try {
     const body = await request.json();
     const { id, approved, projectName, autoTitle } = body;
 
     if (!id) {
       return NextResponse.json(
-        { error: "제출 ID가 필요합니다" },
+        { error: t("제출 ID가 필요합니다") },
         { status: 400 }
       );
     }
@@ -195,23 +195,23 @@ export async function PATCH(request: NextRequest) {
 
     return NextResponse.json({ success: true, id });
   } catch (error) {
-    console.error("제출 업데이트 오류:", error);
+    console.error(t("제출 업데이트 오류:"), error);
     return NextResponse.json(
-      { error: "제출 업데이트에 실패했습니다" },
+      { error: t("제출 업데이트에 실패했습니다") },
       { status: 500 }
     );
   }
 }
 
 // DELETE: 제출 삭제
-export async function DELETE(request: NextRequest) {
+export async function DELETE(request: NextRequest) {const { t } = useTranslation();
   try {
     const { searchParams } = new URL(request.url);
     const id = searchParams.get("id");
 
     if (!id) {
       return NextResponse.json(
-        { error: "제출 ID가 필요합니다" },
+        { error: t("제출 ID가 필요합니다") },
         { status: 400 }
       );
     }
@@ -223,9 +223,9 @@ export async function DELETE(request: NextRequest) {
 
     return NextResponse.json({ success: true, id });
   } catch (error) {
-    console.error("제출 삭제 오류:", error);
+    console.error(t("제출 삭제 오류:"), error);
     return NextResponse.json(
-      { error: "제출 삭제에 실패했습니다" },
+      { error: t("제출 삭제에 실패했습니다") },
       { status: 500 }
     );
   }
