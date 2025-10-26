@@ -5,7 +5,7 @@ import { useTranslation, useLanguageSwitcher } from "i18nexus";
 export default function ProviderPage() {
   const { t } = useTranslation();
   const { currentLanguage, changeLanguage, availableLanguages } =
-  useLanguageSwitcher();
+    useLanguageSwitcher();
 
   return (
     <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -18,27 +18,23 @@ export default function ProviderPage() {
           I18nProvider
         </h1>
         <p className="text-xl text-slate-300">
-          {t(
-            "React Context provider with cookie-based language persistence and SSR support"
-          )}
+          {t("쿠키 기반 언어 영속성 및 SSR 지원을 갖춘 React Context Provider")}
         </p>
       </div>
 
       {/* Features Grid */}
       <section className="mb-16">
-        <h2 className="text-2xl font-bold text-white mb-8">
-          {t("Key Features")}
-        </h2>
+        <h2 className="text-2xl font-bold text-white mb-8">{t("주요 기능")}</h2>
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
           <div className="bg-gradient-to-br from-blue-950/50 to-blue-900/30 border border-blue-800/50 rounded-xl p-6">
             <div className="w-12 h-12 bg-blue-500/20 rounded-lg flex items-center justify-center mb-4">
               <span className="text-2xl">🍪</span>
             </div>
             <h3 className="font-semibold text-blue-300 mb-2">
-              {t("Cookie Persistence")}
+              {t("쿠키 영속성")}
             </h3>
             <p className="text-sm text-slate-400">
-              {t("Automatically saves language choice")}
+              {t("언어 선택을 자동으로 저장")}
             </p>
           </div>
 
@@ -47,10 +43,10 @@ export default function ProviderPage() {
               <span className="text-2xl">🔄</span>
             </div>
             <h3 className="font-semibold text-indigo-300 mb-2">
-              {t("SSR Ready")}
+              {t("SSR 준비 완료")}
             </h3>
             <p className="text-sm text-slate-400">
-              {t("Perfect Next.js compatibility")}
+              {t("완벽한 Next.js 호환성")}
             </p>
           </div>
 
@@ -59,10 +55,10 @@ export default function ProviderPage() {
               <span className="text-2xl">⚡</span>
             </div>
             <h3 className="font-semibold text-purple-300 mb-2">
-              {t("Zero Hydration")}
+              {t("제로 하이드레이션")}
             </h3>
             <p className="text-sm text-slate-400">
-              {t("No layout shift on load")}
+              {t("로드 시 레이아웃 이동 없음")}
             </p>
           </div>
 
@@ -74,7 +70,7 @@ export default function ProviderPage() {
               {t("TypeScript")}
             </h3>
             <p className="text-sm text-slate-400">
-              {t("Full type safety included")}
+              {t("완전한 타입 안정성 포함")}
             </p>
           </div>
         </div>
@@ -82,9 +78,7 @@ export default function ProviderPage() {
 
       {/* Setup Steps */}
       <section className="mb-16">
-        <h2 className="text-2xl font-bold text-white mb-8">
-          {t("Basic Setup")}
-        </h2>
+        <h2 className="text-2xl font-bold text-white mb-8">{t("기본 설정")}</h2>
 
         <div className="space-y-6">
           {/* Step 1 */}
@@ -94,7 +88,7 @@ export default function ProviderPage() {
                 <span className="w-8 h-8 bg-blue-500/20 rounded-lg flex items-center justify-center mr-3 text-sm">
                   1
                 </span>
-                {t("Server Layout (app/layout.tsx)")}
+                {t("서버 레이아웃 (app/layout.tsx)")}
               </h3>
             </div>
             <div className="p-6">
@@ -139,7 +133,7 @@ export default function RootLayout({ children }) {
                 <span className="w-8 h-8 bg-indigo-500/20 rounded-lg flex items-center justify-center mr-3 text-sm">
                   2
                 </span>
-                {t("Client Component (app/page.tsx)")}
+                {t("클라이언트 컴포넌트 (app/page.tsx)")}
               </h3>
             </div>
             <div className="p-6">
@@ -169,14 +163,16 @@ export default function HomePage() {
 
       {/* Live Demo */}
       <section className="mb-16">
-        <h2 className="text-2xl font-bold text-white mb-8">{t("Live Demo")}</h2>
+        <h2 className="text-2xl font-bold text-white mb-8">
+          {t("라이브 데모")}
+        </h2>
 
         <div className="bg-gradient-to-br from-slate-900 to-slate-800 rounded-2xl border border-slate-700 p-8">
           <div className="grid md:grid-cols-2 gap-8">
             {/* Current Language Display */}
             <div className="space-y-4">
               <h3 className="text-lg font-semibold text-white mb-4">
-                {t("Current Language")}
+                {t("현재 언어")}
               </h3>
               <div className="flex items-center space-x-4">
                 <div className="px-6 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-xl font-bold text-lg shadow-lg shadow-blue-500/30">
@@ -184,8 +180,8 @@ export default function HomePage() {
                 </div>
                 <p className="text-slate-300 text-lg">
                   {
-                  availableLanguages.find((l) => l.code === currentLanguage)?.
-                  name
+                    availableLanguages.find((l) => l.code === currentLanguage)
+                      ?.name
                   }
                 </p>
               </div>
@@ -194,25 +190,25 @@ export default function HomePage() {
             {/* Language Switcher */}
             <div className="space-y-4">
               <h3 className="text-lg font-semibold text-white mb-4">
-                {t("Switch Language")}
+                {t("언어 전환")}
               </h3>
               <div className="flex gap-4">
-                {availableLanguages.map((lang) =>
-                <button
-                  key={lang.code}
-                  onClick={() => changeLanguage(lang.code)}
-                  className={`flex-1 px-6 py-4 rounded-xl font-semibold transition-all duration-300 ${
-                  currentLanguage === lang.code ?
-                  "bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-lg shadow-blue-500/30 scale-105" :
-                  "bg-slate-800 text-slate-300 hover:bg-slate-700 border border-slate-700"}`
-                  }>
+                {availableLanguages.map((lang) => (
+                  <button
+                    key={lang.code}
+                    onClick={() => changeLanguage(lang.code)}
+                    className={`flex-1 px-6 py-4 rounded-xl font-semibold transition-all duration-300 ${
+                      currentLanguage === lang.code
+                        ? "bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-lg shadow-blue-500/30 scale-105"
+                        : "bg-slate-800 text-slate-300 hover:bg-slate-700 border border-slate-700"
+                    }`}>
                     <div className="text-2xl mb-1">{lang.flag}</div>
                     <div className="text-sm">{lang.name}</div>
                   </button>
-                )}
+                ))}
               </div>
               <p className="text-sm text-slate-400 text-center mt-4">
-                💡 {t("Try switching - saved in cookies!")}
+                💡 {t("전환해보세요 - 쿠키에 저장됩니다!")}
               </p>
             </div>
           </div>
@@ -220,24 +216,24 @@ export default function HomePage() {
           {/* Translation Examples */}
           <div className="mt-8 pt-8 border-t border-slate-700">
             <h3 className="text-lg font-semibold text-white mb-4">
-              {t("Translation Examples")}
+              {t("번역 예제")}
             </h3>
             <div className="grid gap-3">
               {[
-              t("환영합니다"),
-              t("Quick Start"),
-              t("Why i18nexus?"),
-              t("Cookie Persistence")].
-              map((text, i) =>
-              <div
-                key={i}
-                className="flex items-center justify-between p-4 bg-slate-950 rounded-lg border border-slate-800">
+                t("환영합니다"),
+                t("빠른 시작"),
+                t("왜 i18nexus인가?"),
+                t("쿠키 영속성"),
+              ].map((text, i) => (
+                <div
+                  key={i}
+                  className="flex items-center justify-between p-4 bg-slate-950 rounded-lg border border-slate-800">
                   <span className="text-slate-500 text-sm font-mono">
-                    {`t("${[t("환영합니다"), "Quick Start", "Why i18nexus?", "Cookie Persistence"][i]}")`}
+                    {`t("${[t("환영합니다"), "빠른 시작", "왜 i18nexus인가?", "쿠키 영속성"][i]}")`}
                   </span>
                   <span className="text-white font-medium">{text}</span>
                 </div>
-              )}
+              ))}
             </div>
           </div>
         </div>
@@ -246,7 +242,7 @@ export default function HomePage() {
       {/* API Reference */}
       <section>
         <h2 className="text-2xl font-bold text-white mb-8">
-          {t("API Reference")}
+          {t("API 레퍼런스")}
         </h2>
 
         <div className="grid md:grid-cols-2 gap-8">
@@ -262,9 +258,7 @@ t("key")
 t("한국어 텍스트")`}</code>
             </pre>
             <p className="text-slate-400 text-sm">
-              {t(
-                "Hook for accessing translation function in client components"
-              )}
+              {t("클라이언트 컴포넌트에서 번역 함수에 접근하기 위한 훅")}
             </p>
           </div>
 
@@ -282,11 +276,11 @@ t("한국어 텍스트")`}</code>
 changeLanguage("en")`}</code>
             </pre>
             <p className="text-slate-400 text-sm">
-              {t("Hook for language switching and state management")}
+              {t("언어 전환 및 상태 관리를 위한 훅")}
             </p>
           </div>
         </div>
       </section>
-    </main>);
-
+    </main>
+  );
 }

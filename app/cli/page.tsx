@@ -16,13 +16,13 @@ export default function CLIPage() {
           CLI Tools
         </h1>
         <p className="text-xl text-slate-300">
-          {t("Powerful automation tools for wrapping text and managing translations")}
+          {t("텍스트 래핑 및 번역 관리를 위한 강력한 자동화 도구")}
         </p>
       </div>
 
       {/* Installation */}
       <section className="bg-gradient-to-br from-slate-900 to-slate-800 rounded-2xl border border-slate-700 p-8 mb-12">
-        <h2 className="text-2xl font-bold text-white mb-6">{t("Installation")}</h2>
+        <h2 className="text-2xl font-bold text-white mb-6">{t("설치")}</h2>
         <pre className="bg-slate-950 text-slate-300 p-4 rounded-lg border border-slate-800">
           <code>npm install -D i18nexus-tools</code>
         </pre>
@@ -37,16 +37,18 @@ export default function CLIPage() {
             </div>
             <div>
               <h2 className="text-3xl font-bold text-white">i18n-wrapper</h2>
-              <p className="text-purple-300 mt-1">{t("Automatic Text Wrapping")}</p>
+              <p className="text-purple-300 mt-1">{t("자동 텍스트 래핑")}</p>
             </div>
           </div>
 
           <p className="text-slate-300 mb-6 text-lg">
-            {t("Automatically wraps Korean text with t() and adds imports")}
+            {t("한국어 텍스트를 자동으로 t()로 감싸고 import를 추가합니다")}
           </p>
 
           <div className="bg-slate-900 rounded-xl p-6 border border-slate-800 mb-6">
-            <h3 className="text-lg font-semibold text-white mb-4">{t("Basic Usage")}</h3>
+            <h3 className="text-lg font-semibold text-white mb-4">
+              {t("기본 사용법")}
+            </h3>
             <pre className="bg-slate-950 text-slate-300 p-4 rounded-lg text-sm border border-slate-800">
               <code>{`# Wrap all Korean text in app directory
 npx i18n-wrapper --pattern "app/**/*.tsx"
@@ -63,7 +65,7 @@ npx i18n-wrapper --pattern "app/page.tsx"`}</code>
             <div className="bg-slate-900 rounded-xl border border-slate-800 p-6">
               <div className="flex items-center mb-3">
                 <span className="text-red-400 mr-2">📝</span>
-                <h4 className="font-semibold text-white">{t("Before")}</h4>
+                <h4 className="font-semibold text-white">{t("이전")}</h4>
               </div>
               <pre className="bg-slate-950 text-slate-300 p-4 rounded-lg text-sm border border-slate-800">
                 <code>{`export default function Welcome() {
@@ -80,7 +82,7 @@ npx i18n-wrapper --pattern "app/page.tsx"`}</code>
             <div className="bg-slate-900 rounded-xl border border-slate-800 p-6">
               <div className="flex items-center mb-3">
                 <span className="text-green-400 mr-2">✨</span>
-                <h4 className="font-semibold text-white">{t("After")}</h4>
+                <h4 className="font-semibold text-white">{t("이후")}</h4>
               </div>
               <pre className="bg-slate-950 text-slate-300 p-4 rounded-lg text-sm border border-slate-800">
                 <code>{`import { useTranslation } from "i18nexus";
@@ -101,28 +103,28 @@ export default function Welcome() {
           <div className="bg-purple-900/20 border border-purple-800/50 rounded-xl p-6 mt-6">
             <h4 className="font-semibold text-purple-300 mb-3 flex items-center">
               <span className="mr-2">💡</span>
-              {t("Smart Detection")}
+              {t("스마트 감지")}
             </h4>
             <ul className="space-y-2 text-slate-300 text-sm">
               <li className="flex items-start">
                 <span className="text-green-400 mr-2">✓</span>
-                <span>{t("Detects Korean text in JSX elements")}</span>
+                <span>{t("JSX 요소 내 한국어 텍스트 감지")}</span>
               </li>
               <li className="flex items-start">
                 <span className="text-green-400 mr-2">✓</span>
-                <span>{t("Detects Korean in string literals")}</span>
+                <span>{t("문자열 리터럴 내 한국어 감지")}</span>
               </li>
               <li className="flex items-start">
                 <span className="text-green-400 mr-2">✓</span>
-                <span>{t("Detects Korean in template literals")}</span>
+                <span>{t("템플릿 리터럴 내 한국어 감지")}</span>
               </li>
               <li className="flex items-start">
                 <span className="text-green-400 mr-2">✓</span>
-                <span>{t("Skips already wrapped text")}</span>
+                <span>{t("이미 래핑된 텍스트 건너뛰기")}</span>
               </li>
               <li className="flex items-start">
                 <span className="text-green-400 mr-2">✓</span>
-                <span>{t("Preserves code formatting")}</span>
+                <span>{t("코드 포매팅 보존")}</span>
               </li>
             </ul>
           </div>
@@ -138,16 +140,18 @@ export default function Welcome() {
             </div>
             <div>
               <h2 className="text-3xl font-bold text-white">i18n-extractor</h2>
-              <p className="text-green-300 mt-1">{t("Smart Key Extraction")}</p>
+              <p className="text-green-300 mt-1">{t("스마트 키 추출")}</p>
             </div>
           </div>
 
           <p className="text-slate-300 mb-6 text-lg">
-            {t("Extract translation keys and merge with existing files intelligently")}
+            {t("번역 키를 추출하고 기존 파일과 지능적으로 병합합니다")}
           </p>
 
           <div className="bg-slate-900 rounded-xl p-6 border border-slate-800 mb-6">
-            <h3 className="text-lg font-semibold text-white mb-4">{t("Basic Usage")}</h3>
+            <h3 className="text-lg font-semibold text-white mb-4">
+              {t("기본 사용법")}
+            </h3>
             <pre className="bg-slate-950 text-slate-300 p-4 rounded-lg text-sm border border-slate-800">
               <code>{`# Extract and merge with existing translations
 npx i18n-extractor -p "app/**/*.tsx" -d "./lib/translations"
@@ -163,24 +167,24 @@ npx i18n-extractor --dry-run`}</code>
           <div className="bg-green-900/20 border border-green-800/50 rounded-xl p-6">
             <h4 className="font-semibold text-green-300 mb-3 flex items-center">
               <span className="mr-2">✨</span>
-              {t("Smart Merging Features")}
+              {t("스마트 병합 기능")}
             </h4>
             <ul className="space-y-2 text-slate-300 text-sm">
               <li className="flex items-start">
                 <span className="text-green-400 mr-2">✓</span>
-                <span>{t("Preserves all existing translations")}</span>
+                <span>{t("기존 번역 모두 보존")}</span>
               </li>
               <li className="flex items-start">
                 <span className="text-green-400 mr-2">✓</span>
-                <span>{t("Adds only new keys from code")}</span>
+                <span>{t("코드에서 새 키만 추가")}</span>
               </li>
               <li className="flex items-start">
                 <span className="text-green-400 mr-2">✓</span>
-                <span>{t("Sorts keys alphabetically")}</span>
+                <span>{t("알파벳 순으로 키 정렬")}</span>
               </li>
               <li className="flex items-start">
                 <span className="text-green-400 mr-2">✓</span>
-                <span>{t("Shows detailed statistics")}</span>
+                <span>{t("상세한 통계 표시")}</span>
               </li>
             </ul>
           </div>
@@ -196,21 +200,21 @@ npx i18n-extractor --dry-run`}</code>
             </div>
             <div>
               <h2 className="text-3xl font-bold text-white">
-                {t("Google Sheets Integration")}
+                {t("Google Sheets 연동")}
               </h2>
-              <p className="text-yellow-300 mt-1">{t("Team Collaboration")}</p>
+              <p className="text-yellow-300 mt-1">{t("팀 협업")}</p>
             </div>
           </div>
 
           <p className="text-slate-300 mb-6 text-lg">
-            {t("Sync translations with Google Sheets for team collaboration")}
+            {t("팀 협업을 위해 Google Sheets와 번역을 동기화합니다")}
           </p>
 
           <div className="grid md:grid-cols-2 gap-6 mb-6">
             <div className="bg-slate-900 rounded-xl border border-slate-800 p-6">
               <h3 className="text-lg font-semibold text-yellow-300 mb-3 flex items-center">
                 <span className="mr-2">📤</span>
-                {t("Upload")}
+                {t("업로드")}
               </h3>
               <pre className="bg-slate-950 text-slate-300 p-3 rounded-lg text-xs border border-slate-800">
                 <code>{`npx i18n-upload \\
@@ -222,7 +226,7 @@ npx i18n-extractor --dry-run`}</code>
             <div className="bg-slate-900 rounded-xl border border-slate-800 p-6">
               <h3 className="text-lg font-semibold text-yellow-300 mb-3 flex items-center">
                 <span className="mr-2">📥</span>
-                {t("Download")}
+                {t("다운로드")}
               </h3>
               <pre className="bg-slate-950 text-slate-300 p-3 rounded-lg text-xs border border-slate-800">
                 <code>{`npx i18n-download \\
@@ -235,14 +239,14 @@ npx i18n-extractor --dry-run`}</code>
           <div className="bg-yellow-900/20 border border-yellow-800/50 rounded-xl p-6">
             <h4 className="font-semibold text-yellow-300 mb-3 flex items-center">
               <span className="mr-2">⚙️</span>
-              {t("Setup Required")}
+              {t("설정 필요")}
             </h4>
             <ol className="space-y-2 text-slate-300 text-sm list-decimal list-inside">
-              <li>{t("Create Google Cloud project")}</li>
-              <li>{t("Enable Google Sheets API")}</li>
-              <li>{t("Create Service Account")}</li>
-              <li>{t("Download credentials JSON")}</li>
-              <li>{t("Share Sheet with service account")}</li>
+              <li>{t("Google Cloud 프로젝트 생성")}</li>
+              <li>{t("Google Sheets API 활성화")}</li>
+              <li>{t("서비스 계정 생성")}</li>
+              <li>{t("인증 정보 JSON 다운로드")}</li>
+              <li>{t("서비스 계정과 시트 공유")}</li>
             </ol>
           </div>
         </div>
@@ -251,7 +255,7 @@ npx i18n-extractor --dry-run`}</code>
       {/* Complete Workflow */}
       <section className="bg-gradient-to-br from-slate-900 to-slate-800 rounded-2xl border border-slate-700 p-10">
         <h2 className="text-3xl font-bold text-white mb-8 text-center">
-          {t("Complete Workflow")}
+          {t("전체 워크플로우")}
         </h2>
 
         <div className="space-y-6">
@@ -262,10 +266,10 @@ npx i18n-extractor --dry-run`}</code>
             </div>
             <div className="ml-6 flex-1">
               <h3 className="font-semibold text-blue-300 text-lg mb-2">
-                {t("Wrap Korean Text")}
+                {t("한국어 텍스트 감싸기")}
               </h3>
               <p className="text-slate-400 mb-3">
-                {t("Automatically wrap hardcoded Korean strings in your code")}
+                {t("코드에 하드코딩된 한국어 문자열을 자동으로 감쌉니다")}
               </p>
               <pre className="bg-slate-950 text-slate-300 p-3 rounded-lg text-xs border border-slate-800">
                 <code>npx i18n-wrapper --pattern "app/**/*.tsx"</code>
@@ -280,13 +284,15 @@ npx i18n-extractor --dry-run`}</code>
             </div>
             <div className="ml-6 flex-1">
               <h3 className="font-semibold text-indigo-300 text-lg mb-2">
-                {t("Extract Keys")}
+                {t("키 추출")}
               </h3>
               <p className="text-slate-400 mb-3">
-                {t("Generate translation files from wrapped text")}
+                {t("래핑된 텍스트에서 번역 파일을 생성합니다")}
               </p>
               <pre className="bg-slate-950 text-slate-300 p-3 rounded-lg text-xs border border-slate-800">
-                <code>npx i18n-extractor -p "app/**/*.tsx" -d "./lib/translations"</code>
+                <code>
+                  npx i18n-extractor -p "app/**/*.tsx" -d "./lib/translations"
+                </code>
               </pre>
             </div>
           </div>
@@ -298,10 +304,10 @@ npx i18n-extractor --dry-run`}</code>
             </div>
             <div className="ml-6 flex-1">
               <h3 className="font-semibold text-purple-300 text-lg mb-2">
-                {t("Translate")}
+                {t("번역")}
               </h3>
               <p className="text-slate-400 mb-3">
-                {t("Add English translations to en.json file")}
+                {t("en.json 파일에 영어 번역을 추가합니다")}
               </p>
               <pre className="bg-slate-950 text-slate-300 p-3 rounded-lg text-xs border border-slate-800">
                 <code>{`// lib/translations/en.json
@@ -320,10 +326,13 @@ npx i18n-extractor --dry-run`}</code>
             </div>
             <div className="ml-6 flex-1">
               <h3 className="font-semibold text-yellow-300 text-lg mb-2">
-                {t("Sync with Sheets")} <span className="text-sm text-slate-500">({t("Optional")})</span>
+                {t("Sheets와 동기화")}{" "}
+                <span className="text-sm text-slate-500">
+                  ({t("선택사항")})
+                </span>
               </h3>
               <p className="text-slate-400 mb-3">
-                {t("Upload to Google Sheets for team translation")}
+                {t("팀 번역을 위해 Google Sheets에 업로드합니다")}
               </p>
               <pre className="bg-slate-950 text-slate-300 p-3 rounded-lg text-xs border border-slate-800">
                 <code>npx i18n-upload --spreadsheet-id "YOUR_ID"</code>
@@ -338,10 +347,10 @@ npx i18n-extractor --dry-run`}</code>
             </div>
             <div className="ml-6 flex-1">
               <h3 className="font-semibold text-green-300 text-lg mb-2">
-                {t("Done!")}
+                {t("완료!")}
               </h3>
               <p className="text-slate-400">
-                {t("Your app is fully internationalized and ready to deploy")}
+                {t("앱이 완전히 국제화되었으며 배포할 준비가 되었습니다")}
               </p>
             </div>
           </div>

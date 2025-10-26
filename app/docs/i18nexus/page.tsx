@@ -9,30 +9,28 @@ export default function I18nexusDocsPage() {
   const features = [
     {
       title: "I18nProvider",
-      description:
-        "React Context provider with cookie-based language persistence",
+      description: "쿠키 기반 언어 영속성을 갖춘 React Context Provider",
       icon: "🎨",
       href: "/docs/i18nexus/provider",
       color: "blue",
     },
     {
       title: "useTranslation",
-      description:
-        "Hook for accessing translation functions in client components",
+      description: "클라이언트 컴포넌트에서 번역 함수에 접근하기 위한 훅",
       icon: "🔤",
       href: "/docs/i18nexus/use-translation",
       color: "green",
     },
     {
       title: "useLanguageSwitcher",
-      description: "Hook for changing languages with cookie persistence",
+      description: "쿠키 영속성을 통한 언어 변경 훅",
       icon: "🌐",
       href: "/docs/i18nexus/use-language-switcher",
       color: "purple",
     },
     {
       title: "Server Components",
-      description: "Server-side translation with zero hydration mismatch",
+      description: "하이드레이션 불일치 제로의 서버 사이드 번역",
       icon: "🖥️",
       href: "/docs/i18nexus/server-components",
       color: "orange",
@@ -75,10 +73,10 @@ export default function I18nexusDocsPage() {
       {/* Breadcrumb */}
       <div className="mb-8">
         <Link href="/" className="text-blue-400 hover:text-blue-300">
-          {t("Home")}
+          {t("홈")}
         </Link>
         <span className="text-slate-500 mx-2">/</span>
-        <span className="text-slate-300">{t("i18nexus Documentation")}</span>
+        <span className="text-slate-300">{t("i18nexus 문서")}</span>
       </div>
 
       {/* Header */}
@@ -87,11 +85,11 @@ export default function I18nexusDocsPage() {
           <span className="text-white font-bold text-2xl">i18</span>
         </div>
         <h1 className="text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-500 mb-4">
-          {t("i18nexus Library")}
+          {t("i18nexus 라이브러리")}
         </h1>
         <p className="text-xl text-slate-400 max-w-2xl mx-auto">
           {t(
-            "Complete React i18n toolkit with cookie-based language management and SSR support"
+            "쿠키 기반 언어 관리 및 SSR 지원을 갖춘 완전한 React i18n 툴킷"
           )}
         </p>
       </div>
@@ -100,13 +98,13 @@ export default function I18nexusDocsPage() {
       <div className="bg-slate-900 rounded-xl border border-slate-700 p-8 mb-12">
         <h2 className="text-2xl font-bold text-white mb-4 flex items-center">
           <span className="mr-3">📦</span>
-          {t("Installation")}
+          {t("설치")}
         </h2>
         <div className="bg-slate-950 rounded-lg p-4 font-mono text-sm">
           <code className="text-green-400">npm install i18nexus</code>
         </div>
         <p className="text-slate-400 mt-4">
-          {t("Or use yarn:")}{" "}
+          {t("또는 yarn 사용:")}{" "}
           <code className="text-green-400 bg-slate-950 px-2 py-1 rounded">
             yarn add i18nexus
           </code>
@@ -116,7 +114,7 @@ export default function I18nexusDocsPage() {
       {/* Features Grid */}
       <div className="mb-16">
         <h2 className="text-3xl font-bold text-white mb-8">
-          {t("Core Features")}
+          {t("핵심 기능")}
         </h2>
         <div className="grid md:grid-cols-2 gap-6">
           {features.map((feature) => {
@@ -137,7 +135,7 @@ export default function I18nexusDocsPage() {
                 <p className="text-slate-400 mb-4">{t(feature.description)}</p>
                 <div
                   className={`inline-flex items-center ${colors.text} font-medium`}>
-                  {t("Learn more")}{" "}
+                  {t("자세히 알아보기")}{" "}
                   <span className="ml-2 group-hover:translate-x-1 transition-transform">
                     →
                   </span>
@@ -152,13 +150,13 @@ export default function I18nexusDocsPage() {
       <div className="bg-gradient-to-br from-slate-900 to-slate-800 rounded-xl border border-slate-700 p-8">
         <h2 className="text-3xl font-bold text-white mb-6 flex items-center">
           <span className="mr-3">🚀</span>
-          {t("Quick Start")}
+          {t("빠른 시작")}
         </h2>
 
         <div className="space-y-6">
           <div>
             <h3 className="text-lg font-semibold text-blue-400 mb-2">
-              1. {t("Set up I18nProvider")}
+              1. {t("I18nProvider 설정")}
             </h3>
             <pre className="bg-slate-950 rounded-lg p-4 overflow-x-auto">
               <code className="text-sm text-slate-300">{`// app/layout.tsx
@@ -177,7 +175,7 @@ export default function RootLayout({ children }) {
 
           <div>
             <h3 className="text-lg font-semibold text-green-400 mb-2">
-              2. {t("Use in components")}
+              2. {t("컴포넌트에서 사용")}
             </h3>
             <pre className="bg-slate-950 rounded-lg p-4 overflow-x-auto">
               <code className="text-sm text-slate-300">{`"use client";

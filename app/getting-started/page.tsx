@@ -14,13 +14,11 @@ export default function GettingStartedPage() {
           href="/"
           className="inline-flex items-center text-blue-400 hover:text-blue-300 mb-6">
           <span className="mr-2">←</span>
-          {t("Back to Home")}
+          {t("홈으로 돌아가기")}
         </Link>
-        <h1 className="text-5xl font-bold text-white mb-4">
-          {t("Getting Started")}
-        </h1>
+        <h1 className="text-5xl font-bold text-white mb-4">{t("시작하기")}</h1>
         <p className="text-xl text-slate-300">
-          {t("Complete step-by-step guide to setup i18nexus in your project")}
+          {t("프로젝트에 i18nexus를 설정하는 완벽한 단계별 가이드")}
         </p>
       </div>
 
@@ -30,7 +28,7 @@ export default function GettingStartedPage() {
           <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl flex items-center justify-center mr-4">
             <span className="text-white font-bold text-xl">1</span>
           </div>
-          <h2 className="text-3xl font-bold text-white">{t("Installation")}</h2>
+          <h2 className="text-3xl font-bold text-white">{t("설치")}</h2>
         </div>
 
         <div className="bg-slate-950 rounded-xl p-6 mb-4">
@@ -38,7 +36,7 @@ export default function GettingStartedPage() {
         </div>
 
         <p className="text-slate-300 text-sm">
-          {t("This will install both the React components and CLI tools")}
+          {t("React 컴포넌트와 CLI 도구를 모두 설치합니다")}
         </p>
       </section>
 
@@ -49,7 +47,7 @@ export default function GettingStartedPage() {
             <span className="text-white font-bold text-xl">2</span>
           </div>
           <h2 className="text-3xl font-bold text-white">
-            {t("Initialize Project")}
+            {t("프로젝트 초기화")}
           </h2>
         </div>
 
@@ -58,16 +56,14 @@ export default function GettingStartedPage() {
         </div>
 
         <div className="space-y-3 text-slate-300">
-          <p className="font-semibold text-white">{t("This will create")}:</p>
+          <p className="font-semibold text-white">{t("다음을 생성합니다")}:</p>
           <ul className="space-y-2 ml-6">
             <li className="flex items-start">
               <span className="text-purple-400 mr-3">•</span>
               <code className="bg-slate-900 px-2 py-1 rounded text-sm">
                 i18nexus.config.json
               </code>
-              <span className="ml-2">
-                - {t("Configuration file for your project")}
-              </span>
+              <span className="ml-2">- {t("프로젝트 설정 파일")}</span>
             </li>
             <li className="flex items-start">
               <span className="text-purple-400 mr-3">•</span>
@@ -75,7 +71,7 @@ export default function GettingStartedPage() {
                 locales/
               </code>
               <span className="ml-2">
-                - {t("Directory for translation files (ko.json, en.json)")}
+                - {t("번역 파일 디렉토리 (ko.json, en.json)")}
               </span>
             </li>
           </ul>
@@ -89,7 +85,7 @@ export default function GettingStartedPage() {
             <span className="text-white font-bold text-xl">3</span>
           </div>
           <h2 className="text-3xl font-bold text-white">
-            {t("Setup I18nProvider")}
+            {t("I18nProvider 설정")}
           </h2>
         </div>
 
@@ -97,9 +93,9 @@ export default function GettingStartedPage() {
           <div>
             <p className="text-slate-300 mb-3">
               <strong className="text-white">
-                {t("For Next.js App Router")}:
+                {t("Next.js App Router의 경우")}:
               </strong>{" "}
-              {t("Add to your root layout.tsx")}
+              {t("root layout.tsx에 추가하세요")}
             </p>
             <div className="bg-slate-950 rounded-xl p-6 overflow-x-auto">
               <pre className="text-sm">
@@ -134,8 +130,8 @@ export default async function RootLayout({ children }) {
 
           <div>
             <p className="text-slate-300 mb-3">
-              <strong className="text-white">{t("Translation file")}:</strong>{" "}
-              {t("Create lib/i18n.ts")}
+              <strong className="text-white">{t("번역 파일")}:</strong>{" "}
+              {t("lib/i18n.ts 생성")}
             </p>
             <div className="bg-slate-950 rounded-xl p-6 overflow-x-auto">
               <pre className="text-sm">
@@ -162,7 +158,7 @@ export const translations = {
             <span className="text-white font-bold text-xl">4</span>
           </div>
           <h2 className="text-3xl font-bold text-white">
-            {t("Wrap Korean Text")}
+            {t("한국어 텍스트 감싸기")}
           </h2>
         </div>
 
@@ -171,36 +167,36 @@ export const translations = {
         </div>
 
         <div className="space-y-4 text-slate-300">
-          <p>{t("This will automatically wrap all Korean text with t()")}</p>
+          <p>{t("모든 한국어 텍스트를 자동으로 t()로 감쌉니다")}</p>
 
           <div className="bg-yellow-950/30 border border-yellow-800/50 rounded-xl p-6">
             <h3 className="text-yellow-400 font-semibold mb-3 flex items-center">
               <span className="mr-2">⚠️</span>
-              {t("Important: Check for Server Components")}
+              {t("중요: 서버 컴포넌트 확인")}
             </h3>
             <div className="space-y-3">
               <p className="text-sm">
                 {t(
-                  "After running i18n-wrapper, some files may have errors because:"
+                  "i18n-wrapper 실행 후 일부 파일에서 에러가 발생할 수 있습니다:"
                 )}
               </p>
               <ol className="space-y-2 ml-6 text-sm">
                 <li>
                   <strong className="text-white">
-                    1. {t("Server Components")}:
+                    1. {t("서버 컴포넌트")}:
                   </strong>
                   <br />
                   {t(
-                    "If the file is a Server Component (no &apos;use client&apos;), you need to use server utilities instead of hooks"
+                    "파일이 서버 컴포넌트인 경우 (use client가 없는 경우), 훅 대신 서버 유틸리티를 사용해야 합니다"
                   )}
                 </li>
                 <li>
                   <strong className="text-white">
-                    2. {t("Fix manually")}:
+                    2. {t("수동으로 수정")}:
                   </strong>
                   <br />
                   {t(
-                    "Check the error and decide whether to add &apos;use client&apos; or use createServerTranslation()"
+                    "에러를 확인하고 use client를 추가할지 createServerTranslation()을 사용할지 결정하세요"
                   )}
                 </li>
               </ol>
@@ -211,7 +207,7 @@ export const translations = {
             <div className="bg-slate-900 rounded-xl p-4">
               <h4 className="text-white font-semibold mb-2 flex items-center">
                 <span className="text-green-400 mr-2">✓</span>
-                {t("For Client Components")}
+                {t("클라이언트 컴포넌트의 경우")}
               </h4>
               <pre className="text-xs overflow-x-auto">
                 <code className="text-slate-300">
@@ -229,7 +225,7 @@ export default function Page() {
             <div className="bg-slate-900 rounded-xl p-4">
               <h4 className="text-white font-semibold mb-2 flex items-center">
                 <span className="text-blue-400 mr-2">✓</span>
-                {t("For Server Components")}
+                {t("서버 컴포넌트의 경우")}
               </h4>
               <pre className="text-xs overflow-x-auto">
                 <code className="text-slate-300">
@@ -255,9 +251,7 @@ export default async function Page() {
           <div className="w-12 h-12 bg-gradient-to-br from-cyan-500 to-blue-600 rounded-xl flex items-center justify-center mr-4">
             <span className="text-white font-bold text-xl">5</span>
           </div>
-          <h2 className="text-3xl font-bold text-white">
-            {t("Extract Translation Keys")}
-          </h2>
+          <h2 className="text-3xl font-bold text-white">{t("번역 키 추출")}</h2>
         </div>
 
         <div className="bg-slate-950 rounded-xl p-6 mb-4">
@@ -265,18 +259,16 @@ export default async function Page() {
         </div>
 
         <div className="space-y-4 text-slate-300">
-          <p>
-            {t("This will scan your code and create/update translation files")}
-          </p>
+          <p>{t("코드를 스캔하여 번역 파일을 생성/업데이트합니다")}</p>
 
           <div className="bg-blue-950/30 border border-blue-800/50 rounded-xl p-6">
             <h3 className="text-blue-400 font-semibold mb-3 flex items-center">
               <span className="mr-2">💡</span>
-              {t("App Directory Note")}
+              {t("App 디렉토리 참고사항")}
             </h3>
             <p className="text-sm">
               {t(
-                "If you're using Next.js App Router, use the -p flag to specify the correct directory"
+                "Next.js App Router를 사용하는 경우, -p 플래그를 사용하여 올바른 디렉토리를 지정하세요"
               )}
               :
             </p>
@@ -288,18 +280,14 @@ export default async function Page() {
           </div>
 
           <div>
-            <p className="font-semibold text-white mb-2">
-              {t("Result files")}:
-            </p>
+            <p className="font-semibold text-white mb-2">{t("결과 파일")}:</p>
             <ul className="space-y-2 ml-6">
               <li className="flex items-start">
                 <span className="text-cyan-400 mr-3">→</span>
                 <code className="bg-slate-900 px-2 py-1 rounded text-sm">
                   locales/ko.json
                 </code>
-                <span className="ml-2">
-                  - {t("Korean translations (auto-filled)")}
-                </span>
+                <span className="ml-2">- {t("한국어 번역 (자동 채워짐)")}</span>
               </li>
               <li className="flex items-start">
                 <span className="text-cyan-400 mr-3">→</span>
@@ -307,7 +295,7 @@ export default async function Page() {
                   locales/en.json
                 </code>
                 <span className="ml-2">
-                  - {t("English translations (needs manual translation)")}
+                  - {t("영어 번역 (수동 번역 필요)")}
                 </span>
               </li>
             </ul>
@@ -322,17 +310,17 @@ export default async function Page() {
             <span className="text-white font-bold text-xl">6</span>
           </div>
           <h2 className="text-3xl font-bold text-white">
-            {t("Add English Translations")}
+            {t("영어 번역 추가")}
           </h2>
         </div>
 
         <div className="space-y-4 text-slate-300">
-          <p>{t("Open locales/en.json and add English translations")}</p>
+          <p>{t("locales/en.json 파일을 열고 영어 번역을 추가하세요")}</p>
 
           <div className="grid md:grid-cols-2 gap-4">
             <div>
               <p className="text-sm text-slate-400 mb-2">
-                {t("Before (auto-generated)")}:
+                {t("이전 (자동 생성)")}:
               </p>
               <div className="bg-slate-950 rounded-xl p-4">
                 <pre className="text-xs overflow-x-auto">
@@ -348,7 +336,7 @@ export default async function Page() {
 
             <div>
               <p className="text-sm text-slate-400 mb-2">
-                {t("After (translated)")}:
+                {t("이후 (번역됨)")}:
               </p>
               <div className="bg-slate-950 rounded-xl p-4">
                 <pre className="text-xs overflow-x-auto">
@@ -372,18 +360,16 @@ export default async function Page() {
             <span className="text-white text-2xl">📊</span>
           </div>
           <h2 className="text-3xl font-bold text-white">
-            {t("Optional: Google Sheets Integration")}
+            {t("선택사항: Google Sheets 연동")}
           </h2>
         </div>
 
         <div className="space-y-4 text-slate-300">
-          <p>{t("For team collaboration, you can sync with Google Sheets")}</p>
+          <p>{t("팀 협업을 위해 Google Sheets와 동기화할 수 있습니다")}</p>
 
           <div className="space-y-3">
             <div className="bg-slate-950 rounded-xl p-4">
-              <p className="text-sm text-slate-400 mb-2">
-                {t("Upload translations")}:
-              </p>
+              <p className="text-sm text-slate-400 mb-2">{t("번역 업로드")}:</p>
               <code className="text-green-400">
                 npx i18n-sheets upload -s YOUR_SPREADSHEET_ID
               </code>
@@ -391,7 +377,7 @@ export default async function Page() {
 
             <div className="bg-slate-950 rounded-xl p-4">
               <p className="text-sm text-slate-400 mb-2">
-                {t("Download translations")}:
+                {t("번역 다운로드")}:
               </p>
               <code className="text-green-400">
                 npx i18n-sheets download -s YOUR_SPREADSHEET_ID
@@ -407,21 +393,21 @@ export default async function Page() {
           <div className="w-20 h-20 bg-gradient-to-br from-green-500 to-emerald-600 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg shadow-green-500/30">
             <span className="text-white font-bold text-4xl">✓</span>
           </div>
-          <h2 className="text-4xl font-bold text-white mb-4">{t("Done!")}</h2>
+          <h2 className="text-4xl font-bold text-white mb-4">{t("완료!")}</h2>
           <p className="text-xl text-slate-300 mb-6">
-            {t("Your app is fully internationalized and ready to deploy")}
+            {t("앱이 완전히 국제화되었으며 배포할 준비가 되었습니다")}
           </p>
 
           <div className="flex flex-wrap gap-4 justify-center">
             <Link
               href="/provider"
               className="px-6 py-3 bg-blue-600 hover:bg-blue-500 text-white rounded-lg font-medium transition-colors">
-              {t("Learn more about I18nProvider")} →
+              {t("I18nProvider 자세히 알아보기")} →
             </Link>
             <Link
               href="/cli"
               className="px-6 py-3 bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg font-medium transition-colors">
-              {t("Explore CLI Tools")} →
+              {t("CLI 도구 살펴보기")} →
             </Link>
           </div>
         </div>
