@@ -9,7 +9,9 @@ export default function I18nexusToolsPage() {
   const tools = [
     {
       title: t("i18n-wrapper"),
-      description: t("Automatically wrap Korean/English text with t() function"),
+      description: t(
+        "Automatically wrap Korean/English text with t() function"
+      ),
       icon: "🎁",
       href: "/docs/i18nexus-tools/wrapper",
       color: "blue",
@@ -101,11 +103,11 @@ export default function I18nexusToolsPage() {
       {/* Breadcrumb */}
       <div className="mb-8">
         <Link href="/" className="text-blue-400 hover:text-blue-300">
-          {t("Home")}
+          {t("홈")}
         </Link>
         <span className="text-slate-500 mx-2">/</span>
         <span className="text-slate-300">
-          {t("i18nexus-tools Documentation")}
+          {t("i18nexus-tools 문서")}
         </span>
       </div>
 
@@ -118,9 +120,7 @@ export default function I18nexusToolsPage() {
           {t("i18nexus-tools")}
         </h1>
         <p className="text-xl text-slate-400 max-w-2xl mx-auto">
-          {t(
-            "Powerful CLI tools to automate your i18n workflow - from code transformation to Google Sheets integration"
-          )}
+          {t("코드 변환부터 Google Sheets 통합까지 i18n 워크플로우를 자동화하는 강력한 CLI 도구")}
         </p>
       </div>
 
@@ -128,12 +128,12 @@ export default function I18nexusToolsPage() {
       <div className="bg-slate-900 rounded-xl border border-slate-700 p-8 mb-12">
         <h2 className="text-2xl font-bold text-white mb-4 flex items-center">
           <span className="mr-3">📦</span>
-          {t("Installation")}
+          {t("설치")}
         </h2>
         <div className="space-y-4">
           <div>
             <p className="text-slate-400 mb-2">
-              {t("Install globally (recommended)")}:
+              {t("전역 설치 (권장)")}:
             </p>
             <div className="bg-slate-950 rounded-lg p-4 font-mono text-sm">
               <code className="text-green-400">
@@ -143,7 +143,7 @@ export default function I18nexusToolsPage() {
           </div>
           <div>
             <p className="text-slate-400 mb-2">
-              {t("Or use without installing")}:
+              {t("또는 설치 없이 사용")}:
             </p>
             <div className="bg-slate-950 rounded-lg p-4 font-mono text-sm">
               <code className="text-blue-400">npx i18nexus-tools@latest</code>
@@ -156,7 +156,7 @@ export default function I18nexusToolsPage() {
       <div className="bg-gradient-to-br from-slate-900 to-slate-800 rounded-xl border border-slate-700 p-8 mb-12">
         <h2 className="text-3xl font-bold text-white mb-6 flex items-center">
           <span className="mr-3">🚀</span>
-          {t("Quick Workflow")}
+          {t("빠른 워크플로우")}
         </h2>
         <div className="space-y-4">
           <div className="flex items-start">
@@ -165,7 +165,7 @@ export default function I18nexusToolsPage() {
             </div>
             <div>
               <h4 className="text-lg font-semibold text-white mb-1">
-                {t("Create config file")}
+                {t("설정 파일 생성")}
               </h4>
               <code className="text-sm text-green-400 bg-slate-950 px-3 py-1 rounded">
                 npx i18n-sheets init
@@ -178,7 +178,7 @@ export default function I18nexusToolsPage() {
             </div>
             <div>
               <h4 className="text-lg font-semibold text-white mb-1">
-                {t("Auto-wrap hardcoded strings")}
+                {t("하드코딩된 문자열 자동 래핑")}
               </h4>
               <code className="text-sm text-green-400 bg-slate-950 px-3 py-1 rounded">
                 npx i18n-wrapper
@@ -191,7 +191,7 @@ export default function I18nexusToolsPage() {
             </div>
             <div>
               <h4 className="text-lg font-semibold text-white mb-1">
-                {t("Extract translation keys")}
+                {t("번역 키 추출")}
               </h4>
               <code className="text-sm text-green-400 bg-slate-950 px-3 py-1 rounded">
                 npx i18n-extractor
@@ -204,7 +204,7 @@ export default function I18nexusToolsPage() {
             </div>
             <div>
               <h4 className="text-lg font-semibold text-white mb-1">
-                {t("Sync with Google Sheets (optional)")}
+                {t("Google Sheets와 동기화 (선택사항)")}
               </h4>
               <code className="text-sm text-green-400 bg-slate-950 px-3 py-1 rounded mr-2">
                 npx i18n-upload
@@ -220,7 +220,7 @@ export default function I18nexusToolsPage() {
       {/* Tools Grid */}
       <div className="mb-16">
         <h2 className="text-3xl font-bold text-white mb-8">
-          {t("Available Tools")}
+          {t("사용 가능한 도구")}
         </h2>
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
           {tools.map((tool) => {
@@ -243,7 +243,7 @@ export default function I18nexusToolsPage() {
                 </p>
                 <div
                   className={`inline-flex items-center ${colors.text} font-medium text-sm`}>
-                  {t("View documentation")}{" "}
+                  {t("문서 보기")}{" "}
                   <span className="ml-2 group-hover:translate-x-1 transition-transform">
                     →
                   </span>
@@ -257,15 +257,15 @@ export default function I18nexusToolsPage() {
       {/* Configuration File */}
       <section className="mb-12">
         <h2 className="text-3xl font-bold text-white mb-6">
-          {t("Configuration File")}
+          {t("설정 파일")}
         </h2>
         <div className="bg-slate-900 rounded-xl border border-slate-700 p-6">
           <p className="text-slate-300 mb-4">
-            {t("All CLI tools read from")}{" "}
+            {t("모든 CLI 도구는 프로젝트 루트의")}{" "}
             <code className="text-blue-400 bg-slate-950 px-2 py-1 rounded">
               i18nexus.config.json
             </code>{" "}
-            {t("in your project root")}:
+            {t("에서 설정을 읽습니다")}:
           </p>
           <pre className="bg-slate-950 rounded-lg p-6 overflow-x-auto">
             <code className="text-sm text-slate-300">{`{
@@ -282,11 +282,11 @@ export default function I18nexusToolsPage() {
           </pre>
           <div className="mt-4 bg-blue-900/20 border border-blue-500/30 rounded-lg p-4">
             <p className="text-blue-300 text-sm">
-              <strong>💡 {t("Tip")}:</strong> {t("Run")}{" "}
+              <strong>💡 {t("팁")}:</strong>{" "}
               <code className="bg-slate-950 px-2 py-1 rounded">
                 npx i18n-sheets init
               </code>{" "}
-              {t("to automatically create this file")}
+              {t("를 실행하여 이 파일을 자동으로 생성하세요")}
             </p>
           </div>
         </div>
@@ -295,26 +295,26 @@ export default function I18nexusToolsPage() {
       {/* Features */}
       <section>
         <h2 className="text-3xl font-bold text-white mb-6">
-          {t("Key Features")}
+          {t("주요 기능")}
         </h2>
         <div className="grid md:grid-cols-2 gap-6">
           <div className="bg-slate-900 rounded-xl border border-slate-700 p-6">
             <h3 className="text-xl font-semibold text-white mb-3 flex items-center">
               <span className="mr-2">🤖</span>
-              {t("Automation")}
+              {t("자동화")}
             </h3>
             <ul className="space-y-2 text-slate-300">
               <li className="flex items-start">
                 <span className="text-green-400 mr-2">✓</span>
-                <span>{t("Auto-detect and wrap hardcoded strings")}</span>
+                <span>{t("하드코딩된 문자열 자동 감지 및 래핑")}</span>
               </li>
               <li className="flex items-start">
                 <span className="text-green-400 mr-2">✓</span>
-                <span>{t("Automatic import injection")}</span>
+                <span>{t("자동 import 주입")}</span>
               </li>
               <li className="flex items-start">
                 <span className="text-green-400 mr-2">✓</span>
-                <span>{t("Smart key generation with spacing preserved")}</span>
+                <span>{t("공백을 유지한 스마트 키 생성")}</span>
               </li>
             </ul>
           </div>
@@ -322,20 +322,20 @@ export default function I18nexusToolsPage() {
           <div className="bg-slate-900 rounded-xl border border-slate-700 p-6">
             <h3 className="text-xl font-semibold text-white mb-3 flex items-center">
               <span className="mr-2">🔄</span>
-              {t("Sync & Collaboration")}
+              {t("동기화 및 협업")}
             </h3>
             <ul className="space-y-2 text-slate-300">
               <li className="flex items-start">
                 <span className="text-green-400 mr-2">✓</span>
-                <span>{t("Google Sheets integration")}</span>
+                <span>{t("Google Sheets 통합")}</span>
               </li>
               <li className="flex items-start">
                 <span className="text-green-400 mr-2">✓</span>
-                <span>{t("Incremental updates (safe)")}</span>
+                <span>{t("증분 업데이트 (안전)")}</span>
               </li>
               <li className="flex items-start">
                 <span className="text-green-400 mr-2">✓</span>
-                <span>{t("Force sync for full overwrites")}</span>
+                <span>{t("전체 덮어쓰기를 위한 강제 동기화")}</span>
               </li>
             </ul>
           </div>
@@ -343,20 +343,20 @@ export default function I18nexusToolsPage() {
           <div className="bg-slate-900 rounded-xl border border-slate-700 p-6">
             <h3 className="text-xl font-semibold text-white mb-3 flex items-center">
               <span className="mr-2">🎯</span>
-              {t("Developer Experience")}
+              {t("개발자 경험")}
             </h3>
             <ul className="space-y-2 text-slate-300">
               <li className="flex items-start">
                 <span className="text-green-400 mr-2">✓</span>
-                <span>{t("Config-based, zero setup needed")}</span>
+                <span>{t("설정 기반, 설정 불필요")}</span>
               </li>
               <li className="flex items-start">
                 <span className="text-green-400 mr-2">✓</span>
-                <span>{t("TypeScript support")}</span>
+                <span>{t("TypeScript 지원")}</span>
               </li>
               <li className="flex items-start">
                 <span className="text-green-400 mr-2">✓</span>
-                <span>{t("Detailed logging and error messages")}</span>
+                <span>{t("상세한 로깅 및 오류 메시지")}</span>
               </li>
             </ul>
           </div>
@@ -364,22 +364,22 @@ export default function I18nexusToolsPage() {
           <div className="bg-slate-900 rounded-xl border border-slate-700 p-6">
             <h3 className="text-xl font-semibold text-white mb-3 flex items-center">
               <span className="mr-2">📁</span>
-              {t("File Management")}
+              {t("파일 관리")}
             </h3>
             <ul className="space-y-2 text-slate-300">
               <li className="flex items-start">
                 <span className="text-green-400 mr-2">✓</span>
                 <span>
-                  {t("Simple file structure: locales/en.json, locales/ko.json")}
+                  {t("간단한 파일 구조: locales/en.json, locales/ko.json")}
                 </span>
               </li>
               <li className="flex items-start">
                 <span className="text-green-400 mr-2">✓</span>
-                <span>{t("Preserves existing translations")}</span>
+                <span>{t("기존 번역 보존")}</span>
               </li>
               <li className="flex items-start">
                 <span className="text-green-400 mr-2">✓</span>
-                <span>{t("Smart merging of new keys")}</span>
+                <span>{t("새 키의 스마트 병합")}</span>
               </li>
             </ul>
           </div>
