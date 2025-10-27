@@ -15,12 +15,14 @@
     "i18n:listen": "i18nexus listen"
   },
   "dependencies": {
+    "@vercel/analytics": "^1.5.0",
     "firebase": "^12.4.0",
     "i18next": "^25.5.2",
     "i18nexus": "^2.5.2",
     "next": "15.5.4",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-ga4": "^2.1.0",
     "react-i18next": "^16.0.0"
   },
   "devDependencies": {
