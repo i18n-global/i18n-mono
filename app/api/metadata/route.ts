@@ -1,6 +1,6 @@
-import { useTranslation } from "i18nexus";import { NextRequest, NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
-export async function POST(request: NextRequest) {const { t } = useTranslation();
+export async function POST(request: NextRequest) {
   try {
     const { url } = await request.json();
 
@@ -44,8 +44,8 @@ export async function POST(request: NextRequest) {const { t } = useTranslation()
       if (response.status === 429) {
         return NextResponse.json(
           {
-            error: t("메타데이터 서비스의 요청 한도를 초과했습니다"),
-            details: t("잠시 후 다시 시도해주세요")
+            error: "Metadata service rate limit exceeded",
+            details: "Please try again later",
           },
           { status: 429 }
         );
@@ -53,8 +53,8 @@ export async function POST(request: NextRequest) {const { t } = useTranslation()
 
       return NextResponse.json(
         {
-          error: t("메타데이터 서비스에서 오류가 발생했습니다"),
-          details: `HTTP ${response.status}: ${response.statusText}`
+          error: "Metadata service error occurred",
+          details: `HTTP ${response.status}: ${response.statusText}`,
         },
         { status: 500 }
       );
@@ -68,8 +68,8 @@ export async function POST(request: NextRequest) {const { t } = useTranslation()
       console.error("❌ Unexpected content type:", contentType);
       return NextResponse.json(
         {
-          error: t("메타데이터 서비스가 예상치 못한 응답을 반환했습니다"),
-          details: `Expected JSON but got ${contentType}`
+          error: "Metadata service returned unexpected response",
+          details: `Expected JSON but got ${contentType}`,
         },
         { status: 500 }
       );
@@ -85,8 +85,8 @@ export async function POST(request: NextRequest) {const { t } = useTranslation()
       if (data.status === "fail" && data.message?.includes("ENOTFOUND")) {
         return NextResponse.json(
           {
-            error: t("URL에 접근할 수 없습니다"),
-            details: t("도메인이 존재하지 않거나 접근할 수 없습니다")
+            error: "Cannot access URL",
+            details: "Domain does not exist or is inaccessible",
           },
           { status: 400 }
         );
@@ -94,8 +94,8 @@ export async function POST(request: NextRequest) {const { t } = useTranslation()
 
       return NextResponse.json(
         {
-          error: t("메타데이터 추출에 실패했습니다"),
-          details: data.message || "Unknown error from metadata service"
+          error: "Failed to extract metadata",
+          details: data.message || "Unknown error from metadata service",
         },
         { status: 500 }
       );
