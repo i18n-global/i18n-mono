@@ -1,9 +1,13 @@
 name: Download Translations
 
+# ⚠️ This is an EXAMPLE workflow for i18nexus-tools users
+# Do not enable this in the i18nexus-tools repository itself
+# Copy this file to your own project to use it
+
 on:
-  schedule:
-    - cron: "0 0 * * *" # Daily at midnight UTC
-  workflow_dispatch: # Allow manual trigger
+  # schedule:
+  #   - cron: "0 0 * * *" # Daily at midnight UTC
+  workflow_dispatch: # Allow manual trigger only
 
 jobs:
   download:
