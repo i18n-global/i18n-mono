@@ -33,6 +33,31 @@ I18N_PERF_VERBOSE=true npx i18n-wrapper
 ════════════════════════════════════════════════════════════════════════════════
 ```
 
+### 🎯 Sentry 대시보드에서 보이는 구조 (v1.6.2+)
+
+이제 Sentry Performance 탭에서 다음과 같이 **깔끔하게** 표시됩니다:
+
+```
+📊 i18n-wrapper: processFiles:total (2847ms)
+  ├─ 📌 processFiles:glob (12.67ms)
+  ├─ 📌 processFiles:singleFile (4.30ms)
+  │   ├─ processFiles:readFile (0.05ms)
+  │   ├─ processFiles:parse (2.42ms)
+  │   ├─ processFiles:parseImports (2.33ms)
+  │   └─ processFiles:analyzeConstants (0.54ms)
+  ├─ 📌 processFiles:singleFile (8.36ms)
+  │   ├─ processFiles:readFile (0.08ms)
+  │   ├─ processFiles:parse (3.04ms)
+  │   └─ analyzeExternalFile (2.57ms)
+  └─ ... (더 많은 파일들)
+```
+
+**변경사항:**
+- ✅ 메인 작업(`processFiles:total`)만 **Transaction**으로 표시
+- ✅ 세부 작업들은 **Span**으로 트랜잭션 내부에 포함
+- ✅ 대시보드에서 계층 구조로 보기 쉽게 표시
+- ✅ 불필요한 개별 트랜잭션 제거
+
 ### 2. Sentry 연동
 
 #### Step 1: Sentry 계정 생성
