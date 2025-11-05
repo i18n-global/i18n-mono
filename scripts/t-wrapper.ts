@@ -7,6 +7,7 @@ import * as parser from "@babel/parser";
 import traverse, { NodePath } from "@babel/traverse";
 import generate from "@babel/generator";
 import * as t from "@babel/types";
+import { PerformanceMonitor, measureSync } from "./performance-monitor";
 
 export interface ScriptConfig {
   sourcePattern?: string;
@@ -18,6 +19,14 @@ export interface ScriptConfig {
    * 비어있으면 모든 ALL_CAPS/PascalCase를 상수로 인식
    */
   constantPatterns?: string[];
+  /**
+   * 성능 모니터링 활성화 여부
+   */
+  enablePerformanceMonitoring?: boolean;
+  /**
+   * Sentry DSN (성능 데이터 전송)
+   */
+  sentryDsn?: string;
 }
 
 const DEFAULT_CONFIG: Required<ScriptConfig> = {
@@ -25,6 +34,8 @@ const DEFAULT_CONFIG: Required<ScriptConfig> = {
   translationImportSource: "i18nexus",
   dryRun: false,
   constantPatterns: [], // 기본값: 모든 상수 허용
+  enablePerformanceMonitoring: process.env.I18N_PERF_MONITOR !== "false",
+  sentryDsn: process.env.SENTRY_DSN || "",
 };
 
 export class TranslationWrapper {
@@ -35,9 +46,17 @@ export class TranslationWrapper {
   private importedConstants: Map<string, string> = new Map();
   // 분석된 외부 파일 캐시 (중복 분석 방지)
   private analyzedExternalFiles: Set<string> = new Set();
+  // 성능 모니터
+  private performanceMonitor: PerformanceMonitor;
 
   constructor(config: Partial<ScriptConfig> = {}) {
     this.config = { ...DEFAULT_CONFIG, ...config };
+    this.performanceMonitor = new PerformanceMonitor({
+      enabled: this.config.enablePerformanceMonitoring,
+      sentryDsn: this.config.sentryDsn,
+      environment: process.env.NODE_ENV || "production",
+      release: process.env.npm_package_version,
+    });
   }
 
   private createUseTranslationHook(): t.VariableDeclaration {
@@ -440,13 +459,23 @@ export class TranslationWrapper {
    * 외부 파일에서 export된 상수 분석
    */
   private analyzeExternalFile(filePath: string): void {
+    this.performanceMonitor.start("analyzeExternalFile", { filePath });
+
     // 이미 분석한 파일이면 스킵
     if (this.analyzedExternalFiles.has(filePath)) {
+      this.performanceMonitor.end("analyzeExternalFile", {
+        filePath,
+        cached: true,
+      });
       return;
     }
 
     // 파일이 존재하지 않으면 스킵
     if (!fs.existsSync(filePath)) {
+      this.performanceMonitor.end("analyzeExternalFile", {
+        filePath,
+        notFound: true,
+      });
       return;
     }
 
@@ -484,11 +513,21 @@ export class TranslationWrapper {
       });
 
       console.log(`     📦 Analyzed external file: ${path.basename(filePath)}`);
+      this.performanceMonitor.end("analyzeExternalFile", {
+        filePath,
+        success: true,
+        codeLength: code.length,
+      });
     } catch (error) {
       console.warn(
         `     ⚠️  Failed to analyze external file ${filePath}:`,
         error
       );
+      this.performanceMonitor.end("analyzeExternalFile", {
+        filePath,
+        error: true,
+      });
+      this.performanceMonitor.captureError(error as Error, { filePath });
     }
   }
 
@@ -1007,36 +1046,70 @@ export class TranslationWrapper {
   public async processFiles(): Promise<{
     processedFiles: string[];
   }> {
+    this.performanceMonitor.start("processFiles:total");
+
+    this.performanceMonitor.start("processFiles:glob");
     const filePaths = await glob(this.config.sourcePattern);
+    this.performanceMonitor.end("processFiles:glob", {
+      fileCount: filePaths.length,
+    });
+
     const processedFiles: string[] = [];
 
-    console.log(`� Found ${filePaths.length} files to process...`);
+    console.log(`📁 Found ${filePaths.length} files to process...`);
 
     for (const filePath of filePaths) {
+      this.performanceMonitor.start("processFiles:singleFile", { filePath });
+
       let isFileModified = false;
+
+      this.performanceMonitor.start("processFiles:readFile", { filePath });
       const code = fs.readFileSync(filePath, "utf-8");
+      this.performanceMonitor.end("processFiles:readFile", {
+        filePath,
+        codeLength: code.length,
+      });
 
       try {
+        this.performanceMonitor.start("processFiles:parse", { filePath });
         const ast = parser.parse(code, {
           sourceType: "module",
           plugins: ["jsx", "typescript", "decorators-legacy"],
           attachComment: true, // 주석을 AST에 첨부
         });
+        this.performanceMonitor.end("processFiles:parse", { filePath });
 
         // Step 1: Import 문 파싱
+        this.performanceMonitor.start("processFiles:parseImports", {
+          filePath,
+        });
         this.importedConstants.clear();
         this.parseImports(ast, filePath);
+        this.performanceMonitor.end("processFiles:parseImports", { filePath });
 
         // Step 2: 로컬 상수 선언 분석
+        this.performanceMonitor.start("processFiles:analyzeConstants", {
+          filePath,
+        });
         this.constantsWithRenderableProps.clear();
         traverse(ast, {
           VariableDeclaration: (path) => {
             this.analyzeConstantDeclaration(path);
           },
         });
+        this.performanceMonitor.end("processFiles:analyzeConstants", {
+          filePath,
+          constantsFound: this.constantsWithRenderableProps.size,
+        });
 
         // Step 3: Import된 외부 파일 분석
+        this.performanceMonitor.start("processFiles:analyzeImportedFiles", {
+          filePath,
+        });
         this.analyzeImportedFiles();
+        this.performanceMonitor.end("processFiles:analyzeImportedFiles", {
+          filePath,
+        });
 
         // 분석 결과 로깅
         if (this.constantsWithRenderableProps.size > 0) {
@@ -1160,14 +1233,42 @@ export class TranslationWrapper {
             }`
           );
         }
+        this.performanceMonitor.end("processFiles:singleFile", {
+          filePath,
+          modified: isFileModified,
+        });
       } catch (error) {
         console.error(`❌ Error processing ${filePath}:`, error);
+        this.performanceMonitor.captureError(error as Error, { filePath });
+        this.performanceMonitor.end("processFiles:singleFile", {
+          filePath,
+          error: true,
+        });
       }
     }
+
+    this.performanceMonitor.end("processFiles:total", {
+      totalFiles: filePaths.length,
+      processedFiles: processedFiles.length,
+    });
 
     return {
       processedFiles,
     };
+  }
+
+  /**
+   * 성능 리포트 출력
+   */
+  public printPerformanceReport(verbose: boolean = false): void {
+    this.performanceMonitor.printReport(verbose);
+  }
+
+  /**
+   * 성능 데이터 플러시 (Sentry에 전송)
+   */
+  public async flushPerformanceData(): Promise<void> {
+    await this.performanceMonitor.flush();
   }
 }
 
@@ -1179,11 +1280,29 @@ export async function runTranslationWrapper(
   console.log("🚀 Starting translation wrapper...");
   const startTime = Date.now();
 
-  const { processedFiles } = await wrapper.processFiles();
+  try {
+    const { processedFiles } = await wrapper.processFiles();
 
-  const endTime = Date.now();
-  console.log(`\n✅ Translation wrapper completed in ${endTime - startTime}ms`);
-  console.log(`📊 Processed ${processedFiles.length} files`);
+    const endTime = Date.now();
+    console.log(
+      `\n✅ Translation wrapper completed in ${endTime - startTime}ms`
+    );
+    console.log(`📊 Processed ${processedFiles.length} files`);
+
+    // 성능 리포트 출력 (verbose mode인 경우)
+    if (process.env.I18N_PERF_VERBOSE === "true") {
+      wrapper.printPerformanceReport(true);
+    } else if (config.enablePerformanceMonitoring !== false) {
+      wrapper.printPerformanceReport(false);
+    }
+
+    // Sentry 데이터 플러시
+    await wrapper.flushPerformanceData();
+  } catch (error) {
+    console.error("❌ Fatal error:", error);
+    await wrapper.flushPerformanceData();
+    throw error;
+  }
 }
 
 // CLI 실행 부분

@@ -222,6 +222,23 @@ export default async function RootLayout({ children }) {
 
 See [Next.js App Router Guide](./docs/guides/nextjs-app-router.md) for more details.
 
+## 📊 Performance Monitoring
+
+Track performance and send metrics to Sentry:
+
+```bash
+# Enable performance monitoring
+I18N_PERF_MONITOR=true npx i18n-wrapper
+
+# Verbose output with detailed metrics
+I18N_PERF_VERBOSE=true npx i18n-wrapper
+
+# Send to Sentry
+SENTRY_DSN="https://your-dsn@sentry.io/project" npx i18n-wrapper
+```
+
+See [Performance Monitoring Guide](./docs/guides/performance-monitoring.md) for details.
+
 ## 📋 CLI Options
 
 ### i18n-wrapper
