@@ -104,6 +104,12 @@ I18N_PERF_MONITOR=true
 # 상세 출력 (기본: false)
 I18N_PERF_VERBOSE=true
 
+# Sentry 디버그 모드 (트랜잭션 생성/완료 로그 출력, 샘플링 100%)
+I18N_SENTRY_DEBUG=true
+
+# Sentry 샘플링 레이트 (기본: 0.1 = 10%, 디버그 모드에서는 1.0 = 100%)
+I18N_SENTRY_SAMPLE_RATE=1.0
+
 # Sentry DSN
 SENTRY_DSN="https://your-dsn@sentry.io/project-id"
 
@@ -169,15 +175,64 @@ node --max-old-space-size=4096 node_modules/.bin/i18n-wrapper
 
 ### Sentry에 데이터가 안 보일 때
 
+#### 1. 디버그 모드로 확인 (가장 중요!)
+
+```bash
+# 디버그 모드 활성화 (샘플링 100%, 모든 로그 출력)
+I18N_SENTRY_DEBUG=true npx i18n-wrapper
+```
+
+**정상 출력 예시:**
+```
+[Sentry] ✅ Initialized successfully
+[Sentry] DSN: https://50a55d33b83fee01061aee34e4c96a3e@o45103...
+[Sentry] Sample Rate: 1
+[Sentry] Environment: production
+[Sentry] 📊 Started transaction: processFiles:total
+[Sentry] 📊 Started transaction: processFiles:glob
+[Sentry] ✅ Finished transaction: processFiles:glob (234.56ms)
+[Sentry] 🔄 Flushing data...
+[Sentry] Active transactions: 1
+[Sentry] Metrics collected: 45
+[Sentry] ✅ Flush completed
+```
+
+**문제가 있는 경우:**
+```
+[Sentry] ⏭️  Skipped - DSN not configured or monitoring disabled
+```
+→ DSN이 설정되지 않았습니다. 환경변수를 확인하세요.
+
+```
+[Sentry] ❌ Initialization failed: ...
+```
+→ DSN 형식이 잘못되었거나 네트워크 문제입니다.
+
+#### 2. DSN 확인
+
 ```bash
 # DSN 확인
 echo $SENTRY_DSN
 
-# 연결 테스트
-curl -I https://sentry.io/api/0/
+# 빌드된 파일에 DSN이 포함되었는지 확인 (npm 패키지 사용 시)
+cat node_modules/i18nexus-tools/dist/scripts/performance-monitor.js | grep DEFAULT_SENTRY_DSN
+```
 
-# 디버그 모드
-DEBUG=sentry:* npx i18n-wrapper
+#### 3. 샘플링 레이트 확인
+
+```bash
+# 테스트할 때는 항상 100%로 설정
+I18N_SENTRY_SAMPLE_RATE=1.0 npx i18n-wrapper
+
+# 또는 디버그 모드 (자동으로 100%)
+I18N_SENTRY_DEBUG=true npx i18n-wrapper
+```
+
+#### 4. 네트워크 확인
+
+```bash
+# Sentry 연결 테스트
+curl -I https://sentry.io/api/0/
 ```
 
 ### 성능 측정이 너무 느릴 때

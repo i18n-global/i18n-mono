@@ -34,13 +34,17 @@ export interface PerformanceReport {
 // 개발자의 기본 Sentry DSN (사용자 데이터 수집용)
 // 사용자가 자신의 DSN을 설정하면 override됨
 // 빌드 시 scripts/inject-sentry-dsn.js가 이 값을 주입함
-const DEFAULT_SENTRY_DSN = process.env.I18NEXUS_TOOLS_SENTRY_DSN || "";
+const DEFAULT_SENTRY_DSN = "https://50a55d33b83fee01061aee34e4c96a3e@o4510309624053760.ingest.us.sentry.io/4510309636112384";
+
+// 디버그 모드 확인
+const isDebugMode = process.env.I18N_SENTRY_DEBUG === "true";
 
 export class PerformanceMonitor {
   private metrics: PerformanceMetric[] = [];
   private startTimes: Map<string, number> = new Map();
   private enabled: boolean;
   private sentryEnabled: boolean;
+  private activeTransactions: Map<string, any> = new Map();
 
   constructor(options?: {
     enabled?: boolean;
@@ -59,18 +63,54 @@ export class PerformanceMonitor {
       options?.sentryDsn || process.env.SENTRY_DSN || DEFAULT_SENTRY_DSN;
     this.sentryEnabled = !!dsn;
 
+    // 샘플링 레이트 (디버그 모드에서는 100%, 프로덕션에서는 설정값 또는 10%)
+    const sampleRate = isDebugMode 
+      ? 1.0 
+      : parseFloat(process.env.I18N_SENTRY_SAMPLE_RATE || "0.1");
+
     // Sentry 초기화
     if (this.sentryEnabled && this.enabled) {
-      Sentry.init({
-        dsn,
-        environment:
-          options?.environment || process.env.NODE_ENV || "production",
-        release: options?.release || process.env.npm_package_version,
-        integrations: [new ProfilingIntegration()],
-        // 샘플링 비율 (모든 사용자 데이터 수집하면 비용 많이 나옴)
-        tracesSampleRate: 0.1, // 10%만 수집
-        profilesSampleRate: 0.1,
-      });
+      try {
+        Sentry.init({
+          dsn,
+          environment:
+            options?.environment || process.env.NODE_ENV || "production",
+          release: options?.release || process.env.npm_package_version,
+          integrations: [new ProfilingIntegration()],
+          // 샘플링 비율
+          tracesSampleRate: sampleRate,
+          profilesSampleRate: sampleRate,
+          // 디버그 모드
+          debug: isDebugMode,
+          // 전송 전 로그
+          beforeSend(event, hint) {
+            if (isDebugMode) {
+              console.log("[Sentry Debug] Sending event:", {
+                type: event.type,
+                transaction: event.transaction,
+                level: event.level,
+              });
+            }
+            return event;
+          },
+        });
+
+        if (isDebugMode) {
+          console.log("[Sentry] ✅ Initialized successfully");
+          console.log("[Sentry] DSN:", dsn.substring(0, 50) + "...");
+          console.log("[Sentry] Sample Rate:", sampleRate);
+          console.log("[Sentry] Environment:", options?.environment || process.env.NODE_ENV || "production");
+        }
+      } catch (error) {
+        console.error("[Sentry] ❌ Initialization failed:", error);
+        this.sentryEnabled = false;
+      }
+    } else {
+      if (isDebugMode) {
+        console.log("[Sentry] ⏭️  Skipped - DSN not configured or monitoring disabled");
+        console.log("[Sentry] enabled:", this.enabled);
+        console.log("[Sentry] has DSN:", !!dsn);
+      }
     }
   }
 
@@ -85,14 +125,22 @@ export class PerformanceMonitor {
 
     // Sentry 트랜잭션 시작
     if (this.sentryEnabled) {
-      const transaction = Sentry.startTransaction({
-        name,
-        op: "function",
-        data: metadata,
-      });
-      Sentry.getCurrentHub().configureScope((scope) => {
-        scope.setSpan(transaction);
-      });
+      try {
+        const transaction = Sentry.startTransaction({
+          name,
+          op: "function",
+          data: metadata,
+        });
+        this.activeTransactions.set(name, transaction);
+        
+        if (isDebugMode) {
+          console.log(`[Sentry] 📊 Started transaction: ${name}`);
+        }
+      } catch (error) {
+        if (isDebugMode) {
+          console.error(`[Sentry] ❌ Failed to start transaction ${name}:`, error);
+        }
+      }
     }
   }
 
@@ -130,29 +178,53 @@ export class PerformanceMonitor {
 
     // Sentry에 보고
     if (this.sentryEnabled) {
-      const transaction = Sentry.getCurrentHub().getScope()?.getTransaction();
-      if (transaction) {
-        transaction.setMeasurement("duration", duration, "millisecond");
-        transaction.setMeasurement(
-          "memory.heapUsed",
-          memoryUsage.heapUsed,
-          "byte"
-        );
-        transaction.finish();
-      }
+      try {
+        const transaction = this.activeTransactions.get(name);
+        if (transaction) {
+          transaction.setMeasurement("duration", duration, "millisecond");
+          transaction.setMeasurement(
+            "memory.heapUsed",
+            memoryUsage.heapUsed,
+            "byte"
+          );
+          
+          if (metadata) {
+            Object.entries(metadata).forEach(([key, value]) => {
+              transaction.setTag(key, String(value));
+            });
+          }
+          
+          transaction.finish();
+          this.activeTransactions.delete(name);
+          
+          if (isDebugMode) {
+            console.log(`[Sentry] ✅ Finished transaction: ${name} (${duration.toFixed(2)}ms)`);
+          }
+        } else if (isDebugMode) {
+          console.warn(`[Sentry] ⚠️  No active transaction found for: ${name}`);
+        }
 
-      // 느린 작업 경고 (1초 이상)
-      if (duration > 1000) {
-        Sentry.captureMessage(`Slow operation detected: ${name}`, {
-          level: "warning",
-          tags: {
-            operation: name,
-          },
-          extra: {
-            duration: `${duration.toFixed(2)}ms`,
-            metadata,
-          },
-        });
+        // 느린 작업 경고 (1초 이상)
+        if (duration > 1000) {
+          Sentry.captureMessage(`Slow operation detected: ${name}`, {
+            level: "warning",
+            tags: {
+              operation: name,
+            },
+            extra: {
+              duration: `${duration.toFixed(2)}ms`,
+              metadata,
+            },
+          });
+          
+          if (isDebugMode) {
+            console.log(`[Sentry] 🐌 Slow operation reported: ${name}`);
+          }
+        }
+      } catch (error) {
+        if (isDebugMode) {
+          console.error(`[Sentry] ❌ Failed to finish transaction ${name}:`, error);
+        }
       }
     }
 
@@ -399,7 +471,35 @@ export class PerformanceMonitor {
    */
   async flush(): Promise<void> {
     if (this.sentryEnabled) {
-      await Sentry.close(2000);
+      try {
+        if (isDebugMode) {
+          console.log("[Sentry] 🔄 Flushing data...");
+          console.log(`[Sentry] Active transactions: ${this.activeTransactions.size}`);
+          console.log(`[Sentry] Metrics collected: ${this.metrics.length}`);
+        }
+        
+        // 남은 트랜잭션 종료
+        for (const [name, transaction] of this.activeTransactions.entries()) {
+          if (isDebugMode) {
+            console.log(`[Sentry] ⚠️  Force finishing transaction: ${name}`);
+          }
+          transaction.finish();
+        }
+        this.activeTransactions.clear();
+        
+        // Sentry 데이터 전송 완료 대기
+        await Sentry.close(2000);
+        
+        if (isDebugMode) {
+          console.log("[Sentry] ✅ Flush completed");
+        }
+      } catch (error) {
+        if (isDebugMode) {
+          console.error("[Sentry] ❌ Flush failed:", error);
+        }
+      }
+    } else if (isDebugMode) {
+      console.log("[Sentry] ⏭️  Skipping flush - Sentry not enabled");
     }
   }
 }
