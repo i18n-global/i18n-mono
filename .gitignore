@@ -36,3 +36,10 @@ npm-debug.log*
 # Locales (user-generated)
 locales/
 
+# Migration guides (개발자 참고 문서)
+docs/migration/
+RUST_*.md
+*MIGRATION*.md
+SENTRY_PERFORMANCE_GUIDE.md
+DEPLOYMENT_NOTES.md
+MIGRATION_SEPARATION_COMPLETE.md
