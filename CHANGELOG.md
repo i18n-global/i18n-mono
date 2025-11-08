@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [2.9.0] - 2025-11-08
 
 ### Added
+
 - **Type-Safe useTranslation Hook**: Generic parameter support for compile-time key validation
   - `useTranslation<"key1" | "key2">()`: Specify valid translation keys as generic parameter
   - TypeScript will error if you use a key that doesn't exist
@@ -28,15 +29,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Comparison table: Type-safe vs existing
 
 ### Changed
+
 - Enhanced `TranslationFunction` interface to support generic key validation
 - Enhanced `UseTranslationReturn` interface to support generic key validation
 
 ### Fixed
+
 - Improved type safety for `useTranslation` hook through generic parameters
 
 ## [2.8.0] - 2025-11-08
 
 ### Added
+
 - **Type-Safe Translation Keys System**: Comprehensive compile-time validation for translation keys
   - `createTypedTranslation()`: Create type-safe translators for single language with compile-time key validation
   - `createMultiLangTypedTranslation()`: Factory function to create typed translators for multiple languages
@@ -67,26 +71,32 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Type extraction utilities
 
 ### Changed
+
 - Enhanced type safety throughout the codebase
 - Improved documentation with advanced patterns
 
 ### Fixed
+
 - Prevented runtime translation key mapping errors through compile-time validation
 
 ## [2.7.0] - 2025-11-08
 
 ### Added
+
 - I18NexusDevtools component for React Query-style development tools
 - Devtools documentation and visual guides
 
 ### Fixed
+
 - Build system fixes for deleted scripts references
 
 ## [2.5.2] - 2025-10-20
 
 ### Added
+
 - Initial type-guard implementation for useTranslation hook
 - Improved function overloading for translation functions
 
 ### Changed
+
 - Cleaned up unnecessary scripts and sample directories

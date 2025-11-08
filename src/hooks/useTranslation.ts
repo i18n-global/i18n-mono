@@ -36,7 +36,7 @@ export interface TranslationFunction<K extends string = string> {
   (
     key: K,
     variables: TranslationVariables,
-    styles: TranslationStyles,
+    styles: TranslationStyles
   ): React.ReactElement;
 
   /**
@@ -59,7 +59,7 @@ export interface UseTranslationReturn<K extends string = string> {
    * Translation function with type guards
    * - Returns React.ReactElement when styles are provided
    * - Returns string when styles are not provided
-   * 
+   *
    * When K is specified, only those keys are allowed:
    * ```typescript
    * const { t } = useTranslation<"greeting" | "farewell">();
@@ -86,7 +86,7 @@ export interface UseTranslationReturn<K extends string = string> {
  */
 const interpolate = (
   text: string,
-  variables?: TranslationVariables,
+  variables?: TranslationVariables
 ): string => {
   if (!variables) {
     return text;
@@ -108,7 +108,7 @@ const interpolate = (
 const interpolateWithStyles = (
   text: string,
   variables: TranslationVariables,
-  styles: TranslationStyles,
+  styles: TranslationStyles
 ): React.ReactElement => {
   // Split text by variable placeholders
   const parts: (string | React.ReactElement)[] = [];
@@ -134,8 +134,8 @@ const interpolateWithStyles = (
           React.createElement(
             "span",
             { key: `var-${key++}`, style: style },
-            String(value),
-          ),
+            String(value)
+          )
         );
       } else {
         // Just add the value as string
@@ -159,22 +159,36 @@ const interpolateWithStyles = (
 
 /**
  * Hook to access translation function and current language
- * 
- * Basic usage (no type safety):
+ *
+ * Usage 1: Auto-detect keys from I18nProvider translations (Recommended!)
  * ```typescript
- * const { t } = useTranslation();
- * t("any-key"); // No type checking
+ * <I18nProvider translations={{ en: { greeting: "Hello" } }}>
+ *   const { t } = useTranslation();  // t automatically typed!
+ *   t("greeting");   // ✅ OK
+ *   t("invalid");    // ❌ Compile error
+ * </I18nProvider>
  * ```
- * 
- * For type-safe keys, specify the valid keys as a generic parameter:
+ *
+ * Usage 2: Explicit key specification
  * ```typescript
  * const { t } = useTranslation<"greeting" | "farewell">();
  * t("greeting");   // ✅ OK
- * t("invalid");    // ❌ Type error: '"invalid"' is not assignable to '"greeting" | "farewell"'
+ * t("invalid");    // ❌ TypeScript Error
+ * ```
+ *
+ * Usage 3: No type safety (backward compatible)
+ * ```typescript
+ * const { t } = useTranslation();
+ * t("any-key");    // ✅ No type checking
  * ```
  */
-export const useTranslation = <K extends string = string>(): UseTranslationReturn<K> => {
-  const { currentLanguage, isLoading, translations } = useI18nContext();
+export function useTranslation<
+  K extends string = string,
+>(): UseTranslationReturn<K> {
+  const { currentLanguage, isLoading, translations } = useI18nContext<
+    string,
+    K
+  >();
 
   // i18nexus 자체 번역 시스템 사용
   const translate = ((
@@ -199,7 +213,7 @@ export const useTranslation = <K extends string = string>(): UseTranslationRetur
     currentLanguage,
     isReady: !isLoading,
   };
-};
+}
 
 /**
  * Return type for useLanguageSwitcher hook

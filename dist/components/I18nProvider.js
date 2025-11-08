@@ -11,7 +11,8 @@ export const useI18nContext = () => {
     }
     return context;
 };
-export function I18nProvider({ children, languageManagerOptions, translations = {}, onLanguageChange, initialLanguage, }) {
+export function I18nProvider({ children, languageManagerOptions, translations, onLanguageChange, initialLanguage, }) {
+    const defaultTranslations = translations || {};
     const [languageManager] = React.useState(() => new LanguageManager(languageManagerOptions));
     // Use initialLanguage (from server) if provided, otherwise use default
     // This prevents hydration mismatch
@@ -79,7 +80,7 @@ export function I18nProvider({ children, languageManagerOptions, translations = 
         availableLanguages: languageManager.getAvailableLanguages(),
         languageManager,
         isLoading,
-        translations,
+        translations: defaultTranslations,
     };
     return (_jsx(I18nContext.Provider, { value: contextValue, children: children }));
 }

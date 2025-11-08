@@ -84,8 +84,9 @@ t("invalid_key"); // Error: '"invalid_key"' is not assignable to '"greeting" | "
 ```
 
 **반환 타입:**
+
 ```typescript
-(key: K, variables?: Record<string, string | number>) => string
+(key: K, variables?: Record<string, string | number>) => string;
 ```
 
 ### `createTypedTranslationWithStyles(translations)`
@@ -130,7 +131,7 @@ const tKo = getT("ko");
 
 // ✅ 둘 다 유효한 키만 받음
 tEn("greeting", { name: "Alice" }); // "Hello Alice"
-tKo("greeting", { name: "철수" });   // "안녕 철수"
+tKo("greeting", { name: "철수" }); // "안녕 철수"
 ```
 
 ### `validateTranslationKeys(translations)`
@@ -151,6 +152,7 @@ validateTranslationKeys(translations);
 ```
 
 **사용 시기:**
+
 - 테스트 코드에서 번역 일관성 검증
 - CI/CD 파이프라인에서 배포 전 검증
 - 개발 환경 초기화 시 자동 검증
@@ -265,7 +267,7 @@ function App() {
 
 function Content() {
   const { t } = useTranslation();
-  
+
   // ✅ Type-safe - valid 키만 가능
   return <h1>{t("greeting", { name: "User" })}</h1>;
 }
@@ -306,15 +308,15 @@ import { AppTranslationKey } from "./i18n";
 
 function MyComponent() {
   const { t } = useTranslation();
-  
+
   const key: AppTranslationKey = "greeting"; // ✅ Type-safe
-  
+
   return (
     <div>
       {/* ✅ 모두 컴파일 타임에 검증됨 */}
       <h1>{t("welcome")}</h1>
       <p>{t("greeting", { name: "Alice", age: 25 })}</p>
-      
+
       {/* ❌ 컴파일 에러 */}
       {/* {t("invalid_key")} */}
     </div>
@@ -331,6 +333,7 @@ Type '"invalid_key"' is not assignable to type '"welcome" | "greeting" | "error"
 ```
 
 **해결:**
+
 - 올바른 키 이름 사용
 - `getTranslationKeyList()`로 valid 키 확인
 
@@ -341,6 +344,7 @@ Missing key "greeting" in language "ko". Found in "en" but not in "ko".
 ```
 
 **해결:**
+
 - 모든 언어에 동일한 키 추가
 - `validateTranslationKeys()`로 검증
 
@@ -352,16 +356,17 @@ const translations = { en: { greeting: "Hello" } }; // as const 없음
 ```
 
 **해결:**
+
 - 항상 `as const` 사용
 
 ## 📊 비교표
 
-| 방식 | 컴파일 타임 검증 | IDE 자동완성 | 런타임 검증 | 복잡도 |
-|------|:-----------:|:---------:|:---------:|-------|
-| String literal | ✅ | ✅ | ❌ | 낮음 |
-| createTypedTranslation | ✅ | ✅ | ✅ | 중간 |
-| I18nProvider + useTranslation | ✅ | ✅ | ✅ | 중간 |
-| 커스텀 type guard | ✅ | ⚠️ | ✅ | 높음 |
+| 방식                          | 컴파일 타임 검증 | IDE 자동완성 | 런타임 검증 | 복잡도 |
+| ----------------------------- | :--------------: | :----------: | :---------: | ------ |
+| String literal                |        ✅        |      ✅      |     ❌      | 낮음   |
+| createTypedTranslation        |        ✅        |      ✅      |     ✅      | 중간   |
+| I18nProvider + useTranslation |        ✅        |      ✅      |     ✅      | 중간   |
+| 커스텀 type guard             |        ✅        |      ⚠️      |     ✅      | 높음   |
 
 ## 🎓 학습 리소스
 

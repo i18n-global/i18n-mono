@@ -67,20 +67,29 @@ export interface UseTranslationReturn<K extends string = string> {
 /**
  * Hook to access translation function and current language
  *
- * Basic usage (no type safety):
+ * Usage 1: Auto-detect keys from I18nProvider translations (Recommended!)
  * ```typescript
- * const { t } = useTranslation();
- * t("any-key"); // No type checking
+ * <I18nProvider translations={{ en: { greeting: "Hello" } }}>
+ *   const { t } = useTranslation();  // t automatically typed!
+ *   t("greeting");   // ✅ OK
+ *   t("invalid");    // ❌ Compile error
+ * </I18nProvider>
  * ```
  *
- * For type-safe keys, specify the valid keys as a generic parameter:
+ * Usage 2: Explicit key specification
  * ```typescript
  * const { t } = useTranslation<"greeting" | "farewell">();
  * t("greeting");   // ✅ OK
- * t("invalid");    // ❌ Type error: '"invalid"' is not assignable to '"greeting" | "farewell"'
+ * t("invalid");    // ❌ TypeScript Error
+ * ```
+ *
+ * Usage 3: No type safety (backward compatible)
+ * ```typescript
+ * const { t } = useTranslation();
+ * t("any-key");    // ✅ No type checking
  * ```
  */
-export declare const useTranslation: <K extends string = string>() => UseTranslationReturn<K>;
+export declare function useTranslation<K extends string = string>(): UseTranslationReturn<K>;
 /**
  * Return type for useLanguageSwitcher hook
  */

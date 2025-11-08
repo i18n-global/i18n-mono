@@ -63,20 +63,29 @@ const interpolateWithStyles = (text, variables, styles) => {
 /**
  * Hook to access translation function and current language
  *
- * Basic usage (no type safety):
+ * Usage 1: Auto-detect keys from I18nProvider translations (Recommended!)
  * ```typescript
- * const { t } = useTranslation();
- * t("any-key"); // No type checking
+ * <I18nProvider translations={{ en: { greeting: "Hello" } }}>
+ *   const { t } = useTranslation();  // t automatically typed!
+ *   t("greeting");   // ✅ OK
+ *   t("invalid");    // ❌ Compile error
+ * </I18nProvider>
  * ```
  *
- * For type-safe keys, specify the valid keys as a generic parameter:
+ * Usage 2: Explicit key specification
  * ```typescript
  * const { t } = useTranslation<"greeting" | "farewell">();
  * t("greeting");   // ✅ OK
- * t("invalid");    // ❌ Type error: '"invalid"' is not assignable to '"greeting" | "farewell"'
+ * t("invalid");    // ❌ TypeScript Error
+ * ```
+ *
+ * Usage 3: No type safety (backward compatible)
+ * ```typescript
+ * const { t } = useTranslation();
+ * t("any-key");    // ✅ No type checking
  * ```
  */
-export const useTranslation = () => {
+export function useTranslation() {
     const { currentLanguage, isLoading, translations } = useI18nContext();
     // i18nexus 자체 번역 시스템 사용
     const translate = ((key, variables, styles) => {
@@ -94,7 +103,7 @@ export const useTranslation = () => {
         currentLanguage,
         isReady: !isLoading,
     };
-};
+}
 /**
  * Hook to access language switching functionality
  */

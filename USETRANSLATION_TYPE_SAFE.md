@@ -11,14 +11,14 @@
 ```typescript
 // ❌ 기존 방식 (타입 체크 없음)
 const { t } = useTranslation();
-t("123");        // ✅ 컴파일 성공, 런타임 에러 가능
-t("invalid");    // ✅ 컴파일 성공, 런타임 에러 가능
+t("123"); // ✅ 컴파일 성공, 런타임 에러 가능
+t("invalid"); // ✅ 컴파일 성공, 런타임 에러 가능
 
 // ✅ 새로운 방식 (타입 세이프)
 const { t } = useTranslation<"greeting" | "farewell" | "welcome">();
-t("greeting");   // ✅ OK - 유효한 키
-t("123");        // ❌ 컴파일 에러 - '"123"'은 허용된 키가 아님
-t("invalid");    // ❌ 컴파일 에러 - '"invalid"'는 허용된 키가 아님
+t("greeting"); // ✅ OK - 유효한 키
+t("123"); // ❌ 컴파일 에러 - '"123"'은 허용된 키가 아님
+t("invalid"); // ❌ 컴파일 에러 - '"invalid"'는 허용된 키가 아님
 ```
 
 ## 사용 방법
@@ -94,9 +94,9 @@ function MyComponent() {
 // 타입 체크 없음 (기존 방식)
 const { t } = useTranslation();
 
-t("greeting");    // ✅ 컴파일 성공
-t("any_key");     // ✅ 컴파일 성공 (런타임에 실패할 수 있음)
-t("123");         // ✅ 컴파일 성공
+t("greeting"); // ✅ 컴파일 성공
+t("any_key"); // ✅ 컴파일 성공 (런타임에 실패할 수 있음)
+t("123"); // ✅ 컴파일 성공
 ```
 
 ## 실제 예제
@@ -211,13 +211,13 @@ function DynamicLookup() {
 
 ## 비교: 타입 세이프 vs 기존 방식
 
-| 상황 | 타입 세이프 (`useTranslation<Keys>()`) | 기존 방식 (`useTranslation()`) |
-|------|------|------|
-| 유효한 키 사용 | ✅ 컴파일 성공 | ✅ 컴파일 성공 |
-| 존재하지 않는 키 사용 | ❌ **컴파일 에러** | ✅ 컴파일 성공 (런타임 에러) |
-| 타이핑 에러 ("greting" 등) | ❌ **컴파일 에러** | ✅ 컴파일 성공 (런타임 에러) |
-| 리팩토링 시 안전성 | ✅ 높음 | ❌ 낮음 |
-| IDE 자동 완성 | ✅ 모든 유효한 키 제시 | ❌ 제시 없음 |
+| 상황                       | 타입 세이프 (`useTranslation<Keys>()`) | 기존 방식 (`useTranslation()`) |
+| -------------------------- | -------------------------------------- | ------------------------------ |
+| 유효한 키 사용             | ✅ 컴파일 성공                         | ✅ 컴파일 성공                 |
+| 존재하지 않는 키 사용      | ❌ **컴파일 에러**                     | ✅ 컴파일 성공 (런타임 에러)   |
+| 타이핑 에러 ("greting" 등) | ❌ **컴파일 에러**                     | ✅ 컴파일 성공 (런타임 에러)   |
+| 리팩토링 시 안전성         | ✅ 높음                                | ❌ 낮음                        |
+| IDE 자동 완성              | ✅ 모든 유효한 키 제시                 | ❌ 제시 없음                   |
 
 ## 마이그레이션 가이드
 
@@ -240,7 +240,7 @@ const translations = {
 ### Step 2: 키 타입 추출
 
 ```typescript
-type TranslationKey = keyof (typeof translations.en);
+type TranslationKey = keyof typeof translations.en;
 ```
 
 ### Step 3: `useTranslation` 업데이트
@@ -260,7 +260,7 @@ const { t } = useTranslation<TranslationKey>();
 ```typescript
 // ❌ 문제 코드
 const { t } = useTranslation<"greeting" | "farewell">();
-t("invalid");  // Error: '"invalid"' is not assignable to '"greeting" | "farewell"'
+t("invalid"); // Error: '"invalid"' is not assignable to '"greeting" | "farewell"'
 ```
 
 **해결책**: 번역 객체에 정의된 키만 사용하세요.
@@ -268,8 +268,8 @@ t("invalid");  // Error: '"invalid"' is not assignable to '"greeting" | "farewel
 ```typescript
 // ✅ 올바른 코드
 const { t } = useTranslation<"greeting" | "farewell">();
-t("greeting");  // OK
-t("farewell");  // OK
+t("greeting"); // OK
+t("farewell"); // OK
 ```
 
 ### 문제: 타입을 하드코딩하기 싫어요
@@ -283,7 +283,7 @@ const translations = {
 } as const;
 
 // 자동으로 타입이 추출됨
-type Keys = keyof (typeof translations.en);
+type Keys = keyof typeof translations.en;
 
 const { t } = useTranslation<Keys>();
 ```
@@ -297,7 +297,7 @@ function useTranslation<K extends string = string>(): {
   t: TranslationFunction<K>;
   currentLanguage: string;
   isReady: boolean;
-}
+};
 ```
 
 #### 제네릭 파라미터
@@ -332,7 +332,7 @@ const translations = {
 
 ```typescript
 // translations/types.ts
-export type TranslationKey = keyof (typeof translations.en);
+export type TranslationKey = keyof typeof translations.en;
 
 // any-component.tsx
 import { TranslationKey } from "./types";
@@ -343,7 +343,7 @@ const { t } = useTranslation<TranslationKey>();
 
 ```typescript
 const { t } = useTranslation<TranslationKey>();
-t("|")  // IDE가 모든 유효한 키를 제시합니다
+t("|"); // IDE가 모든 유효한 키를 제시합니다
 // - t("greeting")
 // - t("farewell")
 // - t("welcome")
@@ -351,10 +351,10 @@ t("|")  // IDE가 모든 유효한 키를 제시합니다
 
 ### 4. 팀 프로젝트에서는 문서화하세요
 
-```typescript
+````typescript
 /**
  * 타입 세이프 번역 훅 (v2.8.0+)
- * 
+ *
  * @example
  * ```typescript
  * const { t } = useTranslation<TranslationKey>();
@@ -363,21 +363,24 @@ t("|")  // IDE가 모든 유효한 키를 제시합니다
  * ```
  */
 const { t } = useTranslation<TranslationKey>();
-```
+````
 
 ## 요약
 
 ✅ **구현 완료** (v2.8.0+):
+
 - `useTranslation<K>()` 제네릭 파라미터 지원
 - 컴파일 타임 키 검증
 - 기존 코드 호환성 100%
 - IDE 자동 완성 지원
 
 ✅ **이전 방식도 여전히 작동**:
+
 - 제네릭 없이 `useTranslation()` 사용 가능
 - 기존 프로젝트 마이그레이션 선택사항
 
 ✅ **추가 도구들**:
+
 - `createTypedTranslation()`: 단일 언어 번역 함수
 - `createMultiLangTypedTranslation()`: 다중 언어 팩토리
 - `validateTranslationKeys()`: 런타임 검증

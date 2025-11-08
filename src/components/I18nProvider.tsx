@@ -7,34 +7,58 @@ import {
   LanguageManagerOptions,
 } from "../utils/languageManager";
 
-export interface I18nContextType<TLanguage extends string = string> {
+/**
+ * Extract translation keys from a translations object
+ * @example
+ * type Keys = ExtractI18nKeys<typeof translations>;
+ * // "greeting" | "farewell" | "welcome"
+ */
+export type ExtractI18nKeys<T extends Record<string, Record<string, string>>> =
+  keyof T[keyof T] & string;
+
+export interface I18nContextType<
+  TLanguage extends string = string,
+  TKeys extends string = string,
+> {
   currentLanguage: TLanguage;
   changeLanguage: (lang: TLanguage) => Promise<void>;
   availableLanguages: LanguageConfig[];
   languageManager: LanguageManager;
   isLoading: boolean;
   translations: Record<string, Record<string, string>>;
+  /**
+   * Valid translation keys extracted from translations
+   * This is used for type-safe useTranslation
+   */
+  _translationKeys?: Record<TKeys, true>;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const I18nContext = React.createContext<I18nContextType<any> | null>(
+export const I18nContext = React.createContext<I18nContextType<any, any> | null>(
   null,
 );
 
 export const useI18nContext = <
   TLanguage extends string = string,
->(): I18nContextType<TLanguage> => {
+  TKeys extends string = string,
+>(): I18nContextType<TLanguage, TKeys> => {
   const context = React.useContext(I18nContext);
   if (!context) {
     throw new Error("useI18nContext must be used within an I18nProvider");
   }
-  return context as I18nContextType<TLanguage>;
+  return context as I18nContextType<TLanguage, TKeys>;
 };
 
-export interface I18nProviderProps<TLanguage extends string = string> {
+export interface I18nProviderProps<
+  TLanguage extends string = string,
+  TTranslations extends Record<string, Record<string, string>> = Record<
+    string,
+    Record<string, string>
+  >,
+> {
   children: ReactNode;
   languageManagerOptions?: LanguageManagerOptions;
-  translations?: Record<string, Record<string, string>>;
+  translations?: TTranslations;
   onLanguageChange?: (language: TLanguage) => void;
   /**
    * Initial language from server-side (for SSR/Next.js App Router)
@@ -43,13 +67,20 @@ export interface I18nProviderProps<TLanguage extends string = string> {
   initialLanguage?: TLanguage;
 }
 
-export function I18nProvider<TLanguage extends string = string>({
+export function I18nProvider<
+  TLanguage extends string = string,
+  TTranslations extends Record<string, Record<string, string>> = Record<
+    string,
+    Record<string, string>
+  >,
+>({
   children,
   languageManagerOptions,
-  translations = {},
+  translations,
   onLanguageChange,
   initialLanguage,
-}: I18nProviderProps<TLanguage>) {
+}: I18nProviderProps<TLanguage, TTranslations>) {
+  const defaultTranslations = translations || ({} as TTranslations);
   const [languageManager] = React.useState(
     () => new LanguageManager(languageManagerOptions),
   );
@@ -125,13 +156,16 @@ export function I18nProvider<TLanguage extends string = string>({
     return removeListener;
   }, [languageManager, currentLanguage, onLanguageChange, isHydrated]);
 
-  const contextValue: I18nContextType<TLanguage> = {
+  // Extract translation keys for type safety
+  type TKeys = ExtractI18nKeys<TTranslations>;
+
+  const contextValue: I18nContextType<TLanguage, TKeys> = {
     currentLanguage,
     changeLanguage,
     availableLanguages: languageManager.getAvailableLanguages(),
     languageManager,
     isLoading,
-    translations,
+    translations: defaultTranslations as Record<string, Record<string, string>>,
   };
 
   return (

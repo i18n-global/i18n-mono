@@ -1,9 +1,9 @@
 /**
  * Type-Safe useTranslation Hook Example
- * 
+ *
  * This example demonstrates the new type-safe useTranslation hook
  * where you can specify valid translation keys as a generic parameter.
- * 
+ *
  * KEY FEATURE: If a key is not in the translations, TypeScript will error!
  */
 
@@ -27,7 +27,7 @@ const translations = {
 } as const;
 
 // Extract type of valid keys for reuse
-type TranslationKey = keyof (typeof translations.en);
+type TranslationKey = keyof typeof translations.en;
 
 // ============================================================================
 // Example 1: useTranslation WITH type safety
@@ -176,8 +176,7 @@ export function AppWithTypeScafeTranslation() {
         ],
         defaultLanguage: "en",
       }}
-      translations={translations}
-    >
+      translations={translations}>
       <div style={{ padding: "20px", maxWidth: "1000px", margin: "0 auto" }}>
         <h1>Type-Safe useTranslation Examples</h1>
 
