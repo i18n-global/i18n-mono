@@ -5,6 +5,35 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.9.0] - 2025-11-08
+
+### Added
+- **Type-Safe useTranslation Hook**: Generic parameter support for compile-time key validation
+  - `useTranslation<"key1" | "key2">()`: Specify valid translation keys as generic parameter
+  - TypeScript will error if you use a key that doesn't exist
+  - IDE auto-completion for all valid keys
+  - Fully backward compatible with existing code
+- **UseTranslationTypeSafeExample.tsx**: Comprehensive examples showing:
+  - Type-safe hook usage with generic parameters
+  - Comparison with non-type-safe usage
+  - Real-world component examples
+  - Migration guide
+- **USETRANSLATION_TYPE_SAFE.md**: Complete documentation (300+ lines) covering:
+  - Core feature and benefits
+  - Usage methods and patterns
+  - Real-world examples with multiple scenarios
+  - Migration guide from existing code
+  - Troubleshooting and best practices
+  - API reference
+  - Comparison table: Type-safe vs existing
+
+### Changed
+- Enhanced `TranslationFunction` interface to support generic key validation
+- Enhanced `UseTranslationReturn` interface to support generic key validation
+
+### Fixed
+- Improved type safety for `useTranslation` hook through generic parameters
+
 ## [2.8.0] - 2025-11-08
 
 ### Added
