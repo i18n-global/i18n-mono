@@ -7,6 +7,7 @@ GitHub Actions 자동 배포 시 발생할 수 있는 문제와 해결 방법입
 ## ❌ npm error code ENEEDAUTH
 
 ### 에러 메시지
+
 ```
 npm error code ENEEDAUTH
 npm error need auth This command requires you to be logged in to https://registry.npmjs.org/
@@ -14,6 +15,7 @@ npm error need auth You need to authorize this machine using `npm adduser`
 ```
 
 ### 원인
+
 NPM 인증 토큰이 설정되지 않았거나 잘못되었습니다.
 
 ### 해결 방법
@@ -21,6 +23,7 @@ NPM 인증 토큰이 설정되지 않았거나 잘못되었습니다.
 #### 1️⃣ NPM Token이 설정되어 있는지 확인
 
 **GitHub 저장소에서:**
+
 ```
 https://github.com/manNomi/i18nexus/settings/secrets/actions
 ```
@@ -31,6 +34,7 @@ https://github.com/manNomi/i18nexus/settings/secrets/actions
 #### 2️⃣ 새로운 NPM Token 생성
 
 **A. npm 웹사이트 접속**
+
 ```
 1. https://www.npmjs.com 로그인
 2. 우측 상단 프로필 아이콘 클릭
@@ -38,6 +42,7 @@ https://github.com/manNomi/i18nexus/settings/secrets/actions
 ```
 
 **B. Token 생성**
+
 ```
 1. "Generate New Token" 클릭
 2. "Classic Token" 선택
@@ -48,6 +53,7 @@ https://github.com/manNomi/i18nexus/settings/secrets/actions
 ```
 
 **C. Token 복사**
+
 ```
 ⚠️ 중요: 생성된 토큰은 한 번만 표시됩니다!
 토큰을 복사해서 안전한 곳에 보관하세요.
@@ -56,11 +62,13 @@ https://github.com/manNomi/i18nexus/settings/secrets/actions
 #### 3️⃣ GitHub Secrets에 Token 추가
 
 **A. GitHub 저장소 Settings로 이동**
+
 ```
 https://github.com/manNomi/i18nexus/settings/secrets/actions
 ```
 
 **B. Secret 추가**
+
 ```
 1. "New repository secret" 클릭
 2. Name: NPM_TOKEN (정확히 이 이름으로!)
@@ -69,6 +77,7 @@ https://github.com/manNomi/i18nexus/settings/secrets/actions
 ```
 
 **C. 기존 Secret 업데이트 (이미 있는 경우)**
+
 ```
 1. NPM_TOKEN Secret 옆 "Update" 클릭
 2. 새로운 token 붙여넣기
@@ -78,6 +87,7 @@ https://github.com/manNomi/i18nexus/settings/secrets/actions
 #### 4️⃣ 다시 배포 시도
 
 **방법 1: 워크플로우 재실행**
+
 ```
 1. GitHub → Actions 탭
 2. 실패한 workflow 클릭
@@ -85,6 +95,7 @@ https://github.com/manNomi/i18nexus/settings/secrets/actions
 ```
 
 **방법 2: 새로운 커밋 푸시**
+
 ```bash
 # 버전 업데이트 (package.json)
 # "version": "2.7.0" → "version": "2.7.1"
@@ -99,11 +110,13 @@ git push origin main
 ## ❌ Permission denied
 
 ### 에러 메시지
+
 ```
 Error: Permission denied to create tag
 ```
 
 ### 원인
+
 GitHub Actions에 쓰기 권한이 없습니다.
 
 ### 해결 방법
@@ -111,11 +124,13 @@ GitHub Actions에 쓰기 권한이 없습니다.
 #### 1️⃣ Workflow Permissions 확인
 
 **A. Settings로 이동**
+
 ```
 https://github.com/manNomi/i18nexus/settings/actions
 ```
 
 **B. Workflow permissions 설정**
+
 ```
 Actions → General → Workflow permissions
 
@@ -132,12 +147,14 @@ Actions → General → Workflow permissions
 ## ❌ Version already published
 
 ### 메시지
+
 ```
 Version 2.7.0 is already published
 should_publish=false
 ```
 
 ### 원인
+
 현재 버전이 이미 npm에 배포되어 있습니다. (정상 동작)
 
 ### 해결 방법
@@ -145,13 +162,15 @@ should_publish=false
 #### 버전 업데이트
 
 **package.json 수정:**
+
 ```json
 {
-  "version": "2.7.1"  // 버전 증가
+  "version": "2.7.1" // 버전 증가
 }
 ```
 
 **커밋 & 푸시:**
+
 ```bash
 git add package.json
 git commit -m "chore: bump version to 2.7.1"
@@ -159,6 +178,7 @@ git push origin main
 ```
 
 **Semantic Versioning 규칙:**
+
 ```
 - Patch: 2.7.0 → 2.7.1 (버그 수정)
 - Minor: 2.7.0 → 2.8.0 (새 기능, 하위 호환)
@@ -170,12 +190,14 @@ git push origin main
 ## ❌ Tests failed
 
 ### 에러 메시지
+
 ```
 Error: Process completed with exit code 1
 FAIL src/__tests__/...
 ```
 
 ### 원인
+
 코드에 오류가 있거나 테스트가 실패했습니다.
 
 ### 해결 방법
@@ -213,12 +235,14 @@ git push origin main
 ## ❌ Build failed
 
 ### 에러 메시지
+
 ```
 Error: Process completed with exit code 2
 src/... error TS2307: Cannot find module
 ```
 
 ### 원인
+
 TypeScript 컴파일 오류 또는 의존성 문제
 
 ### 해결 방법
@@ -254,11 +278,13 @@ git push origin main
 ## ❌ npm ci failed
 
 ### 에러 메시지
+
 ```
 npm error The `npm ci` command can only install with an existing package-lock.json
 ```
 
 ### 원인
+
 package-lock.json 파일이 없거나 워크플로우가 `npm ci`를 사용
 
 ### 해결 방법
@@ -270,12 +296,14 @@ package-lock.json 파일이 없거나 워크플로우가 `npm ci`를 사용
 ## ❌ Tag already exists
 
 ### 에러 메시지
+
 ```
 fatal: tag 'v2.7.0' already exists
 Error: Process completed with exit code 128
 ```
 
 ### 원인
+
 Git 태그가 이미 존재합니다. 동일한 버전을 다시 배포하려고 시도했습니다.
 
 ### 해결 방법
@@ -283,13 +311,15 @@ Git 태그가 이미 존재합니다. 동일한 버전을 다시 배포하려고
 #### 권장: 버전 업데이트
 
 **A. package.json 버전 증가**
+
 ```json
 {
-  "version": "2.8.0"  // 2.7.0 → 2.8.0
+  "version": "2.8.0" // 2.7.0 → 2.8.0
 }
 ```
 
 **B. 커밋 & 푸시**
+
 ```bash
 git add package.json
 git commit -m "chore: bump version to 2.8.0"
@@ -326,6 +356,7 @@ git push origin v2.7.0 --force
 ### 예방
 
 워크플로우가 이미 업데이트되어 이 문제를 자동으로 처리합니다:
+
 - 태그가 이미 있으면 건너뛰기
 - 에러 대신 경고 메시지만 표시
 
@@ -334,12 +365,14 @@ git push origin v2.7.0 --force
 ## ❌ 403 Forbidden
 
 ### 에러 메시지
+
 ```
 npm error 403 Forbidden - PUT https://registry.npmjs.org/i18nexus
 npm error 403 You do not have permission to publish "i18nexus"
 ```
 
 ### 원인
+
 1. 토큰 권한이 부족하거나
 2. 패키지 이름이 이미 다른 사람이 소유
 
@@ -348,6 +381,7 @@ npm error 403 You do not have permission to publish "i18nexus"
 #### 1️⃣ 토큰 권한 확인
 
 **새 토큰 생성:**
+
 - Token Type: **Automation** 또는 **Publish** 선택
 - Read-only 토큰은 배포할 수 없습니다
 
@@ -362,6 +396,7 @@ npm whoami
 ```
 
 **본인이 소유자가 아니라면:**
+
 - 다른 패키지 이름 사용
 - 또는 스코프 패키지로 변경 (`@username/i18nexus`)
 
@@ -370,16 +405,19 @@ npm whoami
 ## ❌ GitHub Release 생성 실패
 
 ### 에러 메시지
+
 ```
 Error: Resource not accessible by integration
 ```
 
 ### 원인
+
 GitHub Actions 권한 부족
 
 ### 해결 방법
 
 **Workflow permissions 확인:**
+
 ```
 Settings → Actions → General → Workflow permissions
 
@@ -447,15 +485,18 @@ npm login
 ### 여전히 문제가 해결되지 않나요?
 
 **1. GitHub Issues**
+
 - https://github.com/manNomi/i18nexus/issues
 - 에러 메시지 전체 복사
 - 스크린샷 첨부
 
 **2. npm 지원**
+
 - https://www.npmjs.com/support
 - 토큰 관련 문제
 
 **3. GitHub Actions 지원**
+
 - https://github.com/community
 - 워크플로우 관련 문제
 
@@ -496,4 +537,3 @@ npm login
 ---
 
 **Made with ❤️ for troubleshooting**
-

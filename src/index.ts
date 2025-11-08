@@ -15,6 +15,19 @@ export type {
   TranslationFunction,
 } from "./hooks/useTranslation";
 
+// Type-safe translation utilities
+export {
+  createTypedTranslation,
+  createTypedTranslationWithStyles,
+  createMultiLangTypedTranslation,
+  validateTranslationKeys,
+  getTranslationKeyList,
+} from "./utils/typeTranslation";
+export type {
+  ExtractTranslationKeys,
+  ExtractLanguageKeys,
+} from "./utils/typeTranslation";
+
 // Utils
 export {
   setCookie,
