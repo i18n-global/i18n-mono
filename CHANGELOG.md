@@ -5,6 +5,41 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.10.0] - 2025-11-08
+
+### Added
+
+- **Automatic Type Extraction from I18nProvider**: Revolutionary improvement for developer experience
+  - `useTranslation()` now automatically infers translation keys from `I18nProvider`'s translations
+  - No more manual generic parameter specification needed
+  - `ExtractI18nKeys<T>`: Type utility to extract keys from translations object
+  - `I18nContextType<TLanguage, TKeys>`: Enhanced context type with key type support
+  - IDE auto-completion works immediately without type declarations
+- **AutoTypeExtractionExample.tsx**: Real-world examples showing:
+  - Dynamic variable handling solutions (3 different approaches)
+  - Automatic type inference in action
+  - Conditional rendering with type safety
+  - Complex championship creation UI example
+- **AUTO_TYPE_EXTRACTION.md**: Complete guide (300+ lines) covering:
+  - Problem and solution overview
+  - Dynamic variable handling strategies
+  - Auto-extraction usage patterns
+  - Real-world code examples
+  - Migration guide from v2.9.0
+  - Performance characteristics
+  - Troubleshooting tips
+
+### Changed
+
+- `I18nProviderProps` now supports generic translation type: `I18nProviderProps<TLanguage, TTranslations>`
+- `I18nContextType` now stores translation key type: `I18nContextType<TLanguage, TKeys>`
+- Enhanced `useTranslation` hook to leverage automatic type extraction
+
+### Fixed
+
+- Improved type inference for translation keys
+- Better developer experience with no manual type declarations
+
 ## [2.9.0] - 2025-11-08
 
 ### Added
