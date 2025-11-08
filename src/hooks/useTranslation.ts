@@ -22,7 +22,7 @@ export type TranslationStyles = Record<string, VariableStyle>;
 /**
  * Translation function overloads for type safety
  */
-export interface TranslationFunction {
+export interface TranslationFunction<K extends string = string> {
   /**
    * Translation with styles - returns React element
    * @param key - Translation key to look up
@@ -34,7 +34,7 @@ export interface TranslationFunction {
    * // Returns: <>개수 : <span style={{...}}>5</span> 입니다</>
    */
   (
-    key: string,
+    key: K,
     variables: TranslationVariables,
     styles: TranslationStyles,
   ): React.ReactElement;
@@ -48,19 +48,26 @@ export interface TranslationFunction {
    * t("Hello {{name}}", { name: "World" })
    * // Returns: "Hello World"
    */
-  (key: string, variables?: TranslationVariables): string;
+  (key: K, variables?: TranslationVariables): string;
 }
 
 /**
  * Return type for useTranslation hook
  */
-export interface UseTranslationReturn {
+export interface UseTranslationReturn<K extends string = string> {
   /**
    * Translation function with type guards
    * - Returns React.ReactElement when styles are provided
    * - Returns string when styles are not provided
+   * 
+   * When K is specified, only those keys are allowed:
+   * ```typescript
+   * const { t } = useTranslation<"greeting" | "farewell">();
+   * t("greeting");   // ✅ OK
+   * t("invalid");    // ❌ TypeScript Error
+   * ```
    */
-  t: TranslationFunction;
+  t: TranslationFunction<K>;
   /**
    * Current language code (e.g., 'en', 'ko')
    */
@@ -152,18 +159,31 @@ const interpolateWithStyles = (
 
 /**
  * Hook to access translation function and current language
+ * 
+ * Basic usage (no type safety):
+ * ```typescript
+ * const { t } = useTranslation();
+ * t("any-key"); // No type checking
+ * ```
+ * 
+ * For type-safe keys, specify the valid keys as a generic parameter:
+ * ```typescript
+ * const { t } = useTranslation<"greeting" | "farewell">();
+ * t("greeting");   // ✅ OK
+ * t("invalid");    // ❌ Type error: '"invalid"' is not assignable to '"greeting" | "farewell"'
+ * ```
  */
-export const useTranslation = (): UseTranslationReturn => {
+export const useTranslation = <K extends string = string>(): UseTranslationReturn<K> => {
   const { currentLanguage, isLoading, translations } = useI18nContext();
 
   // i18nexus 자체 번역 시스템 사용
-  const translate: TranslationFunction = ((
-    key: string,
+  const translate = ((
+    key: K,
     variables?: TranslationVariables,
     styles?: TranslationStyles,
   ): string | React.ReactElement => {
     const currentTranslations = translations[currentLanguage] || {};
-    const translatedText = currentTranslations[key] || key;
+    const translatedText = currentTranslations[key as unknown as string] || key;
 
     // If styles are provided, return React elements
     if (styles && variables) {
@@ -172,7 +192,7 @@ export const useTranslation = (): UseTranslationReturn => {
 
     // Otherwise return string
     return interpolate(translatedText, variables);
-  }) as TranslationFunction;
+  }) as TranslationFunction<K>;
 
   return {
     t: translate,

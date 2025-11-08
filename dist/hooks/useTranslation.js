@@ -62,6 +62,19 @@ const interpolateWithStyles = (text, variables, styles) => {
 };
 /**
  * Hook to access translation function and current language
+ *
+ * Basic usage (no type safety):
+ * ```typescript
+ * const { t } = useTranslation();
+ * t("any-key"); // No type checking
+ * ```
+ *
+ * For type-safe keys, specify the valid keys as a generic parameter:
+ * ```typescript
+ * const { t } = useTranslation<"greeting" | "farewell">();
+ * t("greeting");   // ✅ OK
+ * t("invalid");    // ❌ Type error: '"invalid"' is not assignable to '"greeting" | "farewell"'
+ * ```
  */
 export const useTranslation = () => {
     const { currentLanguage, isLoading, translations } = useI18nContext();
