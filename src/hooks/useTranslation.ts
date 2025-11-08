@@ -185,16 +185,16 @@ const interpolateWithStyles = (
 export function useTranslation<
   K extends string = string,
 >(): UseTranslationReturn<K> {
-  const { currentLanguage, isLoading, translations } = useI18nContext<
-    string,
-    K
-  >();
+  // Extract K from context if not explicitly provided
+  // This enables automatic type inference from I18nProvider
+  const context = useI18nContext<string, K>();
+  const { currentLanguage, isLoading, translations } = context;
 
   // i18nexus 자체 번역 시스템 사용
   const translate = ((
     key: K,
     variables?: TranslationVariables,
-    styles?: TranslationStyles,
+    styles?: TranslationStyles
   ): string | React.ReactElement => {
     const currentTranslations = translations[currentLanguage] || {};
     const translatedText = currentTranslations[key as unknown as string] || key;

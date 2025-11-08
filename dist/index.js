@@ -11,4 +11,6 @@ export { setCookie, getCookie, deleteCookie, getAllCookies, } from "./utils/cook
 export { LanguageManager, defaultLanguageManager, } from "./utils/languageManager";
 // Type utilities
 export { defineConfig } from "./utils/types";
+// Dynamic translation utilities
+export { createDynamicTranslation, buildTranslationParams, buildConditionalTranslation, mapToTranslationParams, } from "./utils/dynamicTranslation";
 //# sourceMappingURL=index.js.map

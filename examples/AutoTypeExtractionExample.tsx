@@ -1,7 +1,7 @@
 /**
  * I18nProvider와 useTranslation 자동 타입 추출 예제
- * 
- * 이제 I18nProvider에 전달된 translations 객체에서 
+ *
+ * 이제 I18nProvider에 전달된 translations 객체에서
  * 자동으로 유효한 키를 추출하여 useTranslation에서 사용합니다!
  */
 
@@ -19,15 +19,15 @@ const translations = {
     "대회 생성입니다만": "This is a championship creation",
     greeting: "Hello {{name}}",
     farewell: "Goodbye {{name}}",
-    championship:
-      "{{championshipType}} requires exactly {{matchCount}} teams",
+    championship: "{{championshipType}} requires exactly {{matchCount}} teams",
   },
   ko: {
     "리그는 팀 선택 제한이 없습니다": "리그는 팀 선택 제한이 없습니다",
     "대회 생성입니다만": "대회 생성입니다만",
     greeting: "안녕하세요 {{name}}",
     farewell: "안녕히 가세요 {{name}}",
-    championship: "{{championshipType}}은 정확히 {{matchCount}}개의 팀을 선택해야 합니다",
+    championship:
+      "{{championshipType}}은 정확히 {{matchCount}}개의 팀을 선택해야 합니다",
   },
 } as const;
 
@@ -51,14 +51,12 @@ function ChampionshipInfo({
   return (
     <div>
       <p className="text-sm text-amber-800">
-        {championshipType === 0 ? (
-          t("리그는 팀 선택 제한이 없습니다")
-        ) : (
-          t("championship", {
-            championshipType: championshipTypes[championshipType],
-            matchCount: String(matchCounts[championshipType]),
-          })
-        )}
+        {championshipType === 0
+          ? t("리그는 팀 선택 제한이 없습니다")
+          : t("championship", {
+              championshipType: championshipTypes[championshipType],
+              matchCount: String(matchCounts[championshipType]),
+            })}
       </p>
 
       {/* 이 아래는 컴파일 에러가 발생합니다! */}
@@ -98,8 +96,7 @@ export function App() {
         ],
         defaultLanguage: "en",
       }}
-      translations={translations}
-    >
+      translations={translations}>
       <div style={{ padding: "20px", maxWidth: "1000px", margin: "0 auto" }}>
         <h1>자동 타입 추출 예제</h1>
 
@@ -122,7 +119,9 @@ export function App() {
               ✅ <code>I18nProvider translations</code>에서 자동으로 키 타입
               추출
             </li>
-            <li>✅ <code>useTranslation()</code> 호출 시 제네릭 불필요</li>
+            <li>
+              ✅ <code>useTranslation()</code> 호출 시 제네릭 불필요
+            </li>
             <li>✅ 존재하지 않는 키 사용 시 컴파일 에러</li>
             <li>✅ IDE 자동 완성 지원</li>
           </ul>

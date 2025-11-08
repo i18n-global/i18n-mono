@@ -7,8 +7,8 @@
 ```typescript
 // ✅ 이제 제네릭을 지정할 필요 없습니다!
 const { t } = useTranslation();
-t("존재_하는_키");      // ✅ OK
-t("존재하지_않는_키");  // ❌ 컴파일 에러
+t("존재_하는_키"); // ✅ OK
+t("존재하지_않는_키"); // ❌ 컴파일 에러
 ```
 
 ## 문제와 해결책
@@ -16,6 +16,7 @@ t("존재하지_않는_키");  // ❌ 컴파일 에러
 ### 문제 1: 템플릿 문자열에서 동적 계산 불가
 
 **문제 코드:**
+
 ```typescript
 const { t } = useTranslation();
 t("{{championshipTypes[championshipType]}}은 정확히 {{matchCount[championshipType]}}개의 팀을 선택해야 합니다.", {
@@ -25,6 +26,7 @@ t("{{championshipTypes[championshipType]}}은 정확히 {{matchCount[championshi
 ```
 
 **문제점:**
+
 - `championshipTypes[championshipType]`는 동적 계산이므로 변수명으로 사용 불가
 - 번역 문자열 내에서 배열 인덱싱은 지원 안 함
 
@@ -39,7 +41,7 @@ const count = matchCount[championshipType];
 t("{{type}}은 정확히 {{count}}개의 팀을 선택해야 합니다.", {
   type,
   count,
-})
+});
 ```
 
 **해결책 2: 별도의 키로 분리**
@@ -59,11 +61,11 @@ function ChampionshipInfo({ type }: { type: "league" | "cup" | "group" }) {
   if (type === "league") {
     return <p>{t("leagueInfo")}</p>;
   }
-  
+
   if (type === "cup") {
     return <p>{t("cupInfo", { cupName: "FA Cup", teamCount: 8 })}</p>;
   }
-  
+
   return <p>{t("groupInfo", { groupName: "Group Stage", teamCount: 4 })}</p>;
 }
 ```
@@ -121,7 +123,7 @@ function MyComponent() {
       <p>{t("greeting", { name: "Alice" })}</p>        {/* ✅ OK */}
       <p>{t("farewell")}</p>                             {/* ✅ OK */}
       <p>{t("championship", { type: "Cup", count: 8 })}</p> {/* ✅ OK */}
-      
+
       {/* ❌ 아래는 컴파일 에러:
       <p>{t("invalid_key")}</p>
       */}
@@ -302,13 +304,13 @@ function ChampionshipCreation() {
 
 ## 주요 이점
 
-| 기능 | 이전 (v2.9.0) | 현재 (v2.10.0+) |
-|-----|-------------|-----------------|
-| 제네릭 지정 필요 | ✅ 필수 | ❌ 불필요 |
-| I18nProvider 변경 시 자동 동기화 | ❌ 아니오 | ✅ 예 |
-| IDE 자동 완성 | ✅ 수동 지정 후 | ✅ 즉시 |
-| 컴파일 타임 검증 | ✅ 예 | ✅ 예 |
-| 오버헤드 | 낮음 | 낮음 |
+| 기능                             | 이전 (v2.9.0)   | 현재 (v2.10.0+) |
+| -------------------------------- | --------------- | --------------- |
+| 제네릭 지정 필요                 | ✅ 필수         | ❌ 불필요       |
+| I18nProvider 변경 시 자동 동기화 | ❌ 아니오       | ✅ 예           |
+| IDE 자동 완성                    | ✅ 수동 지정 후 | ✅ 즉시         |
+| 컴파일 타임 검증                 | ✅ 예           | ✅ 예           |
+| 오버헤드                         | 낮음            | 낮음            |
 
 ## 마이그레이션
 
@@ -338,9 +340,8 @@ function MyComponent() {
 ### ExtractI18nKeys 타입 유틸리티
 
 ```typescript
-export type ExtractI18nKeys<
-  T extends Record<string, Record<string, string>>
-> = keyof T[keyof T] & string;
+export type ExtractI18nKeys<T extends Record<string, Record<string, string>>> =
+  keyof T[keyof T] & string;
 
 // 사용 예:
 type Keys = ExtractI18nKeys<typeof translations>;

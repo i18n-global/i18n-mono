@@ -1,5 +1,5 @@
 export { I18nProvider, useI18nContext } from "./components/I18nProvider";
-export type { I18nProviderProps, I18nContextType, ExtractI18nKeys } from "./components/I18nProvider";
+export type { I18nProviderProps, I18nContextType, ExtractI18nKeys, } from "./components/I18nProvider";
 export { I18NexusDevtools } from "./components/I18NexusDevtools";
 export type { I18NexusDevtoolsProps } from "./components/I18NexusDevtools";
 export { useTranslation, useLanguageSwitcher } from "./hooks/useTranslation";
@@ -12,4 +12,5 @@ export { LanguageManager, defaultLanguageManager, } from "./utils/languageManage
 export type { LanguageConfig, LanguageManagerOptions, } from "./utils/languageManager";
 export { defineConfig } from "./utils/types";
 export type { ExtractLanguages } from "./utils/types";
+export { createDynamicTranslation, buildTranslationParams, buildConditionalTranslation, mapToTranslationParams, } from "./utils/dynamicTranslation";
 //# sourceMappingURL=index.d.ts.map

@@ -219,12 +219,59 @@ import { I18NexusDevtools } from "i18nexus";
 
 ---
 
-## 📦 Package Info
+## � Type-Safe Setup (v2.11.0+)
+
+Get **compile-time key validation** with TypeScript:
+
+### ✅ Setup (5 minutes)
+
+**1. Define your translation keys:**
+
+```typescript
+// locales/types.ts
+import type { translations } from "./index";
+export type AppTranslationKey = keyof typeof translations.ko & string;
+```
+
+**2. Create a custom hook:**
+
+```typescript
+// hooks/useAppTranslation.ts
+import { useTranslation } from "i18nexus";
+import type { AppTranslationKey } from "../locales/types";
+
+export function useAppTranslation() {
+  return useTranslation<AppTranslationKey>();
+}
+```
+
+**3. Use everywhere:**
+
+```tsx
+import { useAppTranslation } from "./hooks/useAppTranslation";
+
+export function MyComponent() {
+  const { t } = useAppTranslation();
+
+  t("greeting"); // ✅ Type-checked
+  t("invalid.key"); // ❌ TypeScript Error!
+
+  return <div>{t("greeting")}</div>;
+}
+```
+
+### 📚 Full Setup Guide
+
+For complete setup instructions and patterns, see **[TYPE_SAFE_SETUP.md](./TYPE_SAFE_SETUP.md)**
+
+---
+
+## �📦 Package Info
 
 - **Name:** i18nexus
-- **Version:** 2.7.0
+- **Version:** 2.11.0
 - **License:** MIT
-- **TypeScript:** ✅ Full support
+- **TypeScript:** ✅ Full support with type-safe keys
 - **Bundle Size:** ~15KB (gzipped)
 
 ---

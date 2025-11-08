@@ -86,7 +86,10 @@ const interpolateWithStyles = (text, variables, styles) => {
  * ```
  */
 export function useTranslation() {
-    const { currentLanguage, isLoading, translations } = useI18nContext();
+    // Extract K from context if not explicitly provided
+    // This enables automatic type inference from I18nProvider
+    const context = useI18nContext();
+    const { currentLanguage, isLoading, translations } = context;
     // i18nexus 자체 번역 시스템 사용
     const translate = ((key, variables, styles) => {
         const currentTranslations = translations[currentLanguage] || {};

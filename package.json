@@ -1,6 +1,6 @@
 {
   "name": "i18nexus",
-  "version": "2.10.0",
+  "version": "2.11.0",
   "description": "Type-safe React i18n toolkit with intelligent automation and SSR support",
   "main": "dist/index.js",
   "module": "dist/index.js",
