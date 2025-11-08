@@ -135,8 +135,9 @@ export class PerformanceMonitor {
     if (this.sentryEnabled) {
       try {
         // processFiles:total 같은 메인 작업만 트랜잭션으로
-        const isRootOperation = name.includes(":total") || name === "processFiles:glob";
-        
+        const isRootOperation =
+          name.includes(":total") || name === "processFiles:glob";
+
         if (isRootOperation) {
           // 메인 트랜잭션 생성
           const transaction = Sentry.startTransaction({
@@ -145,7 +146,7 @@ export class PerformanceMonitor {
             data: metadata,
           });
           this.activeTransactions.set(name, transaction);
-          
+
           // 첫 번째 트랜잭션을 root로 저장
           if (!this.rootTransaction && name.includes(":total")) {
             this.rootTransaction = transaction;
@@ -156,8 +157,10 @@ export class PerformanceMonitor {
           }
         } else {
           // 세부 작업은 Span으로 (트랜잭션 내부에 속함)
-          const parentTransaction = this.rootTransaction || this.activeTransactions.values().next().value;
-          
+          const parentTransaction =
+            this.rootTransaction ||
+            this.activeTransactions.values().next().value;
+
           if (parentTransaction) {
             const span = parentTransaction.startChild({
               op: "function",
@@ -165,7 +168,7 @@ export class PerformanceMonitor {
               data: metadata,
             });
             this.activeSpans.set(name, span);
-            
+
             if (isDebugMode) {
               console.log(`[Sentry] 📌 Started span: ${name}`);
             }
@@ -173,10 +176,7 @@ export class PerformanceMonitor {
         }
       } catch (error) {
         if (isDebugMode) {
-          console.error(
-            `[Sentry] ❌ Failed to start ${name}:`,
-            error
-          );
+          console.error(`[Sentry] ❌ Failed to start ${name}:`, error);
         }
       }
     }
@@ -235,7 +235,7 @@ export class PerformanceMonitor {
 
           transaction.finish();
           this.activeTransactions.delete(name);
-          
+
           // root transaction이 종료되면 초기화
           if (this.rootTransaction === transaction) {
             this.rootTransaction = null;
@@ -247,7 +247,7 @@ export class PerformanceMonitor {
             );
           }
         }
-        
+
         // Span 종료
         const span = this.activeSpans.get(name);
         if (span) {
@@ -256,7 +256,7 @@ export class PerformanceMonitor {
               span.setTag(key, String(value));
             });
           }
-          
+
           span.finish();
           this.activeSpans.delete(name);
 
@@ -286,10 +286,7 @@ export class PerformanceMonitor {
         }
       } catch (error) {
         if (isDebugMode) {
-          console.error(
-            `[Sentry] ❌ Failed to finish ${name}:`,
-            error
-          );
+          console.error(`[Sentry] ❌ Failed to finish ${name}:`, error);
         }
       }
     }
@@ -543,9 +540,7 @@ export class PerformanceMonitor {
           console.log(
             `[Sentry] Active transactions: ${this.activeTransactions.size}`
           );
-          console.log(
-            `[Sentry] Active spans: ${this.activeSpans.size}`
-          );
+          console.log(`[Sentry] Active spans: ${this.activeSpans.size}`);
           console.log(`[Sentry] Metrics collected: ${this.metrics.length}`);
         }
 

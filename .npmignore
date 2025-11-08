@@ -25,6 +25,12 @@ docs/
 !README.md
 !CHANGELOG.md
 
+# Migration guides (개발자용 참고 문서, npm 배포 제외)
+docs/migration/
+RUST_*.md
+*MIGRATION*.md
+SENTRY_PERFORMANCE_GUIDE.md
+
 # Development files
 node_modules/
 .DS_Store

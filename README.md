@@ -41,6 +41,13 @@ Complete documentation is available in the [docs](./docs) folder:
 - **[FAQ](./docs/troubleshooting/faq.md)** - Frequently asked questions
 - **[Contributing](./docs/community/contributing.md)** - How to contribute
 
+### 🚀 Performance & Migration (Advanced)
+
+> For developers interested in performance optimization:
+
+- **[Migration Guides](./docs/migration/README.md)** - Babel→swc, Rust optimization guides
+- **[Performance Monitoring](./docs/guides/performance-monitoring.md)** - Sentry integration
+
 ## 🔧 Core Tools
 
 ### 1. i18n-wrapper - Automatic String Wrapping
