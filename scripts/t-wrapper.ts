@@ -1398,9 +1398,7 @@ export async function runTranslationWrapper(
 
     // 성능 비교 참고 정보 (swc 전환 후)
     console.log(`\n� Performance Info:`);
-    console.log(
-      `   Parser:            swc (20x faster than Babel)`
-    );
+    console.log(`   Parser:            swc (20x faster than Babel)`);
     console.log(
       `   Parsing Speed:     ${((parseTime / processedCount) * 1000).toFixed(0)}μs/file`
     );
