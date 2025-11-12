@@ -11,7 +11,7 @@ const config: Partial<ScriptConfig> = {
   sourcePattern: projectConfig.sourcePattern,
   translationImportSource: projectConfig.translationImportSource,
   constantPatterns: projectConfig.constantPatterns || [],
-  parserType: "swc", // swc 파서 사용
+  parserType: "babel", // Babel 파서 사용
 };
 
 for (let i = 0; i < args.length; i++) {
@@ -31,11 +31,10 @@ for (let i = 0; i < args.length; i++) {
     case "--help":
     case "-h":
       console.log(`
-Usage: i18n-wrapper-swc [options]
-
-🚀 SWC 파서를 사용하는 고성능 버전입니다 (Babel 대비 3-10배 빠름)
+Usage: i18n-wrapper-babel [options]
 
 자동으로 하드코딩된 한국어 문자열을 t() 함수로 래핑하고 useTranslation 훅을 추가합니다.
+⚠️  이 버전은 Babel 파서를 사용합니다 (성능 비교용)
 
 Options:
   -p, --pattern <pattern>              소스 파일 패턴 (기본값: "src/**/*.{js,jsx,ts,tsx}")
@@ -45,28 +44,18 @@ Options:
   -d, --dry-run                        실제 수정 없이 미리보기
   -h, --help                           도움말 표시
 
-Examples:
-  i18n-wrapper-swc                                    # 모든 상수 처리
-  i18n-wrapper-swc -c "_ITEMS,_MENU,_CONFIG"         # 특정 접미사만 처리
-  i18n-wrapper-swc -c "UI_,RENDER_"                  # 특정 접두사만 처리
-  i18n-wrapper-swc -c "NAV,MENU,BUTTON"              # 특정 단어 포함만 처리
-  i18n-wrapper-swc -p "app/**/*.tsx" --dry-run       # 커스텀 패턴 + 미리보기
+Parser Info:
+  Parser Type: Babel (@babel/parser)
+  Performance: 기준 성능 (비교용)
   
-Features:
-  - ⚡ SWC 파서 사용으로 Babel 대비 3-10배 빠른 성능
-  - 한국어/영어 문자열 자동 감지 및 t() 래핑
-  - useTranslation() 훅 자동 추가 (i18nexus-core)
-  - 기존 t() 호출 및 import 보존
-  - 상수 패턴 필터링으로 API 데이터 제외
+Note:
+  성능 비교를 위해 swc 버전(i18n-wrapper-swc)도 사용 가능합니다.
+  swc 버전이 약 20배 빠른 파싱 속도를 제공합니다.
 
-Performance Comparison:
-  성능 비교를 원하시면:
-  
-  # Babel 버전 (기본)
-  I18N_PERF_MONITOR=true I18N_PERF_VERBOSE=true npx i18n-wrapper
-  
-  # SWC 버전 (고성능)
-  I18N_PERF_MONITOR=true I18N_PERF_VERBOSE=true npx i18n-wrapper-swc
+Examples:
+  i18n-wrapper-babel                              # Babel 파서로 모든 상수 처리
+  i18n-wrapper-babel -c "_ITEMS,_MENU,_CONFIG"   # 특정 접미사만 처리
+  i18n-wrapper-babel -p "app/**/*.tsx" --dry-run # 커스텀 패턴 + 미리보기
       `);
       process.exit(0);
       break;
@@ -76,7 +65,7 @@ Performance Comparison:
   }
 }
 
-console.log("🚀 Running with SWC parser (high-performance mode)");
+console.log("🔧 Using Babel parser (performance baseline)");
 
 runTranslationWrapper(config).catch((error) => {
   console.error("❌ Translation wrapper failed:", error);

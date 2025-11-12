@@ -3,7 +3,14 @@
 import * as fs from "fs";
 import * as path from "path";
 import { glob } from "glob";
-import { parseFileWithSwc, generateCodeFromAst } from "./swc-utils";
+import {
+  parseFileWithSwc,
+  generateCodeFromAst as generateWithSwc,
+} from "./swc-utils";
+import {
+  parseFileWithBabel,
+  generateCodeFromAst as generateWithBabel,
+} from "./babel-parser-utils";
 import traverse, { NodePath } from "@babel/traverse";
 import * as t from "@babel/types";
 import { PerformanceMonitor, measureSync } from "./performance-monitor";
@@ -26,6 +33,12 @@ export interface ScriptConfig {
    * Sentry DSN (성능 데이터 전송)
    */
   sentryDsn?: string;
+  /**
+   * 파서 타입 선택 (성능 비교용)
+   * - 'babel': @babel/parser 사용 (기준 성능)
+   * - 'swc': @swc/core 사용 (20배 빠름, 기본값)
+   */
+  parserType?: "babel" | "swc";
 }
 
 const DEFAULT_CONFIG: Required<ScriptConfig> = {
@@ -35,6 +48,7 @@ const DEFAULT_CONFIG: Required<ScriptConfig> = {
   constantPatterns: [], // 기본값: 모든 상수 허용
   enablePerformanceMonitoring: process.env.I18N_PERF_MONITOR !== "false",
   sentryDsn: process.env.SENTRY_DSN || "",
+  parserType: "swc", // 기본값: swc (20배 빠름)
 };
 
 export class TranslationWrapper {
@@ -56,6 +70,48 @@ export class TranslationWrapper {
       environment: process.env.NODE_ENV || "production",
       release: process.env.npm_package_version,
     });
+  }
+
+  /**
+   * 설정된 파서로 파일 파싱
+   */
+  private parseFile(
+    code: string,
+    options: {
+      sourceType?: "module" | "script";
+      jsx?: boolean;
+      tsx?: boolean;
+      decorators?: boolean;
+    } = {}
+  ): t.File {
+    if (this.config.parserType === "babel") {
+      return parseFileWithBabel(code, options);
+    } else {
+      return parseFileWithSwc(code, options);
+    }
+  }
+
+  /**
+   * AST를 코드로 생성
+   */
+  private generateCode(
+    ast: t.File | t.Node,
+    options: {
+      retainLines?: boolean;
+      compact?: boolean;
+      comments?: boolean;
+    } = {}
+  ): { code: string; map?: any } {
+    if (this.config.parserType === "babel") {
+      return generateWithBabel(ast, options);
+    } else {
+      // swc generator는 File 타입만 지원, Node인 경우 babel 사용
+      if ("program" in ast) {
+        return generateWithSwc(ast as t.File, options);
+      } else {
+        return generateWithBabel(ast, options);
+      }
+    }
   }
 
   private createUseTranslationHook(): t.VariableDeclaration {
@@ -482,7 +538,7 @@ export class TranslationWrapper {
 
     try {
       const code = fs.readFileSync(filePath, "utf-8");
-      const ast = parseFileWithSwc(code, {
+      const ast = this.parseFile(code, {
         sourceType: "module",
         tsx: true,
         decorators: true,
@@ -754,10 +810,7 @@ export class TranslationWrapper {
               varName = expr.name;
             } else if (t.isMemberExpression(expr)) {
               // user.name → user_name
-              varName = generateCodeFromAst(expr as any).code.replace(
-                /\./g,
-                "_"
-              );
+              varName = this.generateCode(expr as any).code.replace(/\./g, "_");
             } else {
               // 복잡한 표현식은 expr0, expr1 등으로 처리
               varName = `expr${index}`;
@@ -1074,7 +1127,7 @@ export class TranslationWrapper {
 
       try {
         this.performanceMonitor.start("processFiles:parse", { filePath });
-        const ast = parseFileWithSwc(code, {
+        const ast = this.parseFile(code, {
           sourceType: "module",
           tsx: true,
           decorators: true,
@@ -1216,7 +1269,7 @@ export class TranslationWrapper {
           }
 
           if (!this.config.dryRun) {
-            const output = generateCodeFromAst(ast, {
+            const output = this.generateCode(ast, {
               retainLines: true,
               compact: false,
               comments: true,
@@ -1276,7 +1329,11 @@ export async function runTranslationWrapper(
 ) {
   const wrapper = new TranslationWrapper(config);
 
-  console.log("🚀 Starting translation wrapper...");
+  const parserType = wrapper["config"].parserType || "swc";
+  const parserLabel =
+    parserType === "babel" ? "Babel (baseline)" : "swc (20x faster)";
+
+  console.log(`🚀 Starting translation wrapper with ${parserLabel} parser...`);
   const startTime = Date.now();
 
   try {
@@ -1357,9 +1414,11 @@ export async function runTranslationWrapper(
       `   ✍️  Code Gen & I/O:  ${generateTime.toFixed(0)}ms (${((generateTime / totalTime) * 100).toFixed(1)}%)`
     );
 
-    // 성능 비교 참고 정보 (swc 전환 후)
-    console.log(`\n� Performance Info:`);
-    console.log(`   Parser:            swc (20x faster than Babel)`);
+    // 성능 비교 참고 정보
+    console.log(`\n💡 Performance Info:`);
+    console.log(
+      `   Parser:            ${parserType === "babel" ? "Babel (baseline)" : "swc (20x faster than Babel)"}`
+    );
     console.log(
       `   Parsing Speed:     ${((parseTime / processedCount) * 1000).toFixed(0)}μs/file`
     );

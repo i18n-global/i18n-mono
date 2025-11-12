@@ -1,11 +1,13 @@
 {
   "name": "i18nexus-tools",
-  "version": "1.7.2",
+  "version": "1.7.3",
   "description": "CLI tools for i18nexus - automate i18n workflows with type-safe configuration and Google Sheets integration",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "bin": {
     "i18n-wrapper": "dist/bin/i18n-wrapper.js",
+    "i18n-wrapper-babel": "dist/bin/i18n-wrapper-babel.js",
+    "i18n-wrapper-swc": "dist/bin/i18n-wrapper-swc.js",
     "i18n-extractor": "dist/bin/i18n-extractor.js",
     "i18n-upload": "dist/bin/i18n-upload.js",
     "i18n-download": "dist/bin/i18n-download.js",
@@ -20,7 +22,8 @@
     "clean": "rm -rf dist",
     "prepare": "npm run build",
     "prepublishOnly": "npm run build",
-    "prepack": "npm run build"
+    "prepack": "npm run build",
+    "benchmark": "npm run build && node dist/bin/benchmark.js"
   },
   "keywords": [
     "i18n",
@@ -55,6 +58,7 @@
   },
   "dependencies": {
     "@babel/generator": "^7.23.4",
+    "@babel/parser": "^7.23.4",
     "@babel/traverse": "^7.23.4",
     "@babel/types": "^7.23.4",
     "@sentry/node": "^7.120.4",
