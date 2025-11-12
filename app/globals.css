@@ -32,6 +32,7 @@ body {
     "Segoe UI",
     sans-serif;
   min-height: 100vh;
+  transition: padding-left 300ms ease-in-out;
 }
 
 /* Custom Scrollbar */
