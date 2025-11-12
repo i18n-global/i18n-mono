@@ -132,7 +132,9 @@ export default function HomePage() {
           <div className="grid md:grid-cols-2 gap-6">
             <div className="bg-slate-900/80 backdrop-blur rounded-2xl border border-red-900/30 p-8 hover:border-red-500/50 transition-colors">
               <div className="w-14 h-14 bg-red-500/10 rounded-xl flex items-center justify-center mb-4">
-                <span className="text-3xl">😰</span>
+                <svg className="w-8 h-8 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
               </div>
               <h3 className="text-xl font-semibold text-red-400 mb-3">
                 {t("수동 텍스트 래핑")}
@@ -144,7 +146,9 @@ export default function HomePage() {
 
             <div className="bg-slate-900/80 backdrop-blur rounded-2xl border border-red-900/30 p-8 hover:border-red-500/50 transition-colors">
               <div className="w-14 h-14 bg-red-500/10 rounded-xl flex items-center justify-center mb-4">
-                <span className="text-3xl">🐛</span>
+                <svg className="w-8 h-8 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                </svg>
               </div>
               <h3 className="text-xl font-semibold text-red-400 mb-3">
                 {t("하이드레이션 오류")}
@@ -156,7 +160,9 @@ export default function HomePage() {
 
             <div className="bg-slate-900/80 backdrop-blur rounded-2xl border border-red-900/30 p-8 hover:border-red-500/50 transition-colors">
               <div className="w-14 h-14 bg-red-500/10 rounded-xl flex items-center justify-center mb-4">
-                <span className="text-3xl">📁</span>
+                <svg className="w-8 h-8 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z" />
+                </svg>
               </div>
               <h3 className="text-xl font-semibold text-red-400 mb-3">
                 {t("복잡한 파일 관리")}
@@ -168,7 +174,10 @@ export default function HomePage() {
 
             <div className="bg-slate-900/80 backdrop-blur rounded-2xl border border-red-900/30 p-8 hover:border-red-500/50 transition-colors">
               <div className="w-14 h-14 bg-red-500/10 rounded-xl flex items-center justify-center mb-4">
-                <span className="text-3xl">⚙️</span>
+                <svg className="w-8 h-8 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                </svg>
               </div>
               <h3 className="text-xl font-semibold text-red-400 mb-3">
                 {t("복잡한 설정")}
@@ -181,69 +190,77 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Solution Section - Bright background for positive transformation */}
-      <section className="py-20 bg-gradient-to-b from-white to-blue-50">
+      {/* Solution Section - Dark background with green accents */}
+      <section className="py-20 bg-slate-900">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <div className="inline-block px-4 py-2 bg-green-500/10 border border-green-500/30 rounded-full mb-6">
-              <span className="text-green-600 font-semibold">{t("i18nexus 솔루션")}</span>
+              <span className="text-green-400 font-semibold">{t("i18nexus 솔루션")}</span>
             </div>
-            <h2 className="text-4xl md:text-5xl font-bold text-slate-900 mb-6">
+            <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
               {t("모든 문제를 한 번에 해결합니다")}
             </h2>
-            <p className="text-xl text-slate-600 max-w-3xl mx-auto">
+            <p className="text-xl text-slate-400 max-w-3xl mx-auto">
               {t("i18nexus는 자동화와 최적화로 번역 관리의 모든 고민을 끝냅니다")}
             </p>
           </div>
 
           <div className="grid md:grid-cols-2 gap-6">
-            <div className="bg-white rounded-2xl border border-green-200 p-8 shadow-lg hover:shadow-xl transition-shadow">
+            <div className="bg-slate-800/50 rounded-2xl border border-green-500/20 p-8 hover:border-green-500/40 transition-all">
               <div className="w-14 h-14 bg-green-500/10 rounded-xl flex items-center justify-center mb-4">
-                <span className="text-3xl">⚡</span>
+                <svg className="w-8 h-8 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                </svg>
               </div>
-              <h3 className="text-xl font-semibold text-green-600 mb-3">
+              <h3 className="text-xl font-semibold text-green-400 mb-3">
                 {t("CLI로 자동 텍스트 래핑")}
               </h3>
-              <p className="text-slate-700 leading-relaxed mb-4">
+              <p className="text-slate-300 leading-relaxed mb-4">
                 {t("i18n-wrapper CLI가 코드를 분석해 자동으로 번역 함수를 적용합니다.")}
               </p>
-              <pre className="bg-slate-100 text-slate-800 p-3 rounded-lg text-xs overflow-x-auto">
+              <pre className="bg-slate-950 text-slate-200 p-3 rounded-lg text-xs overflow-x-auto">
                 <code>$ npx i18nexus-tools wrapper</code>
               </pre>
             </div>
 
-            <div className="bg-white rounded-2xl border border-green-200 p-8 shadow-lg hover:shadow-xl transition-shadow">
+            <div className="bg-slate-800/50 rounded-2xl border border-blue-500/20 p-8 hover:border-blue-500/40 transition-all">
               <div className="w-14 h-14 bg-blue-500/10 rounded-xl flex items-center justify-center mb-4">
-                <span className="text-3xl">🛡️</span>
+                <svg className="w-8 h-8 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                </svg>
               </div>
-              <h3 className="text-xl font-semibold text-blue-600 mb-3">
+              <h3 className="text-xl font-semibold text-blue-400 mb-3">
                 {t("하이드레이션 문제 제로")}
               </h3>
-              <p className="text-slate-700 leading-relaxed">
+              <p className="text-slate-300 leading-relaxed">
                 {t("쿠키 기반 언어 관리로 서버와 클라이언트가 항상 동일한 언어를 사용합니다.")}
               </p>
             </div>
 
-            <div className="bg-white rounded-2xl border border-green-200 p-8 shadow-lg hover:shadow-xl transition-shadow">
+            <div className="bg-slate-800/50 rounded-2xl border border-purple-500/20 p-8 hover:border-purple-500/40 transition-all">
               <div className="w-14 h-14 bg-purple-500/10 rounded-xl flex items-center justify-center mb-4">
-                <span className="text-3xl">📊</span>
+                <svg className="w-8 h-8 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                </svg>
               </div>
-              <h3 className="text-xl font-semibold text-purple-600 mb-3">
+              <h3 className="text-xl font-semibold text-purple-400 mb-3">
                 {t("Google Sheets 연동")}
               </h3>
-              <p className="text-slate-700 leading-relaxed">
+              <p className="text-slate-300 leading-relaxed">
                 {t("번역 파일을 Google Sheets로 관리하고 자동 동기화할 수 있습니다.")}
               </p>
             </div>
 
-            <div className="bg-white rounded-2xl border border-green-200 p-8 shadow-lg hover:shadow-xl transition-shadow">
+            <div className="bg-slate-800/50 rounded-2xl border border-indigo-500/20 p-8 hover:border-indigo-500/40 transition-all">
               <div className="w-14 h-14 bg-indigo-500/10 rounded-xl flex items-center justify-center mb-4">
-                <span className="text-3xl">🎯</span>
+                <svg className="w-8 h-8 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
+                </svg>
               </div>
-              <h3 className="text-xl font-semibold text-indigo-600 mb-3">
+              <h3 className="text-xl font-semibold text-indigo-400 mb-3">
                 {t("기본값으로 간단한 설정")}
               </h3>
-              <p className="text-slate-700 leading-relaxed">
+              <p className="text-slate-300 leading-relaxed">
                 {t("3줄의 코드만으로 즉시 시작. 복잡한 설정은 필요 없습니다.")}
               </p>
             </div>
@@ -252,13 +269,13 @@ export default function HomePage() {
       </section>
 
       {/* Features Showcase - Enhanced grid with visual hierarchy */}
-      <section className="py-20 bg-white">
+      <section className="py-20 bg-slate-950">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold text-slate-900 mb-6">
+            <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
               {t("핵심 기능")}
             </h2>
-            <p className="text-xl text-slate-600 max-w-3xl mx-auto">
+            <p className="text-xl text-slate-400 max-w-3xl mx-auto">
               {t("개발자를 위해 설계된 완전한 i18n 도구 모음")}
             </p>
           </div>
@@ -266,60 +283,60 @@ export default function HomePage() {
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
             {/* Feature 1 */}
             <div className="group text-center">
-              <div className="w-20 h-20 bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-lg shadow-blue-500/30 group-hover:scale-110 transition-transform">
-                <svg className="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div className="w-20 h-20 bg-blue-500/10 rounded-2xl flex items-center justify-center mx-auto mb-6 border border-blue-500/20 group-hover:border-blue-500/40 transition-all">
+                <svg className="w-10 h-10 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
                 </svg>
               </div>
-              <h3 className="text-xl font-bold text-slate-900 mb-3">
+              <h3 className="text-xl font-bold text-white mb-3">
                 {t("자동 번역 래핑")}
               </h3>
-              <p className="text-slate-600 leading-relaxed">
+              <p className="text-slate-400 leading-relaxed">
                 {t("CLI가 자동으로 텍스트를 감지하고 번역 함수를 적용합니다")}
               </p>
             </div>
 
             {/* Feature 2 */}
             <div className="group text-center">
-              <div className="w-20 h-20 bg-gradient-to-br from-indigo-500 to-indigo-600 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-lg shadow-indigo-500/30 group-hover:scale-110 transition-transform">
-                <svg className="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div className="w-20 h-20 bg-indigo-500/10 rounded-2xl flex items-center justify-center mx-auto mb-6 border border-indigo-500/20 group-hover:border-indigo-500/40 transition-all">
+                <svg className="w-10 h-10 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
                 </svg>
               </div>
-              <h3 className="text-xl font-bold text-slate-900 mb-3">
+              <h3 className="text-xl font-bold text-white mb-3">
                 {t("타입 안전성")}
               </h3>
-              <p className="text-slate-600 leading-relaxed">
+              <p className="text-slate-400 leading-relaxed">
                 {t("TypeScript 완벽 지원으로 컴파일 타임 오류 방지")}
               </p>
             </div>
 
             {/* Feature 3 */}
             <div className="group text-center">
-              <div className="w-20 h-20 bg-gradient-to-br from-purple-500 to-purple-600 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-lg shadow-purple-500/30 group-hover:scale-110 transition-transform">
-                <svg className="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div className="w-20 h-20 bg-purple-500/10 rounded-2xl flex items-center justify-center mx-auto mb-6 border border-purple-500/20 group-hover:border-purple-500/40 transition-all">
+                <svg className="w-10 h-10 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
                 </svg>
               </div>
-              <h3 className="text-xl font-bold text-slate-900 mb-3">
+              <h3 className="text-xl font-bold text-white mb-3">
                 {t("실시간 동기화")}
               </h3>
-              <p className="text-slate-600 leading-relaxed">
+              <p className="text-slate-400 leading-relaxed">
                 {t("Google Sheets와 양방향 자동 동기화")}
               </p>
             </div>
 
             {/* Feature 4 */}
             <div className="group text-center">
-              <div className="w-20 h-20 bg-gradient-to-br from-green-500 to-green-600 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-lg shadow-green-500/30 group-hover:scale-110 transition-transform">
-                <svg className="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div className="w-20 h-20 bg-green-500/10 rounded-2xl flex items-center justify-center mx-auto mb-6 border border-green-500/20 group-hover:border-green-500/40 transition-all">
+                <svg className="w-10 h-10 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
               </div>
-              <h3 className="text-xl font-bold text-slate-900 mb-3">
+              <h3 className="text-xl font-bold text-white mb-3">
                 {t("SSR 최적화")}
               </h3>
-              <p className="text-slate-600 leading-relaxed">
+              <p className="text-slate-400 leading-relaxed">
                 {t("Next.js App Router와 완벽 호환, 하이드레이션 안정성")}
               </p>
             </div>
@@ -328,32 +345,32 @@ export default function HomePage() {
       </section>
 
       {/* Code Demo Section - Enhanced with real usage examples */}
-      <section className="py-20 bg-gradient-to-b from-slate-50 to-slate-100">
+      <section className="py-20 bg-slate-900">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold text-slate-900 mb-6">
+            <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
               {t("정말 1분이면 됩니다")}
             </h2>
-            <p className="text-xl text-slate-600 max-w-3xl mx-auto">
+            <p className="text-xl text-slate-400 max-w-3xl mx-auto">
               {t("복잡한 설정 없이 3단계로 즉시 시작하세요")}
             </p>
           </div>
 
           <div className="space-y-8">
             {/* Step 1: Install */}
-            <div className="bg-white rounded-2xl border border-slate-200 p-8 shadow-lg">
+            <div className="bg-slate-800/50 rounded-2xl border border-slate-700 p-8">
               <div className="flex items-start gap-4 mb-4">
-                <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center flex-shrink-0 shadow-lg">
-                  <span className="text-white font-bold text-lg">1</span>
+                <div className="w-12 h-12 bg-blue-500/20 rounded-xl flex items-center justify-center flex-shrink-0 border border-blue-500/30">
+                  <span className="text-blue-400 font-bold text-lg">1</span>
                 </div>
                 <div className="flex-1">
-                  <h3 className="text-2xl font-bold text-slate-900 mb-2">
-                    {t("설치")} <span className="text-slate-400 text-base font-normal">({t("10초")})</span>
+                  <h3 className="text-2xl font-bold text-white mb-2">
+                    {t("설치")} <span className="text-slate-500 text-base font-normal">({t("10초")})</span>
                   </h3>
-                  <p className="text-slate-600 mb-4">
+                  <p className="text-slate-400 mb-4">
                     {t("npm으로 i18nexus를 설치합니다")}
                   </p>
-                  <pre className="bg-slate-900 text-slate-100 p-4 rounded-xl overflow-x-auto">
+                  <pre className="bg-slate-950 text-slate-200 p-4 rounded-xl overflow-x-auto border border-slate-800">
                     <code className="text-sm font-mono">$ npm install i18nexus</code>
                   </pre>
                 </div>
@@ -361,19 +378,19 @@ export default function HomePage() {
             </div>
 
             {/* Step 2: Setup Provider */}
-            <div className="bg-white rounded-2xl border border-slate-200 p-8 shadow-lg">
+            <div className="bg-slate-800/50 rounded-2xl border border-slate-700 p-8">
               <div className="flex items-start gap-4 mb-4">
-                <div className="w-12 h-12 bg-gradient-to-br from-indigo-500 to-indigo-600 rounded-xl flex items-center justify-center flex-shrink-0 shadow-lg">
-                  <span className="text-white font-bold text-lg">2</span>
+                <div className="w-12 h-12 bg-indigo-500/20 rounded-xl flex items-center justify-center flex-shrink-0 border border-indigo-500/30">
+                  <span className="text-indigo-400 font-bold text-lg">2</span>
                 </div>
                 <div className="flex-1">
-                  <h3 className="text-2xl font-bold text-slate-900 mb-2">
-                    {t("Provider 설정")} <span className="text-slate-400 text-base font-normal">({t("30초")})</span>
+                  <h3 className="text-2xl font-bold text-white mb-2">
+                    {t("Provider 설정")} <span className="text-slate-500 text-base font-normal">({t("30초")})</span>
                   </h3>
-                  <p className="text-slate-600 mb-4">
+                  <p className="text-slate-400 mb-4">
                     {t("layout.tsx에 I18nProvider를 추가합니다")}
                   </p>
-                  <pre className="bg-slate-900 text-slate-100 p-4 rounded-xl overflow-x-auto">
+                  <pre className="bg-slate-950 text-slate-200 p-4 rounded-xl overflow-x-auto border border-slate-800">
                     <code className="text-sm font-mono">{`// app/layout.tsx
 import { I18nProvider } from 'i18nexus';
 import { translations } from '@/locales';
@@ -391,19 +408,19 @@ export default function RootLayout({ children }) {
             </div>
 
             {/* Step 3: Use Hook */}
-            <div className="bg-white rounded-2xl border border-slate-200 p-8 shadow-lg">
+            <div className="bg-slate-800/50 rounded-2xl border border-slate-700 p-8">
               <div className="flex items-start gap-4 mb-4">
-                <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl flex items-center justify-center flex-shrink-0 shadow-lg">
-                  <span className="text-white font-bold text-lg">3</span>
+                <div className="w-12 h-12 bg-purple-500/20 rounded-xl flex items-center justify-center flex-shrink-0 border border-purple-500/30">
+                  <span className="text-purple-400 font-bold text-lg">3</span>
                 </div>
                 <div className="flex-1">
-                  <h3 className="text-2xl font-bold text-slate-900 mb-2">
-                    {t("사용하기")} <span className="text-slate-400 text-base font-normal">({t("20초")})</span>
+                  <h3 className="text-2xl font-bold text-white mb-2">
+                    {t("사용하기")} <span className="text-slate-500 text-base font-normal">({t("20초")})</span>
                   </h3>
-                  <p className="text-slate-600 mb-4">
+                  <p className="text-slate-400 mb-4">
                     {t("컴포넌트에서 useTranslation() 훅을 사용합니다")}
                   </p>
-                  <pre className="bg-slate-900 text-slate-100 p-4 rounded-xl overflow-x-auto">
+                  <pre className="bg-slate-950 text-slate-200 p-4 rounded-xl overflow-x-auto border border-slate-800">
                     <code className="text-sm font-mono">{`// app/page.tsx
 "use client";
 import { useTranslation } from 'i18nexus';
@@ -424,10 +441,12 @@ export default function Home() {
             </div>
 
             {/* Completion Badge */}
-            <div className="bg-gradient-to-r from-green-500 to-emerald-500 rounded-2xl p-8 text-center text-white shadow-2xl">
-              <div className="text-5xl mb-4">✨</div>
-              <h3 className="text-2xl font-bold mb-2">{t("완료!")}</h3>
-              <p className="text-green-50 text-lg">
+            <div className="bg-green-500/10 border border-green-500/30 rounded-2xl p-8 text-center">
+              <svg className="w-16 h-16 text-green-400 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              <h3 className="text-2xl font-bold text-green-400 mb-2">{t("완료!")}</h3>
+              <p className="text-slate-300 text-lg">
                 {t("이제 다국어 지원이 활성화되었습니다")}
               </p>
             </div>
@@ -796,46 +815,46 @@ export default function Home() {
       </section>
 
       {/* Final CTA Section - Strong call to action */}
-      <section className="py-24 bg-gradient-to-br from-blue-600 via-indigo-600 to-purple-700 relative overflow-hidden">
-        {/* Animated background elements */}
-        <div className="absolute inset-0 overflow-hidden">
-          <div className="absolute -top-1/4 -right-1/4 w-96 h-96 bg-white/10 rounded-full blur-3xl animate-pulse"></div>
-          <div className="absolute -bottom-1/4 -left-1/4 w-96 h-96 bg-white/10 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }}></div>
-        </div>
-
-        <div className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+      <section className="py-24 bg-slate-950 border-t border-slate-800">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
             {t("지금 바로 시작하세요")}
           </h2>
-          <p className="text-xl text-blue-100 mb-10 max-w-2xl mx-auto">
+          <p className="text-xl text-slate-400 mb-10 max-w-2xl mx-auto">
             {t("수천 명의 개발자가 i18nexus로 번역 관리를 자동화하고 있습니다")}
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-8">
             <Link
               href="/getting-started"
-              className="inline-flex items-center px-10 py-5 bg-white hover:bg-blue-50 text-blue-600 font-bold text-lg rounded-2xl shadow-2xl hover:shadow-white/30 transition-all hover:scale-105 group">
+              className="inline-flex items-center px-10 py-5 bg-blue-600 hover:bg-blue-500 text-white font-bold text-lg rounded-xl transition-all hover:scale-105 group">
               {t("무료로 시작하기")}
               <span className="ml-3 group-hover:translate-x-1 transition-transform">→</span>
             </Link>
             <Link
               href="/docs/i18nexus"
-              className="inline-flex items-center px-10 py-5 bg-transparent hover:bg-white/10 text-white font-semibold text-lg rounded-2xl border-2 border-white/30 hover:border-white transition-all">
+              className="inline-flex items-center px-10 py-5 bg-slate-800 hover:bg-slate-700 text-white font-semibold text-lg rounded-xl border border-slate-700 hover:border-slate-600 transition-all">
               {t("문서 둘러보기")}
             </Link>
           </div>
 
-          <div className="flex flex-wrap gap-6 justify-center items-center text-sm text-blue-100">
+          <div className="flex flex-wrap gap-6 justify-center items-center text-sm text-slate-400">
             <div className="flex items-center gap-2">
-              <span className="text-white text-xl">✓</span>
+              <svg className="w-5 h-5 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+              </svg>
               <span>{t("신용카드 불필요")}</span>
             </div>
             <div className="flex items-center gap-2">
-              <span className="text-white text-xl">✓</span>
+              <svg className="w-5 h-5 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+              </svg>
               <span>{t("오픈소스")}</span>
             </div>
             <div className="flex items-center gap-2">
-              <span className="text-white text-xl">✓</span>
+              <svg className="w-5 h-5 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+              </svg>
               <span>{t("활발한 커뮤니티")}</span>
             </div>
           </div>
