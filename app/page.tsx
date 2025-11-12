@@ -10,7 +10,7 @@ export default function HomePage() {
   return (
     <main className="overflow-x-hidden">
       {/* Hero Section - Enhanced with stronger value proposition */}
-      <section className="relative min-h-[90vh] flex items-center justify-center bg-gradient-to-br from-slate-950 via-slate-900 to-blue-950 overflow-hidden">
+      <section className="relative min-h-[90vh] flex items-center justify-center bg-slate-950 overflow-hidden">
         {/* Animated background elements */}
         <div className="absolute inset-0 overflow-hidden">
           <div className="absolute -top-1/2 -right-1/2 w-full h-full bg-blue-500/5 rounded-full blur-3xl animate-pulse"></div>
@@ -19,12 +19,12 @@ export default function HomePage() {
 
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 text-center">
           {/* Logo Icon */}
-          <div className="inline-flex items-center justify-center w-24 h-24 bg-gradient-to-br from-blue-500 via-blue-600 to-indigo-700 rounded-3xl mb-8 shadow-2xl shadow-blue-500/50 hover:scale-110 transition-transform">
+          <div className="inline-flex items-center justify-center w-24 h-24 bg-blue-600 rounded-3xl mb-8 shadow-2xl shadow-blue-500/50 hover:scale-110 transition-transform">
             <span className="text-white font-bold text-4xl">i18</span>
           </div>
 
           {/* Main Headline - Why Statement */}
-          <h1 className="text-5xl md:text-7xl lg:text-8xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-blue-500 to-indigo-500 mb-6 leading-tight">
+          <h1 className="text-5xl md:text-7xl lg:text-8xl font-extrabold text-blue-400 mb-6 leading-tight">
             {t("글로벌 앱, 번역 혼돈 끝")}
           </h1>
 
@@ -41,7 +41,7 @@ export default function HomePage() {
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12">
             <Link
               href="/getting-started"
-              className="inline-flex items-center px-10 py-5 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-bold text-lg rounded-2xl shadow-2xl shadow-blue-500/40 hover:shadow-blue-500/60 transition-all hover:scale-105 group">
+              className="inline-flex items-center px-10 py-5 bg-blue-600 hover:bg-blue-500 text-white font-bold text-lg rounded-2xl shadow-2xl shadow-blue-500/40 hover:shadow-blue-500/60 transition-all hover:scale-105 group">
               {t("무료로 시작하기")}
               <span className="ml-3 group-hover:translate-x-1 transition-transform">→</span>
             </Link>
@@ -55,15 +55,21 @@ export default function HomePage() {
           {/* Trust Indicators */}
           <div className="flex flex-wrap gap-8 justify-center items-center text-sm text-slate-400">
             <div className="flex items-center gap-2">
-              <span className="text-green-400 text-xl">✓</span>
+              <svg className="w-5 h-5 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+              </svg>
               <span>{t("5분 설치")}</span>
             </div>
             <div className="flex items-center gap-2">
-              <span className="text-green-400 text-xl">✓</span>
+              <svg className="w-5 h-5 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+              </svg>
               <span>{t("무료 오픈소스")}</span>
             </div>
             <div className="flex items-center gap-2">
-              <span className="text-green-400 text-xl">✓</span>
+              <svg className="w-5 h-5 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+              </svg>
               <span>{t("TypeScript 지원")}</span>
             </div>
           </div>
@@ -101,7 +107,12 @@ export default function HomePage() {
               <div className="text-sm text-slate-400">{t("프로젝트 사용")}</div>
             </div>
             <div className="text-center">
-              <div className="text-4xl font-bold text-indigo-400 mb-1">⭐ 1k+</div>
+              <div className="flex items-center justify-center gap-2 text-4xl font-bold text-indigo-400 mb-1">
+                <svg className="w-8 h-8" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+                </svg>
+                1k+
+              </div>
               <div className="text-sm text-slate-400">GitHub Stars</div>
             </div>
             <div className="text-center">
@@ -113,7 +124,7 @@ export default function HomePage() {
       </section>
 
       {/* Problem Section - Dark background to emphasize pain points */}
-      <section className="py-20 bg-gradient-to-b from-slate-950 to-slate-900 relative">
+      <section className="py-20 bg-slate-950 relative">
         <div className="absolute inset-0 bg-[url('/grid.svg')] opacity-10"></div>
 
         <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -456,7 +467,7 @@ export default function Home() {
           <div className="text-center mt-12">
             <Link
               href="/getting-started"
-              className="inline-flex items-center px-8 py-4 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-bold text-lg rounded-xl shadow-lg shadow-blue-500/30 hover:shadow-blue-500/50 transition-all hover:scale-105">
+              className="inline-flex items-center px-8 py-4 bg-blue-600 hover:bg-blue-500 text-white font-bold text-lg rounded-xl shadow-lg shadow-blue-500/30 hover:shadow-blue-500/50 transition-all hover:scale-105">
               {t("상세 가이드 보기")}
               <span className="ml-2">→</span>
             </Link>
@@ -742,10 +753,12 @@ export default function Home() {
           {/* i18nexus Library Docs */}
           <Link
             href="/docs/i18nexus"
-            className="group bg-gradient-to-br from-slate-900 to-slate-800 rounded-2xl border border-slate-700 hover:border-blue-500 p-8 transition-all hover:shadow-xl hover:shadow-blue-500/20 hover:-translate-y-1">
+            className="group bg-slate-900 rounded-2xl border border-slate-700 hover:border-blue-500 p-8 transition-all hover:shadow-xl hover:shadow-blue-500/20 hover:-translate-y-1">
             <div className="flex items-center mb-4">
-              <div className="w-14 h-14 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-2xl flex items-center justify-center mr-4 shadow-lg shadow-blue-500/30 group-hover:shadow-blue-500/50 transition-all">
-                <span className="text-white font-bold text-2xl">📚</span>
+              <div className="w-14 h-14 bg-blue-600 rounded-2xl flex items-center justify-center mr-4 shadow-lg shadow-blue-500/30 group-hover:shadow-blue-500/50 transition-all">
+                <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                </svg>
               </div>
               <h3 className="text-2xl font-bold text-white group-hover:text-blue-400 transition-colors">
                 {t("i18nexus 라이브러리")}
@@ -778,10 +791,12 @@ export default function Home() {
           {/* i18nexus-tools CLI Docs */}
           <Link
             href="/docs/i18nexus-tools"
-            className="group bg-gradient-to-br from-slate-900 to-slate-800 rounded-2xl border border-slate-700 hover:border-indigo-500 p-8 transition-all hover:shadow-xl hover:shadow-indigo-500/20 hover:-translate-y-1">
+            className="group bg-slate-900 rounded-2xl border border-slate-700 hover:border-indigo-500 p-8 transition-all hover:shadow-xl hover:shadow-indigo-500/20 hover:-translate-y-1">
             <div className="flex items-center mb-4">
-              <div className="w-14 h-14 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-2xl flex items-center justify-center mr-4 shadow-lg shadow-indigo-500/30 group-hover:shadow-indigo-500/50 transition-all">
-                <span className="text-white font-bold text-2xl">⚡</span>
+              <div className="w-14 h-14 bg-indigo-600 rounded-2xl flex items-center justify-center mr-4 shadow-lg shadow-indigo-500/30 group-hover:shadow-indigo-500/50 transition-all">
+                <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                </svg>
               </div>
               <h3 className="text-2xl font-bold text-white group-hover:text-indigo-400 transition-colors">
                 i18nexus-tools CLI
