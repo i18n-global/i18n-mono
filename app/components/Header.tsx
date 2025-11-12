@@ -31,6 +31,20 @@ export default function Header() {
     }
   }, [pathname, isCliSelected, isDocsSelected]);
 
+  // 사이드바 열릴 때 body에 padding 적용
+  useEffect(() => {
+    if (sidebarOpen) {
+      document.body.style.paddingLeft = '256px';
+    } else {
+      document.body.style.paddingLeft = '0';
+    }
+
+    // Cleanup on unmount
+    return () => {
+      document.body.style.paddingLeft = '0';
+    };
+  }, [sidebarOpen]);
+
   const navItems = [
     {
       href: "/",
@@ -413,7 +427,7 @@ export default function Header() {
 
       {/* Top Navigation Bar */}
       <nav className="bg-slate-900/95 backdrop-blur-sm border-b border-slate-800 sticky top-0 z-30 shadow-lg">
-        <div className={`max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 transition-all duration-300 ${sidebarOpen ? "ml-64" : "ml-0"}`}>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center space-x-4">
               {/* Hamburger Menu Button */}
@@ -466,9 +480,6 @@ export default function Header() {
           </div>
         </div>
       </nav>
-
-      {/* Main Content Wrapper - Pushes content when sidebar is open */}
-      <div className={`transition-all duration-300 ${sidebarOpen ? "ml-64" : "ml-0"}`} />
     </>
   );
 }
