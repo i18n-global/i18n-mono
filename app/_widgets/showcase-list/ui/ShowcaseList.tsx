@@ -60,9 +60,9 @@ export default async function ShowcaseList() {
               key={project.id}
               url={project.url}
               projectName={project.projectName}
-              autoTitle={project.autoTitle}
-              autoDescription={project.autoDescription}
-              thumbnailUrl={project.thumbnailUrl}
+              autoTitle={project.autoTitle || "Untitled Project"}
+              autoDescription={project.autoDescription || "No description available"}
+              thumbnailUrl={project.thumbnailUrl || "/default-thumbnail.svg"}
               screenshotUrl={project.screenshotUrl}
             />
           ))}
