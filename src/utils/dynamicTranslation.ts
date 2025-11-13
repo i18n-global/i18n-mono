@@ -50,7 +50,7 @@ type DynamicVariables = Record<string, unknown>;
  */
 export function createDynamicTranslation(
   translatedText: string,
-  variables: DynamicVariables
+  variables: DynamicVariables,
 ): string {
   if (!translatedText || !variables) {
     return translatedText;
@@ -83,7 +83,7 @@ export function createDynamicTranslation(
  * ```
  */
 export function buildTranslationParams(
-  data: Record<string, unknown>
+  data: Record<string, unknown>,
 ): TranslationVariables {
   const params: TranslationVariables = {};
 
@@ -118,7 +118,7 @@ export function buildConditionalTranslation(
   options: {
     true: [key: string, params?: TranslationVariables];
     false: [key: string, params?: TranslationVariables];
-  }
+  },
 ): [key: string, params?: TranslationVariables] {
   return condition ? options.true : options.false;
 }
@@ -142,7 +142,7 @@ export function buildConditionalTranslation(
  */
 export function mapToTranslationParams(
   values: unknown[],
-  keys: string[]
+  keys: string[],
 ): TranslationVariables {
   const params: TranslationVariables = {};
 

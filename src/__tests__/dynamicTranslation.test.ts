@@ -17,7 +17,7 @@ describe("dynamicTranslation", () => {
     it("should substitute multiple variables", () => {
       const result = createDynamicTranslation(
         "{{type}}은 {{count}}개 팀 필요",
-        { type: "League", count: "0" }
+        { type: "League", count: "0" },
       );
       expect(result).toBe("League은 0개 팀 필요");
     });
@@ -68,7 +68,7 @@ describe("dynamicTranslation", () => {
 
       const result = createDynamicTranslation(
         "{{type}}은 정확히 {{count}}개 팀 필요",
-        { type, count: String(count) }
+        { type, count: String(count) },
       );
 
       expect(result).toBe("League은 정확히 0개 팀 필요");
@@ -179,7 +179,7 @@ describe("dynamicTranslation", () => {
     it("should map array values to keys", () => {
       const result = mapToTranslationParams(
         ["League", 0, true],
-        ["type", "count", "isRestricted"]
+        ["type", "count", "isRestricted"],
       );
 
       expect(result).toEqual({
@@ -192,7 +192,7 @@ describe("dynamicTranslation", () => {
     it("should handle mismatched lengths (more values)", () => {
       const result = mapToTranslationParams(
         ["John", "Doe", "Mr"],
-        ["first", "last"]
+        ["first", "last"],
       );
 
       expect(result).toEqual({
@@ -204,7 +204,7 @@ describe("dynamicTranslation", () => {
     it("should handle mismatched lengths (more keys)", () => {
       const result = mapToTranslationParams(
         ["John", "Doe"],
-        ["first", "middle", "last"]
+        ["first", "middle", "last"],
       );
 
       expect(result).toEqual({
@@ -216,7 +216,7 @@ describe("dynamicTranslation", () => {
     it("should skip null and undefined values", () => {
       const result = mapToTranslationParams(
         ["John", null, "Doe", undefined],
-        ["first", "middle", "last", "suffix"]
+        ["first", "middle", "last", "suffix"],
       );
 
       expect(result).toEqual({
@@ -272,7 +272,7 @@ describe("dynamicTranslation", () => {
       const params = buildTranslationParams(data);
       const result = createDynamicTranslation(
         "Player {{name}} scored {{score}} points",
-        params
+        params,
       );
 
       expect(result).toBe("Player Alice scored 1000 points");
@@ -284,7 +284,7 @@ describe("dynamicTranslation", () => {
       const params = mapToTranslationParams(values, keys);
       const result = createDynamicTranslation(
         "{{name}} has {{score}} points",
-        params
+        params,
       );
 
       expect(result).toBe("Bob has 500 points");

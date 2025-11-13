@@ -102,7 +102,7 @@ describe("Type-Safe Translation Utilities", () => {
       };
 
       expect(() => validateTranslationKeys(badTranslations)).toThrow(
-        'Missing key "farewell" in language "ko"'
+        'Missing key "farewell" in language "ko"',
       );
     });
 
@@ -113,14 +113,14 @@ describe("Type-Safe Translation Utilities", () => {
       };
 
       expect(() => validateTranslationKeys(badTranslations)).toThrow(
-        'Extra key "extra" in language "ko"'
+        'Extra key "extra" in language "ko"',
       );
     });
 
     it("should throw with no translations", () => {
       const empty = {};
       expect(() => validateTranslationKeys(empty)).toThrow(
-        "No languages found in translations"
+        "No languages found in translations",
       );
     });
   });

@@ -74,11 +74,11 @@ export type ExtractLanguageKeys<T extends Record<string, string>> = keyof T &
  * ```
  */
 export function createTypedTranslation<T extends Record<string, string>>(
-  translations: T
+  translations: T,
 ) {
   return <K extends ExtractLanguageKeys<T>>(
     key: K,
-    variables?: Record<string, string | number>
+    variables?: Record<string, string | number>,
   ): string => {
     const text = translations[key as keyof T] || key;
 
@@ -146,7 +146,7 @@ export function createTypedTranslationWithStyles<
   const translateWithStyles = <K extends ExtractLanguageKeys<T>>(
     key: K,
     variables?: Record<string, string | number>,
-    styles?: Record<string, React.CSSProperties>
+    styles?: Record<string, React.CSSProperties>,
   ): string | React.ReactElement => {
     const text = translations[key as keyof T] || key;
 
@@ -177,8 +177,8 @@ export function createTypedTranslationWithStyles<
               React.createElement(
                 "span",
                 { key: `var-${elemKey++}`, style },
-                String(value)
-              )
+                String(value),
+              ),
             );
           } else {
             parts.push(String(value));
@@ -228,7 +228,7 @@ export function createTypedTranslationWithStyles<
  * ```
  */
 export function validateTranslationKeys(
-  translations: Record<string, Record<string, string>>
+  translations: Record<string, Record<string, string>>,
 ): void {
   const languages = Object.keys(translations);
 
@@ -247,7 +247,7 @@ export function validateTranslationKeys(
       if (!currentKeys.has(key)) {
         throw new Error(
           `Missing key "${key}" in language "${lang}". ` +
-            `Found in "${firstLang}" but not in "${lang}".`
+            `Found in "${firstLang}" but not in "${lang}".`,
         );
       }
     }
@@ -257,7 +257,7 @@ export function validateTranslationKeys(
       if (!baseKeys.has(key)) {
         throw new Error(
           `Extra key "${key}" in language "${lang}". ` +
-            `Found in "${lang}" but not in "${firstLang}".`
+            `Found in "${lang}" but not in "${firstLang}".`,
         );
       }
     }
@@ -280,7 +280,7 @@ export function validateTranslationKeys(
  * ```
  */
 export function getTranslationKeyList<T extends Record<string, string>>(
-  translations: T
+  translations: T,
 ): Array<ExtractLanguageKeys<T>> {
   return Object.keys(translations) as Array<ExtractLanguageKeys<T>>;
 }
