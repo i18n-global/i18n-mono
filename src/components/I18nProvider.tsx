@@ -33,10 +33,9 @@ export interface I18nContextType<
   _translationKeys?: Record<TKeys, true>;
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const I18nContext = React.createContext<I18nContextType<
-  any,
-  any
+  string,
+  string
 > | null>(null);
 
 export const useI18nContext = <

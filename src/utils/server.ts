@@ -371,7 +371,7 @@ export async function createServerI18n(options?: {
   let config;
   try {
     config = await loadConfigSilently();
-  } catch (error) {
+  } catch {
     // Config not found, use defaults
     config = null;
   }
@@ -391,7 +391,7 @@ export async function createServerI18n(options?: {
     // @ts-ignore - next/headers is an optional peer dependency
     const { headers } = await import("next/headers");
     headersInstance = await headers();
-  } catch (error) {
+  } catch {
     // Not in Next.js environment or headers not available
     // Create empty Headers object as fallback
     headersInstance = new Headers();

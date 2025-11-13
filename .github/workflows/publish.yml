@@ -9,6 +9,16 @@ on:
       - "docs/**"
       - "examples/**"
       - ".github/workflows/ci.yml"
+  workflow_dispatch:
+    inputs:
+      version_type:
+        description: 'Version bump type (leave empty to use patch)'
+        required: false
+        type: choice
+        options:
+          - patch
+          - minor
+          - major
 
 jobs:
   publish:
@@ -22,6 +32,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -29,8 +40,74 @@ jobs:
           node-version: "20"
           registry-url: "https://registry.npmjs.org"
 
+      - name: Configure Git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Determine version bump type
+        id: version-bump
+        run: |
+          if [ "${{ github.event_name }}" == "workflow_dispatch" ] && [ -n "${{ github.event.inputs.version_type }}" ]; then
+            echo "type=${{ github.event.inputs.version_type }}" >> $GITHUB_OUTPUT
+            echo "should_bump=true" >> $GITHUB_OUTPUT
+          else
+            # 커밋 메시지에서 버전 타입 추출
+            COMMIT_MSG="${{ github.event.head_commit.message }}"
+            if echo "$COMMIT_MSG" | grep -qiE "release:\s*(major|minor|patch)"; then
+              TYPE=$(echo "$COMMIT_MSG" | grep -oiE "release:\s*(major|minor|patch)" | awk '{print $2}' | tr '[:upper:]' '[:lower:]')
+              echo "type=$TYPE" >> $GITHUB_OUTPUT
+              echo "should_bump=true" >> $GITHUB_OUTPUT
+            elif echo "$COMMIT_MSG" | grep -qiE "\[major\]|\[minor\]|\[patch\]"; then
+              TYPE=$(echo "$COMMIT_MSG" | grep -oiE "\[(major|minor|patch)\]" | tr -d '[]' | tr '[:upper:]' '[:lower:]')
+              echo "type=$TYPE" >> $GITHUB_OUTPUT
+              echo "should_bump=true" >> $GITHUB_OUTPUT
+            else
+              # 기본값으로 patch 사용
+              echo "type=patch" >> $GITHUB_OUTPUT
+              echo "should_bump=true" >> $GITHUB_OUTPUT
+              echo "⚠️  No version type specified, defaulting to patch"
+            fi
+          fi
+          if [ "$(cat $GITHUB_OUTPUT | grep '^should_bump=' | cut -d'=' -f2)" == "true" ]; then
+            echo "Version bump type: $(cat $GITHUB_OUTPUT | grep '^type=' | cut -d'=' -f2)"
+          else
+            echo "No version bump needed, using current version"
+          fi
+
+      - name: Get current version
+        id: current-version
+        run: |
+          CURRENT_VERSION=$(node -p "require('./package.json').version")
+          echo "version=$CURRENT_VERSION" >> $GITHUB_OUTPUT
+          echo "Current version: $CURRENT_VERSION"
+
+      - name: Bump version
+        if: steps.version-bump.outputs.should_bump == 'true'
+        id: new-version
+        run: |
+          BUMP_TYPE="${{ steps.version-bump.outputs.type }}"
+          CURRENT_VERSION="${{ steps.current-version.outputs.version }}"
+          
+          # 버전 증가
+          npm version $BUMP_TYPE --no-git-tag-version
+          
+          NEW_VERSION=$(node -p "require('./package.json').version")
+          echo "version=$NEW_VERSION" >> $GITHUB_OUTPUT
+          echo "New version: $NEW_VERSION (bumped from $CURRENT_VERSION)"
+
+      - name: Commit version bump
+        if: steps.version-bump.outputs.should_bump == 'true'
+        run: |
+          git add package.json
+          git commit -m "chore: 버전 ${{ steps.new-version.outputs.version }}으로 업데이트 [skip ci]"
+          git push origin main
+
       - name: Install dependencies
         run: npm install
+
+      - name: Run lint
+        run: npm run lint
 
       - name: Run tests
         run: npm test
@@ -41,7 +118,11 @@ jobs:
       - name: Check if version has been updated
         id: version-check
         run: |
-          PACKAGE_VERSION=$(node -p "require('./package.json').version")
+          if [ "${{ steps.version-bump.outputs.should_bump }}" == "true" ]; then
+            PACKAGE_VERSION="${{ steps.new-version.outputs.version }}"
+          else
+            PACKAGE_VERSION="${{ steps.current-version.outputs.version }}"
+          fi
           echo "version=$PACKAGE_VERSION" >> $GITHUB_OUTPUT
 
           # Check if this version is already published
