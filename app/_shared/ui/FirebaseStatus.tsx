@@ -2,7 +2,7 @@
 import { useTranslation } from "i18nexus";
 
 import { useEffect, useState } from "react";
-import { auth, db } from "@/lib/firebase";
+import { auth, db } from "@/app/_shared/lib/firebase";
 import { onAuthStateChanged } from "firebase/auth";
 import { collection, getDocs, limit, query } from "firebase/firestore";
 

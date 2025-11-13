@@ -2,13 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useTranslation } from "i18nexus";
-
-interface PackageStats {
-  downloads: number;
-  package: string;
-  start: string;
-  end: string;
-}
+import type { DownloadStats as DownloadStatsType } from "@/app/_shared/lib";
 
 interface DownloadStatsProps {
   packageName: string;
@@ -43,7 +37,7 @@ export default function DownloadStats({
   color,
 }: DownloadStatsProps) {
   const { t } = useTranslation();
-  const [stats, setStats] = useState<PackageStats | null>(null);
+  const [stats, setStats] = useState<DownloadStatsType | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 

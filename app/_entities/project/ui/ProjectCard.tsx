@@ -1,6 +1,5 @@
 "use client";
 import { useTranslation } from "i18nexus";
-
 import { useState } from "react";
 
 interface ProjectCardProps {
@@ -10,12 +9,12 @@ interface ProjectCardProps {
   autoDescription: string;
   thumbnailUrl: string;
   screenshotUrl?: string | null;
-  showActions?: boolean;
-  isApproved?: boolean;
-  onApprove?: () => void;
-  onDelete?: () => void;
 }
 
+/**
+ * ProjectCard - Read-only view component (Entity layer)
+ * For interactive features (approve/delete), use ProjectManageCard from _features
+ */
 export default function ProjectCard({
   url,
   projectName,
@@ -23,10 +22,6 @@ export default function ProjectCard({
   autoDescription,
   thumbnailUrl,
   screenshotUrl,
-  showActions = false,
-  isApproved = false,
-  onApprove,
-  onDelete,
 }: ProjectCardProps) {
   const { t } = useTranslation();
   const displayTitle = projectName || autoTitle;
@@ -91,26 +86,6 @@ export default function ProjectCard({
               →
             </span>
           </a>
-
-          {/* Admin Actions */}
-          {showActions && (
-            <div className="mt-6 pt-6 border-t border-slate-700 flex gap-3">
-              {!isApproved && onApprove && (
-                <button
-                  onClick={onApprove}
-                  className="flex-1 bg-gradient-to-r from-green-600 to-green-500 hover:from-green-500 hover:to-green-400 text-white px-4 py-2.5 rounded-lg font-semibold transition-all hover:scale-105 shadow-lg shadow-green-500/30">
-                  {t("✓ 승인")}
-                </button>
-              )}
-              {onDelete && (
-                <button
-                  onClick={onDelete}
-                  className={`${!isApproved && onApprove ? "flex-1" : "w-full"} bg-gradient-to-r from-red-600 to-red-500 hover:from-red-500 hover:to-red-400 text-white px-4 py-2.5 rounded-lg font-semibold transition-all hover:scale-105 shadow-lg shadow-red-500/30`}>
-                  {t("✗ 삭제")}
-                </button>
-              )}
-            </div>
-          )}
         </div>
       </div>
 
