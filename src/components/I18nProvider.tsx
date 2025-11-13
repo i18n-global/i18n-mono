@@ -33,10 +33,10 @@ export interface I18nContextType<
   _translationKeys?: Record<TKeys, true>;
 }
 
-export const I18nContext = React.createContext<I18nContextType<
-  string,
-  string
-> | null>(null);
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const I18nContext = React.createContext<I18nContextType<any, any> | null>(
+  null
+);
 
 export const useI18nContext = <
   TLanguage extends string = string,
@@ -46,7 +46,7 @@ export const useI18nContext = <
   if (!context) {
     throw new Error("useI18nContext must be used within an I18nProvider");
   }
-  return context as I18nContextType<TLanguage, TKeys>;
+  return context as unknown as I18nContextType<TLanguage, TKeys>;
 };
 
 export interface I18nProviderProps<
@@ -169,6 +169,10 @@ export function I18nProvider<
   };
 
   return (
-    <I18nContext.Provider value={contextValue}>{children}</I18nContext.Provider>
+    <I18nContext.Provider
+      value={contextValue as unknown as I18nContextType<string, string>}
+    >
+      {children}
+    </I18nContext.Provider>
   );
 }
