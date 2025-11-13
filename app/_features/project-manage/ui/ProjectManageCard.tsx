@@ -1,13 +1,9 @@
 "use client";
 
 import { useTranslation } from "i18nexus";
-import { useState } from "react";
-import ProjectCard from "@/app/components/ProjectCard";
-import { approveProject } from "../api/approveProject";
-import { deleteProject } from "../api/deleteProject";
+import { ProjectCard } from "@/app/_entities/project";
 
 interface ProjectManageCardProps {
-  id: string;
   url: string;
   projectName?: string | null;
   autoTitle: string;
@@ -15,13 +11,15 @@ interface ProjectManageCardProps {
   thumbnailUrl: string;
   screenshotUrl?: string | null;
   isApproved: boolean;
-  onApproveSuccess?: () => void;
-  onDeleteSuccess?: () => void;
-  onError?: (error: string) => void;
+  onApprove?: () => void;
+  onDelete?: () => void;
 }
 
+/**
+ * ProjectManageCard - Adds management actions (approve/delete) to ProjectCard
+ * Wraps the read-only ProjectCard from entities layer with interactive features
+ */
 export default function ProjectManageCard({
-  id,
   url,
   projectName,
   autoTitle,
@@ -29,48 +27,14 @@ export default function ProjectManageCard({
   thumbnailUrl,
   screenshotUrl,
   isApproved,
-  onApproveSuccess,
-  onDeleteSuccess,
-  onError,
+  onApprove,
+  onDelete,
 }: ProjectManageCardProps) {
   const { t } = useTranslation();
-  const [approving, setApproving] = useState(false);
-  const [deleting, setDeleting] = useState(false);
-
-  const handleApprove = async () => {
-    setApproving(true);
-    try {
-      await approveProject(id);
-      onApproveSuccess?.();
-    } catch (error) {
-      console.error("Approval error:", error);
-      const errorMessage =
-        error instanceof Error ? error.message : t("승인에 실패했습니다.");
-      onError?.(errorMessage);
-    } finally {
-      setApproving(false);
-    }
-  };
-
-  const handleDelete = async () => {
-    if (!confirm(t("정말 삭제하시겠습니까?"))) return;
-
-    setDeleting(true);
-    try {
-      await deleteProject(id);
-      onDeleteSuccess?.();
-    } catch (error) {
-      console.error("Delete error:", error);
-      const errorMessage =
-        error instanceof Error ? error.message : t("삭제에 실패했습니다.");
-      onError?.(errorMessage);
-    } finally {
-      setDeleting(false);
-    }
-  };
 
   return (
     <div className="relative">
+      {/* Base ProjectCard (read-only) */}
       <ProjectCard
         url={url}
         projectName={projectName}
@@ -78,32 +42,27 @@ export default function ProjectManageCard({
         autoDescription={autoDescription}
         thumbnailUrl={thumbnailUrl}
         screenshotUrl={screenshotUrl}
-        showActions={true}
-        isApproved={isApproved}
-        onApprove={handleApprove}
-        onDelete={handleDelete}
       />
 
-      {/* Loading overlays */}
-      {approving && (
-        <div className="absolute inset-0 bg-black/50 rounded-2xl flex items-center justify-center z-40">
-          <div className="bg-slate-900 px-4 py-3 rounded-lg">
-            <p className="text-white text-sm font-medium">
-              {t("승인 중...")}
-            </p>
-          </div>
+      {/* Admin Actions Overlay */}
+      <div className="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-slate-900/95 to-transparent rounded-b-2xl">
+        <div className="flex gap-3">
+          {!isApproved && onApprove && (
+            <button
+              onClick={onApprove}
+              className="flex-1 bg-gradient-to-r from-green-600 to-green-500 hover:from-green-500 hover:to-green-400 text-white px-4 py-2.5 rounded-lg font-semibold transition-all hover:scale-105 shadow-lg shadow-green-500/30">
+              {t("✓ 승인")}
+            </button>
+          )}
+          {onDelete && (
+            <button
+              onClick={onDelete}
+              className={`${!isApproved && onApprove ? "flex-1" : "w-full"} bg-gradient-to-r from-red-600 to-red-500 hover:from-red-500 hover:to-red-400 text-white px-4 py-2.5 rounded-lg font-semibold transition-all hover:scale-105 shadow-lg shadow-red-500/30`}>
+              {t("✗ 삭제")}
+            </button>
+          )}
         </div>
-      )}
-
-      {deleting && (
-        <div className="absolute inset-0 bg-black/50 rounded-2xl flex items-center justify-center z-40">
-          <div className="bg-slate-900 px-4 py-3 rounded-lg">
-            <p className="text-white text-sm font-medium">
-              {t("삭제 중...")}
-            </p>
-          </div>
-        </div>
-      )}
+      </div>
     </div>
   );
 }

@@ -3,7 +3,7 @@
 import { useTranslation } from "i18nexus";
 import { useState } from "react";
 import { useError } from "@/app/_shared/ui";
-import ProjectCard from "@/app/components/ProjectCard";
+import { ProjectCard } from "@/app/_entities/project";
 import { fetchMetadata } from "../api/fetchMetadata";
 import { submitProject } from "../api/submitProject";
 
