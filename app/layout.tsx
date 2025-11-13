@@ -7,10 +7,8 @@ import { getServerLanguage } from "i18nexus/server";
 
 import { I18nProvider, I18NexusDevtools } from "i18nexus";
 import Script from "next/script";
-import Analytics from "./components/Analytics";
-import FirebaseStatus from "./components/FirebaseStatus";
-import Header from "./components/Header";
-import { GlobalErrorProvider } from "./components/GlobalErrorProvider";
+import { Analytics, FirebaseStatus, GlobalErrorProvider } from "@/app/_shared/ui";
+import { Header } from "@/app/_widgets/navigation";
 import { translations } from "@/locales";
 
 const geistSans = Geist({

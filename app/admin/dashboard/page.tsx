@@ -2,10 +2,12 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { onAuthStateChanged, signOut } from "firebase/auth";
-import { auth } from "@/lib/firebase";
-import ProjectCard from "@/app/components/ProjectCard";
-import { useError } from "@/app/components/GlobalErrorProvider";
+import { onAuthStateChanged } from "firebase/auth";
+import { auth } from "@/app/_shared/lib";
+import { ProjectManageCard } from "@/app/_features/project-manage";
+import { signOut } from "@/app/_features/auth-login";
+import { approveProject, deleteProject } from "@/app/_features/project-manage";
+import { useError } from "@/app/_shared/ui";
 
 interface Submission {
   id: string;
@@ -97,17 +99,8 @@ export default function AdminDashboardPage() {const { t } = useTranslation();
 
   const handleApprove = async (id: string) => {
     try {
-      const response = await fetch("/api/submissions", {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ id, approved: true })
-      });
-
-      if (response.ok) {
-        fetchSubmissions();
-      } else {
-        setError(t("승인에 실패했습니다."));
-      }
+      await approveProject(id);
+      fetchSubmissions();
     } catch (error) {
       console.error("Failed to approve:", error);
       setError(t("승인 중 오류가 발생했습니다."));
@@ -118,15 +111,8 @@ export default function AdminDashboardPage() {const { t } = useTranslation();
     if (!confirm(t("정말 삭제하시겠습니까?"))) return;
 
     try {
-      const response = await fetch(`/api/submissions?id=${id}`, {
-        method: "DELETE"
-      });
-
-      if (response.ok) {
-        fetchSubmissions();
-      } else {
-        setError(t("삭제에 실패했습니다."));
-      }
+      await deleteProject(id);
+      fetchSubmissions();
     } catch (error) {
       console.error("Failed to delete:", error);
       setError(t("삭제 중 오류가 발생했습니다."));
@@ -135,7 +121,7 @@ export default function AdminDashboardPage() {const { t } = useTranslation();
 
   const handleLogout = async () => {
     try {
-      await signOut(auth);
+      await signOut();
       router.push("/admin/login");
     } catch (error) {
       console.error("Logout error:", error);
@@ -233,14 +219,13 @@ export default function AdminDashboardPage() {const { t } = useTranslation();
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {submissions.map((submission) =>
         <div key={submission.id} className="relative">
-              <ProjectCard
+              <ProjectManageCard
             url={submission.url}
             projectName={submission.projectName}
             autoTitle={submission.autoTitle}
             autoDescription={submission.autoDescription}
             thumbnailUrl={submission.thumbnailUrl}
             screenshotUrl={submission.screenshotUrl}
-            showActions={true}
             isApproved={submission.approved}
             onApprove={!submission.approved ? () => handleApprove(submission.id) : undefined}
             onDelete={() => handleDelete(submission.id)} />

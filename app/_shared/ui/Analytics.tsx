@@ -2,7 +2,7 @@
 
 import { useEffect } from "react";
 import { usePathname, useSearchParams } from "next/navigation";
-import * as ga from "@/lib/analytics";
+import * as ga from "@/app/_shared/lib";
 
 export default function Analytics() {
   const pathname = usePathname();

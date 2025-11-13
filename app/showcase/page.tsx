@@ -1,6 +1,6 @@
-import ProjectCard from "@/app/components/ProjectCard";
+import { ProjectCard } from "@/app/_entities/project";
 import Link from "next/link";
-import { db } from "@/lib/firebase";
+import { db } from "@/app/_shared/lib";
 import { collection, getDocs, query, where, orderBy } from "firebase/firestore";
 import { createServerTranslation, getServerLanguage } from "i18nexus/server";
 import { headers } from "next/headers";

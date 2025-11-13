@@ -1,14 +1,13 @@
 "use client";
 
-import { useLanguageSwitcher, useTranslation } from "i18nexus";
+import { useTranslation } from "i18nexus";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState, useEffect } from "react";
+import { LanguageSwitcher } from "@/app/_features/language-switch";
 
-export default function Header() {
+export default function Navigation() {
   const { t } = useTranslation();
-  const { currentLanguage, changeLanguage, availableLanguages } =
-    useLanguageSwitcher();
   const pathname = usePathname();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [cliExpanded, setCliExpanded] = useState(false);
@@ -29,7 +28,7 @@ export default function Header() {
     if (isDocsSelected && !docsExpanded) {
       setDocsExpanded(true);
     }
-  }, [pathname, isCliSelected, isDocsSelected]);
+  }, [pathname, isCliSelected, isDocsSelected, cliExpanded, docsExpanded]);
 
   // 사이드바 열릴 때 body에 padding 적용
   useEffect(() => {
@@ -461,22 +460,8 @@ export default function Header() {
               </Link>
             </div>
 
-            {/* Language Switcher - Desktop */}
-            <div className="hidden sm:flex items-center space-x-3">
-              {availableLanguages.map((lang) => (
-                <button
-                  key={lang.code}
-                  onClick={() => changeLanguage(lang.code)}
-                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
-                    currentLanguage === lang.code
-                      ? "bg-blue-600 text-white shadow-lg shadow-blue-500/30"
-                      : "bg-slate-800 text-slate-400 hover:text-white hover:bg-slate-700 border border-slate-700"
-                  }`}>
-                  <span className="mr-1.5">{lang.flag}</span>
-                  {lang.name}
-                </button>
-              ))}
-            </div>
+            {/* Language Switcher */}
+            <LanguageSwitcher />
           </div>
         </div>
       </nav>
