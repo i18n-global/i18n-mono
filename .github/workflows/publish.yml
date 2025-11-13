@@ -45,6 +45,9 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
+      - name: Install dependencies
+        run: npm install
+
       - name: Determine version bump type
         id: version-bump
         run: |
@@ -102,9 +105,6 @@ jobs:
           git add package.json
           git commit -m "chore: 버전 ${{ steps.new-version.outputs.version }}으로 업데이트 [skip ci]"
           git push origin main
-
-      - name: Install dependencies
-        run: npm install
 
       - name: Run lint
         run: npm run lint
