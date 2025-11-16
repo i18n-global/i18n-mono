@@ -87,10 +87,10 @@ export class TranslationWrapper {
     return hasSpecifier;
   }
 
-  private createServerTBinding(): t.VariableDeclaration {
+  private createServerTBinding(serverFnName: string): t.VariableDeclaration {
     const awaitCall = t.awaitExpression(
       t.callExpression(
-        t.identifier(STRING_CONSTANTS.GET_SERVER_TRANSLATION),
+        t.identifier(serverFnName),
         []
       )
     );
@@ -208,7 +208,9 @@ export class TranslationWrapper {
                 (componentPath.node as any).async = true;
 
                 const body = componentPath.get("body");
-                const decl = this.createServerTBinding();
+                const decl = this.createServerTBinding(
+                  this.config.serverTranslationFunction
+                );
                 if (body.isBlockStatement()) {
                   body.unshiftContainer("body", decl);
                   wasServerImportAdded = true;
@@ -265,7 +267,7 @@ export class TranslationWrapper {
             this.ensureNamedImport(
               ast,
               this.config.translationImportSource,
-              STRING_CONSTANTS.GET_SERVER_TRANSLATION
+              this.config.serverTranslationFunction
             );
           }
 

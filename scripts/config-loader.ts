@@ -20,6 +20,11 @@ export interface I18nexusConfig {
    * - 생략 시 기존 판단 로직 유지
    */
   mode?: "client" | "server";
+  /**
+   * 서버 변환 시 사용할 함수명 (라이브러리별 상이)
+   * 예: "getServerTranslation", "getServerT" 등
+   */
+  serverTranslationFunction?: string;
   googleSheets?: {
     spreadsheetId: string;
     credentialsPath: string;
@@ -34,6 +39,7 @@ const DEFAULT_CONFIG: I18nexusConfig = {
   sourcePattern: COMMON_DEFAULTS.sourcePattern,
   translationImportSource: COMMON_DEFAULTS.translationImportSource,
   mode: undefined,
+  serverTranslationFunction: "getServerTranslation",
   googleSheets: {
     spreadsheetId: GOOGLE_SHEETS_DEFAULTS.spreadsheetId,
     credentialsPath: GOOGLE_SHEETS_DEFAULTS.credentialsPath,

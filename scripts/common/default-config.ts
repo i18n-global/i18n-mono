@@ -55,6 +55,11 @@ export const WRAPPER_DEFAULTS = {
 export interface ScriptConfig {
   sourcePattern?: string;
   translationImportSource?: string;
+  /**
+   * 서버 변환 시 사용할 함수명 (라이브러리별 상이)
+   * 기본값: "getServerTranslation"
+   */
+  serverTranslationFunction?: string;
   dryRun?: boolean;
   /**
    * 성능 모니터링 활성화 여부
@@ -81,6 +86,7 @@ export interface ScriptConfig {
 export const SCRIPT_CONFIG_DEFAULTS: Required<ScriptConfig> = {
   sourcePattern: COMMON_DEFAULTS.sourcePattern,
   translationImportSource: COMMON_DEFAULTS.translationImportSource,
+  serverTranslationFunction: "getServerTranslation",
   dryRun: WRAPPER_DEFAULTS.dryRun,
   enablePerformanceMonitoring: WRAPPER_DEFAULTS.enablePerformanceMonitoring,
   sentryDsn: WRAPPER_DEFAULTS.sentryDsn,
