@@ -41,6 +41,53 @@ describe("translation-wrapper", () => {
       expect(result.processedFiles.length).toBeGreaterThan(0);
     });
 
+    it("client 모드에서는 'use client'와 useTranslation 훅을 보장해야 함", async () => {
+      const testFile = path.join(tempDir, "client.tsx");
+      fs.writeFileSync(
+        testFile,
+        `function ClientComp() {
+  return <div>안녕하세요</div>;
+}`,
+        "utf-8"
+      );
+
+      const wrapper = new TranslationWrapper({
+        sourcePattern: path.join(tempDir, "**/*.tsx"),
+        dryRun: false,
+        mode: "client",
+      } as any);
+
+      await wrapper.processFiles();
+      const content = fs.readFileSync(testFile, "utf-8");
+      expect(content).toContain("'use client'");
+      expect(content).toContain("useTranslation");
+      expect(content).toContain("t(");
+    });
+
+    it("server 모드에서는 지정한 serverTranslationFunction으로 t 바인딩을 생성해야 함", async () => {
+      const testFile = path.join(tempDir, "server.tsx");
+      fs.writeFileSync(
+        testFile,
+        `function ServerComp() {
+  return <div>안녕하세요</div>;
+}`,
+        "utf-8"
+      );
+
+      const wrapper = new TranslationWrapper({
+        sourcePattern: path.join(tempDir, "**/*.tsx"),
+        dryRun: false,
+        mode: "server",
+        serverTranslationFunction: "getServerT",
+      } as any);
+
+      await wrapper.processFiles();
+      const content = fs.readFileSync(testFile, "utf-8");
+      expect(content).toContain("await getServerT");
+      expect(content).toContain("const { t } =");
+      expect(content).toContain("t(");
+    });
+
     it("서버 컴포넌트는 useTranslation 훅을 추가하지 않아야 함", async () => {
       const testFile = path.join(tempDir, "test.tsx");
       fs.writeFileSync(
