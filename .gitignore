@@ -43,3 +43,6 @@ RUST_*.md
 SENTRY_PERFORMANCE_GUIDE.md
 DEPLOYMENT_NOTES.md
 MIGRATION_SEPARATION_COMPLETE.md
+
+# Learning guides (개인 학습 자료는 배포 제외)
+docs/learning/
