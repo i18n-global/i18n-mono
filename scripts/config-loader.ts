@@ -13,6 +13,13 @@ export interface I18nexusConfig {
   localesDir: string;
   sourcePattern: string;
   translationImportSource: string;
+  /**
+   * 변환 모드 (고속 일괄 적용)
+   * - 'client': 모든 파일에 useTranslation + 'use client' 전략 적용
+   * - 'server': 모든 파일에 getServerTranslation + async/await 전략 적용
+   * - 생략 시 기존 판단 로직 유지
+   */
+  mode?: "client" | "server";
   googleSheets?: {
     spreadsheetId: string;
     credentialsPath: string;
@@ -26,6 +33,7 @@ const DEFAULT_CONFIG: I18nexusConfig = {
   localesDir: COMMON_DEFAULTS.localesDir,
   sourcePattern: COMMON_DEFAULTS.sourcePattern,
   translationImportSource: COMMON_DEFAULTS.translationImportSource,
+  mode: undefined,
   googleSheets: {
     spreadsheetId: GOOGLE_SHEETS_DEFAULTS.spreadsheetId,
     credentialsPath: GOOGLE_SHEETS_DEFAULTS.credentialsPath,
