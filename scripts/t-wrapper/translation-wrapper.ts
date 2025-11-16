@@ -16,11 +16,9 @@ const DEFAULT_CONFIG = SCRIPT_CONFIG_DEFAULTS;
 export class TranslationWrapper {
   private config: Required<ScriptConfig>;
   private performanceMonitor: PerformanceMonitor;
-  private mode?: "client" | "server";
 
   constructor(config: Partial<ScriptConfig> = {}) {
     this.config = { ...DEFAULT_CONFIG, ...config } as Required<ScriptConfig>;
-    this.mode = (config as any)?.mode as "client" | "server" | undefined;
     this.performanceMonitor = new PerformanceMonitor({
       enabled: this.config.enablePerformanceMonitoring,
       sentryDsn: this.config.sentryDsn,
@@ -89,10 +87,7 @@ export class TranslationWrapper {
 
   private createServerTBinding(serverFnName: string): t.VariableDeclaration {
     const awaitCall = t.awaitExpression(
-      t.callExpression(
-        t.identifier(serverFnName),
-        []
-      )
+      t.callExpression(t.identifier(serverFnName), [])
     );
     const pattern = t.objectPattern([
       t.objectProperty(
@@ -186,8 +181,8 @@ export class TranslationWrapper {
           let wasUseHookAdded = false;
           let wasServerImportAdded = false;
 
-          const forceClient = this.mode === "client";
-          const forceServer = this.mode === "server";
+          const forceClient = this.config.mode === "client";
+          const forceServer = this.config.mode === "server";
 
           if (forceClient) {
             this.ensureUseClientDirective(ast);
