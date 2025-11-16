@@ -16,15 +16,78 @@ const DEFAULT_CONFIG = SCRIPT_CONFIG_DEFAULTS;
 export class TranslationWrapper {
   private config: Required<ScriptConfig>;
   private performanceMonitor: PerformanceMonitor;
+  private mode?: "client" | "server";
 
   constructor(config: Partial<ScriptConfig> = {}) {
-    this.config = { ...DEFAULT_CONFIG, ...config };
+    this.config = { ...DEFAULT_CONFIG, ...config } as Required<ScriptConfig>;
+    this.mode = (config as any)?.mode as "client" | "server" | undefined;
     this.performanceMonitor = new PerformanceMonitor({
       enabled: this.config.enablePerformanceMonitoring,
       sentryDsn: this.config.sentryDsn,
       environment: process.env.NODE_ENV || STRING_CONSTANTS.DEFAULT_ENV,
       release: process.env.npm_package_version,
     });
+  }
+
+  private ensureUseClientDirective(ast: t.File) {
+    // 이미 존재하면 패스
+    const hasDirective = (ast.program.directives || []).some(
+      (d) => d.value.value === STRING_CONSTANTS.USE_CLIENT_DIRECTIVE
+    );
+    if (!hasDirective) {
+      const dir = t.directive(t.directiveLiteral(STRING_CONSTANTS.USE_CLIENT_DIRECTIVE));
+      ast.program.directives = ast.program.directives || [];
+      ast.program.directives.unshift(dir);
+    }
+  }
+
+  private ensureNamedImport(ast: t.File, source: string, importedName: string) {
+    let hasSource = false;
+    let hasSpecifier = false;
+    for (const node of ast.program.body) {
+      if (t.isImportDeclaration(node) && node.source.value === source) {
+        hasSource = true;
+        for (const spec of node.specifiers) {
+          if (t.isImportSpecifier(spec) && t.isIdentifier(spec.imported) && spec.imported.name === importedName) {
+            hasSpecifier = true;
+            break;
+          }
+        }
+        if (!hasSpecifier) {
+          node.specifiers.push(
+            t.importSpecifier(t.identifier(importedName), t.identifier(importedName))
+          );
+          hasSpecifier = true;
+        }
+        break;
+      }
+    }
+    if (!hasSource) {
+      const decl = t.importDeclaration(
+        [t.importSpecifier(t.identifier(importedName), t.identifier(importedName))],
+        t.stringLiteral(source)
+      );
+      ast.program.body.unshift(decl);
+      hasSpecifier = true;
+    }
+    return hasSpecifier;
+  }
+
+  private createServerTBinding(): t.VariableDeclaration {
+    const awaitCall = t.awaitExpression(
+      t.callExpression(t.identifier(STRING_CONSTANTS.GET_SERVER_TRANSLATION), [])
+    );
+    const pattern = t.objectPattern([
+      t.objectProperty(
+        t.identifier(STRING_CONSTANTS.TRANSLATION_FUNCTION),
+        t.identifier(STRING_CONSTANTS.TRANSLATION_FUNCTION),
+        false,
+        true
+      ),
+    ]);
+    return t.variableDeclaration(STRING_CONSTANTS.VARIABLE_KIND, [
+      t.variableDeclarator(pattern, awaitCall),
+    ]);
   }
 
   private processFunctionBody(
@@ -103,29 +166,56 @@ export class TranslationWrapper {
         });
 
         if (isFileModified) {
-          let wasHookAdded = false;
+          let wasUseHookAdded = false;
+          let wasServerImportAdded = false;
 
-          // 수정된 컴포넌트에 useTranslation 훅 추가
-          // 단, 서버 컴포넌트는 제외 (getServerTranslation 사용)
-          modifiedComponentPaths.forEach(
-            ({ path: componentPath, isServerComponent }) => {
-              // 서버 컴포넌트는 useTranslation 훅을 추가하지 않음
-              if (isServerComponent) {
+          const forceClient = this.mode === "client";
+          const forceServer = this.mode === "server";
+
+          if (forceClient) {
+            this.ensureUseClientDirective(ast);
+          }
+
+          modifiedComponentPaths.forEach(({ path: componentPath, isServerComponent }) => {
+            if (forceServer) {
+              // server 모드: getServerTranslation 기반 t 바인딩 주입
+              if (componentPath.scope.hasBinding(STRING_CONSTANTS.TRANSLATION_FUNCTION)) {
+                return;
+              }
+              // 함수 async 보장
+              (componentPath.node as any).async = true;
+
+              const body = componentPath.get("body");
+              const decl = this.createServerTBinding();
+              if (body.isBlockStatement()) {
+                body.unshiftContainer("body", decl);
+                wasServerImportAdded = true;
+              } else {
+                // concise body → block으로 감싼 후 return 유지
+                const original = body.node as t.Expression;
+                const block = t.blockStatement([decl, t.returnStatement(original)]);
+                (componentPath.node as any).body = block;
+                wasServerImportAdded = true;
+              }
+            } else {
+              // 기본/클라이언트: 서버 컴포넌트는 스킵, 클라이언트 강제 시 무시
+              if (!forceClient && isServerComponent) {
                 return;
               }
               if (
-                componentPath.scope.hasBinding(STRING_CONSTANTS.TRANSLATION_FUNCTION)
+                componentPath.scope.hasBinding(
+                  STRING_CONSTANTS.TRANSLATION_FUNCTION
+                )
               ) {
                 return;
               }
-
               const body = componentPath.get("body");
               if (body.isBlockStatement()) {
                 let hasHook = false;
                 body.traverse({
-                  CallExpression: (path) => {
+                  CallExpression: (p) => {
                     if (
-                      t.isIdentifier(path.node.callee, {
+                      t.isIdentifier(p.node.callee, {
                         name: STRING_CONSTANTS.USE_TRANSLATION,
                       })
                     ) {
@@ -133,18 +223,24 @@ export class TranslationWrapper {
                     }
                   },
                 });
-
                 if (!hasHook) {
                   body.unshiftContainer("body", createUseTranslationHook());
-                  wasHookAdded = true;
+                  wasUseHookAdded = true;
                 }
               }
             }
-          );
+          });
 
-          // 필요한 경우 import 추가
-          if (wasHookAdded) {
+          // 필요한 import 추가
+          if (wasUseHookAdded) {
             addImportIfNeeded(ast, this.config.translationImportSource);
+          }
+          if (wasServerImportAdded) {
+            this.ensureNamedImport(
+              ast,
+              this.config.translationImportSource,
+              STRING_CONSTANTS.GET_SERVER_TRANSLATION
+            );
           }
 
           if (!this.config.dryRun) {
