@@ -35,7 +35,9 @@ export class TranslationWrapper {
       (d) => d.value.value === STRING_CONSTANTS.USE_CLIENT_DIRECTIVE
     );
     if (!hasDirective) {
-      const dir = t.directive(t.directiveLiteral(STRING_CONSTANTS.USE_CLIENT_DIRECTIVE));
+      const dir = t.directive(
+        t.directiveLiteral(STRING_CONSTANTS.USE_CLIENT_DIRECTIVE)
+      );
       ast.program.directives = ast.program.directives || [];
       ast.program.directives.unshift(dir);
     }
@@ -48,14 +50,21 @@ export class TranslationWrapper {
       if (t.isImportDeclaration(node) && node.source.value === source) {
         hasSource = true;
         for (const spec of node.specifiers) {
-          if (t.isImportSpecifier(spec) && t.isIdentifier(spec.imported) && spec.imported.name === importedName) {
+          if (
+            t.isImportSpecifier(spec) &&
+            t.isIdentifier(spec.imported) &&
+            spec.imported.name === importedName
+          ) {
             hasSpecifier = true;
             break;
           }
         }
         if (!hasSpecifier) {
           node.specifiers.push(
-            t.importSpecifier(t.identifier(importedName), t.identifier(importedName))
+            t.importSpecifier(
+              t.identifier(importedName),
+              t.identifier(importedName)
+            )
           );
           hasSpecifier = true;
         }
@@ -64,7 +73,12 @@ export class TranslationWrapper {
     }
     if (!hasSource) {
       const decl = t.importDeclaration(
-        [t.importSpecifier(t.identifier(importedName), t.identifier(importedName))],
+        [
+          t.importSpecifier(
+            t.identifier(importedName),
+            t.identifier(importedName)
+          ),
+        ],
         t.stringLiteral(source)
       );
       ast.program.body.unshift(decl);
@@ -75,7 +89,10 @@ export class TranslationWrapper {
 
   private createServerTBinding(): t.VariableDeclaration {
     const awaitCall = t.awaitExpression(
-      t.callExpression(t.identifier(STRING_CONSTANTS.GET_SERVER_TRANSLATION), [])
+      t.callExpression(
+        t.identifier(STRING_CONSTANTS.GET_SERVER_TRANSLATION),
+        []
+      )
     );
     const pattern = t.objectPattern([
       t.objectProperty(
@@ -176,60 +193,69 @@ export class TranslationWrapper {
             this.ensureUseClientDirective(ast);
           }
 
-          modifiedComponentPaths.forEach(({ path: componentPath, isServerComponent }) => {
-            if (forceServer) {
-              // server 모드: getServerTranslation 기반 t 바인딩 주입
-              if (componentPath.scope.hasBinding(STRING_CONSTANTS.TRANSLATION_FUNCTION)) {
-                return;
-              }
-              // 함수 async 보장
-              (componentPath.node as any).async = true;
+          modifiedComponentPaths.forEach(
+            ({ path: componentPath, isServerComponent }) => {
+              if (forceServer) {
+                // server 모드: getServerTranslation 기반 t 바인딩 주입
+                if (
+                  componentPath.scope.hasBinding(
+                    STRING_CONSTANTS.TRANSLATION_FUNCTION
+                  )
+                ) {
+                  return;
+                }
+                // 함수 async 보장
+                (componentPath.node as any).async = true;
 
-              const body = componentPath.get("body");
-              const decl = this.createServerTBinding();
-              if (body.isBlockStatement()) {
-                body.unshiftContainer("body", decl);
-                wasServerImportAdded = true;
+                const body = componentPath.get("body");
+                const decl = this.createServerTBinding();
+                if (body.isBlockStatement()) {
+                  body.unshiftContainer("body", decl);
+                  wasServerImportAdded = true;
+                } else {
+                  // concise body → block으로 감싼 후 return 유지
+                  const original = body.node as t.Expression;
+                  const block = t.blockStatement([
+                    decl,
+                    t.returnStatement(original),
+                  ]);
+                  (componentPath.node as any).body = block;
+                  wasServerImportAdded = true;
+                }
               } else {
-                // concise body → block으로 감싼 후 return 유지
-                const original = body.node as t.Expression;
-                const block = t.blockStatement([decl, t.returnStatement(original)]);
-                (componentPath.node as any).body = block;
-                wasServerImportAdded = true;
-              }
-            } else {
-              // 기본/클라이언트: 서버 컴포넌트는 스킵, 클라이언트 강제 시 무시
-              if (!forceClient && isServerComponent) {
-                return;
-              }
-              if (
-                componentPath.scope.hasBinding(
-                  STRING_CONSTANTS.TRANSLATION_FUNCTION
-                )
-              ) {
-                return;
-              }
-              const body = componentPath.get("body");
-              if (body.isBlockStatement()) {
-                let hasHook = false;
-                body.traverse({
-                  CallExpression: (p) => {
-                    if (
-                      t.isIdentifier(p.node.callee, {
-                        name: STRING_CONSTANTS.USE_TRANSLATION,
-                      })
-                    ) {
-                      hasHook = true;
-                    }
-                  },
-                });
-                if (!hasHook) {
-                  body.unshiftContainer("body", createUseTranslationHook());
-                  wasUseHookAdded = true;
+                // 기본/클라이언트: 서버 컴포넌트는 스킵, 클라이언트 강제 시 무시
+                if (!forceClient && isServerComponent) {
+                  return;
+                }
+                if (
+                  componentPath.scope.hasBinding(
+                    STRING_CONSTANTS.TRANSLATION_FUNCTION
+                  )
+                ) {
+                  return;
+                }
+                const body = componentPath.get("body");
+                if (body.isBlockStatement()) {
+                  let hasHook = false;
+                  body.traverse({
+                    CallExpression: (p) => {
+                      if (
+                        t.isIdentifier(p.node.callee, {
+                          name: STRING_CONSTANTS.USE_TRANSLATION,
+                        })
+                      ) {
+                        hasHook = true;
+                      }
+                    },
+                  });
+                  if (!hasHook) {
+                    body.unshiftContainer("body", createUseTranslationHook());
+                    wasUseHookAdded = true;
+                  }
                 }
               }
             }
-          });
+          );
 
           // 필요한 import 추가
           if (wasUseHookAdded) {
