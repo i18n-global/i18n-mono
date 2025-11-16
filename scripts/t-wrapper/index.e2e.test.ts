@@ -102,6 +102,65 @@ describe("t-wrapper E2E", () => {
     expect(modifiedContent).not.toContain("t(\"안녕하세요\")");
   });
 
+  it("client 모드에서는 'use client' 및 useTranslation 훅을 보장해야 함", async () => {
+    const testFile = path.join(tempDir, "ClientComp.tsx");
+    const originalContent = `function ClientComp() {
+  return <div>안녕하세요</div>;
+}`;
+    fs.writeFileSync(testFile, originalContent, "utf-8");
+
+    await runTranslationWrapper({
+      sourcePattern: path.join(tempDir, "**/*.tsx"),
+      dryRun: false,
+      // @ts-expect-error - 확장 옵션 (mode)
+      mode: "client",
+    } as any);
+
+    const modified = fs.readFileSync(testFile, "utf-8");
+    expect(modified).toContain("'use client'");
+    expect(modified).toContain("useTranslation");
+    expect(modified).toContain("t(");
+  });
+
+  it("server 모드에서는 getServerTranslation 기반으로 t 바인딩을 생성해야 함", async () => {
+    const testFile = path.join(tempDir, "ServerComp.tsx");
+    const originalContent = `function ServerComp() {
+  return <div>안녕하세요</div>;
+}`;
+    fs.writeFileSync(testFile, originalContent, "utf-8");
+
+    await runTranslationWrapper({
+      sourcePattern: path.join(tempDir, "**/*.tsx"),
+      dryRun: false,
+      // @ts-expect-error - 확장 옵션 (mode)
+      mode: "server",
+    } as any);
+
+    const modified = fs.readFileSync(testFile, "utf-8");
+    expect(modified).toContain("await getServerTranslation");
+    expect(modified).toContain("const { t } =");
+    expect(modified).toContain("t(");
+  });
+
+  it("serverTranslationFunction 커스텀 함수명을 사용해야 함", async () => {
+    const testFile = path.join(tempDir, "ServerCustom.tsx");
+    const originalContent = `function ServerCustom() {
+  return <div>안녕하세요</div>;
+}`;
+    fs.writeFileSync(testFile, originalContent, "utf-8");
+
+    await runTranslationWrapper({
+      sourcePattern: path.join(tempDir, "**/*.tsx"),
+      dryRun: false,
+      // @ts-expect-error - 확장 옵션 (mode, serverTranslationFunction)
+      mode: "server",
+      serverTranslationFunction: "getServerT",
+    } as any);
+
+    const modified = fs.readFileSync(testFile, "utf-8");
+    expect(modified).toContain("await getServerT");
+    expect(modified).toContain("import { getServerT } from");
+  });
 
   it("dry-run 모드에서는 파일을 수정하지 않아야 함", async () => {
     const testFile = path.join(tempDir, "Component.tsx");
