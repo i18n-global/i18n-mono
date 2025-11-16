@@ -99,7 +99,7 @@ describe("t-wrapper E2E", () => {
 
     const modifiedContent = fs.readFileSync(testFile, "utf-8");
     expect(modifiedContent).toContain('const text = "안녕하세요"');
-    expect(modifiedContent).not.toContain("t(\"안녕하세요\")");
+    expect(modifiedContent).not.toContain('t("안녕하세요")');
   });
 
   it("client 모드에서는 'use client' 및 useTranslation 훅을 보장해야 함", async () => {
@@ -112,9 +112,8 @@ describe("t-wrapper E2E", () => {
     await runTranslationWrapper({
       sourcePattern: path.join(tempDir, "**/*.tsx"),
       dryRun: false,
-      // @ts-expect-error - 확장 옵션 (mode)
       mode: "client",
-    } as any);
+    });
 
     const modified = fs.readFileSync(testFile, "utf-8");
     expect(modified).toContain("'use client'");
@@ -132,9 +131,8 @@ describe("t-wrapper E2E", () => {
     await runTranslationWrapper({
       sourcePattern: path.join(tempDir, "**/*.tsx"),
       dryRun: false,
-      // @ts-expect-error - 확장 옵션 (mode)
       mode: "server",
-    } as any);
+    });
 
     const modified = fs.readFileSync(testFile, "utf-8");
     expect(modified).toContain("await getServerTranslation");
@@ -152,10 +150,9 @@ describe("t-wrapper E2E", () => {
     await runTranslationWrapper({
       sourcePattern: path.join(tempDir, "**/*.tsx"),
       dryRun: false,
-      // @ts-expect-error - 확장 옵션 (mode, serverTranslationFunction)
       mode: "server",
       serverTranslationFunction: "getServerT",
-    } as any);
+    });
 
     const modified = fs.readFileSync(testFile, "utf-8");
     expect(modified).toContain("await getServerT");
@@ -178,6 +175,4 @@ describe("t-wrapper E2E", () => {
     const modifiedContent = fs.readFileSync(testFile, "utf-8");
     expect(modifiedContent).toBe(originalContent);
   });
-
 });
-

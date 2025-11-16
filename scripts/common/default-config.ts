@@ -60,6 +60,13 @@ export interface ScriptConfig {
    * 기본값: "getServerTranslation"
    */
   serverTranslationFunction?: string;
+  /**
+   * 고속 일괄 변환 모드
+   * - 'client': 모든 파일을 클라이언트 전략으로 강제
+   * - 'server': 모든 파일을 서버 전략으로 강제
+   * - 지정하지 않으면 기존 판단 로직 사용
+   */
+  mode?: "client" | "server";
   dryRun?: boolean;
   /**
    * 성능 모니터링 활성화 여부
@@ -87,9 +94,9 @@ export const SCRIPT_CONFIG_DEFAULTS: Required<ScriptConfig> = {
   sourcePattern: COMMON_DEFAULTS.sourcePattern,
   translationImportSource: COMMON_DEFAULTS.translationImportSource,
   serverTranslationFunction: "getServerTranslation",
+  mode: undefined as unknown as "client" | "server",
   dryRun: WRAPPER_DEFAULTS.dryRun,
   enablePerformanceMonitoring: WRAPPER_DEFAULTS.enablePerformanceMonitoring,
   sentryDsn: WRAPPER_DEFAULTS.sentryDsn,
   parserType: WRAPPER_DEFAULTS.parserType,
 };
-
