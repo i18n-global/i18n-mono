@@ -208,9 +208,11 @@ const apiKey = "한글 API 키";
 
 ## Hook Injection
 
-### Client Components
+변환 모드는 `i18nexus.config.json`의 `mode` 옵션으로 제어합니다.
 
-Automatically adds `useTranslation` hook:
+### Client Mode (`mode: "client"`)
+
+모든 컴포넌트에 `useTranslation` 훅과 `'use client'` 디렉티브를 추가합니다:
 
 ```tsx
 // Before
@@ -219,6 +221,8 @@ export default function Welcome() {
 }
 
 // After
+"use client";
+
 import { useTranslation } from "i18nexus";
 
 export default function Welcome() {
@@ -227,17 +231,36 @@ export default function Welcome() {
 }
 ```
 
-### Server Components
+### Server Mode (`mode: "server"`)
 
-Detects server components and skips hook injection:
+모든 컴포넌트를 `async` 함수로 변환하고 서버 함수를 주입합니다:
 
 ```tsx
-// Server component - NO hook added
+// Before
+export default function ServerPage() {
+  return <h1>서버 렌더링</h1>;
+}
+
+// After
+import { getServerTranslation } from "i18nexus/server";
+
 export default async function ServerPage() {
   const { t } = await getServerTranslation();
   return <h1>{t("서버 렌더링")}</h1>;
 }
 ```
+
+### Mode Configuration
+
+```json
+{
+  "mode": "server",
+  "serverTranslationFunction": "getServerTranslation"
+}
+```
+
+- `mode`: `"client"` 또는 `"server"` (선택사항)
+- `serverTranslationFunction`: 서버 모드에서 사용할 함수명 (기본값: `"getServerTranslation"`)
 
 ## Template Literal Conversion
 
@@ -290,23 +313,52 @@ The wrapper reads configuration from `i18nexus.config.json`:
 ```json
 {
   "sourcePattern": "src/**/*.{ts,tsx}",
-  "translationImportSource": "i18nexus"
+  "translationImportSource": "i18nexus",
+  "mode": "server",
+  "serverTranslationFunction": "getServerTranslation"
+}
+```
+
+### Mode Options
+
+**Server Mode:**
+```json
+{
+  "mode": "server",
+  "serverTranslationFunction": "getServerTranslation"
+}
+```
+
+**Client Mode:**
+```json
+{
+  "mode": "client"
 }
 ```
 
 ### Custom Import Source
 
-```typescript
-// i18nexus.config.ts
-export const config = defineConfig({
-  translationImportSource: "@/lib/i18n",
-});
+```json
+{
+  "translationImportSource": "@/lib/i18n"
+}
 ```
 
 Result:
 
 ```tsx
 import { useTranslation } from "@/lib/i18n";
+```
+
+### Custom Server Function
+
+다른 라이브러리를 사용하는 경우:
+
+```json
+{
+  "mode": "server",
+  "serverTranslationFunction": "getServerT"
+}
 ```
 
 ## Workflow Examples
@@ -492,9 +544,10 @@ Check API data, props, and dynamic content after wrapping.
 
 **Solution:**
 
-1. Check if component already has hook
+1. Check `mode` configuration in `i18nexus.config.json`
 2. Verify import source in config
-3. Manual addition if needed
+3. Ensure component matches source pattern
+4. Manual addition if needed
 
 ## See Also
 
