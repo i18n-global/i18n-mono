@@ -28,38 +28,53 @@ impl Default for ParseOptions {
 }
 
 /// 파일을 AST로 파싱
+/// 
+/// SWC 고수준 API를 사용하여 파싱합니다.
+/// GLOBALS.set 패턴을 사용해야 합니다.
 pub fn parse_file(code: &str, options: ParseOptions) -> Result<Module> {
-    let source_map = SourceMap::default();
-    
-    let file = source_map.new_source_file(
-        FileName::Anon.into(),
-        code.to_string(),
+    let cm = Arc::new(SourceMap::default());
+    let handler = Handler::with_tty_emitter(
+        ColorConfig::Auto,
+        true,
+        false,
+        Some(cm.clone()),
     );
-    
-    let syntax = if options.tsx {
-        // TSX 파싱을 위한 설정
-        // TODO: JSX 파싱 옵션 확인 필요
-        Syntax::Typescript(Default::default())
-    } else {
-        Syntax::Es(Default::default())
-    };
-    
-    let input = StringInput::new(
-        &file.src,
-        BytePos::from_u32(0),
-        BytePos::from_u32(file.src.len() as u32),
-    );
-    
-    let lexer = Lexer::new(syntax, Default::default(), input, None);
-    let mut parser = Parser::new_from(lexer);
-    
-    parser
-        .parse_module()
-        .map_err(|e| {
-            let msg = format!("Parse error: {:?}", e);
-            anyhow::anyhow!(msg)
-        })
-        .context("Failed to parse file")
+
+    GLOBALS.set(&Default::default(), || {
+        let compiler = Compiler::new(cm.clone());
+        
+        let source = cm.new_source_file(
+            FileName::Custom("input.tsx".into()),
+            code.into(),
+        );
+
+        let syntax = if options.tsx {
+            Syntax::Typescript(swc_ecma_parser::TsConfig {
+                tsx: true,
+                decorators: options.decorators,
+                ..Default::default()
+            })
+        } else {
+            Syntax::Es(Default::default())
+        };
+
+        let parsed = compiler
+            .parse_js(
+                source,
+                &handler,
+                EsVersion::Es2020,
+                syntax,
+                IsModule::Bool(true),
+                Some(compiler.comments()),
+            )
+            .map_err(|e| {
+                let msg = format!("Parse error: {:?}", e);
+                anyhow::anyhow!(msg)
+            })
+            .context("Failed to parse file")?;
+
+        Ok(parsed.program)
+    })
 }
 
 #[cfg(test)]
