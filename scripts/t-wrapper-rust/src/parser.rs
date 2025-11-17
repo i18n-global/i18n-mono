@@ -32,6 +32,8 @@ pub fn parse_file(code: &str, options: ParseOptions) -> Result<Module> {
     );
     
     let syntax = if options.tsx {
+        // TSX 파싱을 위한 설정
+        // TODO: JSX 파싱 옵션 확인 필요
         Syntax::Typescript(Default::default())
     } else {
         Syntax::Es(Default::default())
