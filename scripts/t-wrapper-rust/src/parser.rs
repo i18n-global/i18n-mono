@@ -2,7 +2,7 @@
 /// TypeScript/JavaScript 파일을 AST로 파싱
 
 use swc_ecma_parser::{Parser, StringInput, Syntax};
-use swc_common::{SourceMap, FileName};
+use swc_common::{SourceMap, FileName, Lrc};
 use swc_ecma_ast::Module;
 use anyhow::{Result, Context};
 
@@ -27,7 +27,7 @@ pub fn parse_file(code: &str, options: ParseOptions) -> Result<Module> {
     let source_map = SourceMap::default();
     
     let file = source_map.new_source_file(
-        FileName::Anon,
+        FileName::Anon.into(),
         code.into(),
     );
     
