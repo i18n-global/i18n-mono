@@ -2,7 +2,8 @@
 /// TypeScript/JavaScript 파일을 AST로 파싱
 
 use swc_ecma_parser::{Parser, StringInput, Syntax};
-use swc_common::{SourceMap, FileName, Lrc, BytePos};
+use swc_common::{SourceMap, FileName, BytePos, source_map::SmallPos};
+use swc_common::sync::Lrc;
 use swc_ecma_ast::Module;
 use anyhow::{Result, Context};
 
