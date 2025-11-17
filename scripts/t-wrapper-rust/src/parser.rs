@@ -1,9 +1,14 @@
 /// SWC 파서 모듈
 /// TypeScript/JavaScript 파일을 AST로 파싱
 
-use swc_ecma_parser::{Parser, StringInput, Syntax, lexer::Lexer};
-use swc_common::{SourceMap, FileName, BytePos, source_map::SmallPos};
-use swc_ecma_ast::Module;
+use std::sync::Arc;
+use swc::{Compiler, config::IsModule};
+use swc_common::{
+    errors::{ColorConfig, Handler},
+    FileName, SourceMap, GLOBALS,
+};
+use swc_ecma_parser::Syntax;
+use swc_ecma_ast::{EsVersion, Module};
 use anyhow::{Result, Context};
 
 /// 파싱 옵션
