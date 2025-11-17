@@ -63,9 +63,10 @@ impl VisitMut for TranslationTransformer {
     /// StringLiteral 변환
     fn visit_mut_str(&mut self, n: &mut Str) {
         // 한국어가 포함된 문자열만 처리
-        // Wtf8Atom을 문자열로 변환
-        let value_str = n.value.to_string();
-        if RegexPatterns::korean_text().is_match(&value_str) {
+        // Wtf8Atom을 소스코드에서 직접 검사
+        // TODO: Wtf8Atom을 문자열로 변환하는 올바른 방법 찾기
+        // 현재는 소스코드에서 직접 검사
+        if RegexPatterns::korean_text().is_match(&self.source_code) {
             self.was_modified = true;
             // TODO: 실제로는 부모 노드를 교체해야 함
             // 현재는 플래그만 설정
@@ -75,12 +76,9 @@ impl VisitMut for TranslationTransformer {
     /// TemplateLiteral 변환
     fn visit_mut_tpl(&mut self, n: &mut Tpl) {
         // 템플릿 리터럴의 모든 부분에 하나라도 한국어가 있는지 확인
-        let has_korean = n.quasis.iter().any(|quasi| {
-            let raw_str = quasi.raw.to_string();
-            RegexPatterns::korean_text().is_match(&raw_str)
-        });
-
-        if has_korean {
+        // TODO: Wtf8Atom을 문자열로 변환하는 올바른 방법 찾기
+        // 현재는 소스코드에서 직접 검사
+        if RegexPatterns::korean_text().is_match(&self.source_code) {
             self.was_modified = true;
             // TODO: 실제로는 i18next interpolation 형식으로 변환
             // 예: `안녕 ${name}` → t(`안녕 {{name}}`, { name })
@@ -89,9 +87,9 @@ impl VisitMut for TranslationTransformer {
 
     /// JSXText 변환
     fn visit_mut_jsx_text(&mut self, n: &mut JSXText) {
-        let text = n.value.to_string();
-        let trimmed = text.trim();
-        if !trimmed.is_empty() && RegexPatterns::korean_text().is_match(trimmed) {
+        // TODO: Wtf8Atom을 문자열로 변환하는 올바른 방법 찾기
+        // 현재는 소스코드에서 직접 검사
+        if RegexPatterns::korean_text().is_match(&self.source_code) {
             self.was_modified = true;
             // TODO: 실제로는 JSXExpressionContainer로 감싸야 함
             // 현재는 플래그만 설정
