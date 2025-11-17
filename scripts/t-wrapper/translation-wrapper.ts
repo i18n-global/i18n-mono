@@ -6,7 +6,7 @@ import * as t from "@babel/types";
 import { PerformanceMonitor } from "../common/performance-monitor";
 import { ScriptConfig, SCRIPT_CONFIG_DEFAULTS } from "../common/default-config";
 import { parseFile, generateCode } from "../common/ast/parser-utils";
-import { isReactComponent, isServerComponent } from "./ast-helpers";
+import { isReactComponent } from "./ast-helpers";
 import { createUseTranslationHook, addImportIfNeeded } from "./import-manager";
 import { transformFunctionBody } from "./ast-transformers";
 import { CONSOLE_MESSAGES, STRING_CONSTANTS } from "./constants";
@@ -105,14 +105,9 @@ export class TranslationWrapper {
   private processFunctionBody(
     path: NodePath<t.Function>,
     sourceCode: string
-  ): { wasModified: boolean; isServerComponent: boolean } {
-    const isServerComponentResult = isServerComponent(path);
+  ): boolean {
     const transformResult = transformFunctionBody(path, sourceCode);
-
-    return {
-      wasModified: transformResult.wasModified,
-      isServerComponent: isServerComponentResult,
-    };
+    return transformResult.wasModified;
   }
 
   public async processFiles(): Promise<{
@@ -136,24 +131,18 @@ export class TranslationWrapper {
           decorators: true,
         });
 
-        // 수정된 컴포넌트 경로와 서버 컴포넌트 여부 저장
-        const modifiedComponentPaths: Array<{
-          path: NodePath<t.Function>;
-          isServerComponent: boolean;
-        }> = [];
+        // 수정된 컴포넌트 경로 저장
+        const modifiedComponentPaths: NodePath<t.Function>[] = [];
 
         // Step 4: 컴포넌트 내부 처리
         traverse(ast, {
           FunctionDeclaration: (path) => {
             const componentName = path.node.id?.name;
             if (componentName && isReactComponent(componentName)) {
-              const result = this.processFunctionBody(path, code);
-              if (result.wasModified) {
+              const wasModified = this.processFunctionBody(path, code);
+              if (wasModified) {
                 isFileModified = true;
-                modifiedComponentPaths.push({
-                  path,
-                  isServerComponent: result.isServerComponent,
-                });
+                modifiedComponentPaths.push(path);
               }
             }
           },
@@ -164,13 +153,10 @@ export class TranslationWrapper {
             ) {
               const componentName = path.parent.id.name;
               if (componentName && isReactComponent(componentName)) {
-                const result = this.processFunctionBody(path, code);
-                if (result.wasModified) {
+                const wasModified = this.processFunctionBody(path, code);
+                if (wasModified) {
                   isFileModified = true;
-                  modifiedComponentPaths.push({
-                    path,
-                    isServerComponent: result.isServerComponent,
-                  });
+                  modifiedComponentPaths.push(path);
                 }
               }
             }
@@ -181,78 +167,66 @@ export class TranslationWrapper {
           let wasUseHookAdded = false;
           let wasServerImportAdded = false;
 
-          const forceClient = this.config.mode === "client";
-          const forceServer = this.config.mode === "server";
+          const isServerMode = this.config.mode === "server";
+          const isClientMode = this.config.mode === "client";
 
-          if (forceClient) {
+          if (isClientMode) {
             this.ensureUseClientDirective(ast);
           }
 
-          modifiedComponentPaths.forEach(
-            ({ path: componentPath, isServerComponent }) => {
-              if (forceServer) {
-                // server 모드: getServerTranslation 기반 t 바인딩 주입
-                if (
-                  componentPath.scope.hasBinding(
-                    STRING_CONSTANTS.TRANSLATION_FUNCTION
-                  )
-                ) {
-                  return;
-                }
-                // 함수 async 보장
-                (componentPath.node as any).async = true;
+          modifiedComponentPaths.forEach((componentPath) => {
+            if (
+              componentPath.scope.hasBinding(
+                STRING_CONSTANTS.TRANSLATION_FUNCTION
+              )
+            ) {
+              return;
+            }
 
-                const body = componentPath.get("body");
-                const decl = this.createServerTBinding(
-                  this.config.serverTranslationFunction
-                );
-                if (body.isBlockStatement()) {
-                  body.unshiftContainer("body", decl);
-                  wasServerImportAdded = true;
-                } else {
-                  // concise body → block으로 감싼 후 return 유지
-                  const original = body.node as t.Expression;
-                  const block = t.blockStatement([
-                    decl,
-                    t.returnStatement(original),
-                  ]);
-                  (componentPath.node as any).body = block;
-                  wasServerImportAdded = true;
-                }
+            if (isServerMode) {
+              // server 모드: config에 정의된 서버형 함수 사용
+              (componentPath.node as any).async = true;
+
+              const body = componentPath.get("body");
+              const decl = this.createServerTBinding(
+                this.config.serverTranslationFunction
+              );
+              if (body.isBlockStatement()) {
+                body.unshiftContainer("body", decl);
+                wasServerImportAdded = true;
               } else {
-                // 기본/클라이언트: 서버 컴포넌트는 스킵, 클라이언트 강제 시 무시
-                if (!forceClient && isServerComponent) {
-                  return;
-                }
-                if (
-                  componentPath.scope.hasBinding(
-                    STRING_CONSTANTS.TRANSLATION_FUNCTION
-                  )
-                ) {
-                  return;
-                }
-                const body = componentPath.get("body");
-                if (body.isBlockStatement()) {
-                  let hasHook = false;
-                  body.traverse({
-                    CallExpression: (p) => {
-                      if (
-                        t.isIdentifier(p.node.callee, {
-                          name: STRING_CONSTANTS.USE_TRANSLATION,
-                        })
-                      ) {
-                        hasHook = true;
-                      }
-                    },
-                  });
-                  if (!hasHook) {
-                    body.unshiftContainer("body", createUseTranslationHook());
-                    wasUseHookAdded = true;
-                  }
+                // concise body → block으로 감싼 후 return 유지
+                const original = body.node as t.Expression;
+                const block = t.blockStatement([
+                  decl,
+                  t.returnStatement(original),
+                ]);
+                (componentPath.node as any).body = block;
+                wasServerImportAdded = true;
+              }
+            } else {
+              // client 모드 (또는 기본값): useTranslation 사용
+              const body = componentPath.get("body");
+              if (body.isBlockStatement()) {
+                let hasHook = false;
+                body.traverse({
+                  CallExpression: (p) => {
+                    if (
+                      t.isIdentifier(p.node.callee, {
+                        name: STRING_CONSTANTS.USE_TRANSLATION,
+                      })
+                    ) {
+                      hasHook = true;
+                    }
+                  },
+                });
+                if (!hasHook) {
+                  body.unshiftContainer("body", createUseTranslationHook());
+                  wasUseHookAdded = true;
                 }
               }
             }
-          );
+          });
 
           // 필요한 import 추가
           if (wasUseHookAdded) {
