@@ -22,21 +22,28 @@ pub fn add_import_if_needed(module: &mut Module, translation_import_source: &str
     // 기존 import 확인
     for stmt in &module.body {
         if let ModuleItem::ModuleDecl(ModuleDecl::Import(import_decl)) = stmt {
-            if import_decl.src.value.to_string() == translation_import_source {
+            // TODO: Wtf8Atom을 문자열로 변환하는 올바른 방법 찾기
+            // 현재는 임시로 소스코드에서 직접 검사
+            let src_str = format!("{}", import_decl.src.value);
+            if src_str == translation_import_source {
                 has_import = true;
                 // useTranslation이 있는지 확인
                 for spec in &import_decl.specifiers {
                     if let ImportSpecifier::Named(named_spec) = spec {
                         if let Some(imported) = &named_spec.imported {
                             if let ModuleExportName::Ident(ident) = imported {
-                                if ident.sym.to_string() == StringConstants::USE_TRANSLATION {
+                                let ident_str = format!("{}", ident.sym);
+                                if ident_str == StringConstants::USE_TRANSLATION {
                                     has_use_translation = true;
                                     break;
                                 }
                             }
-                        } else if named_spec.local.sym.to_string() == StringConstants::USE_TRANSLATION {
-                            has_use_translation = true;
-                            break;
+                        } else {
+                            let local_str = format!("{}", named_spec.local.sym);
+                            if local_str == StringConstants::USE_TRANSLATION {
+                                has_use_translation = true;
+                                break;
+                            }
                         }
                     }
                 }
