@@ -3,7 +3,7 @@
 
 use crate::constants::{StringConstants, RegexPatterns};
 use swc_ecma_ast::*;
-use swc_ecma_visit::{Fold, FoldWith, VisitMut, VisitMutWith};
+use swc_ecma_visit::VisitMut;
 
 /// 변환 결과
 #[derive(Debug, Clone)]
