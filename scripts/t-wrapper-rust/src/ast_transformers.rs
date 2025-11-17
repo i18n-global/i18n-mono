@@ -63,8 +63,8 @@ impl VisitMut for TranslationTransformer {
     /// StringLiteral 변환
     fn visit_mut_str(&mut self, n: &mut Str) {
         // 한국어가 포함된 문자열만 처리
-        // Atom은 AsRef<str>을 구현하므로 as_ref() 사용
-        let value_str: &str = n.value.as_ref();
+        // Atom은 Deref<Target = str>을 구현하므로 역참조 사용
+        let value_str: &str = &*n.value;
         if RegexPatterns::korean_text().is_match(value_str) {
             self.was_modified = true;
             // TODO: 실제로는 부모 노드를 교체해야 함
@@ -76,7 +76,7 @@ impl VisitMut for TranslationTransformer {
     fn visit_mut_tpl(&mut self, n: &mut Tpl) {
         // 템플릿 리터럴의 모든 부분에 하나라도 한국어가 있는지 확인
         let has_korean = n.quasis.iter().any(|quasi| {
-            let raw_str: &str = quasi.raw.as_ref();
+            let raw_str: &str = &*quasi.raw;
             RegexPatterns::korean_text().is_match(raw_str)
         });
 
@@ -89,7 +89,7 @@ impl VisitMut for TranslationTransformer {
 
     /// JSXText 변환
     fn visit_mut_jsx_text(&mut self, n: &mut JSXText) {
-        let text: &str = n.value.as_ref();
+        let text: &str = &*n.value;
         let trimmed = text.trim();
         if !trimmed.is_empty() && RegexPatterns::korean_text().is_match(trimmed) {
             self.was_modified = true;
