@@ -34,9 +34,12 @@ impl Default for ParseOptions {
 pub fn parse_file(code: &str, options: ParseOptions) -> Result<Module> {
     let cm = Arc::new(SourceMap::default());
     let handler = Handler::with_emitter(
-        ColorConfig::Auto,
-        true,
-        false,
+        Box::new(swc_common::errors::emitter::EmitterWriter::new(
+            Box::new(std::io::stderr()),
+            None,
+            false,
+            false,
+        )),
     );
 
     GLOBALS.set(&Default::default(), || {
@@ -70,7 +73,7 @@ pub fn parse_file(code: &str, options: ParseOptions) -> Result<Module> {
             })
             .context("Failed to parse file")?;
 
-        Ok(parsed.program)
+        Ok(parsed)
     })
 }
 
