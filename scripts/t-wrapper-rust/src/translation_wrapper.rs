@@ -66,9 +66,9 @@ impl TranslationWrapper {
                 // TODO: useTranslation 훅 추가
                 let _hook = create_use_translation_hook();
                 
-                // TODO: import 추가
-                let _ast = ();
-                add_import_if_needed(_ast, &self.config.translation_import_source);
+                // TODO: SWC로 파싱 후 import 추가
+                // let mut ast = parse_file(&code, ParseOptions::default())?;
+                // add_import_if_needed(&mut ast, &self.config.translation_import_source);
 
                 if !self.config.dry_run {
                     // TODO: 변환된 코드를 파일에 쓰기
