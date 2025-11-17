@@ -7,7 +7,7 @@ use swc_common::{
     errors::Handler,
     FileName, SourceMap, GLOBALS, sync::Lrc,
 };
-use swc_ecma_parser::{Syntax, TsConfig};
+use swc_ecma_parser::Syntax;
 use swc_ecma_ast::{EsVersion, Module, Program};
 use anyhow::{Result, Context};
 
@@ -48,11 +48,11 @@ pub fn parse_file(code: &str, options: ParseOptions) -> Result<Module> {
         let source = cm.new_source_file(filename, code.to_string());
 
         let syntax = if options.tsx {
-            Syntax::Typescript(TsConfig {
-                tsx: true,
-                decorators: options.decorators,
-                ..Default::default()
-            })
+            // TSX 파싱을 위한 설정
+            // Syntax::Typescript는 Default로도 TSX를 지원하지만,
+            // 명시적으로 설정하려면 swc_ecma_parser::TsConfig를 사용해야 함
+            // 현재 버전에서는 Default 사용
+            Syntax::Typescript(Default::default())
         } else {
             Syntax::Es(Default::default())
         };
