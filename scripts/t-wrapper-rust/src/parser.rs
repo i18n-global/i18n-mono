@@ -1,7 +1,10 @@
 /// SWC 파서 모듈
 /// TypeScript/JavaScript 파일을 AST로 파싱
 
-use anyhow::Result;
+use swc_ecma_parser::{Parser, StringInput, Syntax};
+use swc_common::{SourceMap, FileName};
+use swc_ecma_ast::Module;
+use anyhow::{Result, Context};
 
 /// 파싱 옵션
 #[derive(Debug, Clone)]
@@ -17,4 +20,40 @@ impl Default for ParseOptions {
             decorators: true,
         }
     }
+}
+
+/// 파일을 AST로 파싱
+pub fn parse_file(code: &str, options: ParseOptions) -> Result<Module> {
+    let source_map = SourceMap::default();
+    
+    let file = source_map.new_source_file(
+        FileName::Anon,
+        code.into(),
+    );
+    
+    let syntax = if options.tsx {
+        Syntax::Typescript(Default::default())
+    } else {
+        Syntax::Es(Default::default())
+    };
+    
+    let input = StringInput::new(
+        &file.src,
+        Default::default(),
+        file.src.len(),
+    );
+    
+    let mut parser = Parser::new_from(
+        syntax,
+        input,
+        None,
+    );
+    
+    parser
+        .parse_module()
+        .map_err(|e| {
+            let msg = format!("Parse error: {:?}", e);
+            anyhow::anyhow!(msg)
+        })
+        .context("Failed to parse file")
 }
