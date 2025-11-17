@@ -4,7 +4,7 @@
 use std::sync::Arc;
 use swc::{Compiler, config::IsModule};
 use swc_common::{
-    errors::{ColorConfig, Handler},
+    errors::Handler,
     FileName, SourceMap, GLOBALS, sync::Lrc,
 };
 use swc_ecma_parser::Syntax;
