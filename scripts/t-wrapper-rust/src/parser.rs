@@ -28,7 +28,7 @@ pub fn parse_file(code: &str, options: ParseOptions) -> Result<Module> {
     
     let file = source_map.new_source_file(
         FileName::Anon.into(),
-        code.into(),
+        code,
     );
     
     let syntax = if options.tsx {
