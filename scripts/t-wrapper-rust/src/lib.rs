@@ -7,6 +7,8 @@ pub mod ast_helpers;
 pub mod ast_transformers;
 pub mod import_manager;
 pub mod translation_wrapper;
+pub mod parser;
+pub mod parser;
 
 pub use constants::*;
 pub use ast_helpers::*;
