@@ -1,5 +1,5 @@
 // 입력 -> 기대 아웃풋만 검증 (블랙박스)
-use t_wrapper_rust::{has_ignore_comment, is_react_component, is_server_component};
+use t_wrapper_rust::{has_ignore_comment, is_react_component};
 
 #[test]
 fn has_ignore_comment_detects_line_comment() {
@@ -8,11 +8,10 @@ fn has_ignore_comment_detects_line_comment() {
 }
 
 #[test]
-fn is_react_component_and_server_component_flags() {
+fn is_react_component_validates_naming() {
     assert!(is_react_component("Button"));
     assert!(!is_react_component("button"));
-    assert!(is_server_component("const { t } = await getServerTranslation();"));
-    assert!(!is_server_component("const { t } = useTranslation();"));
+    assert!(is_react_component("useState"));
 }
 
 
