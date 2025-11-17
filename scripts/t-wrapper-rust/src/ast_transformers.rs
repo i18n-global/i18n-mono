@@ -46,22 +46,13 @@ impl TranslationTransformer {
     }
 
     /// t() 함수 호출 생성
-    fn create_t_call(&self, value: &str) -> Expr {
-        Expr::Call(CallExpr {
+    fn create_t_call(&self, _value: &str) -> Expr {
+        // TODO: 실제 AST 노드 생성 구현
+        // 현재는 플레이스홀더
+        Expr::Ident(Ident {
             span: Default::default(),
-            callee: Callee::Expr(Box::new(Expr::Ident(Ident::new(
-                StringConstants::TRANSLATION_FUNCTION.into(),
-                Default::default(),
-            )))),
-            args: vec![ExprOrSpread {
-                spread: None,
-                expr: Box::new(Expr::Lit(Lit::Str(Str {
-                    span: Default::default(),
-                    value: value.into(),
-                    raw: None,
-                })))),
-            }],
-            type_args: None,
+            sym: StringConstants::TRANSLATION_FUNCTION.into(),
+            optional: false,
         })
     }
 }
