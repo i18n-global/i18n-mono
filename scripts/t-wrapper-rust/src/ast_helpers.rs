@@ -44,12 +44,6 @@ pub fn is_react_component(name: &str) -> bool {
         || RegexPatterns::react_hook().is_match(name)
 }
 
-/// 함수가 getServerTranslation으로 감싸진 서버 컴포넌트인지 확인
-pub fn is_server_component(code: &str) -> bool {
-    // 함수 body 내에서 getServerTranslation 호출이 있는지 확인
-    code.contains(StringConstants::GET_SERVER_TRANSLATION)
-}
-
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -71,15 +65,6 @@ mod tests {
         assert!(is_react_component("useTranslation"));
         assert!(!is_react_component("button"));
         assert!(!is_react_component("myFunction"));
-    }
-
-    #[test]
-    fn test_is_server_component() {
-        let code = "const { t } = await getServerTranslation();";
-        assert!(is_server_component(code));
-        
-        let code = "const { t } = useTranslation();";
-        assert!(!is_server_component(code));
     }
 }
 
