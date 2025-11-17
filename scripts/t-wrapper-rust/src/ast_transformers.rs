@@ -63,8 +63,9 @@ impl VisitMut for TranslationTransformer {
     /// StringLiteral 변환
     fn visit_mut_str(&mut self, n: &mut Str) {
         // 한국어가 포함된 문자열만 처리
-        let value_str = format!("{}", n.value);
-        if RegexPatterns::korean_text().is_match(&value_str) {
+        // Atom은 AsRef<str>을 구현하므로 as_ref() 사용
+        let value_str: &str = n.value.as_ref();
+        if RegexPatterns::korean_text().is_match(value_str) {
             self.was_modified = true;
             // TODO: 실제로는 부모 노드를 교체해야 함
             // 현재는 플래그만 설정
@@ -75,8 +76,8 @@ impl VisitMut for TranslationTransformer {
     fn visit_mut_tpl(&mut self, n: &mut Tpl) {
         // 템플릿 리터럴의 모든 부분에 하나라도 한국어가 있는지 확인
         let has_korean = n.quasis.iter().any(|quasi| {
-            let raw_str = format!("{}", quasi.raw);
-            RegexPatterns::korean_text().is_match(&raw_str)
+            let raw_str: &str = quasi.raw.as_ref();
+            RegexPatterns::korean_text().is_match(raw_str)
         });
 
         if has_korean {
@@ -88,8 +89,9 @@ impl VisitMut for TranslationTransformer {
 
     /// JSXText 변환
     fn visit_mut_jsx_text(&mut self, n: &mut JSXText) {
-        let text = format!("{}", n.value).trim().to_string();
-        if !text.is_empty() && RegexPatterns::korean_text().is_match(&text) {
+        let text: &str = n.value.as_ref();
+        let trimmed = text.trim();
+        if !trimmed.is_empty() && RegexPatterns::korean_text().is_match(trimmed) {
             self.was_modified = true;
             // TODO: 실제로는 JSXExpressionContainer로 감싸야 함
             // 현재는 플래그만 설정
