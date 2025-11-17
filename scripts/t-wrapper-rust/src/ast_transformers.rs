@@ -3,7 +3,8 @@
 
 use crate::constants::{StringConstants, RegexPatterns};
 use swc_ecma_ast::*;
-use swc_ecma_visit::VisitMut;
+use swc_ecma_visit::{VisitMut, VisitMutWith};
+use swc_common::DUMMY_SP;
 
 /// 변환 결과
 #[derive(Debug, Clone)]
@@ -50,9 +51,10 @@ impl TranslationTransformer {
         // TODO: 실제 AST 노드 생성 구현
         // 현재는 플레이스홀더
         Expr::Ident(Ident {
-            span: Default::default(),
+            span: DUMMY_SP,
             sym: StringConstants::TRANSLATION_FUNCTION.into(),
             optional: false,
+            ctxt: Default::default(),
         })
     }
 }
@@ -61,7 +63,7 @@ impl VisitMut for TranslationTransformer {
     /// StringLiteral 변환
     fn visit_mut_str(&mut self, n: &mut Str) {
         // 한국어가 포함된 문자열만 처리
-        if RegexPatterns::korean_text().is_match(&n.value) {
+        if RegexPatterns::korean_text().is_match(&n.value.to_string()) {
             self.was_modified = true;
             // TODO: 실제로는 부모 노드를 교체해야 함
             // 현재는 플래그만 설정
