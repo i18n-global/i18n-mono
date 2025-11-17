@@ -33,14 +33,13 @@ impl Default for ParseOptions {
 /// GLOBALS.set 패턴을 사용해야 합니다.
 pub fn parse_file(code: &str, options: ParseOptions) -> Result<Module> {
     let cm = Arc::new(SourceMap::default());
-    let handler = Handler::with_emitter(
-        Box::new(swc_common::errors::emitter::EmitterWriter::new(
-            Box::new(std::io::stderr()),
-            None,
-            false,
-            false,
-        )),
-    );
+    let emitter = Box::new(swc_common::errors::emitter::EmitterWriter::new(
+        Box::new(std::io::stderr()),
+        None,
+        false,
+        false,
+    ));
+    let handler = Handler::with_emitter(false, true, emitter);
 
     GLOBALS.set(&Default::default(), || {
         let compiler = Compiler::new(cm.clone());
