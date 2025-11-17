@@ -44,10 +44,8 @@ pub fn parse_file(code: &str, options: ParseOptions) -> Result<Module> {
     GLOBALS.set(&Default::default(), || {
         let compiler = Compiler::new(cm.clone());
         
-        let source = cm.new_source_file(
-            FileName::Custom("input.tsx".into()).into(),
-            code.into(),
-        );
+        let filename: Lrc<FileName> = FileName::Custom("input.tsx".into()).into();
+        let source = cm.new_source_file(filename, code.to_string());
 
         let syntax = if options.tsx {
             // TSX 파싱을 위한 설정
