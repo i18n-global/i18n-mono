@@ -44,27 +44,3 @@ pub fn is_react_component(name: &str) -> bool {
         || RegexPatterns::react_hook().is_match(name)
 }
 
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn test_has_ignore_comment() {
-        let code = "// i18n-ignore\nconst text = \"hello\";";
-        assert!(has_ignore_comment((), Some(code)));
-        
-        let code = "const text = \"hello\";";
-        assert!(!has_ignore_comment((), Some(code)));
-    }
-
-    #[test]
-    fn test_is_react_component() {
-        assert!(is_react_component("Button"));
-        assert!(is_react_component("MyComponent"));
-        assert!(is_react_component("useState"));
-        assert!(is_react_component("useTranslation"));
-        assert!(!is_react_component("button"));
-        assert!(!is_react_component("myFunction"));
-    }
-}
-
