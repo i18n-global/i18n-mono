@@ -5,7 +5,7 @@ use std::sync::Arc;
 use swc::{Compiler, config::IsModule};
 use swc_common::{
     errors::{ColorConfig, Handler},
-    FileName, SourceMap, GLOBALS,
+    FileName, SourceMap, GLOBALS, sync::Lrc,
 };
 use swc_ecma_parser::Syntax;
 use swc_ecma_ast::{EsVersion, Module};
@@ -33,11 +33,17 @@ impl Default for ParseOptions {
 /// GLOBALS.set 패턴을 사용해야 합니다.
 pub fn parse_file(code: &str, options: ParseOptions) -> Result<Module> {
     let cm = Arc::new(SourceMap::default());
-    let handler = Handler::with_tty_emitter(
+    let handler = Handler::with_emitter(
         ColorConfig::Auto,
         true,
         false,
         Some(cm.clone()),
+        Box::new(swc_common::errors::emitter::EmitterWriter::new(
+            Box::new(std::io::stderr()),
+            None,
+            false,
+            false,
+        )),
     );
 
     GLOBALS.set(&Default::default(), || {
