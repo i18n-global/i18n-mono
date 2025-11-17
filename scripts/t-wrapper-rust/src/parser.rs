@@ -37,14 +37,13 @@ pub fn parse_file(code: &str, options: ParseOptions) -> Result<Module> {
         ColorConfig::Auto,
         true,
         false,
-        Some(cm.clone()),
     );
 
     GLOBALS.set(&Default::default(), || {
         let compiler = Compiler::new(cm.clone());
         
         let source = cm.new_source_file(
-            FileName::Custom("input.tsx".into()),
+            FileName::Custom("input.tsx".into()).into(),
             code.into(),
         );
 
