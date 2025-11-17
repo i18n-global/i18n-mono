@@ -15,6 +15,8 @@ pub struct ScriptConfig {
     pub translation_import_source: String,
     pub enable_performance_monitoring: bool,
     pub sentry_dsn: Option<String>,
+    pub mode: Option<String>, // "client" | "server"
+    pub server_translation_function: Option<String>,
 }
 
 impl Default for ScriptConfig {
@@ -25,6 +27,8 @@ impl Default for ScriptConfig {
             translation_import_source: "i18nexus".to_string(),
             enable_performance_monitoring: false,
             sentry_dsn: None,
+            mode: None,
+            server_translation_function: None,
         }
     }
 }
