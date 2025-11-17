@@ -8,7 +8,7 @@ use swc_common::{
     FileName, SourceMap, GLOBALS, sync::Lrc,
 };
 use swc_ecma_parser::Syntax;
-use swc_ecma_ast::{EsVersion, Module};
+use swc_ecma_ast::{EsVersion, Module, Program};
 use anyhow::{Result, Context};
 
 /// 파싱 옵션
@@ -73,7 +73,10 @@ pub fn parse_file(code: &str, options: ParseOptions) -> Result<Module> {
             })
             .context("Failed to parse file")?;
 
-        Ok(parsed)
+        match parsed {
+            Program::Module(module) => Ok(module),
+            Program::Script(_) => Err(anyhow::anyhow!("Expected module, got script")),
+        }
     })
 }
 
