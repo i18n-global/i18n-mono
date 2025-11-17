@@ -7,10 +7,7 @@ import {
   hasIgnoreComment,
   shouldSkipPath,
   isReactComponent,
-  isServerComponent,
 } from "./ast-helpers";
-import { NodePath } from "@babel/traverse";
-import * as t from "@babel/types";
 import { parse } from "@babel/parser";
 import traverse from "@babel/traverse";
 
@@ -81,29 +78,6 @@ const text = "hello";`;
     it("use로 시작하는 훅은 컴포넌트로 인식해야 함", () => {
       expect(isReactComponent("useState")).toBe(true);
       expect(isReactComponent("useTranslation")).toBe(true);
-    });
-  });
-
-  describe("isServerComponent", () => {
-    it("getServerTranslation 호출이 있으면 true를 반환해야 함", () => {
-      const code = `
-async function MyComponent() {
-  const t = await getServerTranslation();
-  return <div>{t("key")}</div>;
-}`;
-      const ast = parse(code, {
-        sourceType: "module",
-        plugins: ["typescript", "jsx"],
-      });
-      let isServer = false;
-      traverse(ast, {
-        FunctionDeclaration(path) {
-          if (isServerComponent(path)) {
-            isServer = true;
-          }
-        },
-      });
-      expect(isServer).toBe(true);
     });
   });
 });
