@@ -70,6 +70,9 @@ function Component() {
         let options = ParseOptions::default();
         let result = parse_file(code, options);
         
+        if let Err(e) = &result {
+            eprintln!("Parse error: {:?}", e);
+        }
         assert!(result.is_ok());
         let module = result.unwrap();
         assert!(!module.body.is_empty());
