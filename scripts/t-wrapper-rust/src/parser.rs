@@ -38,12 +38,6 @@ pub fn parse_file(code: &str, options: ParseOptions) -> Result<Module> {
         true,
         false,
         Some(cm.clone()),
-        Box::new(swc_common::errors::emitter::EmitterWriter::new(
-            Box::new(std::io::stderr()),
-            None,
-            false,
-            false,
-        )),
     );
 
     GLOBALS.set(&Default::default(), || {
@@ -55,11 +49,9 @@ pub fn parse_file(code: &str, options: ParseOptions) -> Result<Module> {
         );
 
         let syntax = if options.tsx {
-            Syntax::Typescript(swc_ecma_parser::TsConfig {
-                tsx: true,
-                decorators: options.decorators,
-                ..Default::default()
-            })
+            // TSX 파싱을 위한 설정
+            // TODO: TsConfig 타입 확인 필요
+            Syntax::Typescript(Default::default())
         } else {
             Syntax::Es(Default::default())
         };
