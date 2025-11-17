@@ -18,21 +18,24 @@ npx i18n-sheets init --typescript
 
 ### 3. Update Configuration
 
-Edit `i18nexus.config.ts`:
+Edit `i18nexus.config.json`:
 
-```typescript
-import { defineConfig } from "i18nexus";
-
-export const config = defineConfig({
-  languages: ["en", "ko"] as const,
-  defaultLanguage: "ko",
-  localesDir: "./locales",
-  sourcePattern: "app/**/*.{ts,tsx}", // App Router pattern
-  translationImportSource: "i18nexus",
-});
-
-export type AppLanguages = (typeof config.languages)[number];
+```json
+{
+  "languages": ["en", "ko"],
+  "defaultLanguage": "ko",
+  "localesDir": "./locales",
+  "sourcePattern": "app/**/*.{ts,tsx}",
+  "translationImportSource": "i18nexus",
+  "mode": "server",
+  "serverTranslationFunction": "getServerTranslation"
+}
 ```
+
+**Mode Options:**
+- `"client"`: 모든 컴포넌트에 `useTranslation` + `'use client'` 적용
+- `"server"`: 모든 컴포넌트에 `getServerTranslation` + `async/await` 적용
+- 생략 시 기본값 (기존 동작 유지)
 
 ## 🏗️ Project Structure
 
@@ -89,10 +92,35 @@ export default async function RootLayout({
 }
 ```
 
-### Server Components
+### Mode Configuration
 
-Server components automatically use `getServerTranslation`:
+i18nexus-tools는 `mode` 옵션으로 변환 전략을 명시적으로 제어합니다:
 
+#### Server Mode (`mode: "server"`)
+
+모든 컴포넌트에 서버 함수를 적용합니다:
+
+```json
+{
+  "mode": "server",
+  "serverTranslationFunction": "getServerTranslation"
+}
+```
+
+**Before:**
+```tsx
+// app/page.tsx
+export default function HomePage() {
+  return (
+    <div>
+      <h1>환영합니다</h1>
+      <p>홈페이지에 오신 것을 환영합니다</p>
+    </div>
+  );
+}
+```
+
+**After:**
 ```tsx
 // app/page.tsx
 import { getServerTranslation } from "i18nexus/server";
@@ -109,10 +137,25 @@ export default async function HomePage() {
 }
 ```
 
-### Client Components
+#### Client Mode (`mode: "client"`)
 
-Client components automatically get `useTranslation` hook:
+모든 컴포넌트에 클라이언트 훅을 적용합니다:
 
+```json
+{
+  "mode": "client"
+}
+```
+
+**Before:**
+```tsx
+// app/components/LanguageSwitcher.tsx
+export default function LanguageSwitcher() {
+  return <div>현재 언어</div>;
+}
+```
+
+**After:**
 ```tsx
 // app/components/LanguageSwitcher.tsx
 "use client";
@@ -160,13 +203,24 @@ export default function AboutPage() {
 }
 ```
 
-### 2. Run Wrapper
+### 2. Configure Mode
+
+`i18nexus.config.json`에서 `mode` 옵션 설정:
+
+```json
+{
+  "mode": "server",
+  "serverTranslationFunction": "getServerTranslation"
+}
+```
+
+### 3. Run Wrapper
 
 ```bash
 npx i18n-wrapper
 ```
 
-Result:
+**Server Mode Result:**
 
 ```tsx
 // app/about/page.tsx
@@ -185,7 +239,28 @@ export default async function AboutPage() {
 }
 ```
 
-### 3. Extract Translation Keys
+**Client Mode Result:**
+
+```tsx
+// app/about/page.tsx
+"use client";
+
+import { useTranslation } from "i18nexus";
+
+export default function AboutPage() {
+  const { t } = useTranslation();
+
+  return (
+    <div>
+      <h1>{t("회사 소개")}</h1>
+      <p>{t("우리는 혁신적인 솔루션을 제공합니다")}</p>
+      <button>{t("더 알아보기")}</button>
+    </div>
+  );
+}
+```
+
+### 4. Extract Translation Keys
 
 ```bash
 npx i18n-extractor
@@ -209,7 +284,7 @@ Generated files:
 }
 ```
 
-### 4. Add English Translations
+### 5. Add English Translations
 
 ```json
 // locales/en.json
@@ -299,82 +374,110 @@ export const config = {
 
 ### App Router Specific Settings
 
-```typescript
-// i18nexus.config.ts
-import { defineConfig } from "i18nexus";
+```json
+{
+  "languages": ["en", "ko"],
+  "defaultLanguage": "ko",
+  "localesDir": "./locales",
+  "sourcePattern": "app/**/*.{ts,tsx}",
+  "translationImportSource": "i18nexus",
+  "mode": "server",
+  "serverTranslationFunction": "getServerTranslation"
+}
+```
 
-export const config = defineConfig({
-  languages: ["en", "ko"] as const,
-  defaultLanguage: "ko",
-  localesDir: "./locales",
-  sourcePattern: "app/**/*.{ts,tsx}", // App Router pattern
-  translationImportSource: "i18nexus",
-  constantPatterns: ["_ITEMS", "_MENU"], // Custom patterns
-});
+### Mode Options
+
+**Server Mode (권장):**
+```json
+{
+  "mode": "server",
+  "serverTranslationFunction": "getServerTranslation"
+}
+```
+
+- 모든 컴포넌트에 `async` 함수로 변환
+- `getServerTranslation()` 호출 자동 주입
+- 서버 컴포넌트에 적합
+
+**Client Mode:**
+```json
+{
+  "mode": "client"
+}
+```
+
+- 모든 컴포넌트에 `'use client'` 디렉티브 추가
+- `useTranslation` 훅 자동 주입
+- 클라이언트 컴포넌트에 적합
+
+### Custom Server Translation Function
+
+다른 라이브러리를 사용하는 경우:
+
+```json
+{
+  "mode": "server",
+  "serverTranslationFunction": "getServerT"
+}
 ```
 
 ### Custom Import Sources
 
-```typescript
-// i18nexus.config.ts
-export const config = defineConfig({
-  translationImportSource: "@/lib/i18n", // Custom path
-  // ... other config
-});
+```json
+{
+  "translationImportSource": "@/lib/i18n"
+}
 ```
 
 ## 🎨 Best Practices
 
-### Server vs Client Components
+### Mode Selection
 
-**Use Server Components for:**
+**Server Mode를 사용하는 경우:**
+- Next.js App Router의 서버 컴포넌트
+- 정적 콘텐츠
+- SEO가 중요한 페이지
+- 데이터 페칭이 필요한 페이지
 
-- Static content
-- SEO-critical pages
-- Data fetching
-
-```tsx
-// app/products/page.tsx (Server Component)
-import { getServerTranslation } from "i18nexus/server";
-
-export default async function ProductsPage() {
-  const { t } = await getServerTranslation();
-
-  return (
-    <div>
-      <h1>{t("제품 목록")}</h1>
-      {/* Static content */}
-    </div>
-  );
+```json
+{
+  "mode": "server",
+  "serverTranslationFunction": "getServerTranslation"
 }
 ```
 
-**Use Client Components for:**
+**Client Mode를 사용하는 경우:**
+- 인터랙티브 요소
+- 상태 관리가 필요한 컴포넌트
+- 이벤트 핸들러가 있는 컴포넌트
 
-- Interactive elements
-- State management
-- Event handlers
-
-```tsx
-// app/components/ProductCard.tsx (Client Component)
-"use client";
-
-import { useTranslation } from "i18nexus";
-import { useState } from "react";
-
-export default function ProductCard() {
-  const { t } = useTranslation();
-  const [liked, setLiked] = useState(false);
-
-  return (
-    <div>
-      <h3>{t("제품명")}</h3>
-      <button onClick={() => setLiked(!liked)}>
-        {liked ? t("좋아요 취소") : t("좋아요")}
-      </button>
-    </div>
-  );
+```json
+{
+  "mode": "client"
 }
+```
+
+### Mixed Mode (고급)
+
+프로젝트 전체를 한 번에 처리하려면:
+
+1. **Server 컴포넌트 처리:**
+```bash
+# server 모드로 실행
+npx i18n-wrapper -p "app/**/*.tsx"
+```
+
+2. **Client 컴포넌트 처리:**
+```json
+// i18nexus.config.json 임시 변경
+{
+  "mode": "client"
+}
+```
+```bash
+# client 모드로 실행
+npx i18n-wrapper -p "app/components/**/*.tsx"
 ```
 
 ### Type Safety
@@ -411,8 +514,8 @@ const HeavyComponent = dynamic(() => import("./HeavyComponent"), {
 npm run build
 
 # The wrapper automatically handles:
-# - Server component detection
-# - Client component hook injection
+# - Mode-based transformation (server/client)
+# - Hook/function injection based on mode
 # - Template literal conversion
 ```
 
@@ -439,11 +542,14 @@ GOOGLE_CREDENTIALS_PATH=./credentials.json
 
 ## 🔍 Debugging
 
-### Check Server Component Detection
+### Check Mode Configuration
 
 ```bash
-# Run with verbose output
+# Preview changes with current mode
 npx i18n-wrapper --dry-run
+
+# Verify mode in config
+cat i18nexus.config.json | grep mode
 ```
 
 ### Verify Translations
