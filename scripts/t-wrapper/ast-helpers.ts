@@ -107,31 +107,3 @@ export function isReactComponent(name: string): boolean {
     REGEX_PATTERNS.REACT_HOOK.test(name)
   );
 }
-
-/**
- * 함수가 getServerTranslation으로 감싸진 서버 컴포넌트인지 확인
- */
-export function isServerComponent(path: NodePath<t.Function>): boolean {
-  // 함수 body 내에서 getServerTranslation 호출이 있는지 확인
-  let hasServerTranslation = false;
-
-  path.traverse({
-    CallExpression: (callPath) => {
-      if (
-        t.isIdentifier(callPath.node.callee, {
-          name: STRING_CONSTANTS.GET_SERVER_TRANSLATION,
-        }) ||
-        (t.isAwaitExpression(callPath.parent) &&
-          t.isCallExpression(callPath.node) &&
-          t.isIdentifier(callPath.node.callee, {
-            name: STRING_CONSTANTS.GET_SERVER_TRANSLATION,
-          }))
-      ) {
-        hasServerTranslation = true;
-        callPath.stop(); // 찾았으면 더 이상 탐색하지 않음
-      }
-    },
-  });
-
-  return hasServerTranslation;
-}
