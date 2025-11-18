@@ -41,7 +41,7 @@ describe("translation-wrapper", () => {
       expect(result.processedFiles.length).toBeGreaterThan(0);
     });
 
-    it("client 모드에서는 'use client'와 useTranslation 훅을 보장해야 함", async () => {
+    it("Next.js 환경에서 client 모드일 때만 'use client'를 추가해야 함", async () => {
       const testFile = path.join(tempDir, "client.tsx");
       fs.writeFileSync(
         testFile,
@@ -55,11 +55,36 @@ describe("translation-wrapper", () => {
         sourcePattern: path.join(tempDir, "**/*.tsx"),
         dryRun: false,
         mode: "client",
+        framework: "nextjs",
       } as any);
 
       await wrapper.processFiles();
       const content = fs.readFileSync(testFile, "utf-8");
       expect(content).toContain("'use client'");
+      expect(content).toContain("useTranslation");
+      expect(content).toContain("t(");
+    });
+
+    it("React 환경에서 client 모드일 때는 'use client'를 추가하지 않아야 함", async () => {
+      const testFile = path.join(tempDir, "client-react.tsx");
+      fs.writeFileSync(
+        testFile,
+        `function ClientComp() {
+  return <div>안녕하세요</div>;
+}`,
+        "utf-8"
+      );
+
+      const wrapper = new TranslationWrapper({
+        sourcePattern: path.join(tempDir, "**/*.tsx"),
+        dryRun: false,
+        mode: "client",
+        framework: "react",
+      } as any);
+
+      await wrapper.processFiles();
+      const content = fs.readFileSync(testFile, "utf-8");
+      expect(content).not.toContain("'use client'");
       expect(content).toContain("useTranslation");
       expect(content).toContain("t(");
     });
