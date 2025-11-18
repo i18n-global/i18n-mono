@@ -4,7 +4,6 @@
  */
 
 use t_wrapper_rust::ast_transformers::{transform_function_body, TransformResult};
-use t_wrapper_rust::parser::{parse_file, ParseOptions};
 
 #[test]
 fn transform_function_body_한국어_문자열_리터럴을_t_호출로_변환해야_함() {
@@ -14,12 +13,9 @@ fn transform_function_body_한국어_문자열_리터럴을_t_호출로_변환�
 }"#;
     
     // TODO: SWC AST traverse로 구현되면 실제 AST 노드로 테스트
-    let ast = parse_file(code, ParseOptions::default()).unwrap();
-    // TODO: AST traverse로 FunctionDeclaration 찾아서 transformFunctionBody 호출
     // 현재는 소스코드 직접 검사로 테스트
     let result = transform_function_body((), code);
     assert!(result.was_modified);
-    let _ = ast;
 }
 
 #[test]
@@ -29,12 +25,9 @@ fn transform_function_body_한국어_템플릿_리터럴을_t_호출로_변환�
 }"#;
     
     // TODO: SWC AST traverse로 구현되면 실제 AST 노드로 테스트
-    let ast = parse_file(code, ParseOptions::default()).unwrap();
-    // TODO: AST traverse로 FunctionDeclaration 찾아서 transformFunctionBody 호출
     // 현재는 소스코드 직접 검사로 테스트
     let result = transform_function_body((), code);
     assert!(result.was_modified);
-    let _ = ast;
 }
 
 #[test]
@@ -44,12 +37,9 @@ fn transform_function_body_한국어_JSXText를_t_호출로_변환해야_함() {
 }"#;
     
     // TODO: SWC AST traverse로 구현되면 실제 AST 노드로 테스트
-    let ast = parse_file(code, ParseOptions::default()).unwrap();
-    // TODO: AST traverse로 FunctionDeclaration 찾아서 transformFunctionBody 호출
     // 현재는 소스코드 직접 검사로 테스트
     let result = transform_function_body((), code);
     assert!(result.was_modified);
-    let _ = ast;
 }
 
 #[test]
@@ -60,10 +50,10 @@ fn transform_function_body_이미_t로_래핑된_문자열은_변환하지_않�
     
     // TODO: SWC AST traverse로 구현되면 실제 AST 노드로 테스트
     // 현재는 t() 함수 감지 로직이 없으므로 false 반환
-    let ast = parse_file(code, ParseOptions::default()).unwrap();
     let result = transform_function_body((), code);
+    // TODO: 실제 구현 후 false로 변경
+    // 현재는 한국어가 없으므로 false 반환
     assert!(!result.was_modified);
-    let _ = ast;
 }
 
 #[test]
@@ -75,9 +65,8 @@ fn transform_function_body_i18n_ignore_주석이_있으면_변환하지_않아�
     
     // TODO: SWC AST traverse로 구현되면 실제 AST 노드로 테스트
     // 현재는 주석 감지 로직이 없으므로 false 반환
-    let ast = parse_file(code, ParseOptions::default()).unwrap();
     let result = transform_function_body((), code);
     // TODO: 실제 구현 후 false로 변경
-    // assert!(!result.was_modified);
-    let _ = ast;
+    // 현재는 한국어가 없으므로 false 반환
+    assert!(!result.was_modified);
 }
