@@ -86,5 +86,13 @@ impl RegexPatterns {
         });
         &KOREAN_TEXT
     }
+
+    pub fn server_component() -> &'static Regex {
+        static SERVER_COMPONENT: LazyLock<Regex> = LazyLock::new(|| {
+            // await getServerTranslation() 패턴 확인
+            Regex::new(r"await\s+getServerTranslation\s*\(\)").unwrap()
+        });
+        &SERVER_COMPONENT
+    }
 }
 

@@ -9,47 +9,49 @@ use swc_common::DUMMY_SP;
 /// 
 /// TypeScript 버전과 동일한 로직:
 /// const { t } = useTranslation();
-/// 
-/// TODO: SWC AST 노드 생성으로 구현 필요
-/// 현재는 문자열로 반환
-pub fn create_use_translation_hook() -> String {
-    format!(
-        "const {{ {} }} = {}();",
-        StringConstants::TRANSLATION_FUNCTION,
-        StringConstants::USE_TRANSLATION
-    )
-    // TODO: 실제 AST 노드 생성
-    // VariableDeclaration {
-    //     kind: VariableKind::Const,
-    //     decls: vec![VariableDeclarator {
-    //         name: Pat::Object(ObjectPat {
-    //             props: vec![ObjectPatProp::KeyValue(KeyValuePatProp {
-    //                 key: PropName::Ident(Ident {
-    //                     sym: StringConstants::TRANSLATION_FUNCTION.into(),
-    //                     ...
-    //                 }),
-    //                 value: Box::new(Pat::Ident(BindingIdent {
-    //                     id: Ident {
-    //                         sym: StringConstants::TRANSLATION_FUNCTION.into(),
-    //                         ...
-    //                     },
-    //                     ...
-    //                 })),
-    //             })],
-    //             ...
-    //         }),
-    //         init: Some(Box::new(Expr::Call(CallExpr {
-    //             callee: Callee::Expr(Box::new(Expr::Ident(Ident {
-    //                 sym: StringConstants::USE_TRANSLATION.into(),
-    //                 ...
-    //             }))),
-    //             args: vec![],
-    //             ...
-    //         }))),
-    //         ...
-    //     }],
-    //     ...
-    // }
+pub fn create_use_translation_hook() -> Stmt {
+    Stmt::Decl(Decl::Var(Box::new(VarDecl {
+        span: DUMMY_SP,
+        kind: VarDeclKind::Const,
+        declare: false,
+        decls: vec![VarDeclarator {
+            span: DUMMY_SP,
+            name: Pat::Object(ObjectPat {
+                span: DUMMY_SP,
+                props: vec![ObjectPatProp::KeyValue(KeyValuePatProp {
+                    key: PropName::Ident(IdentName {
+                        sym: StringConstants::TRANSLATION_FUNCTION.into(),
+                        span: DUMMY_SP,
+                    }),
+                    value: Box::new(Pat::Ident(BindingIdent {
+                        id: Ident {
+                            span: DUMMY_SP,
+                            sym: StringConstants::TRANSLATION_FUNCTION.into(),
+                            optional: false,
+                            ctxt: Default::default(),
+                        },
+                        type_ann: None,
+                    })),
+                })],
+                optional: false,
+                type_ann: None,
+            }),
+            init: Some(Box::new(Expr::Call(CallExpr {
+                span: DUMMY_SP,
+                callee: Callee::Expr(Box::new(Expr::Ident(Ident {
+                    span: DUMMY_SP,
+                    sym: StringConstants::USE_TRANSLATION.into(),
+                    optional: false,
+                    ctxt: Default::default(),
+                }))),
+                args: vec![],
+                type_args: None,
+                ctxt: Default::default(),
+            }))),
+            definite: false,
+        }],
+        ctxt: Default::default(),
+    })))
 }
 
 /// AST에 useTranslation import가 필요한지 확인하고 추가

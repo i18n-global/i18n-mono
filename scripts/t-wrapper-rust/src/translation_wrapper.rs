@@ -183,7 +183,7 @@ impl TranslationWrapper {
             };
             
             // AST 변환 (한국어 문자열을 t() 함수로 변환)
-            let transform_result = transform_module(&mut ast, code.clone());
+            let (transform_result, modified_functions) = transform_module(&mut ast, code.clone());
             if transform_result.was_modified {
                 is_file_modified = true;
             }
