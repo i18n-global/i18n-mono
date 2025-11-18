@@ -79,6 +79,8 @@ pub fn transform_function_body(_path: (), source_code: &str) -> TransformResult 
 pub struct TranslationTransformer {
     pub was_modified: bool,
     source_code: String,
+    /// 변환된 함수 목록 (함수 이름)
+    pub modified_functions: Vec<String>,
 }
 
 impl TranslationTransformer {
@@ -86,6 +88,7 @@ impl TranslationTransformer {
         Self {
             was_modified: false,
             source_code,
+            modified_functions: Vec::new(),
         }
     }
 
@@ -104,12 +107,53 @@ impl TranslationTransformer {
 }
 
 impl VisitMut for TranslationTransformer {
-    /// Expression 변환 (StringLiteral을 t() 호출로 교체)
+    /// FunctionDeclaration 변환
     /// TypeScript 버전과 동일한 로직:
-    /// 1. StringLiteral 감지
-    /// 2. 한국어 텍스트가 포함된 문자열만 처리
-    /// 3. t() 함수 호출로 변환
+    /// 1. React 컴포넌트인지 확인
+    /// 2. 함수 body를 변환
+    /// 3. 변환된 경우 함수 이름 저장
+    fn visit_mut_fn_decl(&mut self, func: &mut FnDecl) {
+        // React 컴포넌트인지 확인
+        let name = func.ident.sym.to_string();
+        if crate::ast_helpers::is_react_component(&name) {
+            // 함수 body 변환 (자식 노드 방문으로 자동 처리됨)
+            let before_modified = self.was_modified;
+            func.visit_mut_children_with(self);
+            // 변환되었으면 함수 이름 저장
+            if self.was_modified && !before_modified {
+                self.modified_functions.push(name);
+            }
+            return;
+        }
+        // React 컴포넌트가 아니면 자식 노드만 방문
+        func.visit_mut_children_with(self);
+    }
+
+    /// ArrowFunctionExpression 변환
+    /// TypeScript 버전과 동일한 로직:
+    /// 1. 변수 선언의 일부인지 확인
+    /// 2. React 컴포넌트인지 확인
+    /// 3. 함수 body를 변환
+    /// 4. 변환된 경우 함수 이름 저장
     fn visit_mut_expr(&mut self, expr: &mut Expr) {
+        // ArrowFunctionExpression 처리
+        if let Expr::Arrow(arrow) = expr {
+            // TODO: 부모 노드 확인하여 변수 선언인지 확인
+            // 현재는 일단 모든 ArrowFunction을 처리
+            let before_modified = self.was_modified;
+            arrow.visit_mut_children_with(self);
+            // 변환되었으면 기록 (이름은 나중에 부모에서 확인)
+            if self.was_modified && !before_modified {
+                // TODO: 변수 이름 추출
+            }
+            return;
+        }
+
+        // Expression 변환 (StringLiteral을 t() 호출로 교체)
+        // TypeScript 버전과 동일한 로직:
+        // 1. StringLiteral 감지
+        // 2. 한국어 텍스트가 포함된 문자열만 처리
+        // 3. t() 함수 호출로 변환
         // StringLiteral을 t() 호출로 교체
         let should_replace = if let Expr::Lit(Lit::Str(str_lit)) = expr {
             // TODO: Wtf8Atom을 문자열로 변환하는 올바른 방법 찾기
@@ -203,8 +247,11 @@ impl VisitMut for TranslationTransformer {
 }
 
 /// Module을 변환하고 결과 반환
-pub fn transform_module(module: &mut Module, source_code: String) -> TransformResult {
+pub fn transform_module(module: &mut Module, source_code: String) -> (TransformResult, Vec<String>) {
     let mut transformer = TranslationTransformer::new(source_code);
     module.visit_mut_with(&mut transformer);
-    TransformResult::new(transformer.was_modified)
+    (
+        TransformResult::new(transformer.was_modified),
+        transformer.modified_functions,
+    )
 }

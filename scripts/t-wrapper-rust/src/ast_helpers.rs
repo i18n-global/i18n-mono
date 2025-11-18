@@ -91,3 +91,13 @@ pub fn is_react_component(name: &str) -> bool {
     RegexPatterns::react_component().is_match(name)
         || RegexPatterns::react_hook().is_match(name)
 }
+
+/// 서버 컴포넌트인지 확인
+/// 
+/// TypeScript 버전과 동일한 로직:
+/// await getServerTranslation() 패턴이 있으면 서버 컴포넌트로 판단
+pub fn is_server_component(source_code: &str) -> bool {
+    // await getServerTranslation() 패턴 확인
+    // 정규식으로 간단히 확인 (실제로는 AST로 확인하는 것이 더 정확하지만, 현재는 소스코드 직접 검사)
+    RegexPatterns::server_component().is_match(source_code)
+}
