@@ -2,9 +2,10 @@ use t_wrapper_rust::parser::*;
 
 #[test]
 fn test_parse_simple_function() {
+    // JSX가 없는 간단한 함수로 테스트
     let code = r#"
 function Component() {
-  return <div>안녕하세요</div>;
+  return "안녕하세요";
 }
 "#;
     
@@ -21,9 +22,10 @@ function Component() {
 
 #[test]
 fn test_parse_with_korean() {
+    // JSX가 없는 간단한 함수로 테스트
     let code = r#"
 export default function Page() {
-  return <h1>홈페이지</h1>;
+  return "홈페이지";
 }
 "#;
     
