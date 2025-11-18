@@ -1,14 +1,16 @@
 /// t-wrapper Rust CLI
 /// SWC를 사용하여 AST 변환 수행
 
-use t_wrapper_rust::{run_translation_wrapper, CliOptions, CliHelp};
-use t_wrapper_rust::constants;
+use t_wrapper_rust::{run_translation_wrapper, ScriptConfig};
+use t_wrapper_rust::constants::{ConsoleMessages, CliOptions, CliHelp};
 use std::env;
 
 fn main() {
     let args: Vec<String> = env::args().skip(1).collect();
-    let mut config = t_wrapper_rust::ScriptConfig::default();
+    let mut config = ScriptConfig::default();
 
+    // TypeScript 버전과 동일한 로직:
+    // CLI 옵션 파싱
     let mut i = 0;
     while i < args.len() {
         match args[i].as_str() {
@@ -38,9 +40,10 @@ fn main() {
         i += 1;
     }
 
+    // TypeScript 버전과 동일한 로직:
+    // runTranslationWrapper 호출 및 에러 처리
     if let Err(e) = run_translation_wrapper(config) {
-        eprintln!("{} {}", constants::ConsoleMessages::FATAL_ERROR, e);
+        eprintln!("{} {}", ConsoleMessages::FATAL_ERROR, e);
         std::process::exit(1);
     }
 }
-
