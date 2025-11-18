@@ -2,10 +2,10 @@
 /// 한국어 문자열을 t() 함수로 변환하고 useTranslation 훅을 추가
 
 use crate::ast_helpers::is_react_component;
-use crate::ast_transformers::transform_function_body;
+use crate::ast_transformers::{transform_function_body, transform_module};
 use crate::import_manager::{add_import_if_needed, create_use_translation_hook, add_server_translation_import};
 use crate::constants::StringConstants;
-use crate::parser::{parse_file, ParseOptions};
+use crate::parser::{parse_file, generate_code, ParseOptions};
 use anyhow::Result;
 use glob::glob;
 use std::fs;
@@ -172,19 +172,19 @@ impl TranslationWrapper {
             let code = fs::read_to_string(&file_path)?;
             let mut is_file_modified = false;
 
-            // TODO: SWC로 파싱
-            // let mut ast = parse_file(&code, ParseOptions::default())?;
+            // SWC로 파싱
+            let mut ast = match parse_file(&code, ParseOptions::default()) {
+                Ok(module) => module,
+                Err(e) => {
+                    // 파싱 실패 시 에러 로그만 출력하고 다음 파일로
+                    eprintln!("❌ Error parsing {}: {}", file_path.display(), e);
+                    continue;
+                }
+            };
             
-            // TODO: SWC AST traverse로 함수 찾기
-            // let mut modified_component_paths: Vec<()> = Vec::new();
-            // ast.visit_mut_with(&mut FunctionVisitor {
-            //     modified_paths: &mut modified_component_paths,
-            //     source_code: &code,
-            //     wrapper: self,
-            // });
-
-            // 임시로 한국어가 포함되어 있으면 수정되었다고 가정
-            if self.process_function_body((), &code) {
+            // AST 변환 (한국어 문자열을 t() 함수로 변환)
+            let transform_result = transform_module(&mut ast, code.clone());
+            if transform_result.was_modified {
                 is_file_modified = true;
             }
 
@@ -276,9 +276,9 @@ impl TranslationWrapper {
                 }
 
                 if !self.config.dry_run {
-                    // TODO: 변환된 코드를 파일에 쓰기
-                    // let output = generate_code(&ast, ...);
-                    // fs::write(&file_path, output)?;
+                    // 변환된 코드를 파일에 쓰기
+                    let output = generate_code(&ast)?;
+                    fs::write(&file_path, output)?;
                 }
 
                 processed_files.push(file_path.to_string_lossy().to_string());
