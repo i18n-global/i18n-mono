@@ -10,6 +10,7 @@ swc = "*"
 swc_ecma_parser = "27.0"
 swc_ecma_ast = "18.0"
 swc_ecma_visit = "18.0"
+swc_ecma_codegen = "0.145"
 swc_common = "17.0"
 glob = "0.3"
 serde = { version = "1.0", features = ["derive"] }
