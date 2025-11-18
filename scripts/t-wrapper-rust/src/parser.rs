@@ -39,10 +39,7 @@ pub fn generate_code(module: &Module) -> Result<String> {
     let writer = JsWriter::new(cm.clone(), "\n", &mut buf, None);
     
     let mut emitter = Emitter {
-        cfg: swc_ecma_codegen::Config {
-            minify: false,
-            ..Default::default()
-        },
+        cfg: swc_ecma_codegen::Config::default(),
         cm: cm.clone(),
         comments: None,
         wr: writer,
