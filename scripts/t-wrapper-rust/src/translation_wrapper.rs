@@ -92,7 +92,8 @@ impl TranslationWrapper {
     /// Server 모드에서 t 바인딩 생성
     /// TypeScript 버전과 동일한 로직:
     /// const { t } = await getServerTranslation();
-    fn create_server_t_binding(&self, _server_fn_name: &str) -> VariableDeclarator {
+    #[allow(dead_code)]
+    fn create_server_t_binding(&self, _server_fn_name: &str) {
         // TODO: SWC AST 노드 생성으로 구현
         // VariableDeclarator {
         //     name: Pat::Object(ObjectPat {
@@ -124,7 +125,6 @@ impl TranslationWrapper {
         //     }))),
         //     ...
         // }
-        todo!("create_server_t_binding not implemented")
     }
 
     /// 함수 body 내의 AST 노드들을 변환
@@ -177,11 +177,11 @@ impl TranslationWrapper {
             }
 
             if is_file_modified {
-                let mut was_use_hook_added = false;
-                let mut was_server_import_added = false;
+                let was_use_hook_added = false;
+                let was_server_import_added = false;
 
-                let is_server_mode = self.config.mode.as_deref() == Some("server");
-                let is_client_mode = self.config.mode.as_deref() == Some("client");
+                let _is_server_mode = self.config.mode.as_deref() == Some("server");
+                let _is_client_mode = self.config.mode.as_deref() == Some("client");
 
                 // TODO: SWC AST로 구현
                 // if is_client_mode {
