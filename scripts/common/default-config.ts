@@ -61,12 +61,25 @@ export interface ScriptConfig {
    */
   serverTranslationFunction?: string;
   /**
-   * 고속 일괄 변환 모드
-   * - 'client': 모든 파일을 클라이언트 전략으로 강제
-   * - 'server': 모든 파일을 서버 전략으로 강제
+   * 번역 함수 모드 (기능적 선택)
+   * - 'client': useTranslation() 사용
+   * - 'server': getServerTranslation() 사용
    * - 지정하지 않으면 기존 판단 로직 사용
+   *
+   * ⚠️ 주의: 이 옵션은 번역 함수 선택만 담당합니다.
+   * "use client" 디렉티브는 framework 옵션과 함께 결정됩니다.
    */
   mode?: "client" | "server";
+  /**
+   * 프레임워크 타입
+   * - 'nextjs': Next.js App Router 환경
+   *   → mode="client"일 때 "use client" 디렉티브 자동 추가
+   * - 'react': React 일반 환경 (Vite, CRA 등)
+   *   → "use client" 디렉티브 추가 안 함
+   * - 'other' 또는 미지정: 프레임워크 감지 안 함
+   *   → "use client" 디렉티브 추가 안 함
+   */
+  framework?: "nextjs" | "react" | "other";
   dryRun?: boolean;
   /**
    * 성능 모니터링 활성화 여부
@@ -95,6 +108,7 @@ export const SCRIPT_CONFIG_DEFAULTS: Required<ScriptConfig> = {
   translationImportSource: COMMON_DEFAULTS.translationImportSource,
   serverTranslationFunction: "getServerTranslation",
   mode: undefined as unknown as "client" | "server",
+  framework: undefined as unknown as "nextjs" | "react" | "other",
   dryRun: WRAPPER_DEFAULTS.dryRun,
   enablePerformanceMonitoring: WRAPPER_DEFAULTS.enablePerformanceMonitoring,
   sentryDsn: WRAPPER_DEFAULTS.sentryDsn,
