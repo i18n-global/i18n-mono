@@ -29,7 +29,7 @@ fn process_files_한국어가_포함된_파일을_처리해야_함() -> Result<(
 }
 
 #[test]
-fn process_files_client_모드에서는_use_client와_useTranslation_훅을_보장해야_함() -> Result<()> {
+fn process_files_nextjs_환경에서_client_모드일_때만_use_client를_추가해야_함() -> Result<()> {
     let dir = tempdir()?;
     let file_path = dir.path().join("client.tsx");
     fs::write(&file_path, r#"function ClientComp() {
@@ -40,6 +40,7 @@ fn process_files_client_모드에서는_use_client와_useTranslation_훅을_보�
         source_pattern: dir.path().join("**/*.tsx").to_string_lossy().to_string(),
         dry_run: false,
         mode: Some("client".to_string()),
+        framework: Some("nextjs".to_string()),
         ..Default::default()
     }));
 
@@ -47,6 +48,31 @@ fn process_files_client_모드에서는_use_client와_useTranslation_훅을_보�
     let content = fs::read_to_string(&file_path)?;
     // TODO: 실제 AST 변환 및 코드 생성 후 검증
     // assert!(content.contains("'use client'"));
+    // assert!(content.contains("useTranslation"));
+    // assert!(content.contains("t("));
+    Ok(())
+}
+
+#[test]
+fn process_files_react_환경에서_client_모드일_때는_use_client를_추가하지_않아야_함() -> Result<()> {
+    let dir = tempdir()?;
+    let file_path = dir.path().join("client-react.tsx");
+    fs::write(&file_path, r#"function ClientComp() {
+  return <div>안녕하세요</div>;
+}"#)?;
+
+    let wrapper = TranslationWrapper::new(Some(ScriptConfig {
+        source_pattern: dir.path().join("**/*.tsx").to_string_lossy().to_string(),
+        dry_run: false,
+        mode: Some("client".to_string()),
+        framework: Some("react".to_string()),
+        ..Default::default()
+    }));
+
+    wrapper.process_files()?;
+    let content = fs::read_to_string(&file_path)?;
+    // TODO: 실제 AST 변환 및 코드 생성 후 검증
+    // assert!(!content.contains("'use client'"));
     // assert!(content.contains("useTranslation"));
     // assert!(content.contains("t("));
     Ok(())
