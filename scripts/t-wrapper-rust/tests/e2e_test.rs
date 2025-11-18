@@ -113,7 +113,7 @@ fn e2e_i18n_ignore_주석이_있으면_변환하지_않아야_함() {
 }
 
 #[test]
-fn e2e_client_모드에서는_use_client_및_useTranslation_훅을_보장해야_함() {
+fn e2e_nextjs_환경에서_client_모드일_때만_use_client를_추가해야_함() {
     let temp_dir = TempDir::new().unwrap();
     let test_file = temp_dir.path().join("ClientComp.tsx");
     let original_content = r#"function ClientComp() {
@@ -125,6 +125,7 @@ fn e2e_client_모드에서는_use_client_및_useTranslation_훅을_보장해야_
         source_pattern: temp_dir.path().join("**/*.tsx").to_string_lossy().to_string(),
         dry_run: false,
         mode: Some("client".to_string()),
+        framework: Some("nextjs".to_string()),
         ..Default::default()
     };
 
@@ -133,6 +134,32 @@ fn e2e_client_모드에서는_use_client_및_useTranslation_훅을_보장해야_
     let modified = fs::read_to_string(&test_file).unwrap();
     // TODO: 실제 구현 후 확인
     // assert!(modified.contains("'use client'"));
+    // assert!(modified.contains("useTranslation"));
+    // assert!(modified.contains("t("));
+}
+
+#[test]
+fn e2e_react_환경에서_client_모드일_때는_use_client를_추가하지_않아야_함() {
+    let temp_dir = TempDir::new().unwrap();
+    let test_file = temp_dir.path().join("ClientReact.tsx");
+    let original_content = r#"function ClientReact() {
+  return <div>안녕하세요</div>;
+}"#;
+    fs::write(&test_file, original_content).unwrap();
+
+    let config = ScriptConfig {
+        source_pattern: temp_dir.path().join("**/*.tsx").to_string_lossy().to_string(),
+        dry_run: false,
+        mode: Some("client".to_string()),
+        framework: Some("react".to_string()),
+        ..Default::default()
+    };
+
+    run_translation_wrapper(config).unwrap();
+
+    let modified = fs::read_to_string(&test_file).unwrap();
+    // TODO: 실제 구현 후 확인
+    // assert!(!modified.contains("'use client'"));
     // assert!(modified.contains("useTranslation"));
     // assert!(modified.contains("t("));
 }
