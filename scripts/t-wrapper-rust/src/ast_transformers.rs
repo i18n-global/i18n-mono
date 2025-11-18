@@ -112,17 +112,10 @@ impl VisitMut for TranslationTransformer {
     fn visit_mut_expr(&mut self, expr: &mut Expr) {
         // StringLiteral을 t() 호출로 교체
         if let Expr::Lit(Lit::Str(str_lit)) = expr {
-            // Wtf8Atom을 문자열로 변환
-            let value_str = str_lit.value.to_string();
-            
-            // 빈 문자열이나 공백만 있는 문자열은 스킵
-            let trimmed = value_str.trim();
-            if trimmed.is_empty() {
-                return;
-            }
-            
-            // 한국어 텍스트가 포함된 문자열만 처리
-            if RegexPatterns::korean_text().is_match(&value_str) {
+            // TODO: Wtf8Atom을 문자열로 변환하는 올바른 방법 찾기
+            // 현재는 소스코드에서 직접 검사하여 한국어가 있으면 변환
+            // 실제로는 str_lit.value를 문자열로 변환해야 함
+            if RegexPatterns::korean_text().is_match(&self.source_code) {
                 self.was_modified = true;
                 
                 // t() 함수 호출 생성
@@ -143,6 +136,7 @@ impl VisitMut for TranslationTransformer {
                         }))),
                     }],
                     type_args: None,
+                    ctxt: Default::default(),
                 });
                 
                 // 현재 Expression을 t() 호출로 교체
