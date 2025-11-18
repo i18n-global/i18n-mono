@@ -13,6 +13,9 @@ const text = "hello";"#;
     
     // TODO: SWC AST로 구현되면 실제 AST 노드로 테스트
     // 현재는 소스코드 직접 검사 방식
+    let ast = parse_file(code, ParseOptions::default()).unwrap();
+    // TODO: AST traverse로 VariableDeclarator 찾아서 hasIgnoreComment 호출
+    // 현재는 소스코드 직접 검사로 테스트
     assert!(has_ignore_comment((), Some(code)));
 }
 
@@ -22,6 +25,9 @@ fn should_skip_path_i18n_ignore_주석이_있으면_true를_반환해야_함() {
 const text = "hello";"#;
     
     // TODO: SWC AST로 구현되면 실제 AST 노드로 테스트
+    let ast = parse_file(code, ParseOptions::default()).unwrap();
+    // TODO: AST traverse로 StringLiteral 찾아서 shouldSkipPath 호출
+    // 현재는 소스코드 직접 검사로 테스트
     let should_skip = should_skip_path((), has_ignore_comment, Some(code));
     assert!(should_skip);
 }
@@ -31,10 +37,13 @@ fn should_skip_path_이미_t로_래핑된_경우_true를_반환해야_함() {
     let code = r#"const text = t("key");"#;
     
     // TODO: SWC AST로 구현되면 실제 AST 노드로 테스트
+    let ast = parse_file(code, ParseOptions::default()).unwrap();
+    // TODO: AST traverse로 StringLiteral 찾아서 shouldSkipPath 호출
     // 현재는 t() 함수 감지 로직이 없으므로 false 반환
     let should_skip = should_skip_path((), has_ignore_comment, Some(code));
     // TODO: 실제 구현 후 true로 변경
     // assert!(should_skip);
+    let _ = ast;
 }
 
 #[test]
