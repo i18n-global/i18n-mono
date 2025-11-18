@@ -169,8 +169,12 @@ export class TranslationWrapper {
 
           const isServerMode = this.config.mode === "server";
           const isClientMode = this.config.mode === "client";
+          const isNextjsFramework = this.config.framework === "nextjs";
 
-          if (isClientMode) {
+          // "use client" 디렉티브는 Next.js 환경에서 useTranslation 모드일 때만 추가
+          // - React/Vite 프로젝트에서는 필요 없음
+          // - 서버 번역 모드에서는 필요 없음 (서버 컴포넌트이므로)
+          if (isNextjsFramework && isClientMode) {
             this.ensureUseClientDirective(ast);
           }
 
