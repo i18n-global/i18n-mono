@@ -7,7 +7,8 @@ use t_wrapper_rust::*;
 fn test_ast_helpers_module() {
     // ast_helpers 모듈이 제대로 export되는지 확인
     assert!(is_react_component("Button"));
-    assert!(is_server_component("const { t } = await getServerTranslation();"));
+    // is_server_component는 제거됨 (mode 기반으로 처리)
+    // assert!(is_server_component("const { t } = await getServerTranslation();"));
 }
 
 #[test]

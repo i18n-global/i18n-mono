@@ -1,4 +1,4 @@
-use t_wrapper_rust::parser::{parse_file, ParseOptions};
+use t_wrapper_rust::parser::*;
 
 #[test]
 fn test_parse_simple_function() {
