@@ -19,7 +19,18 @@ pub struct ScriptConfig {
     pub translation_import_source: String,
     pub enable_performance_monitoring: bool,
     pub sentry_dsn: Option<String>,
+    /// 번역 함수 모드 (기능적 선택)
+    /// - "client": useTranslation() 사용
+    /// - "server": getServerTranslation() 사용
     pub mode: Option<String>, // "client" | "server"
+    /// 프레임워크 타입
+    /// - "nextjs": Next.js App Router 환경
+    ///   → mode="client"일 때 "use client" 디렉티브 자동 추가
+    /// - "react": React 일반 환경 (Vite, CRA 등)
+    ///   → "use client" 디렉티브 추가 안 함
+    /// - "other" 또는 None: 프레임워크 감지 안 함
+    ///   → "use client" 디렉티브 추가 안 함
+    pub framework: Option<String>, // "nextjs" | "react" | "other"
     pub server_translation_function: Option<String>,
 }
 
@@ -32,6 +43,7 @@ impl Default for ScriptConfig {
             enable_performance_monitoring: false,
             sentry_dsn: None,
             mode: None,
+            framework: None,
             server_translation_function: None,
         }
     }
@@ -182,9 +194,13 @@ impl TranslationWrapper {
 
                 let _is_server_mode = self.config.mode.as_deref() == Some("server");
                 let _is_client_mode = self.config.mode.as_deref() == Some("client");
+                let _is_nextjs_framework = self.config.framework.as_deref() == Some("nextjs");
 
+                // "use client" 디렉티브는 Next.js 환경에서 useTranslation 모드일 때만 추가
+                // - React/Vite 프로젝트에서는 필요 없음
+                // - 서버 번역 모드에서는 필요 없음 (서버 컴포넌트이므로)
                 // TODO: SWC AST로 구현
-                // if is_client_mode {
+                // if _is_nextjs_framework && _is_client_mode {
                 //     self.ensure_use_client_directive(&mut ast);
                 // }
 
