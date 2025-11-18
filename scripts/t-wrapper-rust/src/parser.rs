@@ -27,6 +27,34 @@ impl Default for ParseOptions {
     }
 }
 
+/// AST를 코드로 변환
+/// 
+/// SWC 코드 생성 API를 사용하여 AST를 JavaScript/TypeScript 코드로 변환합니다.
+pub fn generate_code(module: &Module) -> Result<String> {
+    use swc_ecma_codegen::{text_writer::JsWriter, Emitter};
+    use swc_common::SourceMap;
+    
+    let cm = Arc::new(SourceMap::default());
+    let mut buf = Vec::new();
+    let writer = JsWriter::new(cm.clone(), "\n", &mut buf, None);
+    
+    let mut emitter = Emitter {
+        cfg: swc_ecma_codegen::Config {
+            minify: false,
+            ..Default::default()
+        },
+        cm: cm.clone(),
+        comments: None,
+        wr: writer,
+    };
+    
+    emitter.emit_module(module)
+        .map_err(|e| anyhow::anyhow!("Code generation error: {:?}", e))?;
+    
+    String::from_utf8(buf)
+        .map_err(|e| anyhow::anyhow!("UTF-8 conversion error: {:?}", e))
+}
+
 /// 파일을 AST로 파싱
 /// 
 /// SWC 고수준 API를 사용하여 파싱합니다.
