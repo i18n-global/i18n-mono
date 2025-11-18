@@ -14,12 +14,25 @@ export interface I18nexusConfig {
   sourcePattern: string;
   translationImportSource: string;
   /**
-   * 변환 모드 (고속 일괄 적용)
-   * - 'client': 모든 파일에 useTranslation + 'use client' 전략 적용
-   * - 'server': 모든 파일에 getServerTranslation + async/await 전략 적용
+   * 번역 함수 모드 (기능적 선택)
+   * - 'client': useTranslation() 사용
+   * - 'server': getServerTranslation() 사용
    * - 생략 시 기존 판단 로직 유지
+   * 
+   * ⚠️ 주의: 이 옵션은 번역 함수 선택만 담당합니다.
+   * "use client" 디렉티브는 framework 옵션과 함께 결정됩니다.
    */
   mode?: "client" | "server";
+  /**
+   * 프레임워크 타입
+   * - 'nextjs': Next.js App Router 환경
+   *   → mode="client"일 때 "use client" 디렉티브 자동 추가
+   * - 'react': React 일반 환경 (Vite, CRA 등)
+   *   → "use client" 디렉티브 추가 안 함
+   * - 'other' 또는 미지정: 프레임워크 감지 안 함
+   *   → "use client" 디렉티브 추가 안 함
+   */
+  framework?: "nextjs" | "react" | "other";
   /**
    * 서버 변환 시 사용할 함수명 (라이브러리별 상이)
    * 예: "getServerTranslation", "getServerT" 등
