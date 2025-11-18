@@ -102,7 +102,7 @@ describe("t-wrapper E2E", () => {
     expect(modifiedContent).not.toContain('t("안녕하세요")');
   });
 
-  it("client 모드에서는 'use client' 및 useTranslation 훅을 보장해야 함", async () => {
+  it("Next.js 환경에서 client 모드일 때만 'use client'를 추가해야 함", async () => {
     const testFile = path.join(tempDir, "ClientComp.tsx");
     const originalContent = `function ClientComp() {
   return <div>안녕하세요</div>;
@@ -113,10 +113,31 @@ describe("t-wrapper E2E", () => {
       sourcePattern: path.join(tempDir, "**/*.tsx"),
       dryRun: false,
       mode: "client",
+      framework: "nextjs",
     });
 
     const modified = fs.readFileSync(testFile, "utf-8");
     expect(modified).toContain("'use client'");
+    expect(modified).toContain("useTranslation");
+    expect(modified).toContain("t(");
+  });
+
+  it("React 환경에서 client 모드일 때는 'use client'를 추가하지 않아야 함", async () => {
+    const testFile = path.join(tempDir, "ClientReact.tsx");
+    const originalContent = `function ClientReact() {
+  return <div>안녕하세요</div>;
+}`;
+    fs.writeFileSync(testFile, originalContent, "utf-8");
+
+    await runTranslationWrapper({
+      sourcePattern: path.join(tempDir, "**/*.tsx"),
+      dryRun: false,
+      mode: "client",
+      framework: "react",
+    });
+
+    const modified = fs.readFileSync(testFile, "utf-8");
+    expect(modified).not.toContain("'use client'");
     expect(modified).toContain("useTranslation");
     expect(modified).toContain("t(");
   });
