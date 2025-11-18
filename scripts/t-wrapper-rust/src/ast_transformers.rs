@@ -111,11 +111,17 @@ impl VisitMut for TranslationTransformer {
     /// 3. t() 함수 호출로 변환
     fn visit_mut_expr(&mut self, expr: &mut Expr) {
         // StringLiteral을 t() 호출로 교체
-        if let Expr::Lit(Lit::Str(str_lit)) = expr {
+        let should_replace = if let Expr::Lit(Lit::Str(str_lit)) = expr {
             // TODO: Wtf8Atom을 문자열로 변환하는 올바른 방법 찾기
             // 현재는 소스코드에서 직접 검사하여 한국어가 있으면 변환
             // 실제로는 str_lit.value를 문자열로 변환해야 함
-            if RegexPatterns::korean_text().is_match(&self.source_code) {
+            RegexPatterns::korean_text().is_match(&self.source_code)
+        } else {
+            false
+        };
+        
+        if should_replace {
+            if let Expr::Lit(Lit::Str(str_lit)) = expr {
                 self.was_modified = true;
                 
                 // t() 함수 호출 생성
@@ -141,6 +147,8 @@ impl VisitMut for TranslationTransformer {
                 
                 // 현재 Expression을 t() 호출로 교체
                 *expr = t_call;
+                // 변환 후에는 자식 노드를 방문하지 않음 (무한 재귀 방지)
+                return;
             }
         }
         
