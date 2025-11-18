@@ -104,21 +104,59 @@ impl TranslationTransformer {
 }
 
 impl VisitMut for TranslationTransformer {
-    /// StringLiteral 변환
+    /// Expression 변환 (StringLiteral을 t() 호출로 교체)
     /// TypeScript 버전과 동일한 로직:
-    /// 1. shouldSkipPath 또는 hasIgnoreComment로 스킵 확인
-    /// 2. 빈 문자열이나 공백만 있는 문자열은 스킵
-    /// 3. 한국어 텍스트가 포함된 문자열만 처리
-    /// 4. t() 함수 호출로 변환
-    fn visit_mut_str(&mut self, n: &mut Str) {
-        // TODO: shouldSkipPath 및 hasIgnoreComment로 스킵 확인
-        // TODO: Wtf8Atom을 문자열로 변환하는 올바른 방법 찾기
-        // 현재는 소스코드에서 직접 검사
-        if RegexPatterns::korean_text().is_match(&self.source_code) {
-            self.was_modified = true;
-            // TODO: 실제로는 부모 노드를 교체해야 함
-            // 현재는 플래그만 설정
+    /// 1. StringLiteral 감지
+    /// 2. 한국어 텍스트가 포함된 문자열만 처리
+    /// 3. t() 함수 호출로 변환
+    fn visit_mut_expr(&mut self, expr: &mut Expr) {
+        // StringLiteral을 t() 호출로 교체
+        if let Expr::Lit(Lit::Str(str_lit)) = expr {
+            // Wtf8Atom을 문자열로 변환
+            let value_str = str_lit.value.to_string();
+            
+            // 빈 문자열이나 공백만 있는 문자열은 스킵
+            let trimmed = value_str.trim();
+            if trimmed.is_empty() {
+                return;
+            }
+            
+            // 한국어 텍스트가 포함된 문자열만 처리
+            if RegexPatterns::korean_text().is_match(&value_str) {
+                self.was_modified = true;
+                
+                // t() 함수 호출 생성
+                let t_call = Expr::Call(CallExpr {
+                    span: DUMMY_SP,
+                    callee: Callee::Expr(Box::new(Expr::Ident(Ident {
+                        span: DUMMY_SP,
+                        sym: StringConstants::TRANSLATION_FUNCTION.into(),
+                        optional: false,
+                        ctxt: Default::default(),
+                    }))),
+                    args: vec![ExprOrSpread {
+                        spread: None,
+                        expr: Box::new(Expr::Lit(Lit::Str(Str {
+                            span: str_lit.span,
+                            value: str_lit.value.clone(),
+                            raw: None,
+                        }))),
+                    }],
+                    type_args: None,
+                });
+                
+                // 현재 Expression을 t() 호출로 교체
+                *expr = t_call;
+            }
         }
+        
+        // 재귀적으로 자식 노드 방문
+        expr.visit_mut_children_with(self);
+    }
+    
+    /// StringLiteral 변환 (하위 호환성을 위해 유지)
+    fn visit_mut_str(&mut self, n: &mut Str) {
+        // visit_mut_expr에서 처리하므로 여기서는 아무것도 하지 않음
         let _ = n;
     }
 
