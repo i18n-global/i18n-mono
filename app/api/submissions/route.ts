@@ -17,6 +17,17 @@ import {
 // POST: 새 제출 생성
 export async function POST(request: NextRequest) {
   try {
+    // Check if Firebase is configured
+    if (!db) {
+      return NextResponse.json(
+        {
+          error: "Firestore Database is not configured. Please set up Firebase environment variables.",
+          code: "FIRESTORE_NOT_CONFIGURED",
+        },
+        { status: 503 }
+      );
+    }
+
     const body = await request.json();
     const {
       url,
@@ -90,6 +101,17 @@ export async function POST(request: NextRequest) {
 // GET: 제출 목록 가져오기 (필터 옵션 포함)
 export async function GET(request: NextRequest) {
   try {
+    // Check if Firebase is configured
+    if (!db) {
+      return NextResponse.json(
+        {
+          error: "Firestore Database is not configured. Please set up Firebase environment variables.",
+          code: "FIRESTORE_NOT_CONFIGURED",
+        },
+        { status: 503 }
+      );
+    }
+
     const { searchParams } = new URL(request.url);
     const approvedFilter = searchParams.get("approved");
 
@@ -169,6 +191,17 @@ export async function GET(request: NextRequest) {
 // PATCH: 제출 업데이트 (승인/거부)
 export async function PATCH(request: NextRequest) {
   try {
+    // Check if Firebase is configured
+    if (!db) {
+      return NextResponse.json(
+        {
+          error: "Firestore Database is not configured. Please set up Firebase environment variables.",
+          code: "FIRESTORE_NOT_CONFIGURED",
+        },
+        { status: 503 }
+      );
+    }
+
     const body = await request.json();
     const { id, approved, projectName, autoTitle } = body;
 
@@ -206,6 +239,17 @@ export async function PATCH(request: NextRequest) {
 // DELETE: 제출 삭제
 export async function DELETE(request: NextRequest) {
   try {
+    // Check if Firebase is configured
+    if (!db) {
+      return NextResponse.json(
+        {
+          error: "Firestore Database is not configured. Please set up Firebase environment variables.",
+          code: "FIRESTORE_NOT_CONFIGURED",
+        },
+        { status: 503 }
+      );
+    }
+
     const { searchParams } = new URL(request.url);
     const id = searchParams.get("id");
 

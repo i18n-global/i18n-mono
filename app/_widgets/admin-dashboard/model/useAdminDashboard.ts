@@ -34,6 +34,13 @@ export function useAdminDashboard() {
   const router = useRouter();
 
   useEffect(() => {
+    // Check if Firebase is configured
+    if (!auth) {
+      setLoading(false);
+      router.push("/admin/login");
+      return;
+    }
+
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
         setUser(user);

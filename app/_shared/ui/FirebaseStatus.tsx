@@ -22,6 +22,17 @@ export default function FirebaseStatus() {
   useEffect(() => {
     const checkFirebase = async () => {
       try {
+        // Check if Firebase is configured
+        if (!auth || !db) {
+          setStatus({
+            auth: false,
+            firestore: false,
+            user: null,
+          });
+          setLoading(false);
+          return;
+        }
+
         // Check Auth
         const unsubscribe = onAuthStateChanged(auth, (user) => {
           setStatus((prev) => ({
