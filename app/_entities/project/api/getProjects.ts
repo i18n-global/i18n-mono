@@ -15,6 +15,12 @@ import type { ProjectSubmission } from "@/app/_shared/lib";
 export async function getProjects(
   approvedOnly?: boolean
 ): Promise<ProjectSubmission[]> {
+  // Return empty array if Firebase is not configured
+  if (!db) {
+    console.warn("Firebase is not configured. Returning empty projects list.");
+    return [];
+  }
+
   try {
     let q = query(
       collection(db, "submissions"),
