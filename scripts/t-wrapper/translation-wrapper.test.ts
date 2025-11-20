@@ -60,7 +60,7 @@ describe("translation-wrapper", () => {
 
       await wrapper.processFiles();
       const content = fs.readFileSync(testFile, "utf-8");
-      expect(content).toContain("'use client'");
+      expect(content).toMatch(/["']use client["']/);
       expect(content).toContain("useTranslation");
       expect(content).toContain("t(");
     });
@@ -84,7 +84,7 @@ describe("translation-wrapper", () => {
 
       await wrapper.processFiles();
       const content = fs.readFileSync(testFile, "utf-8");
-      expect(content).not.toContain("'use client'");
+      expect(content).not.toMatch(/["']use client["']/);
       expect(content).toContain("useTranslation");
       expect(content).toContain("t(");
     });

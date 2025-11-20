@@ -117,7 +117,7 @@ describe("t-wrapper E2E", () => {
     });
 
     const modified = fs.readFileSync(testFile, "utf-8");
-    expect(modified).toContain("'use client'");
+    expect(modified).toMatch(/["']use client["']/);
     expect(modified).toContain("useTranslation");
     expect(modified).toContain("t(");
   });
@@ -137,7 +137,7 @@ describe("t-wrapper E2E", () => {
     });
 
     const modified = fs.readFileSync(testFile, "utf-8");
-    expect(modified).not.toContain("'use client'");
+    expect(modified).not.toMatch(/["']use client["']/);
     expect(modified).toContain("useTranslation");
     expect(modified).toContain("t(");
   });
