@@ -43,7 +43,7 @@ export async function runTranslationWrapper(
       wrapper.printPerformanceReport(true);
     }
 
-    // Sentry 데이터 플러시
+    // 성능 데이터 플러시
     await wrapper.flushPerformanceData();
   } catch (error) {
     console.error(CONSOLE_MESSAGES.FATAL_ERROR, error);

@@ -154,18 +154,13 @@ impl VisitMut for TranslationTransformer {
         // 1. StringLiteral 감지
         // 2. 한국어 텍스트가 포함된 문자열만 처리
         // 3. t() 함수 호출로 변환
-        // StringLiteral을 t() 호출로 교체
-        let should_replace = if let Expr::Lit(Lit::Str(str_lit)) = expr {
-            // TODO: Wtf8Atom을 문자열로 변환하는 올바른 방법 찾기
-            // 현재는 소스코드에서 직접 검사하여 한국어가 있으면 변환
-            // 실제로는 str_lit.value를 문자열로 변환해야 함
-            RegexPatterns::korean_text().is_match(&self.source_code)
-        } else {
-            false
-        };
-        
-        if should_replace {
-            if let Expr::Lit(Lit::Str(str_lit)) = expr {
+        if let Expr::Lit(Lit::Str(str_lit)) = expr {
+            // Wtf8Atom을 &str로 변환하여 한국어 체크
+            // 방법: to_string_lossy() 직접 사용 (최신 SWC API)
+            let str_value: &str = &str_lit.value.to_string_lossy();
+            
+            // 한국어가 포함되어 있는지 확인
+            if RegexPatterns::korean_text().is_match(str_value) {
                 self.was_modified = true;
                 
                 // t() 함수 호출 생성

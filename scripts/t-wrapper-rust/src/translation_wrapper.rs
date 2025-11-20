@@ -18,7 +18,6 @@ pub struct ScriptConfig {
     pub dry_run: bool,
     pub translation_import_source: String,
     pub enable_performance_monitoring: bool,
-    pub sentry_dsn: Option<String>,
     /// 번역 함수 모드 (기능적 선택)
     /// - "client": useTranslation() 사용
     /// - "server": getServerTranslation() 사용
@@ -41,7 +40,6 @@ impl Default for ScriptConfig {
             dry_run: false,
             translation_import_source: "i18nexus".to_string(),
             enable_performance_monitoring: false,
-            sentry_dsn: None,
             mode: None,
             framework: None,
             server_translation_function: None,

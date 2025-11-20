@@ -277,6 +277,29 @@ export const config = defineConfig({
 });
 ```
 
+### Q: How do I use multiple namespaces without variable name conflicts?
+
+**A:** Use aliases when destructuring `useTranslation`:
+
+```tsx
+// ❌ Problem: Variable name conflict
+const { t } = useTranslation("dashboard");
+const { t } = useTranslation("constant");  // Error: 't' is already declared
+
+// ✅ Solution: Use aliases
+const { t: tDashboard } = useTranslation("dashboard");
+const { t: tConstant } = useTranslation("constant");
+
+return (
+  <div>
+    <h1>{tDashboard("title")}</h1>
+    <button>{tConstant("submit")}</button>
+  </div>
+);
+```
+
+See [Namespace Usage Guide](../guides/namespace-usage.md) for detailed examples.
+
 ## 📚 Support
 
 ### Q: Where can I get help?
