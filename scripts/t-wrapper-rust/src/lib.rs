@@ -17,7 +17,7 @@ pub use parser::*;
 /// 1. TranslationWrapper 생성
 /// 2. processFiles 호출
 /// 3. 성능 리포트 출력 (TODO)
-/// 4. Sentry 데이터 플러시 (TODO)
+/// 4. 성능 데이터 플러시 (TODO)
 pub fn run_translation_wrapper(config: ScriptConfig) -> anyhow::Result<()> {
     let wrapper = TranslationWrapper::new(Some(config));
 
@@ -44,7 +44,7 @@ pub fn run_translation_wrapper(config: ScriptConfig) -> anyhow::Result<()> {
     //     wrapper.print_performance_report(true);
     // }
 
-    // TODO: Sentry 데이터 플러시
+    // TODO: 성능 데이터 플러시
     // wrapper.flush_performance_data().await?;
 
     Ok(())

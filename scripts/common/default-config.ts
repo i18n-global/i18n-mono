@@ -28,7 +28,6 @@ export const GOOGLE_SHEETS_DEFAULTS = {
  */
 export const PERFORMANCE_MONITORING_DEFAULTS = {
   enablePerformanceMonitoring: process.env.I18N_PERF_MONITOR !== "false",
-  sentryDsn: process.env.SENTRY_DSN || "",
 } as const;
 
 /**
@@ -45,7 +44,6 @@ export const WRAPPER_DEFAULTS = {
   dryRun: false,
   enablePerformanceMonitoring:
     PERFORMANCE_MONITORING_DEFAULTS.enablePerformanceMonitoring,
-  sentryDsn: PERFORMANCE_MONITORING_DEFAULTS.sentryDsn,
   parserType: PARSER_DEFAULTS.parserType,
 } as const;
 
@@ -86,10 +84,6 @@ export interface ScriptConfig {
    */
   enablePerformanceMonitoring?: boolean;
   /**
-   * Sentry DSN (성능 데이터 전송)
-   */
-  sentryDsn?: string;
-  /**
    * 파서 타입 선택 (성능 비교용)
    * - 'babel': @babel/parser 사용 (기본값, 권장)
    * - 'swc': @swc/core 사용 (실험적, 현재 Babel보다 느릴 수 있음)
@@ -111,6 +105,5 @@ export const SCRIPT_CONFIG_DEFAULTS: Required<ScriptConfig> = {
   framework: undefined as unknown as "nextjs" | "react" | "other",
   dryRun: WRAPPER_DEFAULTS.dryRun,
   enablePerformanceMonitoring: WRAPPER_DEFAULTS.enablePerformanceMonitoring,
-  sentryDsn: WRAPPER_DEFAULTS.sentryDsn,
   parserType: WRAPPER_DEFAULTS.parserType,
 };

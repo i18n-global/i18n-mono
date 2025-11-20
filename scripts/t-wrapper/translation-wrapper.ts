@@ -21,7 +21,6 @@ export class TranslationWrapper {
     this.config = { ...DEFAULT_CONFIG, ...config } as Required<ScriptConfig>;
     this.performanceMonitor = new PerformanceMonitor({
       enabled: this.config.enablePerformanceMonitoring,
-      sentryDsn: this.config.sentryDsn,
       environment: process.env.NODE_ENV || STRING_CONSTANTS.DEFAULT_ENV,
       release: process.env.npm_package_version,
     });
@@ -287,7 +286,7 @@ export class TranslationWrapper {
   }
 
   /**
-   * 성능 데이터 플러시 (Sentry에 전송)
+   * 성능 데이터 플러시
    */
   public async flushPerformanceData(): Promise<void> {
     await this.performanceMonitor.flush();
