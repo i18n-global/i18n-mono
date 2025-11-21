@@ -172,15 +172,15 @@ export default function I18nWrapperPage() {
               </h3>
             </div>
             <pre className="bg-slate-950 rounded-lg p-4 text-sm border border-red-500/30 overflow-x-auto">
-              <code className="text-slate-300">{`export default function Welcome() {
-  return (
-    <div>
-      <h1>환영합니다</h1>
-      <p>i18nexus 사용법</p>
-      <button>시작하기</button>
-    </div>
-  );
-}`}</code>
+              <code className="text-slate-300">{t("export default function Welcome() {\n  return (\n    <div>\n      <h1>\uD658\uC601\uD569\uB2C8\uB2E4</h1>\n      <p>i18nexus \uC0AC\uC6A9\uBC95</p>\n      <button>\uC2DC\uC791\uD558\uAE30</button>\n    </div>\n  );\n}")
+
+
+
+
+
+
+
+                }</code>
             </pre>
           </div>
 
@@ -193,18 +193,18 @@ export default function I18nWrapperPage() {
               </h3>
             </div>
             <pre className="bg-slate-950 rounded-lg p-4 text-sm border border-green-500/30 overflow-x-auto">
-              <code className="text-slate-300">{`import { useTranslation } from "i18nexus";
+              <code className="text-slate-300">{t("import { useTranslation } from \"i18nexus\";\n\nexport default function Welcome() {\n  const { t } = useTranslation();\n  return (\n    <div>\n      <h1>{t(\"\uD658\uC601\uD569\uB2C8\uB2E4\")}</h1>\n      <p>{t(\"i18nexus \uC0AC\uC6A9\uBC95\")}</p>\n      <button>{t(\"\uC2DC\uC791\uD558\uAE30\")}</button>\n    </div>\n  );\n}")
 
-export default function Welcome() {
-  const { t } = useTranslation();
-  return (
-    <div>
-      <h1>{t("환영합니다")}</h1>
-      <p>{t("i18nexus 사용법")}</p>
-      <button>{t("시작하기")}</button>
-    </div>
-  );
-}`}</code>
+
+
+
+
+
+
+
+
+
+                }</code>
             </pre>
           </div>
         </div>
@@ -220,14 +220,14 @@ export default function Welcome() {
                 {t("이전")}:
               </h4>
               <pre className="bg-slate-950 rounded-lg p-4 text-sm border border-slate-800 overflow-x-auto">
-                <code className="text-slate-300">{`const title = "제목";
-const msg = \`안녕하세요 \${name}님\`;
+                <code className="text-slate-300">{t("const title = \"\uC81C\uBAA9\";\nconst msg = \\`\uC548\uB155\uD558\uC138\uC694 \\${name}\uB2D8\\`;\n\nreturn (\n  <div title=\"\uD234\uD301 \uD14D\uC2A4\uD2B8\">\n    <p>{\"\uBB38\uC790\uC5F4\"}</p>\n  </div>\n);")
 
-return (
-  <div title="툴팁 텍스트">
-    <p>{"문자열"}</p>
-  </div>
-);`}</code>
+
+
+
+
+
+                  }</code>
               </pre>
             </div>
             <div>
@@ -235,15 +235,15 @@ return (
                 {t("이후")}:
               </h4>
               <pre className="bg-slate-950 rounded-lg p-4 text-sm border border-slate-800 overflow-x-auto">
-                <code className="text-slate-300">{`const { t } = useTranslation();
-const title = t("제목");
-const msg = t(\`안녕하세요 \${name}님\`);
+                <code className="text-slate-300">{t("const { t } = useTranslation();\nconst title = t(\"\uC81C\uBAA9\");\nconst msg = t(\\`\uC548\uB155\uD558\uC138\uC694 \\${name}\uB2D8\\`);\n\nreturn (\n  <div title={t(\"\uD234\uD301 \uD14D\uC2A4\uD2B8\")}>\n    <p>{t(\"\uBB38\uC790\uC5F4\")}</p>\n  </div>\n);")
 
-return (
-  <div title={t("툴팁 텍스트")}>
-    <p>{t("문자열")}</p>
-  </div>
-);`}</code>
+
+
+
+
+
+
+                  }</code>
               </pre>
             </div>
           </div>
@@ -306,7 +306,7 @@ return (
               <div>
                 <strong>{t("JSX 텍스트 노드")}</strong>
                 <pre className="bg-slate-950 rounded p-2 text-xs mt-1 border border-slate-800">
-                  <code>{`<div>한국어 텍스트</div> → <div>{t("한국어 텍스트")}</div>`}</code>
+                  <code>{t("<div>\uD55C\uAD6D\uC5B4 \uD14D\uC2A4\uD2B8</div> \u2192 <div>{t(\"\uD55C\uAD6D\uC5B4 \uD14D\uC2A4\uD2B8\")}</div>")}</code>
                 </pre>
               </div>
             </li>
@@ -315,7 +315,7 @@ return (
               <div>
                 <strong>{t("JSX 속성값")}</strong>
                 <pre className="bg-slate-950 rounded p-2 text-xs mt-1 border border-slate-800">
-                  <code>{`<div title="제목"> → <div title={t("제목")}>`}</code>
+                  <code>{t("<div title=\"\uC81C\uBAA9\"> \u2192 <div title={t(\"\uC81C\uBAA9\")}>")}</code>
                 </pre>
               </div>
             </li>
@@ -324,7 +324,7 @@ return (
               <div>
                 <strong>{t("문자열 리터럴")}</strong>
                 <pre className="bg-slate-950 rounded p-2 text-xs mt-1 border border-slate-800">
-                  <code>{`const text = "안녕"; → const text = t("안녕");`}</code>
+                  <code>{t("const text = \"\uC548\uB155\"; \u2192 const text = t(\"\uC548\uB155\");")}</code>
                 </pre>
               </div>
             </li>
@@ -333,7 +333,7 @@ return (
               <div>
                 <strong>{t("템플릿 리터럴")}</strong>
                 <pre className="bg-slate-950 rounded p-2 text-xs mt-1 border border-slate-800">
-                  <code>{`const msg = \`안녕 \${name}\`; → const msg = t(\`안녕 \${name}\`);`}</code>
+                  <code>{t("const msg = \\`\uC548\uB155 \\${name}\\`; \u2192 const msg = t(\\`\uC548\uB155 \\${name}\\`);")}</code>
                 </pre>
               </div>
             </li>
@@ -448,6 +448,6 @@ return (
           </Link>
         </div>
       </section>
-    </main>
-  );
+    </main>);
+
 }

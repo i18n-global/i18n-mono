@@ -87,22 +87,22 @@ export default async function ServerExamplePage() {
         <h2 className="text-2xl font-bold text-white mb-4">{t("사용 방법")}</h2>
         <div className="bg-slate-950 rounded-xl p-6 mb-4 border border-slate-800">
           <pre className="text-slate-300 text-sm font-mono overflow-x-auto">
-            <code>{`import { headers } from "next/headers";
-import { getServerLanguage, createServerTranslation } from "i18nexus/server";
-import { translations } from "@/lib/i18n";
+            <code>{t("import { headers } from \"next/headers\";\nimport { getServerLanguage, createServerTranslation } from \"i18nexus/server\";\nimport { translations } from \"@/lib/i18n\";\n\n// \u2705 Server Component (\uAE30\uBCF8\uAC12)\nexport default async function Page() {\n  // 1. \uCFE0\uD0A4\uC5D0\uC11C \uC5B8\uC5B4 \uAC00\uC838\uC624\uAE30\n  const headersList = await headers();\n  const language = getServerLanguage(headersList);\n  \n  // 2. \uBC88\uC5ED \uD568\uC218 \uC0DD\uC131\n  const t = createServerTranslation(language, translations);\n  \n  // 3. \uC0AC\uC6A9!\n  return <h1>{t(\"Welcome\")}</h1>;\n}")
 
-// ✅ Server Component (기본값)
-export default async function Page() {
-  // 1. 쿠키에서 언어 가져오기
-  const headersList = await headers();
-  const language = getServerLanguage(headersList);
-  
-  // 2. 번역 함수 생성
-  const t = createServerTranslation(language, translations);
-  
-  // 3. 사용!
-  return <h1>{t("Welcome")}</h1>;
-}`}</code>
+
+
+
+
+
+
+
+
+
+
+
+
+
+              }</code>
           </pre>
         </div>
       </section>
@@ -201,6 +201,6 @@ export default async function Page() {
           )}
         </p>
       </div>
-    </main>
-  );
+    </main>);
+
 }

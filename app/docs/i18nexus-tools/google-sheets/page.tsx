@@ -497,13 +497,13 @@ export default function GoogleSheetsPage() {
             </h3>
             <pre className="bg-slate-950 rounded-lg p-4 text-sm border border-slate-800 overflow-x-auto">
               <code className="text-slate-300">
-                {`# 1. 코드에서 번역 키 추출
-npx i18n-extractor -p "app/**/*.tsx" -d "./locales"
+                {t("# 1. \uCF54\uB4DC\uC5D0\uC11C \uBC88\uC5ED \uD0A4 \uCD94\uCD9C\nnpx i18n-extractor -p \"app/**/*.tsx\" -d \"./locales\"\n\n# 2. \uB85C\uCEEC \uBC88\uC5ED\uC744 Google Sheets\uB85C \uC5C5\uB85C\uB4DC\nnpx i18n-upload --spreadsheet-id \"YOUR_ID\"\n\n# 3. \uD300\uC6D0\uB4E4\uC774 Google Sheets\uC5D0\uC11C \uBC88\uC5ED \uC791\uC5C5 \uC2DC\uC791")
 
-# 2. 로컬 번역을 Google Sheets로 업로드
-npx i18n-upload --spreadsheet-id "YOUR_ID"
 
-# 3. 팀원들이 Google Sheets에서 번역 작업 시작`}
+
+
+
+                }
               </code>
             </pre>
           </div>
@@ -515,20 +515,20 @@ npx i18n-upload --spreadsheet-id "YOUR_ID"
             </h3>
             <pre className="bg-slate-950 rounded-lg p-4 text-sm border border-slate-800 overflow-x-auto">
               <code className="text-slate-300">
-                {`# 1. 개발자: 새로운 기능 추가 후 키 추출
-npx i18n-extractor
+                {t("# 1. \uAC1C\uBC1C\uC790: \uC0C8\uB85C\uC6B4 \uAE30\uB2A5 \uCD94\uAC00 \uD6C4 \uD0A4 \uCD94\uCD9C\nnpx i18n-extractor\n\n# 2. \uAC1C\uBC1C\uC790: \uC0C8 \uD0A4\uB97C Sheets\uC5D0 \uC5C5\uB85C\uB4DC\nnpx i18n-upload --spreadsheet-id \"YOUR_ID\"\n\n# 3. \uBC88\uC5ED\uAC00: Google Sheets\uC5D0\uC11C \uBC88\uC5ED \uC791\uC5C5\n\n# 4. \uAC1C\uBC1C\uC790: \uBC88\uC5ED \uC644\uB8CC \uD6C4 \uB85C\uCEEC\uB85C \uB2E4\uC6B4\uB85C\uB4DC\nnpx i18n-download --spreadsheet-id \"YOUR_ID\"\n\n# 5. Git\uC5D0 \uBCC0\uACBD\uC0AC\uD56D \uCEE4\uBC0B\ngit add locales/\ngit commit -m \"Update translations\"")
 
-# 2. 개발자: 새 키를 Sheets에 업로드
-npx i18n-upload --spreadsheet-id "YOUR_ID"
 
-# 3. 번역가: Google Sheets에서 번역 작업
 
-# 4. 개발자: 번역 완료 후 로컬로 다운로드
-npx i18n-download --spreadsheet-id "YOUR_ID"
 
-# 5. Git에 변경사항 커밋
-git add locales/
-git commit -m "Update translations"`}
+
+
+
+
+
+
+
+
+                }
               </code>
             </pre>
           </div>
@@ -540,31 +540,31 @@ git commit -m "Update translations"`}
             </h3>
             <pre className="bg-slate-950 rounded-lg p-4 text-sm border border-slate-800 overflow-x-auto">
               <code className="text-slate-300">
-                {`# .github/workflows/sync-translations.yml
-name: Sync Translations
+                {t("# .github/workflows/sync-translations.yml\nname: Sync Translations\n\non:\n  schedule:\n    - cron: '0 2 * * *'  # \uB9E4\uC77C \uC624\uC804 2\uC2DC\n  workflow_dispatch:  # \uC218\uB3D9 \uC2E4\uD589 \uAC00\uB2A5\n\njobs:\n  sync:\n    runs-on: ubuntu-latest\n    steps:\n      - uses: actions/checkout@v3\n      \n      - name: Download translations\n        run: |\n          npx i18n-download \\\\\n            --spreadsheet-id \"\\${{ secrets.SHEET_ID }}\" \\\\\n            --credentials ./credentials.json\n      \n      - name: Create PR if changes\n        uses: peter-evans/create-pull-request@v5\n        with:\n          title: \"Update translations from Sheets\"\n          commit-message: \"chore: sync translations\"")
 
-on:
-  schedule:
-    - cron: '0 2 * * *'  # 매일 오전 2시
-  workflow_dispatch:  # 수동 실행 가능
 
-jobs:
-  sync:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      
-      - name: Download translations
-        run: |
-          npx i18n-download \\
-            --spreadsheet-id "\${{ secrets.SHEET_ID }}" \\
-            --credentials ./credentials.json
-      
-      - name: Create PR if changes
-        uses: peter-evans/create-pull-request@v5
-        with:
-          title: "Update translations from Sheets"
-          commit-message: "chore: sync translations"`}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                }
               </code>
             </pre>
           </div>
@@ -703,6 +703,6 @@ credentials.json
           </Link>
         </div>
       </section>
-    </main>
-  );
+    </main>);
+
 }
