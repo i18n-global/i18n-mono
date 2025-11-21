@@ -16,7 +16,7 @@ interface MetadataPreview {
 }
 
 export default function ProjectSubmitForm() {
-  const { t } = useTranslation("showcase");
+  const { t } = useTranslation();
   const { setError } = useError();
   const [url, setUrl] = useState("");
   const [projectName, setProjectName] = useState("");

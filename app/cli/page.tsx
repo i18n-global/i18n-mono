@@ -3,7 +3,7 @@
 import { useTranslation } from "i18nexus";
 
 export default function CLIPage() {
-  const { t } = useTranslation("cli");
+  const { t } = useTranslation();
 
   return (
     <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -88,7 +88,7 @@ npx i18n-wrapper --pattern "app/page.tsx"`}</code>
                 <code>{`import { useTranslation } from "i18nexus";
 
 export default function Welcome() {
-  const { t } = useTranslation("cli");
+  const { t } = useTranslation();
   return (
     <div>
       <h1>{t("환영합니다")}</h1>

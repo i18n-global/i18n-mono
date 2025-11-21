@@ -7,7 +7,7 @@ import { onAuthStateChanged } from "firebase/auth";
 import { collection, getDocs, limit, query } from "firebase/firestore";
 
 export default function FirebaseStatus() {
-  const { t } = useTranslation("common");
+  const { t } = useTranslation();
   const [status, setStatus] = useState<{
     auth: boolean;
     firestore: boolean;

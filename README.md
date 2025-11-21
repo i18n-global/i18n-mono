@@ -49,11 +49,9 @@ export type AppLanguages = (typeof config.languages)[number];
 
 - **Korean (한국어)** - Primary language
 - **English** - Full translations
-- **Namespace automation** - File path-based translation organization
 - Type-safe language switching
 - Persistent storage with cookies
 - Automatic browser language detection
-- Code splitting per namespace for optimal bundle size
 
 ## 🚀 Getting Started
 
@@ -115,19 +113,11 @@ npm run start
 │   │   └── auth-login/              # Authentication
 │   └── _entities/
 │       └── project/                 # Project data layer
-├── docs/
-│   └── NAMESPACE_AUTOMATION.md      # Namespace feature guide
 ├── locales/                         # Translation files
-│   ├── dashboard/                   # Namespace: dashboard
-│   │   ├── ko.json
-│   │   └── en.json
-│   ├── settings/                    # Namespace: settings
-│   │   ├── ko.json
-│   │   └── en.json
-│   └── common/                      # Namespace: common
-│       ├── ko.json
-│       └── en.json
-├── i18nexus.config.js               # i18nexus configuration (can be .ts!)
+│   ├── ko.json                      # Korean translations
+│   ├── en.json                      # English translations
+│   └── index.ts                     # Translation exports
+├── i18nexus.config.json             # i18nexus configuration
 └── package.json                     # Dependencies and scripts
 ```
 
@@ -135,51 +125,29 @@ npm run start
 
 ### Using CLI Tools
 
-The project demonstrates all i18nexus CLI tools with **namespace automation**:
+The project demonstrates all i18nexus CLI tools:
 
 ```bash
-# Initialize project (with TypeScript config)
-npx i18n-sheets init --typescript
-
 # Wrap hardcoded Korean strings automatically
 npx i18n-wrapper --pattern "app/**/*.tsx"
 
-# Extract translation keys (with namespace inference)
+# Extract translation keys
 npx i18n-extractor --pattern "app/**/*.tsx" --output "./locales"
 
-# Upload to Google Sheets (optional, namespace-aware)
-npx i18n-sheets upload -s YOUR_SPREADSHEET_ID
+# Upload to Google Sheets (optional)
+npx i18n-upload --spreadsheet-id YOUR_SPREADSHEET_ID
 
 # Download from Google Sheets (optional)
-npx i18n-sheets download -s YOUR_SPREADSHEET_ID
+npx i18n-download --spreadsheet-id YOUR_SPREADSHEET_ID
 ```
-
-### Namespace Automation (v1.7.7+)
-
-**Automatic file path-based namespace inference:**
-
-```typescript
-// File: app/dashboard/page.tsx
-// Inferred namespace: "dashboard"
-const { t } = useTranslation('dashboard');
-
-// Saves to: locales/dashboard/ko.json
-```
-
-**Benefits:**
-- 🚀 **Smaller bundles** - Load only needed translations per page
-- 📦 **Code splitting** - Automatic chunking by namespace
-- 🔧 **Easy maintenance** - Domain-based file organization
-- ✅ **Build-time validation** - Catches namespace mismatches
-
-See [docs/NAMESPACE_AUTOMATION.md](./docs/NAMESPACE_AUTOMATION.md) for details.
 
 ### Translation Files
 
 All translations are stored in JSON format:
 
-- `lib/translations/` - Source translations used by the app
-- `locales/` - Extracted translations for CLI tools
+- `locales/ko.json` - Korean translations
+- `locales/en.json` - English translations
+- `locales/index.ts` - Translation exports
 
 ## 🎯 Key Features Demonstrated
 

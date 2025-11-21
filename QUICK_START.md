@@ -177,7 +177,6 @@ npx i18n-extractor
 | **3개 명령어**         | `init` → `wrapper` → `extractor` 끝!        |
 | **Provider 한 번**     | layout.tsx에서 한 번만 설정                 |
 | **자동 래핑**          | 한국어 텍스트 자동 감지 및 래핑             |
-| **네임스페이스 자동화** | 파일 경로 기반 번역 파일 자동 분리 (v1.7.7+)|
 | **타입 안전**          | TypeScript로 언어 코드 자동완성             |
 | **모바일 최적화**      | 320px~4K 반응형, 터치 최적화 UI             |
 | **SSR 지원**           | Next.js App Router 완벽 지원                |
@@ -189,7 +188,6 @@ npx i18n-extractor
 
 - 📖 [전체 문서](./README.md)
 - 🌐 [라이브 데모](http://localhost:3000)
-- 🔧 [네임스페이스 자동화 가이드](./docs/NAMESPACE_AUTOMATION.md)
 - 🌍 [Showcase 시스템](./SHOWCASE_README.md)
 - 🔥 [Firebase 설정](./FIREBASE_QUICK_SETUP.md)
 
