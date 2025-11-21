@@ -80,6 +80,11 @@
 
 테스트 모드 만료 전에 Firestore 규칙 업데이트:
 
+### 방법 1: Firebase Console에서 직접 업데이트 (빠름)
+
+1. [Firestore Rules](https://console.firebase.google.com/u/0/project/i18nexus/firestore/rules) 접속
+2. 다음 규칙을 복사해서 붙여넣기:
+
 ```javascript
 rules_version = '2';
 service cloud.firestore {
@@ -99,6 +104,23 @@ service cloud.firestore {
 }
 ```
 
+3. **"Publish"** 버튼 클릭
+
+### 방법 2: Firebase CLI로 배포
+
+프로젝트 루트에 `firestore.rules` 파일이 이미 준비되어 있습니다.
+
+```bash
+# Firebase CLI 설치 (처음 한번만)
+npm install -g firebase-tools
+
+# Firebase 로그인
+firebase login
+
+# Firestore Rules 배포
+firebase deploy --only firestore:rules
+```
+
 ## 🚨 자주 발생하는 에러
 
 ### `auth/invalid-credential`
@@ -114,9 +136,18 @@ service cloud.firestore {
 ➡️ **해결**: Step 5 인덱스 생성 (가장 중요!)
 ➡️ 브라우저 콘솔(F12)에서 **🔗 인덱스 생성 링크** 확인 및 클릭
 
-### `Missing or insufficient permissions`
+### `Missing or insufficient permissions` ⭐
 
-➡️ **해결**: Firestore 보안 규칙 확인 (테스트 모드로 시작)
+이 에러는 **Firestore Security Rules가 접근을 거부**할 때 발생합니다.
+
+➡️ **해결 방법**:
+
+1. [Firestore Rules](https://console.firebase.google.com/u/0/project/i18nexus/firestore/rules) 접속
+2. 위의 **"🔐 보안 규칙 (프로덕션용)"** 섹션의 규칙을 복사해서 붙여넣기
+3. **"Publish"** 버튼 클릭
+4. 페이지 새로고침
+
+또는 Step 4에서 **"Start in test mode"**를 선택했는지 확인하세요.
 
 ## 💡 인덱스 생성 팁
 

@@ -1,0 +1,23 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Submissions collection
+    match /submissions/{submissionId} {
+      // Allow anyone to read (filtering is done in code with where clauses)
+      allow read: if true;
+
+      // Allow anyone to create submissions
+      allow create: if true;
+
+      // Only authenticated users can update/delete
+      allow update, delete: if request.auth != null;
+    }
+
+    // Default deny all other collections
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
