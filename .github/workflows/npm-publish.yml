@@ -134,10 +134,9 @@ jobs:
         if: steps.check-version.outputs.exists != 'true'
         run: npm run build
 
-      - name: Run tests (if available)
+      - name: Run tests
         if: steps.check-version.outputs.exists != 'true'
-        run: npm test --if-present
-        continue-on-error: true
+        run: npm test
 
       - name: Publish to npm
         if: steps.check-version.outputs.exists != 'true'
