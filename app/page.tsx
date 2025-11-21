@@ -10,64 +10,64 @@ export default function HomePage() {
   return (
     <main className="overflow-x-hidden">
       {/* Hero Section - Enhanced with stronger value proposition */}
-      <section className="relative min-h-[90vh] flex items-center justify-center bg-slate-950 overflow-hidden">
+      <section className="relative min-h-[80vh] sm:min-h-[90vh] flex items-center justify-center bg-slate-950 overflow-hidden">
         {/* Animated background elements */}
         <div className="absolute inset-0 overflow-hidden">
           <div className="absolute -top-1/2 -right-1/2 w-full h-full bg-blue-500/5 rounded-full blur-3xl animate-pulse"></div>
           <div className="absolute -bottom-1/2 -left-1/2 w-full h-full bg-indigo-500/5 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }}></div>
         </div>
 
-        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 text-center">
+        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-20 text-center">
           {/* Logo Icon */}
-          <div className="inline-flex items-center justify-center w-24 h-24 bg-blue-600 rounded-3xl mb-8 shadow-2xl shadow-blue-500/50 hover:scale-110 transition-transform">
-            <span className="text-white font-bold text-4xl">i18</span>
+          <div className="inline-flex items-center justify-center w-16 h-16 sm:w-24 sm:h-24 bg-blue-600 rounded-2xl sm:rounded-3xl mb-6 sm:mb-8 shadow-2xl shadow-blue-500/50 hover:scale-110 transition-transform">
+            <span className="text-white font-bold text-2xl sm:text-4xl">i18</span>
           </div>
 
           {/* Main Headline - Why Statement */}
-          <h1 className="text-5xl md:text-7xl lg:text-8xl font-extrabold text-blue-400 mb-6 leading-tight">
+          <h1 className="text-3xl sm:text-5xl md:text-7xl lg:text-8xl font-extrabold text-blue-400 mb-4 sm:mb-6 leading-tight px-2">
             {t("글로벌 앱, 번역 혼돈 끝")}
           </h1>
 
           {/* Subheadline */}
-          <p className="text-xl md:text-3xl text-slate-300 mb-6 font-light max-w-4xl mx-auto">
+          <p className="text-lg sm:text-xl md:text-3xl text-slate-300 mb-4 sm:mb-6 font-light max-w-4xl mx-auto px-4">
             {t("더 이상 수동 번역 관리에 시간을 낭비하지 마세요")}
           </p>
 
-          <p className="text-lg md:text-xl text-slate-400 mb-12 max-w-3xl mx-auto leading-relaxed">
+          <p className="text-base sm:text-lg md:text-xl text-slate-400 mb-8 sm:mb-12 max-w-3xl mx-auto leading-relaxed px-4">
             {t("자동화된 워크플로우로 다국어 지원을 1분 안에 설정하세요")}
           </p>
 
           {/* CTA Buttons */}
-          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12">
+          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center items-stretch sm:items-center mb-8 sm:mb-12 px-4">
             <Link
               href="/getting-started"
-              className="inline-flex items-center px-10 py-5 bg-blue-600 hover:bg-blue-500 text-white font-bold text-lg rounded-2xl shadow-2xl shadow-blue-500/40 hover:shadow-blue-500/60 transition-all hover:scale-105 group">
+              className="inline-flex items-center justify-center px-6 sm:px-10 py-4 sm:py-5 bg-blue-600 hover:bg-blue-500 text-white font-bold text-base sm:text-lg rounded-xl sm:rounded-2xl shadow-2xl shadow-blue-500/40 hover:shadow-blue-500/60 transition-all hover:scale-105 group">
               {t("무료로 시작하기")}
               <span className="ml-3 group-hover:translate-x-1 transition-transform">→</span>
             </Link>
             <Link
               href="/docs/i18nexus"
-              className="inline-flex items-center px-10 py-5 bg-slate-800/80 hover:bg-slate-700 text-white font-semibold text-lg rounded-2xl border-2 border-slate-700 hover:border-blue-500 transition-all">
+              className="inline-flex items-center justify-center px-6 sm:px-10 py-4 sm:py-5 bg-slate-800/80 hover:bg-slate-700 text-white font-semibold text-base sm:text-lg rounded-xl sm:rounded-2xl border-2 border-slate-700 hover:border-blue-500 transition-all">
               {t("문서 보기")}
             </Link>
           </div>
 
           {/* Trust Indicators */}
-          <div className="flex flex-wrap gap-8 justify-center items-center text-sm text-slate-400">
+          <div className="flex flex-wrap gap-4 sm:gap-8 justify-center items-center text-xs sm:text-sm text-slate-400 px-4">
             <div className="flex items-center gap-2">
-              <svg className="w-5 h-5 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-4 h-4 sm:w-5 sm:h-5 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
               </svg>
               <span>{t("5분 설치")}</span>
             </div>
             <div className="flex items-center gap-2">
-              <svg className="w-5 h-5 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-4 h-4 sm:w-5 sm:h-5 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
               </svg>
               <span>{t("무료 오픈소스")}</span>
             </div>
             <div className="flex items-center gap-2">
-              <svg className="w-5 h-5 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-4 h-4 sm:w-5 sm:h-5 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
               </svg>
               <span>{t("TypeScript 지원")}</span>
@@ -105,76 +105,76 @@ export default function HomePage() {
       </section>
 
       {/* Problem Section - Dark background to emphasize pain points */}
-      <section className="py-20 bg-slate-950 relative">
+      <section className="py-12 sm:py-20 bg-slate-950 relative">
         <div className="absolute inset-0 bg-[url('/grid.svg')] opacity-10"></div>
 
         <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <div className="inline-block px-4 py-2 bg-red-500/10 border border-red-500/30 rounded-full mb-6">
-              <span className="text-red-400 font-semibold">{t("기존 방식의 문제")}</span>
+          <div className="text-center mb-12 sm:mb-16">
+            <div className="inline-block px-3 sm:px-4 py-1.5 sm:py-2 bg-red-500/10 border border-red-500/30 rounded-full mb-4 sm:mb-6">
+              <span className="text-red-400 font-semibold text-sm sm:text-base">{t("기존 방식의 문제")}</span>
             </div>
-            <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
+            <h2 className="text-2xl sm:text-4xl md:text-5xl font-bold text-white mb-4 sm:mb-6 px-2">
               {t("이런 고민, 하고 계신가요?")}
             </h2>
-            <p className="text-xl text-slate-400 max-w-3xl mx-auto">
+            <p className="text-base sm:text-xl text-slate-400 max-w-3xl mx-auto px-4">
               {t("전통적인 i18n 방식은 개발 속도를 늦추고 유지보수를 어렵게 만듭니다")}
             </p>
           </div>
 
-          <div className="grid md:grid-cols-2 gap-6">
-            <div className="bg-slate-900/80 backdrop-blur rounded-2xl border border-red-900/30 p-8 hover:border-red-500/50 transition-colors">
-              <div className="w-14 h-14 bg-red-500/10 rounded-xl flex items-center justify-center mb-4">
-                <svg className="w-8 h-8 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div className="grid sm:grid-cols-2 gap-4 sm:gap-6">
+            <div className="bg-slate-900/80 backdrop-blur rounded-xl sm:rounded-2xl border border-red-900/30 p-5 sm:p-8 hover:border-red-500/50 transition-colors">
+              <div className="w-12 h-12 sm:w-14 sm:h-14 bg-red-500/10 rounded-lg sm:rounded-xl flex items-center justify-center mb-3 sm:mb-4">
+                <svg className="w-6 h-6 sm:w-8 sm:h-8 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
               </div>
-              <h3 className="text-xl font-semibold text-red-400 mb-3">
+              <h3 className="text-lg sm:text-xl font-semibold text-red-400 mb-2 sm:mb-3">
                 {t("수동 텍스트 래핑")}
               </h3>
-              <p className="text-slate-400 leading-relaxed">
+              <p className="text-sm sm:text-base text-slate-400 leading-relaxed">
                 {t("모든 텍스트를 일일이 t() 함수로 감싸는 반복 작업. 실수하면 번역이 누락됩니다.")}
               </p>
             </div>
 
-            <div className="bg-slate-900/80 backdrop-blur rounded-2xl border border-red-900/30 p-8 hover:border-red-500/50 transition-colors">
-              <div className="w-14 h-14 bg-red-500/10 rounded-xl flex items-center justify-center mb-4">
-                <svg className="w-8 h-8 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div className="bg-slate-900/80 backdrop-blur rounded-xl sm:rounded-2xl border border-red-900/30 p-5 sm:p-8 hover:border-red-500/50 transition-colors">
+              <div className="w-12 h-12 sm:w-14 sm:h-14 bg-red-500/10 rounded-lg sm:rounded-xl flex items-center justify-center mb-3 sm:mb-4">
+                <svg className="w-6 h-6 sm:w-8 sm:h-8 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
                 </svg>
               </div>
-              <h3 className="text-xl font-semibold text-red-400 mb-3">
+              <h3 className="text-lg sm:text-xl font-semibold text-red-400 mb-2 sm:mb-3">
                 {t("하이드레이션 오류")}
               </h3>
-              <p className="text-slate-400 leading-relaxed">
+              <p className="text-sm sm:text-base text-slate-400 leading-relaxed">
                 {t("SSR 환경에서 서버와 클라이언트 언어가 달라 발생하는 hydration mismatch 에러.")}
               </p>
             </div>
 
-            <div className="bg-slate-900/80 backdrop-blur rounded-2xl border border-red-900/30 p-8 hover:border-red-500/50 transition-colors">
-              <div className="w-14 h-14 bg-red-500/10 rounded-xl flex items-center justify-center mb-4">
-                <svg className="w-8 h-8 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div className="bg-slate-900/80 backdrop-blur rounded-xl sm:rounded-2xl border border-red-900/30 p-5 sm:p-8 hover:border-red-500/50 transition-colors">
+              <div className="w-12 h-12 sm:w-14 sm:h-14 bg-red-500/10 rounded-lg sm:rounded-xl flex items-center justify-center mb-3 sm:mb-4">
+                <svg className="w-6 h-6 sm:w-8 sm:h-8 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z" />
                 </svg>
               </div>
-              <h3 className="text-xl font-semibold text-red-400 mb-3">
+              <h3 className="text-lg sm:text-xl font-semibold text-red-400 mb-2 sm:mb-3">
                 {t("복잡한 파일 관리")}
               </h3>
-              <p className="text-slate-400 leading-relaxed">
+              <p className="text-sm sm:text-base text-slate-400 leading-relaxed">
                 {t("여러 JSON 파일을 수동으로 관리하고 동기화해야 하는 번거로움.")}
               </p>
             </div>
 
-            <div className="bg-slate-900/80 backdrop-blur rounded-2xl border border-red-900/30 p-8 hover:border-red-500/50 transition-colors">
-              <div className="w-14 h-14 bg-red-500/10 rounded-xl flex items-center justify-center mb-4">
-                <svg className="w-8 h-8 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div className="bg-slate-900/80 backdrop-blur rounded-xl sm:rounded-2xl border border-red-900/30 p-5 sm:p-8 hover:border-red-500/50 transition-colors">
+              <div className="w-12 h-12 sm:w-14 sm:h-14 bg-red-500/10 rounded-lg sm:rounded-xl flex items-center justify-center mb-3 sm:mb-4">
+                <svg className="w-6 h-6 sm:w-8 sm:h-8 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                 </svg>
               </div>
-              <h3 className="text-xl font-semibold text-red-400 mb-3">
+              <h3 className="text-lg sm:text-xl font-semibold text-red-400 mb-2 sm:mb-3">
                 {t("복잡한 설정")}
               </h3>
-              <p className="text-slate-400 leading-relaxed">
+              <p className="text-sm sm:text-base text-slate-400 leading-relaxed">
                 {t("i18next 설정, 라우팅, 미들웨어 등 초기 셋업이 복잡하고 시간이 오래 걸립니다.")}
               </p>
             </div>
@@ -183,21 +183,21 @@ export default function HomePage() {
       </section>
 
       {/* Solution Section - Dark background with green accents */}
-      <section className="py-20 bg-slate-900">
+      <section className="py-12 sm:py-20 bg-slate-900">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <div className="inline-block px-4 py-2 bg-green-500/10 border border-green-500/30 rounded-full mb-6">
-              <span className="text-green-400 font-semibold">{t("i18nexus 솔루션")}</span>
+          <div className="text-center mb-12 sm:mb-16">
+            <div className="inline-block px-3 sm:px-4 py-1.5 sm:py-2 bg-green-500/10 border border-green-500/30 rounded-full mb-4 sm:mb-6">
+              <span className="text-green-400 font-semibold text-sm sm:text-base">{t("i18nexus 솔루션")}</span>
             </div>
-            <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
+            <h2 className="text-2xl sm:text-4xl md:text-5xl font-bold text-white mb-4 sm:mb-6 px-2">
               {t("모든 문제를 한 번에 해결합니다")}
             </h2>
-            <p className="text-xl text-slate-400 max-w-3xl mx-auto">
+            <p className="text-base sm:text-xl text-slate-400 max-w-3xl mx-auto px-4">
               {t("i18nexus는 자동화와 최적화로 번역 관리의 모든 고민을 끝냅니다")}
             </p>
           </div>
 
-          <div className="grid md:grid-cols-2 gap-6">
+          <div className="grid sm:grid-cols-2 gap-4 sm:gap-6">
             <div className="bg-slate-800/50 rounded-2xl border border-green-500/20 p-8 hover:border-green-500/40 transition-all">
               <div className="w-14 h-14 bg-green-500/10 rounded-xl flex items-center justify-center mb-4">
                 <svg className="w-8 h-8 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">

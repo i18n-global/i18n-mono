@@ -30,17 +30,17 @@ export default function Navigation() {
     }
   }, [pathname, isCliSelected, isDocsSelected, cliExpanded, docsExpanded]);
 
-  // 사이드바 열릴 때 body에 padding 적용
+  // 사이드바 열릴 때 스크롤 방지 (모바일)
   useEffect(() => {
     if (sidebarOpen) {
-      document.body.style.paddingLeft = '256px';
+      document.body.style.overflow = 'hidden';
     } else {
-      document.body.style.paddingLeft = '0';
+      document.body.style.overflow = '';
     }
 
     // Cleanup on unmount
     return () => {
-      document.body.style.paddingLeft = '0';
+      document.body.style.overflow = '';
     };
   }, [sidebarOpen]);
 
@@ -191,10 +191,18 @@ export default function Navigation() {
 
   return (
     <>
+      {/* Backdrop */}
+      {sidebarOpen && (
+        <div
+          className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 transition-opacity duration-300"
+          onClick={() => setSidebarOpen(false)}
+        />
+      )}
+
       {/* Sidebar */}
       <aside
-        className={`fixed top-0 left-0 h-full bg-slate-900 border-r border-slate-800 z-50 transition-all duration-300 ease-in-out ${
-          sidebarOpen ? "w-64" : "w-0"
+        className={`fixed top-0 left-0 h-full bg-slate-900 border-r border-slate-800 z-50 transition-transform duration-300 ease-in-out w-64 ${
+          sidebarOpen ? "translate-x-0" : "-translate-x-full"
         } overflow-hidden`}>
         <div className="flex flex-col h-full w-64">
           {/* Sidebar Header */}
@@ -426,17 +434,17 @@ export default function Navigation() {
 
       {/* Top Navigation Bar */}
       <nav className="bg-slate-900/95 backdrop-blur-sm border-b border-slate-800 sticky top-0 z-30 shadow-lg">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <div className="flex items-center space-x-4">
+        <div className="max-w-7xl mx-auto px-2 sm:px-4 lg:px-8">
+          <div className="flex justify-between items-center h-14 sm:h-16">
+            <div className="flex items-center space-x-2 sm:space-x-4">
               {/* Hamburger Menu Button */}
               <button
                 onClick={() => setSidebarOpen(!sidebarOpen)}
-                className="text-white hover:text-blue-400 transition-all duration-300 p-2 hover:bg-slate-800 rounded-lg flex items-center justify-center"
+                className="text-white hover:text-blue-400 transition-all duration-300 p-1.5 sm:p-2 hover:bg-slate-800 rounded-lg flex items-center justify-center"
                 aria-label="Toggle menu"
                 title={sidebarOpen ? t("닫기") : t("메뉴 열기")}>
                 <svg
-                  className={`w-7 h-7 transition-transform duration-300 ${sidebarOpen ? "rotate-90" : ""}`}
+                  className={`w-6 h-6 sm:w-7 sm:h-7 transition-transform duration-300 ${sidebarOpen ? "rotate-90" : ""}`}
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24">
@@ -450,11 +458,11 @@ export default function Navigation() {
               </button>
 
               {/* Logo */}
-              <Link href="/" className="flex items-center space-x-3 group">
-                <div className="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center shadow-lg shadow-blue-500/30 group-hover:shadow-blue-500/50 transition-all group-hover:scale-110">
-                  <span className="text-white font-bold text-sm">i18</span>
+              <Link href="/" className="flex items-center space-x-2 sm:space-x-3 group">
+                <div className="w-8 h-8 sm:w-10 sm:h-10 bg-blue-600 rounded-lg sm:rounded-xl flex items-center justify-center shadow-lg shadow-blue-500/30 group-hover:shadow-blue-500/50 transition-all group-hover:scale-110">
+                  <span className="text-white font-bold text-xs sm:text-sm">i18</span>
                 </div>
-                <h1 className="text-xl font-bold text-blue-400">
+                <h1 className="text-base sm:text-xl font-bold text-blue-400">
                   i18nexus
                 </h1>
               </Link>
