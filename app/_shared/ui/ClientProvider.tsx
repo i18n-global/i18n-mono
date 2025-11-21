@@ -1,28 +1,21 @@
 "use client";
 
-import { I18nProvider, useTranslation } from "i18nexus";
+import { I18nProvider } from "i18nexus";
 import { ReactNode } from "react";
 
-export default function ClientProvider({ children }: { children: ReactNode }) {
-  const { t } = useTranslation();
+interface ClientProviderProps {
+  children: ReactNode;
+  translations: Record<string, Record<string, string>>;
+  initialLanguage: string;
+}
+
+export default function ClientProvider({
+  children,
+  translations,
+  initialLanguage,
+}: ClientProviderProps) {
   return (
-    <I18nProvider
-      languageManagerOptions={{
-        defaultLanguage: "ko",
-        availableLanguages: [
-          {
-            code: "ko",
-            name: String(t("한국어")),
-            flag: "🇰🇷",
-          },
-          {
-            code: "en",
-            name: "English",
-            flag: "🇺🇸",
-          },
-        ],
-        enableAutoDetection: false, // Hydration 에러 방지
-      }}>
+    <I18nProvider translations={translations} initialLanguage={initialLanguage}>
       {children}
     </I18nProvider>
   );

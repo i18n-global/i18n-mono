@@ -5,9 +5,10 @@ import "./globals.css";
 import { headers } from "next/headers";
 import { getServerLanguage } from "i18nexus/server";
 
-import { I18nProvider, I18NexusDevtools } from "i18nexus";
+import { I18NexusDevtools } from "i18nexus";
 import Script from "next/script";
 import { Analytics, FirebaseStatus, GlobalErrorProvider } from "@/app/_shared/ui";
+import ClientProvider from "@/app/_shared/ui/ClientProvider";
 import { Header } from "@/app/_widgets/navigation";
 import { translations } from "@/locales";
 
@@ -65,7 +66,7 @@ export default async function RootLayout({
           </>
         ) : null}
 
-        <I18nProvider translations={translations} initialLanguage={language}>
+        <ClientProvider translations={translations} initialLanguage={language}>
           <GlobalErrorProvider>
             <Header />
             {children}
@@ -75,7 +76,7 @@ export default async function RootLayout({
             {process.env.NODE_ENV === "development" && <FirebaseStatus />}
             {process.env.NODE_ENV === "development" && <I18NexusDevtools />}
           </GlobalErrorProvider>
-        </I18nProvider>
+        </ClientProvider>
       </body>
     </html>
   );
