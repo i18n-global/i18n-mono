@@ -19,10 +19,6 @@ for (let i = 0; i < args.length; i++) {
     case "-p":
       config.sourcePattern = args[++i];
       break;
-    case "--dry-run":
-    case "-d":
-      config.dryRun = true;
-      break;
     case "--help":
     case "-h":
       console.log(`
@@ -34,12 +30,11 @@ Usage: i18n-wrapper-swc [options]
 
 Options:
   -p, --pattern <pattern>              소스 파일 패턴 (기본값: "src/**/*.{js,jsx,ts,tsx}")
-  -d, --dry-run                        실제 수정 없이 미리보기
   -h, --help                           도움말 표시
 
 Examples:
   i18n-wrapper-swc                                    # 기본 패턴으로 처리
-  i18n-wrapper-swc -p "app/**/*.tsx" --dry-run       # 커스텀 패턴 + 미리보기
+  i18n-wrapper-swc -p "app/**/*.tsx"                 # 커스텀 패턴
   
 Features:
   - ⚠️  SWC 파서 사용 (실험적, 현재 Babel보다 느릴 수 있음)

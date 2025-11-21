@@ -18,10 +18,6 @@ for (let i = 0; i < args.length; i++) {
     case "-p":
       config.sourcePattern = args[++i];
       break;
-    case "--dry-run":
-    case "-d":
-      config.dryRun = true;
-      break;
     case "--help":
     case "-h":
       console.log(`
@@ -31,12 +27,11 @@ Usage: i18n-wrapper [options]
 
 Options:
   -p, --pattern <pattern>              소스 파일 패턴 (기본값: "src/**/*.{js,jsx,ts,tsx}")
-  -d, --dry-run                        실제 수정 없이 미리보기
   -h, --help                           도움말 표시
 
 Examples:
   i18n-wrapper                                    # 기본 패턴으로 처리
-  i18n-wrapper -p "app/**/*.tsx" --dry-run       # 커스텀 패턴 + 미리보기
+  i18n-wrapper -p "app/**/*.tsx"                 # 커스텀 패턴
   
 Features:
   - 한국어/영어 문자열 자동 감지 및 t() 래핑
