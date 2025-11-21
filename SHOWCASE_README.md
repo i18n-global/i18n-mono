@@ -9,12 +9,14 @@ Firebase 기반의 프로젝트 쇼케이스 시스템으로, i18nexus를 사용
 - **3초 제출**: URL만 입력하면 자동으로 메타데이터 수집
 - **실시간 미리보기**: microlink.io를 통한 자동 썸네일 생성
 - **간편한 UX**: 최소한의 입력으로 최대의 효과
+- **모바일 최적화**: 스마트폰에서도 편리한 제출 및 탐색
 
 ### 관리자 기능
 
 - **승인 시스템**: Firebase Auth 기반 보안 로그인
 - **직관적 대시보드**: 제출/승인/거부를 한 화면에서
 - **필터링**: 승인 대기/승인됨/전체 탭으로 쉬운 관리
+- **반응형 UI**: 데스크탑/태블릿/모바일 모두 최적화
 
 ## 🚀 시작하기
 
@@ -232,11 +234,24 @@ URL에서 메타데이터 추출
 
 ### 스타일 수정
 
-Tailwind CSS 클래스로 쉽게 커스터마이징 가능:
+Tailwind CSS 반응형 클래스로 쉽게 커스터마이징 가능:
 
-- `app/components/ProjectCard.tsx` - 카드 디자인
-- `app/showcase/page.tsx` - 쇼케이스 레이아웃
-- `app/admin/dashboard/page.tsx` - 대시보드 UI
+- `app/_entities/project/ui/ProjectCard.tsx` - 카드 디자인
+- `app/_widgets/showcase-list/ui/ShowcaseList.tsx` - 쇼케이스 레이아웃
+- `app/_widgets/admin-dashboard/ui/AdminDashboard.tsx` - 대시보드 UI
+- `app/_widgets/navigation/ui/Navigation.tsx` - 반응형 네비게이션
+
+**모바일 최적화 패턴:**
+```tsx
+// 텍스트 크기
+className="text-base sm:text-xl md:text-2xl"
+
+// 패딩
+className="p-4 sm:p-6 lg:p-8"
+
+// 버튼
+className="px-6 py-3 sm:px-8 sm:py-4"
+```
 
 ## 🔒 보안 고려사항
 

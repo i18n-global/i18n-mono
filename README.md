@@ -4,6 +4,19 @@ A complete demonstration of the i18nexus React i18n toolkit with **type-safe** l
 
 ## ✨ New Features
 
+### 📱 Mobile-First Responsive Design
+
+Comprehensive mobile optimization across all pages:
+
+- **Tailwind responsive classes** - sm:, md:, lg: breakpoints
+- **Adaptive layouts** - Flexbox/Grid that reflows on mobile
+- **Touch-optimized UI** - Larger tap targets, better spacing
+- **Mobile navigation** - Slide-in sidebar with backdrop overlay
+- **Optimized typography** - Scales from mobile (text-sm) to desktop (text-xl)
+- **Performance** - Minimal layout shift, fast mobile rendering
+
+All pages work seamlessly from 320px (mobile) to 4K displays.
+
 ### 🎯 Type-Safe Language Management
 
 This demo showcases the new TypeScript configuration feature:
@@ -36,9 +49,11 @@ export type AppLanguages = (typeof config.languages)[number];
 
 - **Korean (한국어)** - Primary language
 - **English** - Full translations
+- **Namespace automation** - File path-based translation organization
 - Type-safe language switching
 - Persistent storage with cookies
 - Automatic browser language detection
+- Code splitting per namespace for optimal bundle size
 
 ## 🚀 Getting Started
 
@@ -72,35 +87,55 @@ npm run start
 
 ```
 ├── app/
-│   ├── page.tsx                # Main demo page (client component)
-│   ├── layout.tsx              # Root layout with I18nProvider
-│   ├── provider/
-│   │   └── page.tsx           # Provider documentation
+│   ├── page.tsx                      # Main demo page (mobile-optimized)
+│   ├── layout.tsx                    # Root layout with I18nProvider
 │   ├── getting-started/
-│   │   └── page.tsx           # Getting started guide
-│   ├── cli/
-│   │   └── page.tsx           # CLI tools documentation
-│   └── components/
-│       ├── Header.tsx          # Navigation header
-│       └── LanguageSwitcher.tsx # Language switching UI
-├── lib/
-│   ├── i18n.client.ts         # Client-side i18n setup
-│   ├── i18n.ts                # Shared i18n configuration
-│   └── translations/
-│       ├── en.json            # English translations
-│       └── ko.json            # Korean translations
-├── locales/
-│   ├── en.json                # Extracted translations (English)
-│   └── ko.json                # Extracted translations (Korean)
-├── i18nexus.config.js         # i18nexus configuration (can be .ts!)
-└── package.json               # Dependencies and scripts
+│   │   └── page.tsx                 # Getting started guide
+│   ├── showcase/
+│   │   ├── page.tsx                 # Project showcase (public)
+│   │   └── submit/
+│   │       └── page.tsx             # Project submission
+│   ├── admin/
+│   │   ├── login/
+│   │   │   └── page.tsx             # Admin login
+│   │   └── dashboard/
+│   │       └── page.tsx             # Admin dashboard
+│   ├── docs/
+│   │   ├── i18nexus/
+│   │   │   └── page.tsx             # i18nexus library docs
+│   │   └── i18nexus-tools/
+│   │       └── page.tsx             # CLI tools docs
+│   ├── _widgets/
+│   │   ├── navigation/              # Responsive navigation
+│   │   ├── showcase-list/           # Showcase grid
+│   │   └── admin-dashboard/         # Dashboard widgets
+│   ├── _features/
+│   │   ├── project-submit/          # Submission form
+│   │   ├── project-manage/          # Admin management
+│   │   └── auth-login/              # Authentication
+│   └── _entities/
+│       └── project/                 # Project data layer
+├── docs/
+│   └── NAMESPACE_AUTOMATION.md      # Namespace feature guide
+├── locales/                         # Translation files
+│   ├── dashboard/                   # Namespace: dashboard
+│   │   ├── ko.json
+│   │   └── en.json
+│   ├── settings/                    # Namespace: settings
+│   │   ├── ko.json
+│   │   └── en.json
+│   └── common/                      # Namespace: common
+│       ├── ko.json
+│       └── en.json
+├── i18nexus.config.js               # i18nexus configuration (can be .ts!)
+└── package.json                     # Dependencies and scripts
 ```
 
 ## 🌐 Translation Management
 
 ### Using CLI Tools
 
-The project demonstrates all i18nexus CLI tools:
+The project demonstrates all i18nexus CLI tools with **namespace automation**:
 
 ```bash
 # Initialize project (with TypeScript config)
@@ -109,15 +144,35 @@ npx i18n-sheets init --typescript
 # Wrap hardcoded Korean strings automatically
 npx i18n-wrapper --pattern "app/**/*.tsx"
 
-# Extract translation keys
+# Extract translation keys (with namespace inference)
 npx i18n-extractor --pattern "app/**/*.tsx" --output "./locales"
 
-# Upload to Google Sheets (optional)
+# Upload to Google Sheets (optional, namespace-aware)
 npx i18n-sheets upload -s YOUR_SPREADSHEET_ID
 
 # Download from Google Sheets (optional)
 npx i18n-sheets download -s YOUR_SPREADSHEET_ID
 ```
+
+### Namespace Automation (v1.7.7+)
+
+**Automatic file path-based namespace inference:**
+
+```typescript
+// File: app/dashboard/page.tsx
+// Inferred namespace: "dashboard"
+const { t } = useTranslation('dashboard');
+
+// Saves to: locales/dashboard/ko.json
+```
+
+**Benefits:**
+- 🚀 **Smaller bundles** - Load only needed translations per page
+- 📦 **Code splitting** - Automatic chunking by namespace
+- 🔧 **Easy maintenance** - Domain-based file organization
+- ✅ **Build-time validation** - Catches namespace mismatches
+
+See [docs/NAMESPACE_AUTOMATION.md](./docs/NAMESPACE_AUTOMATION.md) for details.
 
 ### Translation Files
 
@@ -294,22 +349,34 @@ function MyComponent() {
 - ✅ No manual string management
 - ✅ IDE autocomplete support
 
-## 📚 Documentation Pages
+## 📚 Documentation
 
-The demo includes comprehensive documentation:
+### In-App Pages
+
+The demo includes comprehensive in-app documentation:
 
 1. **Home** (`/`) - Overview and introduction
-2. **Getting Started** (`/getting-started`) - Quick start guide
-3. **Provider** (`/provider`) - I18nProvider documentation
-4. **CLI Tools** (`/cli`) - CLI commands reference
+2. **Getting Started** (`/getting-started`) - Step-by-step setup guide
+3. **Docs - i18nexus** (`/docs/i18nexus`) - React library documentation
+4. **Docs - i18nexus-tools** (`/docs/i18nexus-tools`) - CLI tools reference
+5. **Showcase** (`/showcase`) - Real projects using i18nexus
+6. **Admin Dashboard** (`/admin/dashboard`) - Showcase management (auth required)
+
+### Markdown Docs
+
+- **[NAMESPACE_AUTOMATION.md](./docs/NAMESPACE_AUTOMATION.md)** - Namespace automation guide
+- **[QUICK_START.md](./QUICK_START.md)** - 3-step quick start
+- **[SHOWCASE_README.md](./SHOWCASE_README.md)** - Firebase showcase system
+- **[FIREBASE_QUICK_SETUP.md](./FIREBASE_QUICK_SETUP.md)** - Firebase configuration
 
 ## 🎨 Design Principles
 
+- **Mobile-First**: Responsive from 320px to 4K displays
 - **Clean & Modern**: Inspired by React Hook Form
 - **Accessible**: WCAG 2.1 compliant
-- **Responsive**: Works on all devices
-- **Performance**: Optimized for production
-- **Developer Experience**: Type-safe and intuitive
+- **Touch-Optimized**: Larger tap targets, better mobile UX
+- **Performance**: Code splitting, optimized bundles, fast mobile rendering
+- **Developer Experience**: Type-safe, intuitive, with namespace automation
 
 ## 🤝 Contributing
 
