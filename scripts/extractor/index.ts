@@ -59,7 +59,7 @@ const DEFAULT_CONFIG: Required<ExtractorConfig> = {
   languages: [...COMMON_DEFAULTS.languages], // 기본 언어
   force: false, // 기본값: 기존 번역 유지
   namespacing: {
-    enabled: false,
+    enabled: false, // 기본값: false (레거시 모드)
     basePath: "src/app",
     defaultNamespace: "common",
     framework: "nextjs-app",
@@ -84,13 +84,7 @@ export class TranslationExtractor {
     this.config = {
       ...DEFAULT_CONFIG,
       ...config,
-      namespacing: namespacingConfig || {
-        enabled: false,
-        basePath: "src/app",
-        defaultNamespace: "common",
-        framework: "nextjs-app",
-        ignorePatterns: [],
-      },
+      namespacing: namespacingConfig || DEFAULT_CONFIG.namespacing,
       skipValidation: config.skipValidation || false,
     };
   }
@@ -225,7 +219,7 @@ export class TranslationExtractor {
             dryRun: this.config.dryRun,
           });
 
-          // 언어 우선 구조로 저장: locales/[lang]/[namespace].json
+          // 도메인 우선 구조로 저장: locales/[namespace]/[lang].json
           writeOutputFileWithNamespace(outputData, {
             outputFormat: this.config.outputFormat,
             languages: this.config.languages!,
