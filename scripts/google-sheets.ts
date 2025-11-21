@@ -6,6 +6,7 @@ export interface GoogleSheetsConfig {
   credentialsPath?: string;
   spreadsheetId?: string;
   sheetName?: string;
+  namespace?: string; // 네임스페이스 (도메인 우선 구조용)
   keyColumn?: string;
   valueColumns?: string[];
   headerRow?: number;
@@ -25,10 +26,21 @@ export class GoogleSheetsManager {
       credentialsPath: config.credentialsPath || "./credentials.json",
       spreadsheetId: config.spreadsheetId || "",
       sheetName: config.sheetName || "Translations",
+      namespace: config.namespace || "",
       keyColumn: config.keyColumn || "A",
       valueColumns: config.valueColumns || ["B", "C"], // B=English, C=Korean
       headerRow: config.headerRow || 1,
     };
+  }
+
+  /**
+   * 네임스페이스 경로 반환 (도메인 우선 구조: locales/[namespace]/[lang].json)
+   */
+  private getNamespacePath(localesDir: string): string {
+    if (this.config.namespace) {
+      return path.join(localesDir, this.config.namespace);
+    }
+    return localesDir; // 레거시: locales/[lang].json
   }
 
   /**
@@ -336,7 +348,13 @@ export class GoogleSheetsManager {
         fs.mkdirSync(localesDir, { recursive: true });
       }
 
-      // 언어별로 번역 파일 생성 (locales/en.json, locales/ko.json 형식)
+      // 도메인 우선 구조: locales/[namespace]/[lang].json
+      const namespacePath = this.getNamespacePath(localesDir);
+      if (!fs.existsSync(namespacePath)) {
+        fs.mkdirSync(namespacePath, { recursive: true });
+      }
+
+      // 언어별로 번역 파일 생성
       for (const lang of languages) {
         const translationObj: Record<string, string> = {};
         translations.forEach((row) => {
@@ -345,7 +363,7 @@ export class GoogleSheetsManager {
           }
         });
 
-        const filePath = path.join(localesDir, `${lang}.json`);
+        const filePath = path.join(namespacePath, `${lang}.json`);
         fs.writeFileSync(
           filePath,
           JSON.stringify(translationObj, null, 2),
@@ -382,9 +400,15 @@ export class GoogleSheetsManager {
         fs.mkdirSync(localesDir, { recursive: true });
       }
 
+      // 도메인 우선 구조: locales/[namespace]/[lang].json
+      const namespacePath = this.getNamespacePath(localesDir);
+      if (!fs.existsSync(namespacePath)) {
+        fs.mkdirSync(namespacePath, { recursive: true });
+      }
+
       // 언어별로 번역 파일 생성/업데이트
       for (const lang of languages) {
-        const filePath = path.join(localesDir, `${lang}.json`);
+        const filePath = path.join(namespacePath, `${lang}.json`);
 
         // 기존 번역 파일 읽기
         let existingTranslations: Record<string, string> = {};
@@ -418,49 +442,89 @@ export class GoogleSheetsManager {
   }
 
   /**
-   * 로컬 번역 파일들 읽기 (locales/en.json, locales/ko.json 형식)
+   * 로컬 번역 파일들 읽기
+   * - namespace가 없으면: locales/en.json, locales/ko.json (레거시)
+   * - namespace가 있으면: locales/${namespace}/en.json, locales/${namespace}/ko.json (도메인 우선)
    */
   async readLocalTranslations(localesDir: string): Promise<TranslationRow[]> {
     const translations: TranslationRow[] = [];
     const allKeys = new Set<string>();
 
-    if (!fs.existsSync(localesDir)) {
-      console.log(`⚠️  Locales directory not found: ${localesDir}`);
+    const namespacePath = this.getNamespacePath(localesDir);
+
+    if (!fs.existsSync(namespacePath)) {
+      console.log(`⚠️  Locales directory not found: ${namespacePath}`);
       return [];
     }
 
-    // locales 디렉토리에서 .json 파일들 찾기 (en.json, ko.json 등)
-    const files = fs
-      .readdirSync(localesDir)
-      .filter((file) => file.endsWith(".json") && file !== "index.ts");
+    // 도메인 우선 구조: locales/[namespace]/[lang].json
+    if (this.config.namespace) {
+      // 네임스페이스 디렉토리에서 .json 파일들 찾기 (ko.json, en.json 등)
+      const files = fs
+        .readdirSync(namespacePath)
+        .filter((file) => file.endsWith(".json") && file !== "index.ts");
 
-    const translationData: Record<string, Record<string, string>> = {};
+      const translationData: Record<string, Record<string, string>> = {};
 
-    // 각 언어 파일 읽기
-    for (const file of files) {
-      const lang = path.basename(file, ".json"); // en.json -> en
-      const filePath = path.join(localesDir, file);
+      // 각 언어 파일 읽기
+      for (const file of files) {
+        const lang = path.basename(file, ".json"); // ko.json -> ko
+        const filePath = path.join(namespacePath, file);
 
-      try {
-        const content = JSON.parse(fs.readFileSync(filePath, "utf-8"));
-        translationData[lang] = content;
+        try {
+          const content = JSON.parse(fs.readFileSync(filePath, "utf-8"));
+          translationData[lang] = content;
 
-        Object.keys(content).forEach((key) => {
-          allKeys.add(key);
-        });
-      } catch (error) {
-        console.warn(`⚠️  Failed to read ${filePath}:`, error);
+          Object.keys(content).forEach((key) => {
+            allKeys.add(key);
+          });
+        } catch (error) {
+          console.warn(`⚠️  Failed to read ${filePath}:`, error);
+        }
       }
-    }
 
-    // 모든 키에 대해 번역 행 생성
-    allKeys.forEach((key) => {
-      const row: TranslationRow = { key };
-      Object.keys(translationData).forEach((lang) => {
-        row[lang] = translationData[lang][key] || "";
+      // 모든 키에 대해 번역 행 생성
+      allKeys.forEach((key) => {
+        const row: TranslationRow = { key };
+        Object.keys(translationData).forEach((lang) => {
+          row[lang] = translationData[lang][key] || "";
+        });
+        translations.push(row);
       });
-      translations.push(row);
-    });
+    } else {
+      // 레거시 구조: locales/en.json, locales/ko.json
+      const files = fs
+        .readdirSync(namespacePath)
+        .filter((file) => file.endsWith(".json") && file !== "index.ts");
+
+      const translationData: Record<string, Record<string, string>> = {};
+
+      // 각 언어 파일 읽기
+      for (const file of files) {
+        const lang = path.basename(file, ".json"); // en.json -> en
+        const filePath = path.join(namespacePath, file);
+
+        try {
+          const content = JSON.parse(fs.readFileSync(filePath, "utf-8"));
+          translationData[lang] = content;
+
+          Object.keys(content).forEach((key) => {
+            allKeys.add(key);
+          });
+        } catch (error) {
+          console.warn(`⚠️  Failed to read ${filePath}:`, error);
+        }
+      }
+
+      // 모든 키에 대해 번역 행 생성
+      allKeys.forEach((key) => {
+        const row: TranslationRow = { key };
+        Object.keys(translationData).forEach((lang) => {
+          row[lang] = translationData[lang][key] || "";
+        });
+        translations.push(row);
+      });
+    }
 
     return translations;
   }
@@ -544,10 +608,14 @@ export class GoogleSheetsManager {
     translations: TranslationRow[]
   ): Promise<void> {
     const languages = ["en", "ko"];
+    const namespacePath = this.getNamespacePath(localesDir);
+
+    if (!fs.existsSync(namespacePath)) {
+      fs.mkdirSync(namespacePath, { recursive: true });
+    }
 
     for (const lang of languages) {
-      const langDir = path.join(localesDir, lang);
-      const filePath = path.join(langDir, "common.json");
+      const filePath = path.join(namespacePath, `${lang}.json`);
 
       // 기존 번역 읽기
       let existingTranslations: Record<string, string> = {};
@@ -563,10 +631,6 @@ export class GoogleSheetsManager {
       });
 
       // 파일 저장
-      if (!fs.existsSync(langDir)) {
-        fs.mkdirSync(langDir, { recursive: true });
-      }
-
       fs.writeFileSync(
         filePath,
         JSON.stringify(existingTranslations, null, 2),
@@ -780,13 +844,14 @@ export class GoogleSheetsManager {
         return;
       }
 
+      // 도메인 우선 구조: locales/[namespace]/[lang].json
+      const namespacePath = this.getNamespacePath(localesDir);
+      if (!fs.existsSync(namespacePath)) {
+        fs.mkdirSync(namespacePath, { recursive: true });
+      }
+
       // 언어별로 번역 파일 생성
       for (const lang of languages) {
-        const langDir = path.join(localesDir, lang);
-        if (!fs.existsSync(langDir)) {
-          fs.mkdirSync(langDir, { recursive: true });
-        }
-
         const translationObj: Record<string, string> = {};
         translations.forEach((row) => {
           if (row[lang]) {
@@ -794,7 +859,7 @@ export class GoogleSheetsManager {
           }
         });
 
-        const filePath = path.join(langDir, "common.json");
+        const filePath = path.join(namespacePath, `${lang}.json`);
         fs.writeFileSync(
           filePath,
           JSON.stringify(translationObj, null, 2),

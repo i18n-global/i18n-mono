@@ -43,6 +43,16 @@ export interface I18nexusConfig {
     credentialsPath: string;
     sheetName: string;
   };
+  /**
+   * 네임스페이스 자동화 설정
+   */
+  namespacing?: {
+    enabled: boolean;
+    basePath: string; // 페이지/라우트의 기준이 되는 폴더 (예: "src/app", "src/pages")
+    defaultNamespace: string; // basePath 외부 파일의 기본 네임스페이스 (예: "common")
+    framework?: "nextjs-app" | "nextjs-pages" | "tanstack-file" | "tanstack-folder" | "react-router" | "remix" | "other";
+    ignorePatterns?: string[]; // 사용자 정의 무시 패턴 (정규식)
+  };
 }
 
 const DEFAULT_CONFIG: I18nexusConfig = {
