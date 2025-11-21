@@ -142,32 +142,22 @@ export class TranslationWrapper {
               return;
             }
 
+            const body = componentPath.get("body");
+            let decl: t.VariableDeclaration;
+            let shouldAddImport = false;
+
             if (isServerMode) {
               // server 모드: config에 정의된 서버형 함수 사용
               (componentPath.node as any).async = true;
-
-              const body = componentPath.get("body");
-              const decl = this.createServerTBinding(
+              decl = this.createServerTBinding(
                 this.config.serverTranslationFunction
               );
-              if (body.isBlockStatement()) {
-                body.unshiftContainer("body", decl);
-                wasServerImportAdded = true;
-              } else {
-                // concise body → block으로 감싼 후 return 유지
-                const original = body.node as t.Expression;
-                const block = t.blockStatement([
-                  decl,
-                  t.returnStatement(original),
-                ]);
-                (componentPath.node as any).body = block;
-                wasServerImportAdded = true;
-              }
+              shouldAddImport = true;
             } else {
               // client 모드 (또는 기본값): useTranslation 사용
-              const body = componentPath.get("body");
+              // 이미 hook이 있는지 체크
+              let hasHook = false;
               if (body.isBlockStatement()) {
-                let hasHook = false;
                 body.traverse({
                   CallExpression: (p) => {
                     if (
@@ -179,10 +169,34 @@ export class TranslationWrapper {
                     }
                   },
                 });
-                if (!hasHook) {
-                  body.unshiftContainer("body", createUseTranslationHook());
-                  wasUseHookAdded = true;
-                }
+              }
+              if (hasHook) {
+                return; // 이미 hook이 있으면 스킵
+              }
+              decl = createUseTranslationHook();
+              shouldAddImport = true;
+            }
+
+            // 선언문 추가 (공통 로직)
+            if (body.isBlockStatement()) {
+              body.unshiftContainer("body", decl);
+              if (isServerMode) {
+                wasServerImportAdded = true;
+              } else {
+                wasUseHookAdded = true;
+              }
+            } else {
+              // concise body → block으로 감싼 후 return 유지
+              const original = body.node as t.Expression;
+              const block = t.blockStatement([
+                decl,
+                t.returnStatement(original),
+              ]);
+              (componentPath.node as any).body = block;
+              if (isServerMode) {
+                wasServerImportAdded = true;
+              } else {
+                wasUseHookAdded = true;
               }
             }
           });
