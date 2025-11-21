@@ -36,7 +36,7 @@ export default function DownloadStats({
   displayName,
   color,
 }: DownloadStatsProps) {
-  const { t } = useTranslation();
+  const { t } = useTranslation("common");
   const [stats, setStats] = useState<DownloadStatsType | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);

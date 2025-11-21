@@ -3,7 +3,7 @@
 import { useTranslation, useLanguageSwitcher } from "i18nexus";
 
 export default function ProviderPage() {
-  const { t } = useTranslation();
+  const { t } = useTranslation("provider");
   const { currentLanguage, changeLanguage, availableLanguages } =
   useLanguageSwitcher();
 
@@ -143,7 +143,7 @@ export default function RootLayout({ children }) {
 import { useTranslation, useLanguageSwitcher } from "i18nexus";
 
 export default function HomePage() {
-  const { t } = useTranslation();
+  const { t } = useTranslation("provider");
   const { currentLanguage, changeLanguage } = useLanguageSwitcher();
 
   return (
@@ -251,7 +251,7 @@ export default function HomePage() {
               useTranslation()
             </h3>
             <pre className="bg-slate-950 text-slate-300 p-4 rounded-lg text-sm mb-4 border border-slate-800">
-              <code>{`const { t } = useTranslation();
+              <code>{`const { t } = useTranslation("provider");
 
 // Simple usage
 t("key")

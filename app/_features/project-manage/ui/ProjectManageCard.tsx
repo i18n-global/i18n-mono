@@ -30,7 +30,7 @@ export default function ProjectManageCard({
   onApprove,
   onDelete,
 }: ProjectManageCardProps) {
-  const { t } = useTranslation();
+  const { t } = useTranslation("admin");
 
   return (
     <div className="relative">

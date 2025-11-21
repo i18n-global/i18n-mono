@@ -4,7 +4,7 @@ import { useTranslation } from "i18nexus";
 import Link from "next/link";
 
 export default function GettingStartedPage() {
-  const { t } = useTranslation();
+  const { t } = useTranslation("getting-started");
 
   return (
     <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-16">
@@ -215,7 +215,7 @@ export const translations = {
 import { useTranslation } from "i18nexus";
 
 export default function Page() {
-  const { t } = useTranslation();
+  const { t } = useTranslation("getting-started");
   return <div>{t("안녕하세요")}</div>;
 }`}
                 </code>

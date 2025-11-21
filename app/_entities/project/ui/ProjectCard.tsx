@@ -23,7 +23,7 @@ export default function ProjectCard({
   thumbnailUrl,
   screenshotUrl,
 }: ProjectCardProps) {
-  const { t } = useTranslation();
+  const { t } = useTranslation("common");
   const displayTitle = projectName || autoTitle;
   const [isModalOpen, setIsModalOpen] = useState(false);
 

@@ -7,7 +7,7 @@ import { useState, useEffect } from "react";
 import { LanguageSwitcher } from "@/app/_features/language-switch";
 
 export default function Navigation() {
-  const { t } = useTranslation();
+  const { t } = useTranslation("common");
   const pathname = usePathname();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [cliExpanded, setCliExpanded] = useState(false);

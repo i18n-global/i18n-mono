@@ -11,7 +11,7 @@ export default function Error({
   error: Error & { digest?: string };
   reset: () => void;
 }) {
-  const { t } = useTranslation();
+  const { t } = useTranslation("common");
 
   useEffect(() => {
     // 에러 로깅 (선택사항)

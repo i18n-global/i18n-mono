@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useState } from "react";
 
 export default function UseTranslationPage() {
-  const { t } = useTranslation();
+  const { t } = useTranslation("docs");
   const [demoKey, setDemoKey] = useState("Welcome");
 
   return (

@@ -4,7 +4,7 @@ import { useTranslation } from "i18nexus";
 import Link from "next/link";
 
 export default function I18nexusToolsPage() {
-  const { t } = useTranslation();
+  const { t } = useTranslation("docs");
 
   const tools = [
     {

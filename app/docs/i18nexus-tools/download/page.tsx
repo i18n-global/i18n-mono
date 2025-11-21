@@ -4,7 +4,7 @@ import { useTranslation } from "i18nexus";
 import Link from "next/link";
 
 export default function I18nDownloadPage() {
-  const { t } = useTranslation();
+  const { t } = useTranslation("docs");
 
   return (
     <main className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-16">

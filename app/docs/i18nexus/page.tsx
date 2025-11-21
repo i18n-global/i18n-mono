@@ -4,7 +4,7 @@ import { useTranslation } from "i18nexus";
 import Link from "next/link";
 
 export default function I18nexusDocsPage() {
-  const { t } = useTranslation();
+  const { t } = useTranslation("docs");
 
   const features = [
     {
@@ -180,7 +180,7 @@ export default function RootLayout({ children }) {
 import { useTranslation, useLanguageSwitcher } from "i18nexus";
 
 export default function MyComponent() {
-  const { t } = useTranslation();
+  const { t } = useTranslation("docs");
   const { currentLanguage, changeLanguage } = useLanguageSwitcher();
   
   return (

@@ -25,7 +25,7 @@ interface Submission {
 type Filter = "pending" | "approved" | "all";
 
 export function useAdminDashboard() {
-  const { t } = useTranslation();
+  const { t } = useTranslation("admin");
   const { setError } = useError();
   const [user, setUser] = useState<unknown>(null);
   const [loading, setLoading] = useState(true);

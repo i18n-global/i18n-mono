@@ -4,6 +4,12 @@
   "localesDir": "./locales",
   "sourcePattern": "app/**/*.{js,jsx,ts,tsx}",
   "translationImportSource": "i18nexus",
+  "namespacing": {
+    "enabled": true,
+    "basePath": "app",
+    "defaultNamespace": "common",
+    "inferFromPath": true
+  },
   "googleSheets": {
     "spreadsheetId": "1hF4-m_gwpYmfkHsRknfjyMhnbUvw5IuOhYAqy7VATxE",
     "credentialsPath": "./credentials.json",

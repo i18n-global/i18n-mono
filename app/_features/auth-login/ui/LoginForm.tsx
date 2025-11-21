@@ -7,7 +7,7 @@ import { useError } from "@/app/_shared/ui";
 import { signIn } from "../api/signIn";
 
 export default function LoginForm() {
-  const { t } = useTranslation();
+  const { t } = useTranslation("admin");
   const { setError: showError } = useError();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");

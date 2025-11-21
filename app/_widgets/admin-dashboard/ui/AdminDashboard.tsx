@@ -5,7 +5,7 @@ import { ProjectManageCard } from "@/app/_features/project-manage";
 import { useAdminDashboard } from "../model";
 
 export default function AdminDashboard() {
-  const { t } = useTranslation();
+  const { t } = useTranslation("admin");
   const {
     loading,
     submissions,
