@@ -45,12 +45,25 @@ export async function getProjects(
   } catch (error: unknown) {
     const errorObj = error as { code?: string; message?: string };
 
+    // Firestore permission error - return empty array instead of throwing
+    if (
+      errorObj.code?.includes("permission-denied") ||
+      errorObj.message?.includes("PERMISSION_DENIED") ||
+      errorObj.message?.includes("Missing or insufficient permissions")
+    ) {
+      console.warn(
+        "Firestore permission denied. Please configure Firestore Security Rules to allow read access. Returning empty projects list."
+      );
+      return [];
+    }
+
     // Firestore 인덱스 에러 감지
     if (
       errorObj.message?.includes("index") ||
       errorObj.message?.includes("Index")
     ) {
-      throw new Error("FIRESTORE_INDEX_REQUIRED: " + errorObj.message);
+      console.warn("Firestore index required:", errorObj.message);
+      return [];
     }
 
     // Firestore 관련 에러 감지
@@ -58,11 +71,11 @@ export async function getProjects(
       errorObj.code?.includes("firestore") ||
       errorObj.message?.includes("Firestore")
     ) {
-      throw new Error(
-        "FIRESTORE_NOT_CONFIGURED: Firestore Database is not configured"
-      );
+      console.warn("Firestore not configured:", errorObj.message);
+      return [];
     }
 
-    throw new Error("Failed to fetch projects: " + errorObj.message);
+    console.error("Failed to fetch projects:", errorObj.message);
+    return [];
   }
 }

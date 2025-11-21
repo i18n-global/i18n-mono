@@ -27,36 +27,37 @@ export default function AdminDashboard() {
   }
 
   return (
-    <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+    <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-16">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-12">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 sm:gap-4 mb-8 sm:mb-12">
         <div>
-          <h1 className="text-4xl md:text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 via-purple-500 to-pink-600 mb-2">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 via-purple-500 to-pink-600 mb-1 sm:mb-2">
             {t("관리자 대시보드")}
           </h1>
-          <p className="text-slate-400">{t("Showcase 제출 관리")}</p>
+          <p className="text-sm sm:text-base text-slate-400">{t("Showcase 제출 관리")}</p>
         </div>
         <button
           onClick={handleLogout}
-          className="bg-gradient-to-r from-slate-700 to-slate-600 hover:from-slate-600 hover:to-slate-500 text-white px-6 py-3 rounded-xl font-semibold transition-all hover:scale-105 shadow-lg">
+          className="bg-gradient-to-r from-slate-700 to-slate-600 hover:from-slate-600 hover:to-slate-500 text-white px-5 py-2.5 sm:px-6 sm:py-3 rounded-lg sm:rounded-xl text-sm sm:text-base font-semibold transition-all hover:scale-105 shadow-lg">
           {t("🚪 로그아웃")}
         </button>
       </div>
 
       {/* Filter Tabs */}
-      <div className="mb-8 flex flex-wrap gap-3">
+      <div className="mb-6 sm:mb-8 flex flex-wrap gap-2 sm:gap-3">
         <button
           onClick={() => setFilter("pending")}
-          className={`px-6 py-3 rounded-xl font-semibold transition-all ${
+          className={`px-4 py-2 sm:px-6 sm:py-3 rounded-lg sm:rounded-xl text-sm sm:text-base font-semibold transition-all ${
             filter === "pending"
               ? "bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-lg shadow-blue-500/30"
               : "bg-gradient-to-br from-slate-900 to-slate-800 border border-slate-700 text-slate-300 hover:border-blue-500"
           }`}>
-          {t("⏳ 승인 대기 중")}
+          <span className="hidden sm:inline">{t("⏳ 승인 대기 중")}</span>
+          <span className="sm:hidden">{t("⏳ 대기")}</span>
         </button>
         <button
           onClick={() => setFilter("approved")}
-          className={`px-6 py-3 rounded-xl font-semibold transition-all ${
+          className={`px-4 py-2 sm:px-6 sm:py-3 rounded-lg sm:rounded-xl text-sm sm:text-base font-semibold transition-all ${
             filter === "approved"
               ? "bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-lg shadow-blue-500/30"
               : "bg-gradient-to-br from-slate-900 to-slate-800 border border-slate-700 text-slate-300 hover:border-blue-500"
@@ -65,7 +66,7 @@ export default function AdminDashboard() {
         </button>
         <button
           onClick={() => setFilter("all")}
-          className={`px-6 py-3 rounded-xl font-semibold transition-all ${
+          className={`px-4 py-2 sm:px-6 sm:py-3 rounded-lg sm:rounded-xl text-sm sm:text-base font-semibold transition-all ${
             filter === "all"
               ? "bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-lg shadow-blue-500/30"
               : "bg-gradient-to-br from-slate-900 to-slate-800 border border-slate-700 text-slate-300 hover:border-blue-500"
@@ -75,12 +76,12 @@ export default function AdminDashboard() {
       </div>
 
       {/* Stats */}
-      <div className="mb-8 grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <div className="bg-gradient-to-br from-slate-900 to-slate-800 rounded-xl border border-slate-700 p-6">
-          <div className="text-3xl font-bold text-blue-400">
+      <div className="mb-6 sm:mb-8 grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
+        <div className="bg-gradient-to-br from-slate-900 to-slate-800 rounded-lg sm:rounded-xl border border-slate-700 p-4 sm:p-6">
+          <div className="text-2xl sm:text-3xl font-bold text-blue-400">
             {submissions.length}
           </div>
-          <div className="text-slate-400 text-sm mt-1">
+          <div className="text-slate-400 text-xs sm:text-sm mt-1">
             {filter === "pending"
               ? t("대기 중")
               : filter === "approved"
@@ -92,9 +93,9 @@ export default function AdminDashboard() {
 
       {/* Submissions Grid */}
       {submissions.length === 0 ? (
-        <div className="bg-gradient-to-br from-slate-900 to-slate-800 rounded-2xl border border-slate-700 p-12 text-center">
-          <div className="text-6xl mb-4">📭</div>
-          <p className="text-xl text-slate-300 font-semibold mb-2">
+        <div className="bg-gradient-to-br from-slate-900 to-slate-800 rounded-xl sm:rounded-2xl border border-slate-700 p-8 sm:p-12 text-center">
+          <div className="text-5xl sm:text-6xl mb-3 sm:mb-4">📭</div>
+          <p className="text-lg sm:text-xl text-slate-300 font-semibold mb-2">
             {t("제출된 프로젝트가 없습니다")}
           </p>
           <p className="text-slate-500">

@@ -172,14 +172,15 @@ npx i18n-extractor
 
 ## 💫 주요 특징
 
-| 특징               | 설명                                 |
-| ------------------ | ------------------------------------ |
-| **3개 명령어**     | `init` → `wrapper` → `extractor` 끝! |
-| **Provider 한 번** | layout.tsx에서 한 번만 설정          |
-| **자동 래핑**      | 한국어 텍스트 자동 감지 및 래핑      |
-| **타입 안전**      | TypeScript로 언어 코드 자동완성      |
-| **SSR 지원**       | Next.js App Router 완벽 지원         |
-| **기존 번역 유지** | 항상 안전하게 병합                   |
+| 특징                   | 설명                                        |
+| ---------------------- | ------------------------------------------- |
+| **3개 명령어**         | `init` → `wrapper` → `extractor` 끝!        |
+| **Provider 한 번**     | layout.tsx에서 한 번만 설정                 |
+| **자동 래핑**          | 한국어 텍스트 자동 감지 및 래핑             |
+| **타입 안전**          | TypeScript로 언어 코드 자동완성             |
+| **모바일 최적화**      | 320px~4K 반응형, 터치 최적화 UI             |
+| **SSR 지원**           | Next.js App Router 완벽 지원                |
+| **기존 번역 유지**     | 항상 안전하게 병합                          |
 
 ---
 
@@ -187,7 +188,8 @@ npx i18n-extractor
 
 - 📖 [전체 문서](./README.md)
 - 🌐 [라이브 데모](http://localhost:3000)
-- 🛠️ [고급 기능](./TYPED_CONFIG.md)
+- 🌍 [Showcase 시스템](./SHOWCASE_README.md)
+- 🔥 [Firebase 설정](./FIREBASE_QUICK_SETUP.md)
 
 ---
 

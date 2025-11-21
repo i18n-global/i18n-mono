@@ -7,35 +7,35 @@ export default function GettingStartedPage() {
   const { t } = useTranslation();
 
   return (
-    <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+    <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-16">
       {/* Header */}
-      <div className="mb-12">
+      <div className="mb-8 sm:mb-12">
         <Link
           href="/"
-          className="inline-flex items-center text-blue-400 hover:text-blue-300 mb-6">
+          className="inline-flex items-center text-blue-400 hover:text-blue-300 mb-4 sm:mb-6 text-sm sm:text-base">
           <span className="mr-2">←</span>
           {t("홈으로 돌아가기")}
         </Link>
-        <h1 className="text-5xl font-bold text-white mb-4">{t("시작하기")}</h1>
-        <p className="text-xl text-slate-300">
+        <h1 className="text-3xl sm:text-5xl font-bold text-white mb-3 sm:mb-4">{t("시작하기")}</h1>
+        <p className="text-base sm:text-xl text-slate-300">
           {t("프로젝트에 i18nexus를 설정하는 완벽한 단계별 가이드")}
         </p>
       </div>
 
       {/* Installation */}
-      <section className="bg-gradient-to-br from-blue-950/50 to-indigo-950/50 rounded-2xl border border-blue-800/50 p-8 mb-8">
-        <div className="flex items-center mb-6">
-          <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl flex items-center justify-center mr-4">
-            <span className="text-white font-bold text-xl">1</span>
+      <section className="bg-gradient-to-br from-blue-950/50 to-indigo-950/50 rounded-xl sm:rounded-2xl border border-blue-800/50 p-4 sm:p-8 mb-6 sm:mb-8">
+        <div className="flex items-center mb-4 sm:mb-6">
+          <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-lg sm:rounded-xl flex items-center justify-center mr-3 sm:mr-4">
+            <span className="text-white font-bold text-lg sm:text-xl">1</span>
           </div>
-          <h2 className="text-3xl font-bold text-white">{t("설치")}</h2>
+          <h2 className="text-2xl sm:text-3xl font-bold text-white">{t("설치")}</h2>
         </div>
 
-        <div className="bg-slate-950 rounded-xl p-6 mb-4">
-          <code className="text-green-400">npm install i18nexus</code>
+        <div className="bg-slate-950 rounded-lg sm:rounded-xl p-4 sm:p-6 mb-3 sm:mb-4 overflow-x-auto">
+          <code className="text-green-400 text-sm sm:text-base">npm install i18nexus</code>
         </div>
 
-        <p className="text-slate-300 text-sm">
+        <p className="text-slate-300 text-xs sm:text-sm">
           {t("React 컴포넌트와 CLI 도구를 모두 설치합니다")}
         </p>
       </section>

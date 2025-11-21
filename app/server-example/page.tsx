@@ -13,19 +13,19 @@ export default async function ServerExamplePage() {
   const t = createServerTranslation(language, translations);
 
   return (
-    <main className="max-w-4xl mx-auto px-4 py-16">
+    <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 lg:py-16">
       {/* Header */}
-      <div className="mb-12">
+      <div className="mb-8 sm:mb-12">
         <Link
           href="/"
-          className="inline-flex items-center text-blue-400 hover:text-blue-300 mb-6">
+          className="inline-flex items-center text-blue-400 hover:text-blue-300 mb-4 sm:mb-6 text-sm sm:text-base">
           <span className="mr-2">←</span>
           {t("홈으로 돌아가기")}
         </Link>
-        <h1 className="text-4xl font-bold text-white mb-4">
+        <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-3 sm:mb-4">
           {t("서버 컴포넌트 예제")}
         </h1>
-        <p className="text-lg text-slate-300">
+        <p className="text-base sm:text-lg text-slate-300">
           {t(
             "이 페이지는 서버 컴포넌트입니다 - 'use client' 지시문이 필요 없습니다!"
           )}
@@ -33,9 +33,9 @@ export default async function ServerExamplePage() {
       </div>
 
       {/* Benefits */}
-      <section className="bg-gradient-to-br from-green-950/50 to-emerald-950/50 rounded-2xl border border-green-800/50 p-8 mb-8">
-        <h2 className="text-2xl font-bold text-green-400 mb-6 flex items-center">
-          <span className="mr-3 text-3xl">✅</span>
+      <section className="bg-gradient-to-br from-green-950/50 to-emerald-950/50 rounded-xl sm:rounded-2xl border border-green-800/50 p-4 sm:p-6 lg:p-8 mb-6 sm:mb-8">
+        <h2 className="text-xl sm:text-2xl font-bold text-green-400 mb-4 sm:mb-6 flex items-center">
+          <span className="mr-2 sm:mr-3 text-2xl sm:text-3xl">✅</span>
           {t("서버 컴포넌트의 이점")}
         </h2>
         <ul className="space-y-4 text-slate-300">
@@ -83,11 +83,26 @@ export default async function ServerExamplePage() {
       </section>
 
       {/* Code Example */}
-      <section className="bg-slate-900 rounded-2xl border border-slate-700 p-8 mb-8">
-        <h2 className="text-2xl font-bold text-white mb-4">{t("사용 방법")}</h2>
-        <div className="bg-slate-950 rounded-xl p-6 mb-4 border border-slate-800">
-          <pre className="text-slate-300 text-sm font-mono overflow-x-auto">
-            <code>{t("import { headers } from \"next/headers\";\nimport { getServerLanguage, createServerTranslation } from \"i18nexus/server\";\nimport { translations } from \"@/lib/i18n\";\n\n// \u2705 Server Component (\uAE30\uBCF8\uAC12)\nexport default async function Page() {\n  // 1. \uCFE0\uD0A4\uC5D0\uC11C \uC5B8\uC5B4 \uAC00\uC838\uC624\uAE30\n  const headersList = await headers();\n  const language = getServerLanguage(headersList);\n  \n  // 2. \uBC88\uC5ED \uD568\uC218 \uC0DD\uC131\n  const t = createServerTranslation(language, translations);\n  \n  // 3. \uC0AC\uC6A9!\n  return <h1>{t(\"Welcome\")}</h1>;\n}")
+      <section className="bg-slate-900 rounded-xl sm:rounded-2xl border border-slate-700 p-4 sm:p-6 lg:p-8 mb-6 sm:mb-8">
+        <h2 className="text-xl sm:text-2xl font-bold text-white mb-3 sm:mb-4">{t("사용 방법")}</h2>
+        <div className="bg-slate-950 rounded-lg sm:rounded-xl p-4 sm:p-6 mb-4 border border-slate-800">
+          <pre className="text-slate-300 text-xs sm:text-sm font-mono overflow-x-auto">
+            <code>{`import { headers } from "next/headers";
+import { getServerLanguage, createServerTranslation } from "i18nexus/server";
+import { translations } from "@/lib/i18n";
+
+// ✅ Server Component (기본값)
+export default async function Page() {
+  // 1. 쿠키에서 언어 가져오기
+  const headersList = await headers();
+  const language = getServerLanguage(headersList);
+  
+  // 2. 번역 함수 생성
+  const t = createServerTranslation(language, translations);
+  
+  // 3. 사용!
+  return <h1>{t("Welcome")}</h1>;
+}
 
 
 
@@ -108,13 +123,13 @@ export default async function ServerExamplePage() {
       </section>
 
       {/* Comparison */}
-      <section className="grid md:grid-cols-2 gap-6">
-        <div className="bg-gradient-to-br from-blue-950/50 to-blue-900/30 rounded-2xl border border-blue-800/50 p-6">
-          <h3 className="text-xl font-bold text-blue-400 mb-4 flex items-center">
+      <section className="grid sm:grid-cols-2 gap-4 sm:gap-6">
+        <div className="bg-gradient-to-br from-blue-950/50 to-blue-900/30 rounded-xl sm:rounded-2xl border border-blue-800/50 p-4 sm:p-6">
+          <h3 className="text-lg sm:text-xl font-bold text-blue-400 mb-3 sm:mb-4 flex items-center">
             <span className="mr-2">🖥️</span>
             {t("서버 컴포넌트")}
           </h3>
-          <div className="space-y-3 text-sm text-slate-300">
+          <div className="space-y-2 sm:space-y-3 text-xs sm:text-sm text-slate-300">
             <div className="flex items-start">
               <span className="text-green-400 mr-2">✓</span>
               <span>{t("createServerTranslation() 사용")}</span>
@@ -138,12 +153,12 @@ export default async function ServerExamplePage() {
           </div>
         </div>
 
-        <div className="bg-gradient-to-br from-purple-950/50 to-purple-900/30 rounded-2xl border border-purple-800/50 p-6">
-          <h3 className="text-xl font-bold text-purple-400 mb-4 flex items-center">
+        <div className="bg-gradient-to-br from-purple-950/50 to-purple-900/30 rounded-xl sm:rounded-2xl border border-purple-800/50 p-4 sm:p-6">
+          <h3 className="text-lg sm:text-xl font-bold text-purple-400 mb-3 sm:mb-4 flex items-center">
             <span className="mr-2">⚡</span>
             {t("클라이언트 컴포넌트")}
           </h3>
-          <div className="space-y-3 text-sm text-slate-300">
+          <div className="space-y-2 sm:space-y-3 text-xs sm:text-sm text-slate-300">
             <div className="flex items-start">
               <span className="text-green-400 mr-2">✓</span>
               <span>{t("useTranslation() 훅 사용")}</span>
@@ -169,20 +184,20 @@ export default async function ServerExamplePage() {
       </section>
 
       {/* Current State */}
-      <section className="mt-8 bg-slate-900 rounded-2xl border border-slate-700 p-8">
-        <h2 className="text-2xl font-bold text-white mb-4">{t("현재 상태")}</h2>
-        <div className="space-y-3 text-slate-300">
-          <div className="flex items-center justify-between bg-slate-950 p-4 rounded-lg">
+      <section className="mt-6 sm:mt-8 bg-slate-900 rounded-xl sm:rounded-2xl border border-slate-700 p-4 sm:p-6 lg:p-8">
+        <h2 className="text-xl sm:text-2xl font-bold text-white mb-3 sm:mb-4">{t("현재 상태")}</h2>
+        <div className="space-y-2 sm:space-y-3 text-sm sm:text-base text-slate-300">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between bg-slate-950 p-3 sm:p-4 rounded-lg gap-1 sm:gap-0">
             <span className="font-semibold">{t("현재 언어")}:</span>
             <span className="text-blue-400 font-mono">{language}</span>
           </div>
-          <div className="flex items-center justify-between bg-slate-950 p-4 rounded-lg">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between bg-slate-950 p-3 sm:p-4 rounded-lg gap-1 sm:gap-0">
             <span className="font-semibold">{t("컴포넌트 타입")}:</span>
             <span className="text-green-400 font-mono">Server Component</span>
           </div>
-          <div className="flex items-center justify-between bg-slate-950 p-4 rounded-lg">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between bg-slate-950 p-3 sm:p-4 rounded-lg gap-1 sm:gap-0">
             <span className="font-semibold">{t("번역 방법")}:</span>
-            <span className="text-purple-400 font-mono">
+            <span className="text-purple-400 font-mono text-sm sm:text-base">
               createServerTranslation()
             </span>
           </div>
@@ -190,12 +205,12 @@ export default async function ServerExamplePage() {
       </section>
 
       {/* Note */}
-      <div className="mt-8 bg-yellow-950/30 border border-yellow-800/50 rounded-xl p-6">
-        <h3 className="text-yellow-400 font-semibold mb-2 flex items-center">
+      <div className="mt-6 sm:mt-8 bg-yellow-950/30 border border-yellow-800/50 rounded-lg sm:rounded-xl p-4 sm:p-6">
+        <h3 className="text-yellow-400 font-semibold mb-2 flex items-center text-sm sm:text-base">
           <span className="mr-2">💡</span>
           {t("참고")}
         </h3>
-        <p className="text-slate-300 text-sm">
+        <p className="text-slate-300 text-xs sm:text-sm">
           {t(
             "이 페이지에서 언어를 변경하려면 헤더의 언어 전환기(클라이언트 컴포넌트)를 사용하세요. 쿠키에서 새 언어로 페이지가 다시 로드됩니다."
           )}
