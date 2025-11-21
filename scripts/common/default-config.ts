@@ -41,7 +41,6 @@ export const PARSER_DEFAULTS = {
  * Wrapper 기본 설정
  */
 export const WRAPPER_DEFAULTS = {
-  dryRun: false,
   enablePerformanceMonitoring:
     PERFORMANCE_MONITORING_DEFAULTS.enablePerformanceMonitoring,
   parserType: PARSER_DEFAULTS.parserType,
@@ -78,7 +77,6 @@ export interface ScriptConfig {
    *   → "use client" 디렉티브 추가 안 함
    */
   framework?: "nextjs" | "react" | "other";
-  dryRun?: boolean;
   /**
    * 성능 모니터링 활성화 여부
    */
@@ -103,7 +101,6 @@ export const SCRIPT_CONFIG_DEFAULTS: Required<ScriptConfig> = {
   serverTranslationFunction: "getServerTranslation",
   mode: undefined as unknown as "client" | "server",
   framework: undefined as unknown as "nextjs" | "react" | "other",
-  dryRun: WRAPPER_DEFAULTS.dryRun,
   enablePerformanceMonitoring: WRAPPER_DEFAULTS.enablePerformanceMonitoring,
   parserType: WRAPPER_DEFAULTS.parserType,
 };

@@ -13,8 +13,6 @@ export const CONSOLE_MESSAGES = Object.freeze({
 export const CLI_OPTIONS = Object.freeze({
   PATTERN: "--pattern",
   PATTERN_SHORT: "-p",
-  DRY_RUN: "--dry-run",
-  DRY_RUN_SHORT: "-d",
   HELP: "--help",
   HELP_SHORT: "-h",
 } as const);
@@ -24,12 +22,10 @@ export const CLI_HELP = Object.freeze({
   USAGE: `Usage: t-wrapper [options]`,
   OPTIONS: `Options:
   -p, --pattern <pattern>    Source file pattern (default: "src/**/*.{js,jsx,ts,tsx}")
-  -d, --dry-run             Preview changes without modifying files
   -h, --help                Show this help message`,
   EXAMPLES: `Examples:
   t-wrapper
-  t-wrapper -p "app/**/*.tsx"
-  t-wrapper --dry-run`,
+  t-wrapper -p "app/**/*.tsx"`,
 } as const);
 
 // 문자열 상수
@@ -54,6 +50,8 @@ export const STRING_CONSTANTS = Object.freeze({
 // 정규식 패턴
 export const REGEX_PATTERNS = Object.freeze({
   REACT_COMPONENT: /^[A-Z]/,
-  REACT_HOOK: /^use[A-Z]/,
+  REACT_HOOK: /^use[A-Z]/, // use로 시작하고 대문자로 이어지는 경우 (useState, useTranslation, useMyHook 등)
+  // 참고: 커스텀 훅은 보통 JSX를 반환하지 않으므로 번역 대상이 아님
+  // 하지만 use로 시작하는 모든 함수를 인식하려면 /^use/로 변경 가능
   KOREAN_TEXT: /[가-힣]/,
 } as const);
