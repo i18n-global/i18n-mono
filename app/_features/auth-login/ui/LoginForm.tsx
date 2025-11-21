@@ -62,28 +62,27 @@ export default function LoginForm() {
   };
 
   return (
-    <main className="min-h-screen flex items-center justify-center px-4 py-16">
-      <div className="max-w-md w-full">
-        {/* Icon */}
-        <div className="flex justify-center mb-8">
-          <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-purple-500 via-purple-600 to-pink-700 rounded-3xl shadow-lg shadow-purple-500/50">
-            <span className="text-white font-bold text-3xl">🔐</span>
-          </div>
+    <div className="max-w-md w-full">
+      {/* Icon */}
+      <div className="flex justify-center mb-6 sm:mb-8">
+        <div className="inline-flex items-center justify-center w-16 h-16 sm:w-20 sm:h-20 bg-gradient-to-br from-purple-500 via-purple-600 to-pink-700 rounded-2xl sm:rounded-3xl shadow-lg shadow-purple-500/50">
+          <span className="text-white font-bold text-2xl sm:text-3xl">🔐</span>
         </div>
+      </div>
 
-        {/* Header */}
-        <h1 className="text-4xl md:text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 via-purple-500 to-pink-600 mb-2 text-center">
-          {t("관리자 로그인")}
-        </h1>
-        <p className="text-slate-400 text-center mb-8">
-          {t("Showcase 관리 대시보드에 접근하려면 로그인하세요")}
-        </p>
+      {/* Header */}
+      <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 via-purple-500 to-pink-600 mb-2 text-center">
+        {t("관리자 로그인")}
+      </h1>
+      <p className="text-sm sm:text-base text-slate-400 text-center mb-6 sm:mb-8">
+        {t("Showcase 관리 대시보드에 접근하려면 로그인하세요")}
+      </p>
 
-        {/* Form */}
-        <form
-          onSubmit={handleLogin}
-          className="bg-gradient-to-br from-slate-900 to-slate-800 rounded-2xl border border-slate-700 p-8 shadow-2xl"
-        >
+      {/* Form */}
+      <form
+        onSubmit={handleLogin}
+        className="bg-gradient-to-br from-slate-900 to-slate-800 rounded-xl sm:rounded-2xl border border-slate-700 p-4 sm:p-6 lg:p-8 shadow-2xl"
+      >
           <div className="mb-6">
             <label className="block text-sm font-semibold text-slate-300 mb-2">
               {t("📧 이메일")}
@@ -121,19 +120,19 @@ export default function LoginForm() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white py-4 rounded-xl font-bold text-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all hover:scale-105 shadow-lg shadow-purple-500/30"
+            className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white py-3 sm:py-4 rounded-xl font-bold text-base sm:text-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all hover:scale-105 shadow-lg shadow-purple-500/30"
           >
             {loading ? t("⏳ 로그인 중...") : t("🚀 로그인")}
           </button>
         </form>
 
         {/* Help Text */}
-        <div className="mt-8 bg-gradient-to-br from-slate-900 to-slate-800 rounded-2xl border border-slate-700 p-6">
-          <h3 className="text-sm font-semibold text-white mb-3 flex items-center">
+        <div className="mt-6 sm:mt-8 bg-gradient-to-br from-slate-900 to-slate-800 rounded-xl sm:rounded-2xl border border-slate-700 p-4 sm:p-6">
+          <h3 className="text-xs sm:text-sm font-semibold text-white mb-2 sm:mb-3 flex items-center">
             <span className="mr-2">💡</span>
             {t("Firebase 설정이 필요하신가요?")}
           </h3>
-          <ol className="text-xs text-slate-400 space-y-2">
+          <ol className="text-xs text-slate-400 space-y-1.5 sm:space-y-2">
             <li className="flex items-start">
               <span className="text-purple-400 mr-2">1.</span>
               <span>
@@ -162,7 +161,6 @@ export default function LoginForm() {
             </li>
           </ol>
         </div>
-      </div>
-    </main>
+    </div>
   );
 }
