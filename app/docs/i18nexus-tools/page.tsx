@@ -7,51 +7,51 @@ export default function I18nexusToolsPage() {
   const { t } = useTranslation();
 
   const tools = [
-    {
-      title: t("i18n-wrapper"),
-      description: t(
-        "Automatically wrap Korean/English text with t() function"
-      ),
-      icon: "🎁",
-      href: "/docs/i18nexus-tools/wrapper",
-      color: "blue",
-    },
-    {
-      title: t("i18n-extractor"),
-      description: t("Extract translation keys from your codebase"),
-      icon: "🔍",
-      href: "/docs/i18nexus-tools/extractor",
-      color: "green",
-    },
-    {
-      title: t("i18n-upload"),
-      description: t("Upload local translations to Google Sheets"),
-      icon: "📤",
-      href: "/docs/i18nexus-tools/upload",
-      color: "purple",
-    },
-    {
-      title: t("i18n-download"),
-      description: t("Download translations from Google Sheets (incremental)"),
-      icon: "📥",
-      href: "/docs/i18nexus-tools/download",
-      color: "orange",
-    },
-    {
-      title: t("i18n-download-force"),
-      description: t("Force overwrite all translations from Google Sheets"),
-      icon: "🔄",
-      href: "/docs/i18nexus-tools/download-force",
-      color: "red",
-    },
-    {
-      title: t("Google Sheets Setup"),
-      description: t("Configure Google Sheets integration"),
-      icon: "📊",
-      href: "/docs/i18nexus-tools/google-sheets",
-      color: "indigo",
-    },
-  ];
+  {
+    title: t("i18n-wrapper"),
+    description: t(
+      "Automatically wrap Korean/English text with t() function"
+    ),
+    icon: "🎁",
+    href: "/docs/i18nexus-tools/wrapper",
+    color: "blue"
+  },
+  {
+    title: t("i18n-extractor"),
+    description: t("Extract translation keys from your codebase"),
+    icon: "🔍",
+    href: "/docs/i18nexus-tools/extractor",
+    color: "green"
+  },
+  {
+    title: t("i18n-upload"),
+    description: t("Upload local translations to Google Sheets"),
+    icon: "📤",
+    href: "/docs/i18nexus-tools/upload",
+    color: "purple"
+  },
+  {
+    title: t("i18n-download"),
+    description: t("Download translations from Google Sheets (incremental)"),
+    icon: "📥",
+    href: "/docs/i18nexus-tools/download",
+    color: "orange"
+  },
+  {
+    title: t("i18n-download-force"),
+    description: t("Force overwrite all translations from Google Sheets"),
+    icon: "🔄",
+    href: "/docs/i18nexus-tools/download-force",
+    color: "red"
+  },
+  {
+    title: t("Google Sheets Setup"),
+    description: t("Configure Google Sheets integration"),
+    icon: "📊",
+    href: "/docs/i18nexus-tools/google-sheets",
+    color: "indigo"
+  }];
+
 
   const colorClasses = {
     blue: {
@@ -59,43 +59,43 @@ export default function I18nexusToolsPage() {
       bg: "bg-blue-500/10",
       hover: "hover:bg-blue-500/20",
       text: "text-blue-400",
-      shadow: "shadow-blue-500/20",
+      shadow: "shadow-blue-500/20"
     },
     green: {
       border: "border-green-500",
       bg: "bg-green-500/10",
       hover: "hover:bg-green-500/20",
       text: "text-green-400",
-      shadow: "shadow-green-500/20",
+      shadow: "shadow-green-500/20"
     },
     purple: {
       border: "border-purple-500",
       bg: "bg-purple-500/10",
       hover: "hover:bg-purple-500/20",
       text: "text-purple-400",
-      shadow: "shadow-purple-500/20",
+      shadow: "shadow-purple-500/20"
     },
     orange: {
       border: "border-orange-500",
       bg: "bg-orange-500/10",
       hover: "hover:bg-orange-500/20",
       text: "text-orange-400",
-      shadow: "shadow-orange-500/20",
+      shadow: "shadow-orange-500/20"
     },
     red: {
       border: "border-red-500",
       bg: "bg-red-500/10",
       hover: "hover:bg-red-500/20",
       text: "text-red-400",
-      shadow: "shadow-red-500/20",
+      shadow: "shadow-red-500/20"
     },
     indigo: {
       border: "border-indigo-500",
       bg: "bg-indigo-500/10",
       hover: "hover:bg-indigo-500/20",
       text: "text-indigo-400",
-      shadow: "shadow-indigo-500/20",
-    },
+      shadow: "shadow-indigo-500/20"
+    }
   };
 
   return (
@@ -205,11 +205,11 @@ export default function I18nexusToolsPage() {
                 {t("en.json 파일을 열어 영어 번역을 추가하세요")}
               </p>
               <pre className="bg-slate-950 rounded-lg p-3 text-sm border border-slate-800 overflow-x-auto">
-                <code className="text-slate-300">{`// locales/en.json
-{
-  "환영합니다": "Welcome",
-  "시작하기": "Get Started"
-}`}</code>
+                <code className="text-slate-300">{t("// locales/en.json\n{\n  \"\uD658\uC601\uD569\uB2C8\uB2E4\": \"Welcome\",\n  \"\uC2DC\uC791\uD558\uAE30\": \"Get Started\"\n}")
+
+
+
+                  }</code>
               </pre>
             </div>
           </div>
@@ -246,7 +246,7 @@ export default function I18nexusToolsPage() {
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
           {tools.map((tool) => {
             const colors =
-              colorClasses[tool.color as keyof typeof colorClasses];
+            colorClasses[tool.color as keyof typeof colorClasses];
             return (
               <Link
                 key={tool.href}
@@ -269,8 +269,8 @@ export default function I18nexusToolsPage() {
                     →
                   </span>
                 </div>
-              </Link>
-            );
+              </Link>);
+
           })}
         </div>
       </div>
@@ -402,6 +402,6 @@ export default function I18nexusToolsPage() {
           </div>
         </div>
       </section>
-    </main>
-  );
+    </main>);
+
 }

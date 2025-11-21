@@ -68,14 +68,14 @@ npx i18n-wrapper --pattern "app/page.tsx"`}</code>
                 <h4 className="font-semibold text-white">{t("이전")}</h4>
               </div>
               <pre className="bg-slate-950 text-slate-300 p-4 rounded-lg text-sm border border-slate-800">
-                <code>{`export default function Welcome() {
-  return (
-    <div>
-      <h1>환영합니다</h1>
-      <p>i18nexus 사용법</p>
-    </div>
-  );
-}`}</code>
+                <code>{t("export default function Welcome() {\n  return (\n    <div>\n      <h1>\uD658\uC601\uD569\uB2C8\uB2E4</h1>\n      <p>i18nexus \uC0AC\uC6A9\uBC95</p>\n    </div>\n  );\n}")
+
+
+
+
+
+
+                  }</code>
               </pre>
             </div>
 
@@ -85,17 +85,17 @@ npx i18n-wrapper --pattern "app/page.tsx"`}</code>
                 <h4 className="font-semibold text-white">{t("이후")}</h4>
               </div>
               <pre className="bg-slate-950 text-slate-300 p-4 rounded-lg text-sm border border-slate-800">
-                <code>{`import { useTranslation } from "i18nexus";
+                <code>{t("import { useTranslation } from \"i18nexus\";\n\nexport default function Welcome() {\n  const { t } = useTranslation();\n  return (\n    <div>\n      <h1>{t(\"\uD658\uC601\uD569\uB2C8\uB2E4\")}</h1>\n      <p>{t(\"i18nexus \uC0AC\uC6A9\uBC95\")}</p>\n    </div>\n  );\n}")
 
-export default function Welcome() {
-  const { t } = useTranslation();
-  return (
-    <div>
-      <h1>{t("환영합니다")}</h1>
-      <p>{t("i18nexus 사용법")}</p>
-    </div>
-  );
-}`}</code>
+
+
+
+
+
+
+
+
+                  }</code>
               </pre>
             </div>
           </div>
@@ -310,11 +310,11 @@ npx i18n-extractor --dry-run`}</code>
                 {t("en.json 파일에 영어 번역을 추가합니다")}
               </p>
               <pre className="bg-slate-950 text-slate-300 p-3 rounded-lg text-xs border border-slate-800">
-                <code>{`// lib/translations/en.json
-{
-  "환영합니다": "Welcome",
-  "시작하기": "Get Started"
-}`}</code>
+                <code>{t("// lib/translations/en.json\n{\n  \"\uD658\uC601\uD569\uB2C8\uB2E4\": \"Welcome\",\n  \"\uC2DC\uC791\uD558\uAE30\": \"Get Started\"\n}")
+
+
+
+                  }</code>
               </pre>
             </div>
           </div>
@@ -356,6 +356,6 @@ npx i18n-extractor --dry-run`}</code>
           </div>
         </div>
       </section>
-    </main>
-  );
+    </main>);
+
 }

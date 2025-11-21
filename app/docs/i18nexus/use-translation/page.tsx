@@ -53,8 +53,8 @@ export default function UseTranslationPage() {
               value={demoKey}
               onChange={(e) => setDemoKey(e.target.value)}
               className="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-2 text-white focus:border-blue-500 focus:outline-none"
-              placeholder="번역 키를 입력하세요"
-            />
+              placeholder={t("\uBC88\uC5ED \uD0A4\uB97C \uC785\uB825\uD558\uC138\uC694")} />
+
           </div>
           <div className="bg-slate-950 rounded-lg p-6 border border-slate-700">
             <div className="text-sm text-slate-500 mb-2">{t("결과")}:</div>
@@ -132,8 +132,8 @@ export default function UseTranslationPage() {
                 )}
               </p>
               <pre className="bg-slate-950 rounded-lg p-3 overflow-x-auto">
-                <code className="text-sm text-slate-400">{`const { t } = useTranslation();
-const welcomeText = t("Welcome"); // "환영합니다" or "Welcome"`}</code>
+                <code className="text-sm text-slate-400">{t("const { t } = useTranslation();\nconst welcomeText = t(\"Welcome\"); // \"\uD658\uC601\uD569\uB2C8\uB2E4\" or \"Welcome\"")
+                  }</code>
               </pre>
             </div>
 
@@ -190,23 +190,23 @@ export default function Welcome() {
             {t("Dynamic Translation Keys")}
           </h3>
           <pre className="bg-slate-950 rounded-lg p-6 overflow-x-auto border border-slate-800">
-            <code className="text-sm text-slate-300">{`"use client";
+            <code className="text-sm text-slate-300">{t("\"use client\";\n\nimport { useTranslation } from \"i18nexus\";\n\nexport default function StatusMessage({ status }) {\n  const { t } = useTranslation();\n  \n  // Dynamically construct translation keys\n  const message = t(\\`status.\\${status}\\`);\n  \n  return <div>{message}</div>;\n}\n\n// Translations:\n// \"status.success\": \"\uC791\uC5C5\uC774 \uC131\uACF5\uD588\uC2B5\uB2C8\uB2E4\"\n// \"status.error\": \"\uC624\uB958\uAC00 \uBC1C\uC0DD\uD588\uC2B5\uB2C8\uB2E4\"\n// \"status.pending\": \"\uCC98\uB9AC \uC911\uC785\uB2C8\uB2E4\"")
 
-import { useTranslation } from "i18nexus";
 
-export default function StatusMessage({ status }) {
-  const { t } = useTranslation();
-  
-  // Dynamically construct translation keys
-  const message = t(\`status.\${status}\`);
-  
-  return <div>{message}</div>;
-}
 
-// Translations:
-// "status.success": "작업이 성공했습니다"
-// "status.error": "오류가 발생했습니다"
-// "status.pending": "처리 중입니다"`}</code>
+
+
+
+
+
+
+
+
+
+
+
+
+              }</code>
           </pre>
         </div>
 
@@ -371,6 +371,6 @@ export default function Page() {
           </Link>
         </div>
       </section>
-    </main>
-  );
+    </main>);
+
 }

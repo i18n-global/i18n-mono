@@ -116,10 +116,10 @@ export default function I18nProviderPage() {
                 )}
               </p>
               <pre className="bg-slate-950 rounded-lg p-3 mt-2 overflow-x-auto">
-                <code className="text-sm text-slate-400">{`translations={{
-  en: { "Welcome": "Welcome" },
-  ko: { "Welcome": "환영합니다" }
-}}`}</code>
+                <code className="text-sm text-slate-400">{t("translations={{\n  en: { \"Welcome\": \"Welcome\" },\n  ko: { \"Welcome\": \"\uD658\uC601\uD569\uB2C8\uB2E4\" }\n}}")
+
+
+                  }</code>
               </pre>
             </div>
 
@@ -148,13 +148,13 @@ export default function I18nProviderPage() {
                 {t("언어 관리를 위한 추가 설정입니다.")}
               </p>
               <pre className="bg-slate-950 rounded-lg p-3 mt-2 overflow-x-auto">
-                <code className="text-sm text-slate-400">{`languageManagerOptions={{
-  defaultLanguage: "ko",
-  availableLanguages: [
-    { code: "ko", name: "한국어", flag: "🇰🇷" },
-    { code: "en", name: "English", flag: "🇺🇸" }
-  ]
-}}`}</code>
+                <code className="text-sm text-slate-400">{t("languageManagerOptions={{\n  defaultLanguage: \"ko\",\n  availableLanguages: [\n    { code: \"ko\", name: \"\uD55C\uAD6D\uC5B4\", flag: \"\uD83C\uDDF0\uD83C\uDDF7\" },\n    { code: \"en\", name: \"English\", flag: \"\uD83C\uDDFA\uD83C\uDDF8\" }\n  ]\n}}")
+
+
+
+
+
+                  }</code>
               </pre>
             </div>
           </div>
@@ -239,35 +239,35 @@ export default async function RootLayout({ children }) {
             {t("고급 설정")}
           </h3>
           <pre className="bg-slate-950 rounded-lg p-6 overflow-x-auto border border-slate-800">
-            <code className="text-sm text-slate-300">{`// app/layout.tsx
-import { I18nProvider } from "i18nexus";
-import { translations } from "@/lib/i18n";
+            <code className="text-sm text-slate-300">{t("// app/layout.tsx\nimport { I18nProvider } from \"i18nexus\";\nimport { translations } from \"@/lib/i18n\";\n\nconst languageManagerOptions = {\n  defaultLanguage: \"ko\",\n  availableLanguages: [\n    { code: \"ko\", name: \"\uD55C\uAD6D\uC5B4\", flag: \"\uD83C\uDDF0\uD83C\uDDF7\" },\n    { code: \"en\", name: \"English\", flag: \"\uD83C\uDDFA\uD83C\uDDF8\" },\n    { code: \"ja\", name: \"\u65E5\u672C\u8A9E\", flag: \"\uD83C\uDDEF\uD83C\uDDF5\" },\n  ],\n  cookieOptions: {\n    maxAge: 365 * 24 * 60 * 60, // 1 year\n    path: \"/\",\n    sameSite: \"lax\",\n  }\n};\n\nexport default function RootLayout({ children }) {\n  return (\n    <I18nProvider \n      initialLanguage=\"ko\" \n      translations={translations}\n      languageManagerOptions={languageManagerOptions}\n    >\n      {children}\n    </I18nProvider>\n  );\n}")
 
-const languageManagerOptions = {
-  defaultLanguage: "ko",
-  availableLanguages: [
-    { code: "ko", name: "한국어", flag: "🇰🇷" },
-    { code: "en", name: "English", flag: "🇺🇸" },
-    { code: "ja", name: "日本語", flag: "🇯🇵" },
-  ],
-  cookieOptions: {
-    maxAge: 365 * 24 * 60 * 60, // 1 year
-    path: "/",
-    sameSite: "lax",
-  }
-};
 
-export default function RootLayout({ children }) {
-  return (
-    <I18nProvider 
-      initialLanguage="ko" 
-      translations={translations}
-      languageManagerOptions={languageManagerOptions}
-    >
-      {children}
-    </I18nProvider>
-  );
-}`}</code>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+              }</code>
           </pre>
         </div>
       </section>
@@ -352,6 +352,6 @@ export default function RootLayout({ children }) {
           </Link>
         </div>
       </section>
-    </main>
-  );
+    </main>);
+
 }

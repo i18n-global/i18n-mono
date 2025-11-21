@@ -92,13 +92,13 @@ export default function HomePage() {
             <DownloadStats
               packageName="i18nexus"
               displayName="i18nexus"
-              color="blue"
-            />
+              color="blue" />
+
             <DownloadStats
               packageName="i18nexus-tools"
               displayName="i18nexus-tools"
-              color="indigo"
-            />
+              color="indigo" />
+
           </div>
 
         </div>
@@ -413,20 +413,20 @@ export default function RootLayout({ children }) {
                     {t("컴포넌트에서 useTranslation() 훅을 사용합니다")}
                   </p>
                   <pre className="bg-slate-950 text-slate-200 p-4 rounded-xl overflow-x-auto border border-slate-800">
-                    <code className="text-sm font-mono">{`// app/page.tsx
-"use client";
-import { useTranslation } from 'i18nexus';
+                    <code className="text-sm font-mono">{t("// app/page.tsx\n\"use client\";\nimport { useTranslation } from 'i18nexus';\n\nexport default function Home() {\n  const { t } = useTranslation();\n\n  return (\n    <div>\n      <h1>{t(\"\uC548\uB155\uD558\uC138\uC694!\")}</h1>\n      <p>{t(\"\uB2E4\uAD6D\uC5B4 \uC9C0\uC6D0\uC774 \uD65C\uC131\uD654\uB418\uC5C8\uC2B5\uB2C8\uB2E4\")}</p>\n    </div>\n  );\n}")
 
-export default function Home() {
-  const { t } = useTranslation();
 
-  return (
-    <div>
-      <h1>{t("안녕하세요!")}</h1>
-      <p>{t("다국어 지원이 활성화되었습니다")}</p>
-    </div>
-  );
-}`}</code>
+
+
+
+
+
+
+
+
+
+
+                      }</code>
                   </pre>
                 </div>
               </div>
@@ -649,12 +649,12 @@ export default function Home() {
 
         <div className="bg-slate-950 rounded-xl p-6 mb-8 border border-slate-800">
           <pre className="text-slate-300 text-sm font-mono">
-            <code>{`
-├── locales/
-│   ├── index.ts            
-│   ├── en.json             # 영어 번역
-│   └── ko.json             # 한국어 번역
-└── i18nexus.config.json    # i18nexus 설정 파일`}</code>
+            <code>{t("\n\u251C\u2500\u2500 locales/\n\u2502   \u251C\u2500\u2500 index.ts            \n\u2502   \u251C\u2500\u2500 en.json             # \uC601\uC5B4 \uBC88\uC5ED\n\u2502   \u2514\u2500\u2500 ko.json             # \uD55C\uAD6D\uC5B4 \uBC88\uC5ED\n\u2514\u2500\u2500 i18nexus.config.json    # i18nexus \uC124\uC815 \uD30C\uC77C")
+
+
+
+
+              }</code>
           </pre>
         </div>
 
@@ -704,13 +704,13 @@ export default function Home() {
           <DownloadStats
             packageName="i18nexus"
             displayName="i18nexus"
-            color="blue"
-          />
+            color="blue" />
+
           <DownloadStats
             packageName="i18nexus-tools"
             displayName="i18nexus-tools"
-            color="indigo"
-          />
+            color="indigo" />
+
         </div>
 
         <div className="text-center mt-8">
@@ -733,8 +733,8 @@ export default function Home() {
           <div className="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
           {/* i18nexus Library Docs */}
           <Link
-            href="/docs/i18nexus"
-            className="group bg-slate-900 rounded-2xl border border-slate-700 hover:border-blue-500 p-8 transition-all hover:shadow-xl hover:shadow-blue-500/20 hover:-translate-y-1">
+              href="/docs/i18nexus"
+              className="group bg-slate-900 rounded-2xl border border-slate-700 hover:border-blue-500 p-8 transition-all hover:shadow-xl hover:shadow-blue-500/20 hover:-translate-y-1">
             <div className="flex items-center mb-4">
               <div className="w-14 h-14 bg-blue-600 rounded-2xl flex items-center justify-center mr-4 shadow-lg shadow-blue-500/30 group-hover:shadow-blue-500/50 transition-all">
                 <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -747,8 +747,8 @@ export default function Home() {
             </div>
             <p className="text-slate-400 mb-4">
               {t(
-                "쿠키 기반 언어 관리 및 SSR 지원을 갖춘 완전한 React i18n 툴킷"
-              )}
+                  "쿠키 기반 언어 관리 및 SSR 지원을 갖춘 완전한 React i18n 툴킷"
+                )}
             </p>
             <div className="flex flex-wrap gap-2 mb-4">
               <span className="text-xs bg-blue-500/20 text-blue-300 px-3 py-1 rounded-full">
@@ -771,8 +771,8 @@ export default function Home() {
 
           {/* i18nexus-tools CLI Docs */}
           <Link
-            href="/docs/i18nexus-tools"
-            className="group bg-slate-900 rounded-2xl border border-slate-700 hover:border-indigo-500 p-8 transition-all hover:shadow-xl hover:shadow-indigo-500/20 hover:-translate-y-1">
+              href="/docs/i18nexus-tools"
+              className="group bg-slate-900 rounded-2xl border border-slate-700 hover:border-indigo-500 p-8 transition-all hover:shadow-xl hover:shadow-indigo-500/20 hover:-translate-y-1">
             <div className="flex items-center mb-4">
               <div className="w-14 h-14 bg-indigo-600 rounded-2xl flex items-center justify-center mr-4 shadow-lg shadow-indigo-500/30 group-hover:shadow-indigo-500/50 transition-all">
                 <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -785,8 +785,8 @@ export default function Home() {
             </div>
             <p className="text-slate-400 mb-4">
               {t(
-                "코드 변환부터 Google Sheets 통합까지 i18n 워크플로우를 자동화하는 강력한 CLI 도구"
-              )}
+                  "코드 변환부터 Google Sheets 통합까지 i18n 워크플로우를 자동화하는 강력한 CLI 도구"
+                )}
             </p>
             <div className="flex flex-wrap gap-2 mb-4">
               <span className="text-xs bg-indigo-500/20 text-indigo-300 px-3 py-1 rounded-full">
@@ -856,6 +856,6 @@ export default function Home() {
           </div>
         </div>
       </section>
-    </main>
-  );
+    </main>);
+
 }

@@ -211,13 +211,13 @@ export const translations = {
               </h4>
               <pre className="text-xs overflow-x-auto">
                 <code className="text-slate-300">
-                  {`"use client";
-import { useTranslation } from "i18nexus";
+                  {t("\"use client\";\nimport { useTranslation } from \"i18nexus\";\n\nexport default function Page() {\n  const { t } = useTranslation();\n  return <div>{t(\"\uC548\uB155\uD558\uC138\uC694\")}</div>;\n}")
 
-export default function Page() {
-  const { t } = useTranslation();
-  return <div>{t("안녕하세요")}</div>;
-}`}
+
+
+
+
+                  }
                 </code>
               </pre>
             </div>
@@ -229,15 +229,15 @@ export default function Page() {
               </h4>
               <pre className="text-xs overflow-x-auto">
                 <code className="text-slate-300">
-                  {`import { headers } from "next/headers";
-import { getServerLanguage, 
-  createServerTranslation } from "i18nexus/server";
+                  {t("import { headers } from \"next/headers\";\nimport { getServerLanguage, \n  createServerTranslation } from \"i18nexus/server\";\n\nexport default async function Page() {\n  const lang = getServerLanguage(await headers());\n  const t = createServerTranslation(lang, translations);\n  return <div>{t(\"\uC548\uB155\uD558\uC138\uC694\")}</div>;\n}")
 
-export default async function Page() {
-  const lang = getServerLanguage(await headers());
-  const t = createServerTranslation(lang, translations);
-  return <div>{t("안녕하세요")}</div>;
-}`}
+
+
+
+
+
+
+                  }
                 </code>
               </pre>
             </div>
@@ -325,10 +325,10 @@ export default async function Page() {
               <div className="bg-slate-950 rounded-xl p-4">
                 <pre className="text-xs overflow-x-auto">
                   <code className="text-slate-300">
-                    {`{
-  "안녕하세요": "안녕하세요",
-  "환영합니다": "환영합니다"
-}`}
+                    {t("{\n  \"\uC548\uB155\uD558\uC138\uC694\": \"\uC548\uB155\uD558\uC138\uC694\",\n  \"\uD658\uC601\uD569\uB2C8\uB2E4\": \"\uD658\uC601\uD569\uB2C8\uB2E4\"\n}")
+
+
+                    }
                   </code>
                 </pre>
               </div>
@@ -341,10 +341,10 @@ export default async function Page() {
               <div className="bg-slate-950 rounded-xl p-4">
                 <pre className="text-xs overflow-x-auto">
                   <code className="text-slate-300">
-                    {`{
-  "안녕하세요": "Hello",
-  "환영합니다": "Welcome"
-}`}
+                    {t("{\n  \"\uC548\uB155\uD558\uC138\uC694\": \"Hello\",\n  \"\uD658\uC601\uD569\uB2C8\uB2E4\": \"Welcome\"\n}")
+
+
+                    }
                   </code>
                 </pre>
               </div>
@@ -412,6 +412,6 @@ export default async function Page() {
           </div>
         </div>
       </section>
-    </main>
-  );
+    </main>);
+
 }

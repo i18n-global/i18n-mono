@@ -93,35 +93,35 @@ export default function ProviderPage() {
             </div>
             <div className="p-6">
               <pre className="bg-slate-950 text-slate-300 p-4 rounded-lg overflow-x-auto text-sm border border-slate-800">
-                <code>{`import { I18nProvider } from "i18nexus";
-import { cookies } from "next/headers";
+                <code>{t("import { I18nProvider } from \"i18nexus\";\nimport { cookies } from \"next/headers\";\n\nexport default function RootLayout({ children }) {\n  const language = cookies().get(\"i18n-language\")?.value || \"ko\";\n\n  return (\n    <html lang={language}>\n      <body>\n        <I18nProvider\n          initialLanguage={language}\n          languageManagerOptions={{\n            defaultLanguage: \"ko\",\n            availableLanguages: [\n              { code: \"ko\", name: \"\uD55C\uAD6D\uC5B4\", flag: \"\uD83C\uDDF0\uD83C\uDDF7\" },\n              { code: \"en\", name: \"English\", flag: \"\uD83C\uDDFA\uD83C\uDDF8\" },\n            ],\n          }}\n          translations={{\n            ko: { \"\uD658\uC601\uD569\uB2C8\uB2E4\": \"\uD658\uC601\uD569\uB2C8\uB2E4\" },\n            en: { \"\uD658\uC601\uD569\uB2C8\uB2E4\": \"Welcome\" },\n          }}\n        >\n          {children}\n        </I18nProvider>\n      </body>\n    </html>\n  );\n}")
 
-export default function RootLayout({ children }) {
-  const language = cookies().get("i18n-language")?.value || "ko";
 
-  return (
-    <html lang={language}>
-      <body>
-        <I18nProvider
-          initialLanguage={language}
-          languageManagerOptions={{
-            defaultLanguage: "ko",
-            availableLanguages: [
-              { code: "ko", name: "한국어", flag: "🇰🇷" },
-              { code: "en", name: "English", flag: "🇺🇸" },
-            ],
-          }}
-          translations={{
-            ko: { "환영합니다": "환영합니다" },
-            en: { "환영합니다": "Welcome" },
-          }}
-        >
-          {children}
-        </I18nProvider>
-      </body>
-    </html>
-  );
-}`}</code>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                  }</code>
               </pre>
             </div>
           </div>
@@ -138,23 +138,23 @@ export default function RootLayout({ children }) {
             </div>
             <div className="p-6">
               <pre className="bg-slate-950 text-slate-300 p-4 rounded-lg overflow-x-auto text-sm border border-slate-800">
-                <code>{`"use client";
+                <code>{t("\"use client\";\n\nimport { useTranslation, useLanguageSwitcher } from \"i18nexus\";\n\nexport default function HomePage() {\n  const { t } = useTranslation();\n  const { currentLanguage, changeLanguage } = useLanguageSwitcher();\n\n  return (\n    <div>\n      <h1>{t(\"\uD658\uC601\uD569\uB2C8\uB2E4\")}</h1>\n      <button onClick={() => changeLanguage(\"en\")}>\n        English\n      </button>\n    </div>\n  );\n}")
 
-import { useTranslation, useLanguageSwitcher } from "i18nexus";
 
-export default function HomePage() {
-  const { t } = useTranslation();
-  const { currentLanguage, changeLanguage } = useLanguageSwitcher();
 
-  return (
-    <div>
-      <h1>{t("환영합니다")}</h1>
-      <button onClick={() => changeLanguage("en")}>
-        English
-      </button>
-    </div>
-  );
-}`}</code>
+
+
+
+
+
+
+
+
+
+
+
+
+                  }</code>
               </pre>
             </div>
           </div>
@@ -251,11 +251,11 @@ export default function HomePage() {
               useTranslation()
             </h3>
             <pre className="bg-slate-950 text-slate-300 p-4 rounded-lg text-sm mb-4 border border-slate-800">
-              <code>{`const { t } = useTranslation();
+              <code>{t("const { t } = useTranslation();\n\n// Simple usage\nt(\"key\")\nt(\"\uD55C\uAD6D\uC5B4 \uD14D\uC2A4\uD2B8\")")
 
-// Simple usage
-t("key")
-t("한국어 텍스트")`}</code>
+
+
+                }</code>
             </pre>
             <p className="text-slate-400 text-sm">
               {t("클라이언트 컴포넌트에서 번역 함수에 접근하기 위한 훅")}

@@ -180,10 +180,10 @@ export default function I18nExtractorPage() {
                 </p>
                 <pre className="bg-slate-950 rounded p-2 text-xs mt-2 border border-slate-800">
                   <code className="text-slate-400">
-                    {`// 이런 코드를 찾습니다:
-t("환영합니다")
-t("시작하기")
-t(\`안녕하세요 \${name}님\`)`}
+                    {t("// \uC774\uB7F0 \uCF54\uB4DC\uB97C \uCC3E\uC2B5\uB2C8\uB2E4:\nt(\"\uD658\uC601\uD569\uB2C8\uB2E4\")\nt(\"\uC2DC\uC791\uD558\uAE30\")\nt(\\`\uC548\uB155\uD558\uC138\uC694 \\${name}\uB2D8\\`)")
+
+
+                    }
                   </code>
                 </pre>
               </div>
@@ -205,10 +205,10 @@ t(\`안녕하세요 \${name}님\`)`}
                 </p>
                 <pre className="bg-slate-950 rounded p-2 text-xs mt-2 border border-slate-800">
                   <code className="text-slate-400">
-                    {`// 추출된 키:
-"환영합니다"
-"시작하기"
-"안녕하세요 \${name}님"`}
+                    {t("// \uCD94\uCD9C\uB41C \uD0A4:\n\"\uD658\uC601\uD569\uB2C8\uB2E4\"\n\"\uC2DC\uC791\uD558\uAE30\"\n\"\uC548\uB155\uD558\uC138\uC694 \\${name}\uB2D8\"")
+
+
+                    }
                   </code>
                 </pre>
               </div>
@@ -237,10 +237,10 @@ t(\`안녕하세요 \${name}님\`)`}
                     </p>
                     <pre className="bg-slate-950 rounded p-2 text-xs border border-slate-800">
                       <code className="text-slate-400">
-                        {`{
-  "안녕": "Hello",
-  "환영합니다": "Welcome"
-}`}
+                        {t("{\n  \"\uC548\uB155\": \"Hello\",\n  \"\uD658\uC601\uD569\uB2C8\uB2E4\": \"Welcome\"\n}")
+
+
+                        }
                       </code>
                     </pre>
                   </div>
@@ -250,11 +250,11 @@ t(\`안녕하세요 \${name}님\`)`}
                     </p>
                     <pre className="bg-slate-950 rounded p-2 text-xs border border-slate-800">
                       <code className="text-slate-400">
-                        {`{
-  "안녕": "Hello",
-  "시작하기": "시작하기",
-  "환영합니다": "Welcome"
-}`}
+                        {t("{\n  \"\uC548\uB155\": \"Hello\",\n  \"\uC2DC\uC791\uD558\uAE30\": \"\uC2DC\uC791\uD558\uAE30\",\n  \"\uD658\uC601\uD569\uB2C8\uB2E4\": \"Welcome\"\n}")
+
+
+
+                        }
                       </code>
                     </pre>
                   </div>
@@ -280,11 +280,11 @@ t(\`안녕하세요 \${name}님\`)`}
                 </p>
                 <pre className="bg-slate-950 rounded p-2 text-xs mt-2 border border-slate-800">
                   <code className="text-green-400">
-                    {`✓ 추출 완료
-  - 새 키: 5개
-  - 기존 키: 120개
-  - 총 키: 125개
-  - 파일: locales/ko.json, locales/en.json`}
+                    {t("\u2713 \uCD94\uCD9C \uC644\uB8CC\n  - \uC0C8 \uD0A4: 5\uAC1C\n  - \uAE30\uC874 \uD0A4: 120\uAC1C\n  - \uCD1D \uD0A4: 125\uAC1C\n  - \uD30C\uC77C: locales/ko.json, locales/en.json")
+
+
+
+                    }
                   </code>
                 </pre>
               </div>
@@ -569,6 +569,6 @@ t(\`안녕하세요 \${name}님\`)`}
           </Link>
         </div>
       </section>
-    </main>
-  );
+    </main>);
+
 }
