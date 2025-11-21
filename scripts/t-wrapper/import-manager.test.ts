@@ -4,7 +4,6 @@
  */
 
 import {
-  createUseTranslationHook,
   addImportIfNeeded,
   ensureNamedImport,
 } from "./import-manager";

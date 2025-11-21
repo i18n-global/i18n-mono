@@ -6,8 +6,13 @@ import * as t from "@babel/types";
 import { PerformanceMonitor } from "../common/performance-monitor";
 import { ScriptConfig, SCRIPT_CONFIG_DEFAULTS } from "../common/default-config";
 import { parseFile, generateCode } from "../common/ast/parser-utils";
-import { isReactComponent, isReactCustomHook } from "./ast-helpers";
-import { createUseTranslationHook, ensureNamedImport } from "./import-manager";
+import {
+  isReactComponent,
+  isReactCustomHook,
+  hasTranslationFunctionCall,
+  createTranslationBinding,
+} from "./ast-helpers";
+import { ensureNamedImport } from "./import-manager";
 import { transformFunctionBody } from "./ast-transformers";
 import { CONSOLE_MESSAGES, STRING_CONSTANTS } from "./constants";
 
@@ -38,23 +43,6 @@ export class TranslationWrapper {
       ast.program.directives = ast.program.directives || [];
       ast.program.directives.unshift(dir);
     }
-  }
-
-  private createServerTBinding(serverFnName: string): t.VariableDeclaration {
-    const awaitCall = t.awaitExpression(
-      t.callExpression(t.identifier(serverFnName), [])
-    );
-    const pattern = t.objectPattern([
-      t.objectProperty(
-        t.identifier(STRING_CONSTANTS.TRANSLATION_FUNCTION),
-        t.identifier(STRING_CONSTANTS.TRANSLATION_FUNCTION),
-        false,
-        true
-      ),
-    ]);
-    return t.variableDeclaration(STRING_CONSTANTS.VARIABLE_KIND, [
-      t.variableDeclarator(pattern, awaitCall),
-    ]);
   }
 
   public async processFiles(): Promise<{
@@ -119,9 +107,6 @@ export class TranslationWrapper {
         });
 
         if (isFileModified) {
-          let wasUseHookAdded = false;
-          let wasServerImportAdded = false;
-
           const isServerMode = this.config.mode === "server";
           const isClientMode = this.config.mode === "client";
           const isNextjsFramework = this.config.framework === "nextjs";
@@ -133,6 +118,9 @@ export class TranslationWrapper {
             this.ensureUseClientDirective(ast);
           }
 
+          // 사용된 번역 함수 추적 (중복 import 방지)
+          const usedTranslationFunctions = new Set<string>();
+
           modifiedComponentPaths.forEach((componentPath) => {
             if (
               componentPath.scope.hasBinding(
@@ -143,79 +131,49 @@ export class TranslationWrapper {
             }
 
             const body = componentPath.get("body");
-            let decl: t.VariableDeclaration;
-            let shouldAddImport = false;
 
-            if (isServerMode) {
-              // server 모드: config에 정의된 서버형 함수 사용
-              (componentPath.node as any).async = true;
-              decl = this.createServerTBinding(
-                this.config.serverTranslationFunction
-              );
-              shouldAddImport = true;
-            } else {
-              // client 모드 (또는 기본값): useTranslation 사용
-              // 이미 hook이 있는지 체크
-              let hasHook = false;
-              if (body.isBlockStatement()) {
-                body.traverse({
-                  CallExpression: (p) => {
-                    if (
-                      t.isIdentifier(p.node.callee, {
-                        name: STRING_CONSTANTS.USE_TRANSLATION,
-                      })
-                    ) {
-                      hasHook = true;
-                    }
-                  },
-                });
-              }
-              if (hasHook) {
-                return; // 이미 hook이 있으면 스킵
-              }
-              decl = createUseTranslationHook();
-              shouldAddImport = true;
+            // 이미 번역 함수가 있는지 체크 (모드별)
+            const translationFunctionName = isServerMode
+              ? this.config.serverTranslationFunction
+              : STRING_CONSTANTS.USE_TRANSLATION;
+
+            if (hasTranslationFunctionCall(body, translationFunctionName)) {
+              return; // 이미 번역 함수가 있으면 스킵
             }
+
+            // t 바인딩 생성 (모드별)
+            if (isServerMode) {
+              (componentPath.node as any).async = true;
+            }
+            const decl = createTranslationBinding(
+              isServerMode ? "server" : "client",
+              isServerMode ? this.config.serverTranslationFunction : undefined
+            );
 
             // 선언문 추가 (공통 로직)
             if (body.isBlockStatement()) {
               body.unshiftContainer("body", decl);
-              if (isServerMode) {
-                wasServerImportAdded = true;
-              } else {
-                wasUseHookAdded = true;
-              }
             } else {
               // concise body → block으로 감싼 후 return 유지
               const original = body.node as t.Expression;
-              const block = t.blockStatement([
+              (componentPath.node as any).body = t.blockStatement([
                 decl,
                 t.returnStatement(original),
               ]);
-              (componentPath.node as any).body = block;
-              if (isServerMode) {
-                wasServerImportAdded = true;
-              } else {
-                wasUseHookAdded = true;
-              }
             }
+
+            // 사용된 번역 함수 기록 (이미 체크했으므로 무조건 추가됨)
+            usedTranslationFunctions.add(translationFunctionName);
           });
 
-          // 필요한 import 추가
-          if (wasUseHookAdded) {
+          // 필요한 import 추가 (중복 방지)
+          usedTranslationFunctions.forEach((functionName) => {
             ensureNamedImport(
               ast,
               this.config.translationImportSource,
-              STRING_CONSTANTS.USE_TRANSLATION
+              functionName
             );
-          }
-          if (wasServerImportAdded) {
-            ensureNamedImport(
-              ast,
-              this.config.translationImportSource,
-              this.config.serverTranslationFunction
-            );
-          }
+          });
 
           const output = generateCode(ast, this.config.parserType, {
             retainLines: true,

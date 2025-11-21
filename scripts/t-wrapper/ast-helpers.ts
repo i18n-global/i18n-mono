@@ -121,3 +121,72 @@ export function isReactCustomHook(name: string): boolean {
 export function isReactComponentOrHook(name: string): boolean {
   return isReactComponent(name) || isReactCustomHook(name);
 }
+
+/**
+ * 함수 본문(body)에 이미 번역 함수 호출이 있는지 확인
+ * @param body - 함수 본문 NodePath
+ * @param functionName - 확인할 함수명 (useTranslation 또는 getServerTranslation 등)
+ * @returns 함수 호출이 있으면 true
+ */
+export function hasTranslationFunctionCall(
+  body: NodePath<t.BlockStatement | t.Expression>,
+  functionName: string
+): boolean {
+  if (!body.isBlockStatement()) {
+    return false;
+  }
+
+  let hasCall = false;
+  body.traverse({
+    CallExpression: (p) => {
+      if (
+        t.isIdentifier(p.node.callee, {
+          name: functionName,
+        })
+      ) {
+        hasCall = true;
+      }
+    },
+  });
+
+  return hasCall;
+}
+
+/**
+ * 번역 함수 바인딩 생성 (공통 함수)
+ * client 모드: const { t } = useTranslation()
+ * server 모드: const { t } = await getServerTranslation()
+ */
+export function createTranslationBinding(
+  mode: "client" | "server",
+  serverFnName?: string
+): t.VariableDeclaration {
+  const pattern = t.objectPattern([
+    t.objectProperty(
+      t.identifier(STRING_CONSTANTS.TRANSLATION_FUNCTION),
+      t.identifier(STRING_CONSTANTS.TRANSLATION_FUNCTION),
+      false,
+      true
+    ),
+  ]);
+
+  let callExpression: t.Expression;
+  if (mode === "server") {
+    // 서버 모드: await getServerTranslation()
+    const fnName = serverFnName || STRING_CONSTANTS.GET_SERVER_TRANSLATION;
+    callExpression = t.awaitExpression(
+      t.callExpression(t.identifier(fnName), [])
+    );
+  } else {
+    // 클라이언트 모드: useTranslation()
+    callExpression = t.callExpression(
+      t.identifier(STRING_CONSTANTS.USE_TRANSLATION),
+      []
+    );
+  }
+
+  return t.variableDeclaration(STRING_CONSTANTS.VARIABLE_KIND, [
+    t.variableDeclarator(pattern, callExpression),
+  ]);
+}
+
