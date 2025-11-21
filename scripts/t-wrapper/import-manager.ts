@@ -6,30 +6,6 @@ import traverse from "@babel/traverse";
 import * as t from "@babel/types";
 import { STRING_CONSTANTS } from "./constants";
 
-/**
- * useTranslation 훅을 생성하는 AST 노드 생성
- */
-export function createUseTranslationHook(): t.VariableDeclaration {
-  // useTranslation()을 빈 값으로 호출 - 내부적으로 현재 언어 자동 주입
-  const hookCall = t.callExpression(
-    t.identifier(STRING_CONSTANTS.USE_TRANSLATION),
-    []
-  );
-
-  return t.variableDeclaration(STRING_CONSTANTS.VARIABLE_KIND, [
-    t.variableDeclarator(
-      t.objectPattern([
-        t.objectProperty(
-          t.identifier(STRING_CONSTANTS.TRANSLATION_FUNCTION),
-          t.identifier(STRING_CONSTANTS.TRANSLATION_FUNCTION),
-          false,
-          true
-        ),
-      ]),
-      hookCall
-    ),
-  ]);
-}
 
 /**
  * AST에 named import가 필요한지 확인하고 추가
