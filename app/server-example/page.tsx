@@ -103,21 +103,7 @@ export default async function Page() {
   // 3. 사용!
   return <h1>{t("Welcome")}</h1>;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-              }</code>
+`}</code>
           </pre>
         </div>
       </section>
