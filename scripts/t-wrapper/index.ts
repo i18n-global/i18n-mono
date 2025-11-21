@@ -30,7 +30,7 @@ export async function runTranslationWrapper(
     const totalTime = endTime - startTime;
 
     // 완료 리포트 출력
-    const report = wrapper["performanceMonitor"].getReport();
+    const report = wrapper.performanceMonitor.getReport();
     PerformanceReporter.printCompletionReport(
       report,
       processedFiles,
@@ -40,14 +40,14 @@ export async function runTranslationWrapper(
 
     // 상세 리포트 출력 (verbose mode인 경우)
     if (process.env.I18N_PERF_VERBOSE === "true") {
-      wrapper.printPerformanceReport(true);
+      wrapper.performanceMonitor.printReport(true);
     }
 
     // 성능 데이터 플러시
-    await wrapper.flushPerformanceData();
+    await wrapper.performanceMonitor.flush();
   } catch (error) {
     console.error(CONSOLE_MESSAGES.FATAL_ERROR, error);
-    await wrapper.flushPerformanceData();
+    await wrapper.performanceMonitor.flush();
     throw error;
   }
 }
@@ -62,10 +62,6 @@ if (require.main === module) {
       case CLI_OPTIONS.PATTERN:
       case CLI_OPTIONS.PATTERN_SHORT:
         config.sourcePattern = args[++i];
-        break;
-      case CLI_OPTIONS.DRY_RUN:
-      case CLI_OPTIONS.DRY_RUN_SHORT:
-        config.dryRun = true;
         break;
       case CLI_OPTIONS.HELP:
       case CLI_OPTIONS.HELP_SHORT:

@@ -7,6 +7,8 @@ import {
   hasIgnoreComment,
   shouldSkipPath,
   isReactComponent,
+  isReactCustomHook,
+  isReactComponentOrHook,
 } from "./ast-helpers";
 import { parse } from "@babel/parser";
 import traverse from "@babel/traverse";
@@ -75,9 +77,39 @@ const text = "hello";`;
       expect(isReactComponent("MyComponent")).toBe(true);
     });
 
-    it("use로 시작하는 훅은 컴포넌트로 인식해야 함", () => {
-      expect(isReactComponent("useState")).toBe(true);
-      expect(isReactComponent("useTranslation")).toBe(true);
+    it("소문자로 시작하는 이름은 컴포넌트로 인식하지 않아야 함", () => {
+      expect(isReactComponent("button")).toBe(false);
+      expect(isReactComponent("useState")).toBe(false);
+      expect(isReactComponent("useMyHook")).toBe(false);
+    });
+  });
+
+  describe("isReactCustomHook", () => {
+    it("use로 시작하고 대문자로 이어지는 이름은 훅으로 인식해야 함", () => {
+      expect(isReactCustomHook("useState")).toBe(true);
+      expect(isReactCustomHook("useTranslation")).toBe(true);
+      expect(isReactCustomHook("useMyHook")).toBe(true);
+      expect(isReactCustomHook("useToast")).toBe(true);
+    });
+
+    it("use로 시작하지 않거나 소문자로 이어지는 이름은 훅으로 인식하지 않아야 함", () => {
+      expect(isReactCustomHook("Component")).toBe(false);
+      expect(isReactCustomHook("use-my-hook")).toBe(false);
+      expect(isReactCustomHook("use_my_hook")).toBe(false);
+    });
+  });
+
+  describe("isReactComponentOrHook", () => {
+    it("컴포넌트와 훅 모두 인식해야 함", () => {
+      expect(isReactComponentOrHook("Button")).toBe(true);
+      expect(isReactComponentOrHook("MyComponent")).toBe(true);
+      expect(isReactComponentOrHook("useState")).toBe(true);
+      expect(isReactComponentOrHook("useMyHook")).toBe(true);
+    });
+
+    it("일반 함수는 인식하지 않아야 함", () => {
+      expect(isReactComponentOrHook("formatDate")).toBe(false);
+      expect(isReactComponentOrHook("getData")).toBe(false);
     });
   });
 });

@@ -100,10 +100,24 @@ export function shouldSkipPath(
 
 /**
  * React 컴포넌트 이름인지 확인
+ * 대문자로 시작하는 함수명 (예: Component, MyButton)
  */
 export function isReactComponent(name: string): boolean {
-  return (
-    REGEX_PATTERNS.REACT_COMPONENT.test(name) ||
-    REGEX_PATTERNS.REACT_HOOK.test(name)
-  );
+  return REGEX_PATTERNS.REACT_COMPONENT.test(name);
+}
+
+/**
+ * React 커스텀 훅 이름인지 확인
+ * use로 시작하고 대문자로 이어지는 함수명 (예: useMyHook, useToast)
+ */
+export function isReactCustomHook(name: string): boolean {
+  return REGEX_PATTERNS.REACT_HOOK.test(name);
+}
+
+/**
+ * React 컴포넌트 또는 커스텀 훅인지 확인
+ * 하위 호환성을 위한 헬퍼 함수
+ */
+export function isReactComponentOrHook(name: string): boolean {
+  return isReactComponent(name) || isReactCustomHook(name);
 }

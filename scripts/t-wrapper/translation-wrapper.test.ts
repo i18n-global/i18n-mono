@@ -34,7 +34,6 @@ describe("translation-wrapper", () => {
 
       const wrapper = new TranslationWrapper({
         sourcePattern: path.join(tempDir, "**/*.tsx"),
-        dryRun: true,
       });
 
       const result = await wrapper.processFiles();
@@ -53,7 +52,6 @@ describe("translation-wrapper", () => {
 
       const wrapper = new TranslationWrapper({
         sourcePattern: path.join(tempDir, "**/*.tsx"),
-        dryRun: false,
         mode: "client",
         framework: "nextjs",
       } as any);
@@ -77,7 +75,6 @@ describe("translation-wrapper", () => {
 
       const wrapper = new TranslationWrapper({
         sourcePattern: path.join(tempDir, "**/*.tsx"),
-        dryRun: false,
         mode: "client",
         framework: "react",
       } as any);
@@ -101,7 +98,6 @@ describe("translation-wrapper", () => {
 
       const wrapper = new TranslationWrapper({
         sourcePattern: path.join(tempDir, "**/*.tsx"),
-        dryRun: false,
         mode: "server",
         serverTranslationFunction: "getServerT",
       } as any);

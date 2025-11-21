@@ -31,7 +31,6 @@ describe("t-wrapper E2E", () => {
 
     await runTranslationWrapper({
       sourcePattern: path.join(tempDir, "**/*.tsx"),
-      dryRun: false,
     });
 
     const modifiedContent = fs.readFileSync(testFile, "utf-8");
@@ -52,7 +51,6 @@ describe("t-wrapper E2E", () => {
 
     await runTranslationWrapper({
       sourcePattern: path.join(tempDir, "**/*.tsx"),
-      dryRun: false,
     });
 
     const modifiedContent = fs.readFileSync(testFile, "utf-8");
@@ -60,6 +58,34 @@ describe("t-wrapper E2E", () => {
     expect(modifiedContent).toContain("useTranslation");
     // 템플릿 리터럴이 변환되었는지 확인
     expect(modifiedContent).not.toContain("`안녕하세요 ${name}님`");
+  });
+
+  it("커스텀 훅 내부의 문자열도 변환되어야 함", async () => {
+    const testFile = path.join(tempDir, "useToast.ts");
+    const originalContent = `function useToast() {
+  toast("안녕하세요");
+  alert("테스트 메시지");
+}`;
+
+    fs.writeFileSync(testFile, originalContent, "utf-8");
+
+    await runTranslationWrapper({
+      sourcePattern: path.join(tempDir, "**/*.ts"),
+    });
+
+    const modifiedContent = fs.readFileSync(testFile, "utf-8");
+    expect(modifiedContent).toContain("t(");
+    expect(modifiedContent).toContain("useTranslation");
+    // 유니코드 이스케이프 때문에 정확한 문자열 매칭 대신 패턴 체크
+    expect(modifiedContent).toMatch(/toast\s*\(\s*t\s*\(/);
+    expect(modifiedContent).toMatch(/alert\s*\(\s*t\s*\(/);
+    // 한국어 문자열이 t()로 감싸졌는지 확인 (유니코드 이스케이프 고려)
+    // \uC548\uB155\uD558\uC138\uC694 = "안녕하세요"
+    expect(modifiedContent).toMatch(
+      /t\([^)]*\\uC548\\uB155\\uD558\\uC138\\uC694/
+    );
+    // \uD14C\uC2A4\uD2B8 \uBA54\uC2DC\uC9C0 = "테스트 메시지"
+    expect(modifiedContent).toMatch(/t\([^)]*\\uD14C\\uC2A4\\uD2B8/);
   });
 
   it("서버 컴포넌트는 useTranslation 훅을 추가하지 않아야 함", async () => {
@@ -73,7 +99,6 @@ describe("t-wrapper E2E", () => {
 
     await runTranslationWrapper({
       sourcePattern: path.join(tempDir, "**/*.tsx"),
-      dryRun: false,
     });
 
     const modifiedContent = fs.readFileSync(testFile, "utf-8");
@@ -94,7 +119,6 @@ describe("t-wrapper E2E", () => {
 
     await runTranslationWrapper({
       sourcePattern: path.join(tempDir, "**/*.tsx"),
-      dryRun: false,
     });
 
     const modifiedContent = fs.readFileSync(testFile, "utf-8");
@@ -111,7 +135,6 @@ describe("t-wrapper E2E", () => {
 
     await runTranslationWrapper({
       sourcePattern: path.join(tempDir, "**/*.tsx"),
-      dryRun: false,
       mode: "client",
       framework: "nextjs",
     });
@@ -131,7 +154,6 @@ describe("t-wrapper E2E", () => {
 
     await runTranslationWrapper({
       sourcePattern: path.join(tempDir, "**/*.tsx"),
-      dryRun: false,
       mode: "client",
       framework: "react",
     });
@@ -151,7 +173,6 @@ describe("t-wrapper E2E", () => {
 
     await runTranslationWrapper({
       sourcePattern: path.join(tempDir, "**/*.tsx"),
-      dryRun: false,
       mode: "server",
     });
 
@@ -170,7 +191,6 @@ describe("t-wrapper E2E", () => {
 
     await runTranslationWrapper({
       sourcePattern: path.join(tempDir, "**/*.tsx"),
-      dryRun: false,
       mode: "server",
       serverTranslationFunction: "getServerT",
     });
@@ -178,22 +198,5 @@ describe("t-wrapper E2E", () => {
     const modified = fs.readFileSync(testFile, "utf-8");
     expect(modified).toContain("await getServerT");
     expect(modified).toContain("import { getServerT } from");
-  });
-
-  it("dry-run 모드에서는 파일을 수정하지 않아야 함", async () => {
-    const testFile = path.join(tempDir, "Component.tsx");
-    const originalContent = `function Component() {
-  return <div>안녕하세요</div>;
-}`;
-
-    fs.writeFileSync(testFile, originalContent, "utf-8");
-
-    await runTranslationWrapper({
-      sourcePattern: path.join(tempDir, "**/*.tsx"),
-      dryRun: true,
-    });
-
-    const modifiedContent = fs.readFileSync(testFile, "utf-8");
-    expect(modifiedContent).toBe(originalContent);
   });
 });

@@ -73,10 +73,11 @@ StringLiteral: (path) => {
     // "안녕하세요" → t("안녕하세요")
     path.replaceWith(t.callExpression(t.identifier("t"), [path.node]));
   }
-}
+};
 ```
 
 **Rust 버전:**
+
 ```rust
 // ast_transformers.rs
 if let Expr::Lit(Lit::Str(str_lit)) = expr {
@@ -102,6 +103,7 @@ function isReactComponent(name: string): boolean {
 #### 4.3 번역 훅/함수 추가
 
 **클라이언트 모드:**
+
 ```typescript
 // import-manager.ts
 const hook = createUseTranslationHook();
@@ -112,6 +114,7 @@ functionBody.body.unshift(hook);
 ```
 
 **서버 모드:**
+
 ```typescript
 // translation-wrapper.ts
 const binding = createServerTBinding("getServerTranslation");
@@ -155,6 +158,7 @@ if (!this.config.dryRun) {
 ## 주요 모듈
 
 ### 1. `translation-wrapper.ts`
+
 - **역할**: 전체 워크플로우 조율
 - **주요 메서드**:
   - `processFiles()`: 파일 처리 메인 로직
@@ -162,6 +166,7 @@ if (!this.config.dryRun) {
   - `ensureNamedImport()`: import 문 추가
 
 ### 2. `ast-transformers.ts`
+
 - **역할**: AST 노드 변환
 - **주요 로직**:
   - `StringLiteral` → `t()` 호출
@@ -169,6 +174,7 @@ if (!this.config.dryRun) {
   - `JSXText` → `t()` 호출
 
 ### 3. `ast-helpers.ts`
+
 - **역할**: AST 분석 유틸리티
 - **주요 함수**:
   - `isReactComponent()`: React 컴포넌트 판단
@@ -176,12 +182,14 @@ if (!this.config.dryRun) {
   - `hasIgnoreComment()`: i18n-ignore 주석 체크
 
 ### 4. `import-manager.ts`
+
 - **역할**: import 문 관리
 - **주요 함수**:
   - `createUseTranslationHook()`: useTranslation 훅 생성
   - `addImportIfNeeded()`: import 문 추가
 
 ### 5. `parser.ts` (Rust)
+
 - **역할**: 파일 파싱 및 코드 생성
 - **주요 함수**:
   - `parse_file()`: 파일을 AST로 파싱
@@ -221,14 +229,17 @@ async function Component() {
 ## 설정 옵션
 
 ### `mode`
+
 - `"client"`: `useTranslation()` 훅 사용
 - `"server"`: `getServerTranslation()` 함수 사용
 
 ### `framework`
+
 - `"nextjs"`: Next.js 환경 (use client 디렉티브 추가)
 - `"react"`: 일반 React 환경 (use client 디렉티브 추가 안 함)
 
 ### `dryRun`
+
 - `true`: 파일 수정 안 함 (변환만 확인)
 - `false`: 파일 수정
 
@@ -247,7 +258,7 @@ async function Component() {
 ---
 
 **작성 일자**: 2025년 11월 19일  
-**관련 문서**: 
-- [t-wrapper README](../cli/i18n-wrapper.md)
-- [AST 가이드](./ast-guide.md)
+**관련 문서**:
 
+- [INTERNAL_WORKINGS.md](./INTERNAL_WORKINGS.md) (내부 동작 원리 상세)
+- [t-wrapper README](../cli/i18n-wrapper.md)

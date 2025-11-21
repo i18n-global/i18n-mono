@@ -6,16 +6,16 @@ import * as t from "@babel/types";
 import { PerformanceMonitor } from "../common/performance-monitor";
 import { ScriptConfig, SCRIPT_CONFIG_DEFAULTS } from "../common/default-config";
 import { parseFile, generateCode } from "../common/ast/parser-utils";
-import { isReactComponent } from "./ast-helpers";
-import { createUseTranslationHook, addImportIfNeeded } from "./import-manager";
+import { isReactComponent, isReactCustomHook } from "./ast-helpers";
+import { createUseTranslationHook, ensureNamedImport } from "./import-manager";
 import { transformFunctionBody } from "./ast-transformers";
 import { CONSOLE_MESSAGES, STRING_CONSTANTS } from "./constants";
 
 const DEFAULT_CONFIG = SCRIPT_CONFIG_DEFAULTS;
 
 export class TranslationWrapper {
-  private config: Required<ScriptConfig>;
-  private performanceMonitor: PerformanceMonitor;
+  public readonly config: Required<ScriptConfig>;
+  public performanceMonitor: PerformanceMonitor;
 
   constructor(config: Partial<ScriptConfig> = {}) {
     this.config = { ...DEFAULT_CONFIG, ...config } as Required<ScriptConfig>;
@@ -40,50 +40,6 @@ export class TranslationWrapper {
     }
   }
 
-  private ensureNamedImport(ast: t.File, source: string, importedName: string) {
-    let hasSource = false;
-    let hasSpecifier = false;
-    for (const node of ast.program.body) {
-      if (t.isImportDeclaration(node) && node.source.value === source) {
-        hasSource = true;
-        for (const spec of node.specifiers) {
-          if (
-            t.isImportSpecifier(spec) &&
-            t.isIdentifier(spec.imported) &&
-            spec.imported.name === importedName
-          ) {
-            hasSpecifier = true;
-            break;
-          }
-        }
-        if (!hasSpecifier) {
-          node.specifiers.push(
-            t.importSpecifier(
-              t.identifier(importedName),
-              t.identifier(importedName)
-            )
-          );
-          hasSpecifier = true;
-        }
-        break;
-      }
-    }
-    if (!hasSource) {
-      const decl = t.importDeclaration(
-        [
-          t.importSpecifier(
-            t.identifier(importedName),
-            t.identifier(importedName)
-          ),
-        ],
-        t.stringLiteral(source)
-      );
-      ast.program.body.unshift(decl);
-      hasSpecifier = true;
-    }
-    return hasSpecifier;
-  }
-
   private createServerTBinding(serverFnName: string): t.VariableDeclaration {
     const awaitCall = t.awaitExpression(
       t.callExpression(t.identifier(serverFnName), [])
@@ -99,14 +55,6 @@ export class TranslationWrapper {
     return t.variableDeclaration(STRING_CONSTANTS.VARIABLE_KIND, [
       t.variableDeclarator(pattern, awaitCall),
     ]);
-  }
-
-  private processFunctionBody(
-    path: NodePath<t.Function>,
-    sourceCode: string
-  ): boolean {
-    const transformResult = transformFunctionBody(path, sourceCode);
-    return transformResult.wasModified;
   }
 
   public async processFiles(): Promise<{
@@ -137,9 +85,13 @@ export class TranslationWrapper {
         traverse(ast, {
           FunctionDeclaration: (path) => {
             const componentName = path.node.id?.name;
-            if (componentName && isReactComponent(componentName)) {
-              const wasModified = this.processFunctionBody(path, code);
-              if (wasModified) {
+            if (
+              componentName &&
+              (isReactComponent(componentName) ||
+                isReactCustomHook(componentName))
+            ) {
+              const transformResult = transformFunctionBody(path, code);
+              if (transformResult.wasModified) {
                 isFileModified = true;
                 modifiedComponentPaths.push(path);
               }
@@ -151,9 +103,13 @@ export class TranslationWrapper {
               t.isIdentifier(path.parent.id)
             ) {
               const componentName = path.parent.id.name;
-              if (componentName && isReactComponent(componentName)) {
-                const wasModified = this.processFunctionBody(path, code);
-                if (wasModified) {
+              if (
+                componentName &&
+                (isReactComponent(componentName) ||
+                  isReactCustomHook(componentName))
+              ) {
+                const transformResult = transformFunctionBody(path, code);
+                if (transformResult.wasModified) {
                   isFileModified = true;
                   modifiedComponentPaths.push(path);
                 }
@@ -233,24 +189,26 @@ export class TranslationWrapper {
 
           // 필요한 import 추가
           if (wasUseHookAdded) {
-            addImportIfNeeded(ast, this.config.translationImportSource);
+            ensureNamedImport(
+              ast,
+              this.config.translationImportSource,
+              STRING_CONSTANTS.USE_TRANSLATION
+            );
           }
           if (wasServerImportAdded) {
-            this.ensureNamedImport(
+            ensureNamedImport(
               ast,
               this.config.translationImportSource,
               this.config.serverTranslationFunction
             );
           }
 
-          if (!this.config.dryRun) {
-            const output = generateCode(ast, this.config.parserType, {
-              retainLines: true,
-              comments: true,
-            });
+          const output = generateCode(ast, this.config.parserType, {
+            retainLines: true,
+            comments: true,
+          });
 
-            fs.writeFileSync(filePath, output.code, "utf-8");
-          }
+          fs.writeFileSync(filePath, output.code, "utf-8");
 
           processedFiles.push(filePath);
         }
@@ -276,19 +234,5 @@ export class TranslationWrapper {
     return {
       processedFiles,
     };
-  }
-
-  /**
-   * 성능 리포트 출력
-   */
-  public printPerformanceReport(verbose: boolean = false): void {
-    this.performanceMonitor.printReport(verbose);
-  }
-
-  /**
-   * 성능 데이터 플러시
-   */
-  public async flushPerformanceData(): Promise<void> {
-    await this.performanceMonitor.flush();
   }
 }
