@@ -62,10 +62,7 @@ export function parseWithBabel(
 /**
  * 코드 파싱 (Babel 사용)
  */
-export function parseFile(
-  code: string,
-  options: ParseOptions = {}
-): t.File {
+export function parseFile(code: string, options: ParseOptions = {}): t.File {
   return parseWithBabel(code, options);
 }
 
@@ -91,4 +88,3 @@ export function generateCode(
 ): { code: string; map?: any } {
   return generateWithBabel(ast, options);
 }
-

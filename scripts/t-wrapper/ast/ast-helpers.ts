@@ -114,14 +114,6 @@ export function isReactCustomHook(name: string): boolean {
   return REGEX_PATTERNS.REACT_HOOK.test(name);
 }
 
-/**
- * React 컴포넌트 또는 커스텀 훅인지 확인
- * 하위 호환성을 위한 헬퍼 함수
- */
-export function isReactComponentOrHook(name: string): boolean {
-  return isReactComponent(name) || isReactCustomHook(name);
-}
-
 /** 함수 본문(body)에 이미 번역 함수 호출이 있는지 확인 */
 export function hasTranslationFunctionCall(
   body: NodePath<t.BlockStatement | t.Expression>,

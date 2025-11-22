@@ -8,7 +8,6 @@ import {
   shouldSkipPath,
   isReactComponent,
   isReactCustomHook,
-  isReactComponentOrHook,
   createTranslationBinding,
   hasTranslationFunctionCall,
 } from "../ast/ast-helpers";
@@ -99,20 +98,6 @@ const text = "hello";`;
       expect(isReactCustomHook("Component")).toBe(false);
       expect(isReactCustomHook("use-my-hook")).toBe(false);
       expect(isReactCustomHook("use_my_hook")).toBe(false);
-    });
-  });
-
-  describe("isReactComponentOrHook", () => {
-    it("컴포넌트와 훅 모두 인식해야 함", () => {
-      expect(isReactComponentOrHook("Button")).toBe(true);
-      expect(isReactComponentOrHook("MyComponent")).toBe(true);
-      expect(isReactComponentOrHook("useState")).toBe(true);
-      expect(isReactComponentOrHook("useMyHook")).toBe(true);
-    });
-
-    it("일반 함수는 인식하지 않아야 함", () => {
-      expect(isReactComponentOrHook("formatDate")).toBe(false);
-      expect(isReactComponentOrHook("getData")).toBe(false);
     });
   });
 
