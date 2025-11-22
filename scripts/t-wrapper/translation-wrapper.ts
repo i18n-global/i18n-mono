@@ -188,7 +188,7 @@ export class TranslationWrapper {
           modified: isFileModified,
         });
       } catch (error) {
-        console.error(CONSOLE_MESSAGES.ERROR_PROCESSING(filePath), error);
+        // 개별 파일 에러는 조용히 처리 (성능 모니터에만 기록)
         this.performanceMonitor.captureError(error as Error, { filePath });
         this.performanceMonitor.end("file_processing", {
           filePath,

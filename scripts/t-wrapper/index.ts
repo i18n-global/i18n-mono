@@ -20,13 +20,7 @@ export async function runTranslationWrapper(
   config: Partial<ScriptConfig> = {}
 ) {
   const wrapper = new TranslationWrapper(config);
-
-  try {
-    await wrapper.processFiles();
-  } catch (error) {
-    console.error(CONSOLE_MESSAGES.FATAL_ERROR, error);
-    throw error;
-  }
+  await wrapper.processFiles();
 }
 
 // CLI 실행 부분
