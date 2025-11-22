@@ -4,7 +4,7 @@
  */
 
 import * as path from "path";
-import { runTranslationWrapper } from "./index";
+import { TranslationWrapper } from "./translation-wrapper";
 import { writeFile, readFile, createTempDir, removeDir } from "./fs-utils";
 
 describe("t-wrapper E2E", () => {
@@ -26,9 +26,10 @@ describe("t-wrapper E2E", () => {
 
     writeFile(testFile, originalContent);
 
-    await runTranslationWrapper({
+    const wrapper = new TranslationWrapper({
       sourcePattern: path.join(tempDir, "**/*.tsx"),
     });
+    await wrapper.processFiles();
 
     const modifiedContent = readFile(testFile);
     expect(modifiedContent).toContain("t(");
@@ -46,9 +47,10 @@ describe("t-wrapper E2E", () => {
 
     writeFile(testFile, originalContent);
 
-    await runTranslationWrapper({
+    const wrapper = new TranslationWrapper({
       sourcePattern: path.join(tempDir, "**/*.tsx"),
     });
+    await wrapper.processFiles();
 
     const modifiedContent = readFile(testFile);
     expect(modifiedContent).toContain("t(");
@@ -66,9 +68,10 @@ describe("t-wrapper E2E", () => {
 
     writeFile(testFile, originalContent);
 
-    await runTranslationWrapper({
+    const wrapper = new TranslationWrapper({
       sourcePattern: path.join(tempDir, "**/*.ts"),
     });
+    await wrapper.processFiles();
 
     const modifiedContent = readFile(testFile);
     expect(modifiedContent).toContain("t(");
@@ -94,9 +97,10 @@ describe("t-wrapper E2E", () => {
 
     writeFile(testFile, originalContent);
 
-    await runTranslationWrapper({
+    const wrapper = new TranslationWrapper({
       sourcePattern: path.join(tempDir, "**/*.tsx"),
     });
+    await wrapper.processFiles();
 
     const modifiedContent = readFile(testFile);
     expect(modifiedContent).toContain("t(");
@@ -114,9 +118,10 @@ describe("t-wrapper E2E", () => {
 
     writeFile(testFile, originalContent);
 
-    await runTranslationWrapper({
+    const wrapper = new TranslationWrapper({
       sourcePattern: path.join(tempDir, "**/*.tsx"),
     });
+    await wrapper.processFiles();
 
     const modifiedContent = readFile(testFile);
     expect(modifiedContent).toContain('const text = "안녕하세요"');
@@ -130,11 +135,12 @@ describe("t-wrapper E2E", () => {
 }`;
     writeFile(testFile, originalContent);
 
-    await runTranslationWrapper({
+    const wrapper = new TranslationWrapper({
       sourcePattern: path.join(tempDir, "**/*.tsx"),
       mode: "client",
       framework: "nextjs",
-    });
+    } as any);
+    await wrapper.processFiles();
 
     const modified = readFile(testFile);
     expect(modified).toMatch(/["']use client["']/);
@@ -149,11 +155,12 @@ describe("t-wrapper E2E", () => {
 }`;
     writeFile(testFile, originalContent);
 
-    await runTranslationWrapper({
+    const wrapper = new TranslationWrapper({
       sourcePattern: path.join(tempDir, "**/*.tsx"),
       mode: "client",
       framework: "react",
-    });
+    } as any);
+    await wrapper.processFiles();
 
     const modified = readFile(testFile);
     expect(modified).not.toMatch(/["']use client["']/);
@@ -168,10 +175,11 @@ describe("t-wrapper E2E", () => {
 }`;
     writeFile(testFile, originalContent);
 
-    await runTranslationWrapper({
+    const wrapper = new TranslationWrapper({
       sourcePattern: path.join(tempDir, "**/*.tsx"),
       mode: "server",
-    });
+    } as any);
+    await wrapper.processFiles();
 
     const modified = readFile(testFile);
     expect(modified).toContain("await getServerTranslation");
@@ -186,11 +194,12 @@ describe("t-wrapper E2E", () => {
 }`;
     writeFile(testFile, originalContent);
 
-    await runTranslationWrapper({
+    const wrapper = new TranslationWrapper({
       sourcePattern: path.join(tempDir, "**/*.tsx"),
       mode: "server",
       serverTranslationFunction: "getServerT",
-    });
+    } as any);
+    await wrapper.processFiles();
 
     const modified = readFile(testFile);
     expect(modified).toContain("await getServerT");

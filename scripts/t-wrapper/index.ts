@@ -2,26 +2,7 @@
 
 import { ScriptConfig } from "../common/default-config";
 import { TranslationWrapper } from "./translation-wrapper";
-import { PerformanceReporter } from "../common/performance-reporter";
-import {
-  CONSOLE_MESSAGES,
-  CLI_OPTIONS,
-  CLI_HELP,
-  STRING_CONSTANTS,
-} from "./constants";
-
-// ScriptConfig 타입을 re-export (하위 호환성)
-export type { ScriptConfig };
-
-// TranslationWrapper 클래스를 re-export (하위 호환성)
-export { TranslationWrapper };
-
-export async function runTranslationWrapper(
-  config: Partial<ScriptConfig> = {}
-) {
-  const wrapper = new TranslationWrapper(config);
-  await wrapper.processFiles();
-}
+import { CLI_OPTIONS, CLI_HELP } from "./constants";
 
 // CLI 실행 부분
 if (require.main === module) {
@@ -48,5 +29,5 @@ ${CLI_HELP.EXAMPLES}
     }
   }
 
-  runTranslationWrapper(config).catch(console.error);
+  new TranslationWrapper(config).processFiles().catch(console.error);
 }
