@@ -5,7 +5,7 @@
 
 import { TranslationWrapper } from "./translation-wrapper";
 import * as path from "path";
-import { setFile, readFile, createTempDir, removeDir } from "./test-utils";
+import { writeFile, readFile, createTempDir, removeDir } from "./fs-utils";
 
 describe("translation-wrapper", () => {
   let tempDir: string;
@@ -21,7 +21,7 @@ describe("translation-wrapper", () => {
   describe("processFiles", () => {
     it("한국어가 포함된 파일을 처리해야 함", async () => {
       const testFile = path.join(tempDir, "test.tsx");
-      setFile(
+      writeFile(
         testFile,
         `function Component() {
   return <div>안녕하세요</div>;
@@ -38,7 +38,7 @@ describe("translation-wrapper", () => {
 
     it("Next.js 환경에서 client 모드일 때만 'use client'를 추가해야 함", async () => {
       const testFile = path.join(tempDir, "client.tsx");
-      setFile(
+      writeFile(
         testFile,
         `function ClientComp() {
   return <div>안녕하세요</div>;
@@ -60,7 +60,7 @@ describe("translation-wrapper", () => {
 
     it("React 환경에서 client 모드일 때는 'use client'를 추가하지 않아야 함", async () => {
       const testFile = path.join(tempDir, "client-react.tsx");
-      setFile(
+      writeFile(
         testFile,
         `function ClientComp() {
   return <div>안녕하세요</div>;
@@ -82,7 +82,7 @@ describe("translation-wrapper", () => {
 
     it("server 모드에서는 지정한 serverTranslationFunction으로 t 바인딩을 생성해야 함", async () => {
       const testFile = path.join(tempDir, "server.tsx");
-      setFile(
+      writeFile(
         testFile,
         `function ServerComp() {
   return <div>안녕하세요</div>;

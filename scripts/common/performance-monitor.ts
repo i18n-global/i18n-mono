@@ -289,7 +289,6 @@ export class PerformanceMonitor {
   captureError(error: Error, context?: Record<string, any>): void {
     PerformanceReporter.printError(error, context);
   }
-
 }
 
 /**
