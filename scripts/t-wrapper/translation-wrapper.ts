@@ -1,4 +1,3 @@
-import * as path from "path";
 import { glob } from "glob";
 import { writeFile, readFile } from "./fs-utils";
 import traverse, { NodePath } from "@babel/traverse";
@@ -15,163 +14,160 @@ import { ensureNamedImport, ensureUseClientDirective } from "./import-manager";
 import { transformFunctionBody } from "./ast-transformers";
 import { STRING_CONSTANTS } from "./constants";
 
-export class TranslationWrapper {
-  public readonly config: Required<ScriptConfig>;
-
-  constructor(config: Partial<ScriptConfig> = {}) {
-    this.config = {
-      ...SCRIPT_CONFIG_DEFAULTS,
-      ...config,
-    } as Required<ScriptConfig>;
+function processComponent(
+  path: NodePath<t.Function>,
+  code: string,
+  modifiedComponentPaths: NodePath<t.Function>[]
+): boolean {
+  let componentName: string | null | undefined;
+  if (path.isFunctionDeclaration() && path.node.id) {
+    componentName = path.node.id.name;
+  } else if (
+    path.isArrowFunctionExpression() &&
+    t.isVariableDeclarator(path.parent) &&
+    t.isIdentifier(path.parent.id)
+  ) {
+    componentName = path.parent.id.name;
   }
 
-  private processComponent(
-    path: NodePath<t.Function>,
-    code: string,
-    modifiedComponentPaths: NodePath<t.Function>[]
-  ): boolean {
-    let componentName: string | null | undefined;
-    if (path.isFunctionDeclaration() && path.node.id) {
-      componentName = path.node.id.name;
-    } else if (
-      path.isArrowFunctionExpression() &&
-      t.isVariableDeclarator(path.parent) &&
-      t.isIdentifier(path.parent.id)
-    ) {
-      componentName = path.parent.id.name;
+  if (
+    componentName &&
+    (isReactComponent(componentName) || isReactCustomHook(componentName))
+  ) {
+    const transformResult = transformFunctionBody(path, code);
+    if (transformResult.wasModified) {
+      modifiedComponentPaths.push(path);
+      return true;
     }
+  }
+  return false;
+}
 
+function applyTranslationsToFile(
+  ast: t.File,
+  filePath: string,
+  modifiedComponentPaths: NodePath<t.Function>[],
+  config: Required<ScriptConfig>
+): void {
+  const isServerMode = config.mode === "server";
+  const isClientMode = config.mode === "client";
+  const isNextjsFramework = config.framework === "nextjs";
+
+  if (isNextjsFramework && isClientMode) {
+    ensureUseClientDirective(ast);
+  }
+
+  const usedTranslationFunctions = new Set<string>();
+
+  modifiedComponentPaths.forEach((componentPath) => {
     if (
-      componentName &&
-      (isReactComponent(componentName) || isReactCustomHook(componentName))
+      componentPath.scope.hasBinding(STRING_CONSTANTS.TRANSLATION_FUNCTION)
     ) {
-      const transformResult = transformFunctionBody(path, code);
-      if (transformResult.wasModified) {
-        modifiedComponentPaths.push(path);
-        return true;
-      }
-    }
-    return false;
-  }
-
-  private applyTranslationsToFile(
-    ast: t.File,
-    filePath: string,
-    modifiedComponentPaths: NodePath<t.Function>[]
-  ): void {
-    const isServerMode = this.config.mode === "server";
-    const isClientMode = this.config.mode === "client";
-    const isNextjsFramework = this.config.framework === "nextjs";
-
-    if (isNextjsFramework && isClientMode) {
-      ensureUseClientDirective(ast);
+      return;
     }
 
-    const usedTranslationFunctions = new Set<string>();
+    const body = componentPath.get("body");
 
-    modifiedComponentPaths.forEach((componentPath) => {
-      if (
-        componentPath.scope.hasBinding(STRING_CONSTANTS.TRANSLATION_FUNCTION)
-      ) {
-        return;
-      }
+    const translationFunctionName = isServerMode
+      ? config.serverTranslationFunction
+      : STRING_CONSTANTS.USE_TRANSLATION;
 
-      const body = componentPath.get("body");
+    if (hasTranslationFunctionCall(body, translationFunctionName)) {
+      return;
+    }
 
-      const translationFunctionName = isServerMode
-        ? this.config.serverTranslationFunction
-        : STRING_CONSTANTS.USE_TRANSLATION;
+    if (isServerMode) {
+      (componentPath.node as any).async = true;
+    }
+    const decl = createTranslationBinding(
+      isServerMode ? "server" : "client",
+      isServerMode ? config.serverTranslationFunction : undefined
+    );
 
-      if (hasTranslationFunctionCall(body, translationFunctionName)) {
-        return;
-      }
+    if (body.isBlockStatement()) {
+      body.unshiftContainer("body", decl);
+    } else {
+      const original = body.node as t.Expression;
+      (componentPath.node as any).body = t.blockStatement([
+        decl,
+        t.returnStatement(original),
+      ]);
+    }
 
-      if (isServerMode) {
-        (componentPath.node as any).async = true;
-      }
-      const decl = createTranslationBinding(
-        isServerMode ? "server" : "client",
-        isServerMode ? this.config.serverTranslationFunction : undefined
-      );
+    usedTranslationFunctions.add(translationFunctionName);
+  });
 
-      if (body.isBlockStatement()) {
-        body.unshiftContainer("body", decl);
-      } else {
-        const original = body.node as t.Expression;
-        (componentPath.node as any).body = t.blockStatement([
-          decl,
-          t.returnStatement(original),
-        ]);
-      }
+  usedTranslationFunctions.forEach((functionName) => {
+    ensureNamedImport(ast, config.translationImportSource, functionName);
+  });
 
-      usedTranslationFunctions.add(translationFunctionName);
-    });
+  const output = generateCode(ast, config.parserType, {
+    retainLines: true,
+    comments: true,
+  });
 
-    usedTranslationFunctions.forEach((functionName) => {
-      ensureNamedImport(ast, this.config.translationImportSource, functionName);
-    });
+  writeFile(filePath, output.code);
+}
 
-    const output = generateCode(ast, this.config.parserType, {
-      retainLines: true,
-      comments: true,
-    });
+export async function processFiles(
+  config: Partial<ScriptConfig> = {}
+): Promise<{
+  processedFiles: string[];
+  totalTime: number;
+}> {
+  const fullConfig = {
+    ...SCRIPT_CONFIG_DEFAULTS,
+    ...config,
+  } as Required<ScriptConfig>;
 
-    writeFile(filePath, output.code);
-  }
+  const startTime = Date.now();
+  const filePaths = await glob(fullConfig.sourcePattern);
+  const processedFiles: string[] = [];
 
-  public async processFiles(): Promise<{
-    processedFiles: string[];
-    totalTime: number;
-  }> {
-    const startTime = Date.now();
-    const filePaths = await glob(this.config.sourcePattern);
-    const processedFiles: string[] = [];
+  for (const filePath of filePaths) {
+    let isFileModified = false;
+    const code = readFile(filePath);
 
-    for (const filePath of filePaths) {
-      let isFileModified = false;
-      const code = readFile(filePath);
+    try {
+      const ast = parseFile(code, fullConfig.parserType, {
+        sourceType: "module",
+        tsx: true,
+        decorators: true,
+      });
 
-      try {
-        const ast = parseFile(code, this.config.parserType, {
-          sourceType: "module",
-          tsx: true,
-          decorators: true,
-        });
+      const modifiedComponentPaths: NodePath<t.Function>[] = [];
 
-        const modifiedComponentPaths: NodePath<t.Function>[] = [];
-
-        traverse(ast, {
-          FunctionDeclaration: (path) => {
-            if (this.processComponent(path, code, modifiedComponentPaths)) {
+      traverse(ast, {
+        FunctionDeclaration: (path) => {
+          if (processComponent(path, code, modifiedComponentPaths)) {
+            isFileModified = true;
+          }
+        },
+        ArrowFunctionExpression: (path) => {
+          if (
+            t.isVariableDeclarator(path.parent) &&
+            t.isIdentifier(path.parent.id)
+          ) {
+            if (processComponent(path, code, modifiedComponentPaths)) {
               isFileModified = true;
             }
-          },
-          ArrowFunctionExpression: (path) => {
-            if (
-              t.isVariableDeclarator(path.parent) &&
-              t.isIdentifier(path.parent.id)
-            ) {
-              if (this.processComponent(path, code, modifiedComponentPaths)) {
-                isFileModified = true;
-              }
-            }
-          },
-        });
+          }
+        },
+      });
 
-        if (isFileModified) {
-          this.applyTranslationsToFile(ast, filePath, modifiedComponentPaths);
-          processedFiles.push(filePath);
-        }
-      } catch (error) {
-        // 에러 발생 시 조용히 스킵
+      if (isFileModified) {
+        applyTranslationsToFile(ast, filePath, modifiedComponentPaths, fullConfig);
+        processedFiles.push(filePath);
       }
+    } catch (error) {
+      // 에러 발생 시 조용히 스킵
     }
-
-    const totalTime = Date.now() - startTime;
-
-    return {
-      processedFiles,
-      totalTime,
-    };
   }
+
+  const totalTime = Date.now() - startTime;
+
+  return {
+    processedFiles,
+    totalTime,
+  };
 }
