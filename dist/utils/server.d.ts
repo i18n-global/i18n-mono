@@ -197,4 +197,28 @@ export declare function createServerI18nWithTranslations(headers: Headers, trans
     translations: Record<string, Record<string, string>>;
     dict: Record<string, string>;
 };
+/**
+ * Create dynamic translation function for server-side use
+ * Accepts any string key without type checking - use for runtime dynamic keys
+ *
+ * @example
+ * ```tsx
+ * import { headers } from 'next/headers';
+ * import { getServerLanguage, getDynamicTranslation } from 'i18nexus/server';
+ * import { dynamicTranslations } from '@/lib/i18n';
+ *
+ * export default async function ServerPage() {
+ *   const headersList = await headers();
+ *   const language = getServerLanguage(headersList);
+ *   const tDynamic = getDynamicTranslation(language, dynamicTranslations);
+ *
+ *   const errorCode = "404";
+ *   return <p>{tDynamic(`error.${errorCode}`)}</p>;
+ * }
+ * ```
+ *
+ * @param language - Current language code
+ * @param dynamicTranslations - Dynamic translations object
+ */
+export declare function getDynamicTranslation(language: string, dynamicTranslations: Record<string, Record<string, string>>): (key: string, variables?: ServerTranslationVariables, fallback?: string) => string;
 //# sourceMappingURL=server.d.ts.map

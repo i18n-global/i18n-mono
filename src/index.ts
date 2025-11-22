@@ -4,14 +4,20 @@ export type {
   I18nProviderProps,
   I18nContextType,
   ExtractI18nKeys,
+  NamespaceTranslations,
 } from "./components/I18nProvider";
 export { I18NexusDevtools } from "./components/I18NexusDevtools";
 export type { I18NexusDevtoolsProps } from "./components/I18NexusDevtools";
 
 // Hooks
-export { useTranslation, useLanguageSwitcher } from "./hooks/useTranslation";
+export {
+  useTranslation,
+  useDynamicTranslation,
+  useLanguageSwitcher,
+} from "./hooks/useTranslation";
 export type {
   UseTranslationReturn,
+  UseDynamicTranslationReturn,
   UseLanguageSwitcherReturn,
   TranslationVariables,
   TranslationStyles,

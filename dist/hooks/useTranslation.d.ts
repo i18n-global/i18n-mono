@@ -65,31 +65,57 @@ export interface UseTranslationReturn<K extends string = string> {
     isReady: boolean;
 }
 /**
- * Hook to access translation function and current language
+ * Hook to access translation function and current language with namespace support
  *
- * Usage 1: Auto-detect keys from I18nProvider translations (Recommended!)
+ * Usage with namespace:
  * ```typescript
- * <I18nProvider translations={{ en: { greeting: "Hello" } }}>
- *   const { t } = useTranslation();  // t automatically typed!
- *   t("greeting");   // ✅ OK
- *   t("invalid");    // ❌ Compile error
- * </I18nProvider>
+ * const { t } = useTranslation("common");
+ * t("welcome");   // ✅ Gets "welcome" from common namespace
+ * t("invalid");   // ❌ TypeScript Error if type-safe
  * ```
  *
- * Usage 2: Explicit key specification
+ * Usage with type safety:
  * ```typescript
- * const { t } = useTranslation<"greeting" | "farewell">();
- * t("greeting");   // ✅ OK
- * t("invalid");    // ❌ TypeScript Error
+ * const { t } = useTranslation<"welcome" | "goodbye">("common");
+ * t("welcome");   // ✅ OK
+ * t("invalid");   // ❌ TypeScript Error
  * ```
  *
- * Usage 3: No type safety (backward compatible)
- * ```typescript
- * const { t } = useTranslation();
- * t("any-key");    // ✅ No type checking
- * ```
+ * @param namespace - The translation namespace to use (e.g., "common", "menu", "error")
  */
-export declare function useTranslation<K extends string = string>(): UseTranslationReturn<K>;
+export declare function useTranslation<K extends string = string>(namespace: string): UseTranslationReturn<K>;
+/**
+ * Return type for useDynamicTranslation hook
+ */
+export interface UseDynamicTranslationReturn {
+    /**
+     * Dynamic translation function - accepts any string key
+     * No type safety - use for runtime dynamic keys
+     */
+    t: TranslationFunction<string>;
+    /**
+     * Current language code (e.g., 'en', 'ko')
+     */
+    currentLanguage: string;
+    /**
+     * Whether translations are ready to use
+     */
+    isReady: boolean;
+}
+/**
+ * Hook to access dynamic translation function for runtime keys
+ *
+ * Usage:
+ * ```typescript
+ * const { t: tDynamic } = useDynamicTranslation();
+ * tDynamic(items[0].label);  // ✅ Accepts any string
+ * tDynamic(`error.${errorCode}`);  // ✅ Runtime concatenation
+ * ```
+ *
+ * Note: This hook does NOT provide type safety.
+ * Use it only when you need truly dynamic keys that can't be known at compile time.
+ */
+export declare function useDynamicTranslation(): UseDynamicTranslationReturn;
 /**
  * Return type for useLanguageSwitcher hook
  */

@@ -8,13 +8,27 @@ import {
 } from "../utils/languageManager";
 
 /**
- * Extract translation keys from a translations object
+ * Extract translation keys from a namespace's translations
  * @example
- * type Keys = ExtractI18nKeys<typeof translations>;
+ * type Keys = ExtractI18nKeys<typeof translations["common"]>;
  * // "greeting" | "farewell" | "welcome"
  */
 export type ExtractI18nKeys<T extends Record<string, Record<string, string>>> =
   keyof T[keyof T] & string;
+
+/**
+ * Namespace-based translation structure
+ * @example
+ * {
+ *   common: { en: { welcome: "Welcome" }, ko: { welcome: "환영합니다" } },
+ *   menu: { en: { home: "Home" }, ko: { home: "홈" } },
+ *   dynamic: { en: { ... }, ko: { ... } }
+ * }
+ */
+export type NamespaceTranslations = Record<
+  string,
+  Record<string, Record<string, string>>
+>;
 
 export interface I18nContextType<
   TLanguage extends string = string,
@@ -25,7 +39,19 @@ export interface I18nContextType<
   availableLanguages: LanguageConfig[];
   languageManager: LanguageManager;
   isLoading: boolean;
-  translations: Record<string, Record<string, string>>;
+  /**
+   * Namespace-based translations
+   * @example
+   * {
+   *   common: { en: { welcome: "Welcome" }, ko: { welcome: "환영합니다" } },
+   *   menu: { en: { home: "Home" }, ko: { home: "홈" } }
+   * }
+   */
+  translations: NamespaceTranslations;
+  /**
+   * Dynamic translations (separate from static namespaces)
+   */
+  dynamicTranslations: Record<string, Record<string, string>>;
   /**
    * Valid translation keys extracted from translations
    * This is used for type-safe useTranslation
@@ -52,14 +78,28 @@ export const useI18nContext = <
 
 export interface I18nProviderProps<
   TLanguage extends string = string,
-  TTranslations extends Record<string, Record<string, string>> = Record<
-    string,
-    Record<string, string>
-  >,
+  TTranslations extends NamespaceTranslations = NamespaceTranslations,
 > {
   children: ReactNode;
   languageManagerOptions?: LanguageManagerOptions;
+  /**
+   * Namespace-based translations
+   * @example
+   * {
+   *   common: { en: { welcome: "Welcome" }, ko: { welcome: "환영합니다" } },
+   *   menu: { en: { home: "Home" }, ko: { home: "홈" } }
+   * }
+   */
   translations?: TTranslations;
+  /**
+   * Dynamic translations (optional, separate from static namespaces)
+   * @example
+   * {
+   *   en: { "item.type.0": "League", "error.404": "Not Found" },
+   *   ko: { "item.type.0": "리그", "error.404": "찾을 수 없음" }
+   * }
+   */
+  dynamicTranslations?: Record<string, Record<string, string>>;
   onLanguageChange?: (language: TLanguage) => void;
   /**
    * Initial language from server-side (for SSR/Next.js App Router)
@@ -70,18 +110,17 @@ export interface I18nProviderProps<
 
 export function I18nProvider<
   TLanguage extends string = string,
-  TTranslations extends Record<string, Record<string, string>> = Record<
-    string,
-    Record<string, string>
-  >,
+  TTranslations extends NamespaceTranslations = NamespaceTranslations,
 >({
   children,
   languageManagerOptions,
   translations,
+  dynamicTranslations,
   onLanguageChange,
   initialLanguage,
 }: I18nProviderProps<TLanguage, TTranslations>) {
   const defaultTranslations = translations || ({} as TTranslations);
+  const defaultDynamicTranslations = dynamicTranslations || {};
   const [languageManager] = React.useState(
     () => new LanguageManager(languageManagerOptions),
   );
@@ -157,16 +196,14 @@ export function I18nProvider<
     return removeListener;
   }, [languageManager, currentLanguage, onLanguageChange, isHydrated]);
 
-  // Extract translation keys for type safety
-  type TKeys = ExtractI18nKeys<TTranslations>;
-
-  const contextValue: I18nContextType<TLanguage, TKeys> = {
+  const contextValue: I18nContextType<TLanguage, string> = {
     currentLanguage,
     changeLanguage,
     availableLanguages: languageManager.getAvailableLanguages(),
     languageManager,
     isLoading,
-    translations: defaultTranslations as Record<string, Record<string, string>>,
+    translations: defaultTranslations,
+    dynamicTranslations: defaultDynamicTranslations,
   };
 
   return (

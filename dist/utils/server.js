@@ -377,4 +377,36 @@ export function createServerI18nWithTranslations(headers, translations, options)
         dict,
     };
 }
+/**
+ * Create dynamic translation function for server-side use
+ * Accepts any string key without type checking - use for runtime dynamic keys
+ *
+ * @example
+ * ```tsx
+ * import { headers } from 'next/headers';
+ * import { getServerLanguage, getDynamicTranslation } from 'i18nexus/server';
+ * import { dynamicTranslations } from '@/lib/i18n';
+ *
+ * export default async function ServerPage() {
+ *   const headersList = await headers();
+ *   const language = getServerLanguage(headersList);
+ *   const tDynamic = getDynamicTranslation(language, dynamicTranslations);
+ *
+ *   const errorCode = "404";
+ *   return <p>{tDynamic(`error.${errorCode}`)}</p>;
+ * }
+ * ```
+ *
+ * @param language - Current language code
+ * @param dynamicTranslations - Dynamic translations object
+ */
+export function getDynamicTranslation(language, dynamicTranslations) {
+    const currentTranslations = dynamicTranslations[language] || dynamicTranslations["en"] || {};
+    return function translate(key, variables, fallback) {
+        // Get translated text
+        const translatedText = currentTranslations[key] || fallback || key;
+        // Apply variable interpolation if variables provided
+        return interpolateServer(translatedText, variables);
+    };
+}
 //# sourceMappingURL=server.js.map

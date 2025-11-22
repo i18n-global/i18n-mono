@@ -61,38 +61,71 @@ const interpolateWithStyles = (text, variables, styles) => {
     return React.createElement(React.Fragment, null, ...parts);
 };
 /**
- * Hook to access translation function and current language
+ * Hook to access translation function and current language with namespace support
  *
- * Usage 1: Auto-detect keys from I18nProvider translations (Recommended!)
+ * Usage with namespace:
  * ```typescript
- * <I18nProvider translations={{ en: { greeting: "Hello" } }}>
- *   const { t } = useTranslation();  // t automatically typed!
- *   t("greeting");   // ✅ OK
- *   t("invalid");    // ❌ Compile error
- * </I18nProvider>
+ * const { t } = useTranslation("common");
+ * t("welcome");   // ✅ Gets "welcome" from common namespace
+ * t("invalid");   // ❌ TypeScript Error if type-safe
  * ```
  *
- * Usage 2: Explicit key specification
+ * Usage with type safety:
  * ```typescript
- * const { t } = useTranslation<"greeting" | "farewell">();
- * t("greeting");   // ✅ OK
- * t("invalid");    // ❌ TypeScript Error
+ * const { t } = useTranslation<"welcome" | "goodbye">("common");
+ * t("welcome");   // ✅ OK
+ * t("invalid");   // ❌ TypeScript Error
  * ```
  *
- * Usage 3: No type safety (backward compatible)
- * ```typescript
- * const { t } = useTranslation();
- * t("any-key");    // ✅ No type checking
- * ```
+ * @param namespace - The translation namespace to use (e.g., "common", "menu", "error")
  */
-export function useTranslation() {
-    // Extract K from context if not explicitly provided
-    // This enables automatic type inference from I18nProvider
+export function useTranslation(namespace) {
     const context = useI18nContext();
     const { currentLanguage, isLoading, translations } = context;
-    // i18nexus 자체 번역 시스템 사용
+    // i18nexus 자체 번역 시스템 사용 (네임스페이스 기반)
     const translate = ((key, variables, styles) => {
-        const currentTranslations = translations[currentLanguage] || {};
+        // Get namespace translations
+        const namespaceTranslations = translations[namespace];
+        if (!namespaceTranslations) {
+            console.warn(`Namespace "${namespace}" not found in translations`);
+            return key;
+        }
+        // Get current language translations from namespace
+        const currentTranslations = namespaceTranslations[currentLanguage] || {};
+        const translatedText = currentTranslations[key] || key;
+        // If styles are provided, return React elements
+        if (styles && variables) {
+            return interpolateWithStyles(translatedText, variables, styles);
+        }
+        // Otherwise return string
+        return interpolate(translatedText, variables);
+    });
+    return {
+        t: translate,
+        currentLanguage,
+        isReady: !isLoading,
+    };
+}
+/**
+ * Hook to access dynamic translation function for runtime keys
+ *
+ * Usage:
+ * ```typescript
+ * const { t: tDynamic } = useDynamicTranslation();
+ * tDynamic(items[0].label);  // ✅ Accepts any string
+ * tDynamic(`error.${errorCode}`);  // ✅ Runtime concatenation
+ * ```
+ *
+ * Note: This hook does NOT provide type safety.
+ * Use it only when you need truly dynamic keys that can't be known at compile time.
+ */
+export function useDynamicTranslation() {
+    const context = useI18nContext();
+    const { currentLanguage, isLoading, dynamicTranslations } = context;
+    // Dynamic translation without type safety
+    const translate = ((key, variables, styles) => {
+        // Get current language dynamic translations
+        const currentTranslations = dynamicTranslations[currentLanguage] || {};
         const translatedText = currentTranslations[key] || key;
         // If styles are provided, return React elements
         if (styles && variables) {
