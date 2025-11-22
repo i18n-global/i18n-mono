@@ -14,7 +14,7 @@ import { ensureNamedImport, ensureUseClientDirective } from "./import-manager";
 import { transformFunctionBody } from "./ast-transformers";
 import { STRING_CONSTANTS } from "./constants";
 
-function processComponent(
+function tryTransformComponent(
   path: NodePath<t.Function>,
   code: string,
   modifiedComponentPaths: NodePath<t.Function>[]
@@ -60,9 +60,7 @@ function applyTranslationsToFile(
   const usedTranslationFunctions = new Set<string>();
 
   modifiedComponentPaths.forEach((componentPath) => {
-    if (
-      componentPath.scope.hasBinding(STRING_CONSTANTS.TRANSLATION_FUNCTION)
-    ) {
+    if (componentPath.scope.hasBinding(STRING_CONSTANTS.TRANSLATION_FUNCTION)) {
       return;
     }
 
@@ -139,7 +137,7 @@ export async function processFiles(
 
       traverse(ast, {
         FunctionDeclaration: (path) => {
-          if (processComponent(path, code, modifiedComponentPaths)) {
+          if (tryTransformComponent(path, code, modifiedComponentPaths)) {
             isFileModified = true;
           }
         },
@@ -148,7 +146,7 @@ export async function processFiles(
             t.isVariableDeclarator(path.parent) &&
             t.isIdentifier(path.parent.id)
           ) {
-            if (processComponent(path, code, modifiedComponentPaths)) {
+            if (tryTransformComponent(path, code, modifiedComponentPaths)) {
               isFileModified = true;
             }
           }
@@ -156,7 +154,12 @@ export async function processFiles(
       });
 
       if (isFileModified) {
-        applyTranslationsToFile(ast, filePath, modifiedComponentPaths, fullConfig);
+        applyTranslationsToFile(
+          ast,
+          filePath,
+          modifiedComponentPaths,
+          fullConfig
+        );
         processedFiles.push(filePath);
       }
     } catch (error) {
