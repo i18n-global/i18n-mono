@@ -176,4 +176,3 @@ export function createTranslationBinding(
     t.variableDeclarator(pattern, callExpression),
   ]);
 }
-
