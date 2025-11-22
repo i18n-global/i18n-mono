@@ -54,11 +54,3 @@ export type {
 // Type utilities
 export { defineConfig } from "./utils/types";
 export type { ExtractLanguages } from "./utils/types";
-
-// Dynamic translation utilities
-export {
-  createDynamicTranslation,
-  buildTranslationParams,
-  buildConditionalTranslation,
-  mapToTranslationParams,
-} from "./utils/dynamicTranslation";
