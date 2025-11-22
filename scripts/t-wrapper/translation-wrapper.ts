@@ -1,6 +1,6 @@
-import * as fs from "fs";
 import * as path from "path";
 import { glob } from "glob";
+import { writeFile, readFile } from "./fs-utils";
 import traverse, { NodePath } from "@babel/traverse";
 import * as t from "@babel/types";
 import { PerformanceMonitor } from "../common/performance-monitor";
@@ -125,7 +125,7 @@ export class TranslationWrapper {
       comments: true,
     });
 
-    fs.writeFileSync(filePath, output.code, "utf-8");
+    writeFile(filePath, output.code);
   }
 
   public async processFiles(): Promise<{
@@ -140,7 +140,7 @@ export class TranslationWrapper {
       this.performanceMonitor.start("file_processing", { filePath });
 
       let isFileModified = false;
-      const code = fs.readFileSync(filePath, "utf-8");
+      const code = readFile(filePath);
 
       try {
         const ast = parseFile(code, this.config.parserType, {
