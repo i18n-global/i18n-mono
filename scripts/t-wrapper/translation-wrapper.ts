@@ -32,6 +32,34 @@ export class TranslationWrapper {
     });
   }
 
+  /**
+   * 컴포넌트 변환 처리
+   * @param path - 함수 AST 경로
+   * @param componentName - 컴포넌트 이름
+   * @param code - 소스 코드
+   * @param isFileModified - 파일 수정 여부 플래그 (참조)
+   * @param modifiedComponentPaths - 수정된 컴포넌트 경로 배열 (참조)
+   */
+  private processComponent(
+    path: NodePath<t.Function>,
+    componentName: string | null | undefined,
+    code: string,
+    isFileModified: { value: boolean },
+    modifiedComponentPaths: NodePath<t.Function>[]
+  ): void {
+    if (
+      componentName &&
+      (isReactComponent(componentName) ||
+        isReactCustomHook(componentName))
+    ) {
+      const transformResult = transformFunctionBody(path, code);
+      if (transformResult.wasModified) {
+        isFileModified.value = true;
+        modifiedComponentPaths.push(path);
+      }
+    }
+  }
+
   public async processFiles(): Promise<{
     processedFiles: string[];
   }> {
@@ -55,39 +83,36 @@ export class TranslationWrapper {
 
         // 수정된 컴포넌트 경로 저장
         const modifiedComponentPaths: NodePath<t.Function>[] = [];
-
-        // 컴포넌트 변환 공통 로직
-        const processComponent = (
-          path: NodePath<t.Function>,
-          componentName: string | null | undefined
-        ) => {
-          if (
-            componentName &&
-            (isReactComponent(componentName) ||
-              isReactCustomHook(componentName))
-          ) {
-            const transformResult = transformFunctionBody(path, code);
-            if (transformResult.wasModified) {
-              isFileModified = true;
-              modifiedComponentPaths.push(path);
-            }
-          }
-        };
+        const isFileModifiedRef = { value: isFileModified };
 
         // Step 4: 컴포넌트 내부 처리
         traverse(ast, {
           FunctionDeclaration: (path) => {
-            processComponent(path, path.node.id?.name);
+            this.processComponent(
+              path,
+              path.node.id?.name,
+              code,
+              isFileModifiedRef,
+              modifiedComponentPaths
+            );
           },
           ArrowFunctionExpression: (path) => {
             if (
               t.isVariableDeclarator(path.parent) &&
               t.isIdentifier(path.parent.id)
             ) {
-              processComponent(path, path.parent.id.name);
+              this.processComponent(
+                path,
+                path.parent.id.name,
+                code,
+                isFileModifiedRef,
+                modifiedComponentPaths
+              );
             }
           },
         });
+
+        isFileModified = isFileModifiedRef.value;
 
         if (isFileModified) {
           const isServerMode = this.config.mode === "server";
