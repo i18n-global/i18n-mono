@@ -12,4 +12,6 @@ export { LanguageManager, defaultLanguageManager, } from "./utils/languageManage
 export type { LanguageConfig, LanguageManagerOptions, } from "./utils/languageManager";
 export { defineConfig } from "./utils/types";
 export type { ExtractLanguages } from "./utils/types";
+export { createI18n } from "./utils/createI18n";
+export type { CreateI18nReturn, ExtractNamespaces, ExtractNamespaceKeys, } from "./utils/createI18n";
 //# sourceMappingURL=index.d.ts.map

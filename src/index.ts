@@ -60,3 +60,11 @@ export type {
 // Type utilities
 export { defineConfig } from "./utils/types";
 export type { ExtractLanguages } from "./utils/types";
+
+// Type-safe i18n creator (automatic key inference)
+export { createI18n } from "./utils/createI18n";
+export type {
+  CreateI18nReturn,
+  ExtractNamespaces,
+  ExtractNamespaceKeys,
+} from "./utils/createI18n";

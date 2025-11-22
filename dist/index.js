@@ -11,4 +11,6 @@ export { setCookie, getCookie, deleteCookie, getAllCookies, } from "./utils/cook
 export { LanguageManager, defaultLanguageManager, } from "./utils/languageManager";
 // Type utilities
 export { defineConfig } from "./utils/types";
+// Type-safe i18n creator (automatic key inference)
+export { createI18n } from "./utils/createI18n";
 //# sourceMappingURL=index.js.map
