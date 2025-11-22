@@ -1,80 +1,14 @@
 import { glob } from "glob";
-import { writeFile, readFile } from "./fs-utils";
+import { readFile } from "./fs-utils";
 import traverse, { NodePath } from "@babel/traverse";
 import * as t from "@babel/types";
 import { ScriptConfig, SCRIPT_CONFIG_DEFAULTS } from "../common/default-config";
-import { parseFile, generateCode } from "../common/ast/parser-utils";
-import {
-  hasTranslationFunctionCall,
-  createTranslationBinding,
-} from "./ast-helpers";
-import { ensureNamedImport, ensureUseClientDirective } from "./import-manager";
-import { STRING_CONSTANTS } from "./constants";
+import { parseFile } from "../common/ast/parser-utils";
 import { tryTransformComponent } from "./component-transformer";
-
-function applyTranslationsToFile(
-  ast: t.File,
-  filePath: string,
-  modifiedComponentPaths: NodePath<t.Function>[],
-  config: Required<ScriptConfig>
-): void {
-  const isServerMode = config.mode === "server";
-  const isClientMode = config.mode === "client";
-  const isNextjsFramework = config.framework === "nextjs";
-
-  if (isNextjsFramework && isClientMode) {
-    ensureUseClientDirective(ast);
-  }
-
-  const usedTranslationFunctions = new Set<string>();
-
-  modifiedComponentPaths.forEach((componentPath) => {
-    if (componentPath.scope.hasBinding(STRING_CONSTANTS.TRANSLATION_FUNCTION)) {
-      return;
-    }
-
-    const body = componentPath.get("body");
-
-    const translationFunctionName = isServerMode
-      ? config.serverTranslationFunction
-      : STRING_CONSTANTS.USE_TRANSLATION;
-
-    if (hasTranslationFunctionCall(body, translationFunctionName)) {
-      return;
-    }
-
-    if (isServerMode) {
-      (componentPath.node as any).async = true;
-    }
-    const decl = createTranslationBinding(
-      isServerMode ? "server" : "client",
-      isServerMode ? config.serverTranslationFunction : undefined
-    );
-
-    if (body.isBlockStatement()) {
-      body.unshiftContainer("body", decl);
-    } else {
-      const original = body.node as t.Expression;
-      (componentPath.node as any).body = t.blockStatement([
-        decl,
-        t.returnStatement(original),
-      ]);
-    }
-
-    usedTranslationFunctions.add(translationFunctionName);
-  });
-
-  usedTranslationFunctions.forEach((functionName) => {
-    ensureNamedImport(ast, config.translationImportSource, functionName);
-  });
-
-  const output = generateCode(ast, config.parserType, {
-    retainLines: true,
-    comments: true,
-  });
-
-  writeFile(filePath, output.code);
-}
+import {
+  applyTranslationsToAST,
+  writeASTToFile,
+} from "./translation-applier";
 
 export async function processFiles(
   config: Partial<ScriptConfig> = {}
@@ -123,12 +57,8 @@ export async function processFiles(
       });
 
       if (isFileModified) {
-        applyTranslationsToFile(
-          ast,
-          filePath,
-          modifiedComponentPaths,
-          fullConfig
-        );
+        applyTranslationsToAST(ast, modifiedComponentPaths, fullConfig);
+        writeASTToFile(ast, filePath, fullConfig);
         processedFiles.push(filePath);
       }
     } catch (error) {
