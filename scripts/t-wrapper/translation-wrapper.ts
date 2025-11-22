@@ -37,19 +37,19 @@ export class TranslationWrapper {
     path: NodePath<t.Function>,
     componentName: string | null | undefined,
     code: string,
-    isFileModified: { value: boolean },
     modifiedComponentPaths: NodePath<t.Function>[]
-  ): void {
+  ): boolean {
     if (
       componentName &&
       (isReactComponent(componentName) || isReactCustomHook(componentName))
     ) {
       const transformResult = transformFunctionBody(path, code);
       if (transformResult.wasModified) {
-        isFileModified.value = true;
         modifiedComponentPaths.push(path);
+        return true;
       }
     }
+    return false;
   }
 
   public async processFiles(): Promise<{
@@ -75,36 +75,39 @@ export class TranslationWrapper {
 
         // 수정된 컴포넌트 경로 저장
         const modifiedComponentPaths: NodePath<t.Function>[] = [];
-        const isFileModifiedRef = { value: isFileModified };
 
         // Step 4: 컴포넌트 내부 처리
         traverse(ast, {
           FunctionDeclaration: (path) => {
-            this.processComponent(
-              path,
-              path.node.id?.name,
-              code,
-              isFileModifiedRef,
-              modifiedComponentPaths
-            );
+            if (
+              this.processComponent(
+                path,
+                path.node.id?.name,
+                code,
+                modifiedComponentPaths
+              )
+            ) {
+              isFileModified = true;
+            }
           },
           ArrowFunctionExpression: (path) => {
             if (
               t.isVariableDeclarator(path.parent) &&
               t.isIdentifier(path.parent.id)
             ) {
-              this.processComponent(
-                path,
-                path.parent.id.name,
-                code,
-                isFileModifiedRef,
-                modifiedComponentPaths
-              );
+              if (
+                this.processComponent(
+                  path,
+                  path.parent.id.name,
+                  code,
+                  modifiedComponentPaths
+                )
+              ) {
+                isFileModified = true;
+              }
             }
           },
         });
-
-        isFileModified = isFileModifiedRef.value;
 
         if (isFileModified) {
           const isServerMode = this.config.mode === "server";
