@@ -4,7 +4,7 @@
  */
 
 import * as path from "path";
-import { processFiles } from "../translation-wrapper";
+import { wrapTranslations } from "../wrapper";
 import { writeFile, readFile, createTempDir, removeDir } from "../utils/fs-utils";
 
 describe("t-wrapper E2E", () => {
@@ -26,7 +26,7 @@ describe("t-wrapper E2E", () => {
 
     writeFile(testFile, originalContent);
 
-    await processFiles({
+    await wrapTranslations({
       sourcePattern: path.join(tempDir, "**/*.tsx"),
     });
 
@@ -46,7 +46,7 @@ describe("t-wrapper E2E", () => {
 
     writeFile(testFile, originalContent);
 
-    await processFiles({
+    await wrapTranslations({
       sourcePattern: path.join(tempDir, "**/*.tsx"),
     });
 
@@ -66,7 +66,7 @@ describe("t-wrapper E2E", () => {
 
     writeFile(testFile, originalContent);
 
-    await processFiles({
+    await wrapTranslations({
       sourcePattern: path.join(tempDir, "**/*.ts"),
     });
 
@@ -94,7 +94,7 @@ describe("t-wrapper E2E", () => {
 
     writeFile(testFile, originalContent);
 
-    await processFiles({
+    await wrapTranslations({
       sourcePattern: path.join(tempDir, "**/*.tsx"),
     });
 
@@ -114,7 +114,7 @@ describe("t-wrapper E2E", () => {
 
     writeFile(testFile, originalContent);
 
-    await processFiles({
+    await wrapTranslations({
       sourcePattern: path.join(tempDir, "**/*.tsx"),
     });
 
@@ -130,7 +130,7 @@ describe("t-wrapper E2E", () => {
 }`;
     writeFile(testFile, originalContent);
 
-    await processFiles({
+    await wrapTranslations({
       sourcePattern: path.join(tempDir, "**/*.tsx"),
       mode: "client",
       framework: "nextjs",
@@ -149,7 +149,7 @@ describe("t-wrapper E2E", () => {
 }`;
     writeFile(testFile, originalContent);
 
-    await processFiles({
+    await wrapTranslations({
       sourcePattern: path.join(tempDir, "**/*.tsx"),
       mode: "client",
       framework: "react",
@@ -168,7 +168,7 @@ describe("t-wrapper E2E", () => {
 }`;
     writeFile(testFile, originalContent);
 
-    await processFiles({
+    await wrapTranslations({
       sourcePattern: path.join(tempDir, "**/*.tsx"),
       mode: "server",
     } as any);
@@ -186,7 +186,7 @@ describe("t-wrapper E2E", () => {
 }`;
     writeFile(testFile, originalContent);
 
-    await processFiles({
+    await wrapTranslations({
       sourcePattern: path.join(tempDir, "**/*.tsx"),
       mode: "server",
       serverTranslationFunction: "getServerT",

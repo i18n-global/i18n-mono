@@ -2,7 +2,7 @@
  * translation-wrapper 테스트
  */
 
-import { processFiles } from "../translation-wrapper";
+import { wrapTranslations } from "../wrapper";
 import * as path from "path";
 import { writeFile, readFile, createTempDir, removeDir } from "../utils/fs-utils";
 
@@ -17,7 +17,7 @@ describe("translation-wrapper", () => {
     removeDir(tempDir);
   });
 
-  describe("processFiles", () => {
+  describe("wrapTranslations", () => {
     it("한국어가 포함된 파일을 처리해야 함", async () => {
       const testFile = path.join(tempDir, "test.tsx");
       writeFile(
@@ -27,7 +27,7 @@ describe("translation-wrapper", () => {
 }`
       );
 
-      const result = await processFiles({
+      const result = await wrapTranslations({
         sourcePattern: path.join(tempDir, "**/*.tsx"),
       });
       expect(result.processedFiles.length).toBeGreaterThan(0);
@@ -42,7 +42,7 @@ describe("translation-wrapper", () => {
 }`
       );
 
-      await processFiles({
+      await wrapTranslations({
         sourcePattern: path.join(tempDir, "**/*.tsx"),
         mode: "client",
         framework: "nextjs",
@@ -63,7 +63,7 @@ describe("translation-wrapper", () => {
 }`
       );
 
-      await processFiles({
+      await wrapTranslations({
         sourcePattern: path.join(tempDir, "**/*.tsx"),
         mode: "client",
         framework: "react",
@@ -84,7 +84,7 @@ describe("translation-wrapper", () => {
 }`
       );
 
-      await processFiles({
+      await wrapTranslations({
         sourcePattern: path.join(tempDir, "**/*.tsx"),
         mode: "server",
         serverTranslationFunction: "getServerT",
