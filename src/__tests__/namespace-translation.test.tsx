@@ -397,6 +397,33 @@ describe('Namespace-based useTranslation', () => {
       expect(screen.getByTestId('mixed')).toHaveTextContent('5개의 사과');
     });
 
+    it('should keep placeholders when variables are not provided', () => {
+      function TestComponent() {
+        const { t } = useTranslation('common');
+        return (
+          <div>
+            <div data-testid="no-vars">{t('{{user}}입니다' as any)}</div>
+            <div data-testid="empty-vars">{t('Hello {{name}}!' as any, {})}</div>
+            <div data-testid="partial-vars">{t('{{a}} and {{b}}' as any, { a: '첫번째' })}</div>
+          </div>
+        );
+      }
+
+      render(
+        <I18nProvider
+          translations={namespaceTranslations}
+          languageManagerOptions={{ defaultLanguage: 'en' }}
+        >
+          <TestComponent />
+        </I18nProvider>
+      );
+
+      // Should keep placeholders when variables not provided
+      expect(screen.getByTestId('no-vars')).toHaveTextContent('{{user}}입니다');
+      expect(screen.getByTestId('empty-vars')).toHaveTextContent('Hello {{name}}!');
+      expect(screen.getByTestId('partial-vars')).toHaveTextContent('첫번째 and {{b}}');
+    });
+
     it('should return key when translation not found', () => {
       function TestComponent() {
         const { t } = useTranslation('common');
