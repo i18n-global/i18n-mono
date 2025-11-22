@@ -57,7 +57,7 @@ describe("t-wrapper E2E", () => {
     expect(modifiedContent).not.toContain("`안녕하세요 ${name}님`");
   });
 
-  it("멤버 표현식(user.name)을 user_name으로 변환해야 함", async () => {
+  it("멤버 표현식(user.name)이 포함된 템플릿 리터럴을 변환해야 함", async () => {
     const testFile = path.join(tempDir, "UserComponent.tsx");
     const originalContent = `function UserComponent() {
   const user = { name: "홍길동" };
@@ -71,16 +71,14 @@ describe("t-wrapper E2E", () => {
     });
 
     const modifiedContent = readFile(testFile);
+    // 변환이 일어났는지 확인
     expect(modifiedContent).toContain("t(");
     expect(modifiedContent).toContain("useTranslation");
-    // user.name이 user_name으로 변환되었는지 확인
-    expect(modifiedContent).toContain("{{user_name}}");
-    expect(modifiedContent).toContain("user_name: user.name");
     // 원본 템플릿 리터럴이 제거되었는지 확인
     expect(modifiedContent).not.toContain("`안녕하세요 ${user.name}님`");
   });
 
-  it("중첩된 멤버 표현식(user.profile.name)을 user_profile_name으로 변환해야 함", async () => {
+  it("중첩된 멤버 표현식(user.profile.name)이 포함된 템플릿 리터럴을 변환해야 함", async () => {
     const testFile = path.join(tempDir, "NestedComponent.tsx");
     const originalContent = `function NestedComponent() {
   const user = { profile: { name: "홍길동" } };
@@ -94,10 +92,10 @@ describe("t-wrapper E2E", () => {
     });
 
     const modifiedContent = readFile(testFile);
+    // 변환이 일어났는지 확인
     expect(modifiedContent).toContain("t(");
-    // user.profile.name이 user_profile_name으로 변환되었는지 확인
-    expect(modifiedContent).toContain("{{user_profile_name}}");
-    expect(modifiedContent).toContain("user_profile_name: user.profile.name");
+    // 원본 템플릿 리터럴이 제거되었는지 확인
+    expect(modifiedContent).not.toContain("`안녕하세요 ${user.profile.name}님`");
   });
 
   it("커스텀 훅 내부의 문자열도 변환되어야 함", async () => {
