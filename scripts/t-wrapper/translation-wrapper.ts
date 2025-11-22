@@ -5,43 +5,12 @@ import * as t from "@babel/types";
 import { ScriptConfig, SCRIPT_CONFIG_DEFAULTS } from "../common/default-config";
 import { parseFile, generateCode } from "../common/ast/parser-utils";
 import {
-  isReactComponent,
-  isReactCustomHook,
   hasTranslationFunctionCall,
   createTranslationBinding,
 } from "./ast-helpers";
 import { ensureNamedImport, ensureUseClientDirective } from "./import-manager";
-import { transformFunctionBody } from "./ast-transformers";
 import { STRING_CONSTANTS } from "./constants";
-
-function tryTransformComponent(
-  path: NodePath<t.Function>,
-  code: string,
-  modifiedComponentPaths: NodePath<t.Function>[]
-): boolean {
-  let functionName: string | null | undefined;
-  if (path.isFunctionDeclaration() && path.node.id) {
-    functionName = path.node.id.name;
-  } else if (
-    path.isArrowFunctionExpression() &&
-    t.isVariableDeclarator(path.parent) &&
-    t.isIdentifier(path.parent.id)
-  ) {
-    functionName = path.parent.id.name;
-  }
-
-  if (
-    functionName &&
-    (isReactComponent(functionName) || isReactCustomHook(functionName))
-  ) {
-    const transformResult = transformFunctionBody(path, code);
-    if (transformResult.wasModified) {
-      modifiedComponentPaths.push(path);
-      return true;
-    }
-  }
-  return false;
-}
+import { tryTransformComponent } from "./component-transformer";
 
 function applyTranslationsToFile(
   ast: t.File,
