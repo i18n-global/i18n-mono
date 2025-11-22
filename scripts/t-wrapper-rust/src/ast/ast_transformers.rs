@@ -1,8 +1,8 @@
 /// AST 변환 로직
 /// 문자열 리터럴, 템플릿 리터럴, JSX 텍스트를 t() 함수로 변환
 
-use crate::constants::{StringConstants, RegexPatterns};
-use crate::ast_helpers::{has_ignore_comment, should_skip_path};
+use crate::utils::constants::{StringConstants, RegexPatterns};
+use crate::ast::ast_helpers::{has_ignore_comment, should_skip_path};
 use swc_ecma_ast::*;
 use swc_ecma_visit::{VisitMut, VisitMutWith};
 use swc_common::DUMMY_SP;

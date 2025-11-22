@@ -1,16 +1,14 @@
-pub mod constants;
-pub mod ast_helpers;
-pub mod ast_transformers;
-pub mod import_manager;
-pub mod translation_wrapper;
+pub mod utils;
+pub mod ast;
+pub mod manager;
 pub mod parser;
+pub mod wrapper;
 
-pub use constants::*;
-pub use ast_helpers::*;
-pub use ast_transformers::*;
-pub use import_manager::*;
-pub use translation_wrapper::*;
+pub use utils::*;
+pub use ast::*;
+pub use manager::*;
 pub use parser::*;
+pub use wrapper::*;
 
 /// runTranslationWrapper 함수
 /// TypeScript 버전과 동일한 로직:

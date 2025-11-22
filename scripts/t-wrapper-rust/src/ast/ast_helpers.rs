@@ -1,7 +1,7 @@
 /// AST 헬퍼 함수들
 /// 순수 함수로 구성되어 테스트하기 쉬움
 
-use crate::constants::{StringConstants, RegexPatterns};
+use crate::utils::constants::{StringConstants, RegexPatterns};
 
 /// i18n-ignore 주석이 노드 바로 위에 있는지 확인
 /// 파일의 원본 소스코드를 직접 검사하여 주석 감지
