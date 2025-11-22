@@ -5,9 +5,12 @@ import * as t from "@babel/types";
 import { ScriptConfig, SCRIPT_CONFIG_DEFAULTS } from "../common/default-config";
 import { parseFile } from "../common/ast/parser-utils";
 import { tryTransformComponent } from "./ast/component-transformer";
-import { applyTranslationsToAST, writeASTToFile } from "./applier/translation-applier";
+import {
+  applyTranslationsToAST,
+  writeASTToFile,
+} from "./applier/translation-applier";
 
-export async function processFiles(
+export async function wrapTranslations(
   config: Partial<ScriptConfig> = {}
 ): Promise<{
   processedFiles: string[];
