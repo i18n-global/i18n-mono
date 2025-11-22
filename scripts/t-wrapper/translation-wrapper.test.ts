@@ -4,22 +4,18 @@
  */
 
 import { TranslationWrapper } from "./translation-wrapper";
-import * as fs from "fs";
 import * as path from "path";
-import * as os from "os";
-import { setFile, readFile } from "./test-utils";
+import { setFile, readFile, createTempDir, removeDir } from "./test-utils";
 
 describe("translation-wrapper", () => {
   let tempDir: string;
 
   beforeEach(() => {
-    tempDir = fs.mkdtempSync(path.join(os.tmpdir(), "i18n-test-"));
+    tempDir = createTempDir("i18n-test-");
   });
 
   afterEach(() => {
-    if (fs.existsSync(tempDir)) {
-      fs.rmSync(tempDir, { recursive: true, force: true });
-    }
+    removeDir(tempDir);
   });
 
   describe("processFiles", () => {

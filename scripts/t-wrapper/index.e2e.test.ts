@@ -3,23 +3,19 @@
  * 실제 파일 시스템을 사용하여 전체 워크플로우 테스트
  */
 
-import * as fs from "fs";
 import * as path from "path";
-import * as os from "os";
 import { runTranslationWrapper } from "./index";
-import { setFile, readFile } from "./test-utils";
+import { setFile, readFile, createTempDir, removeDir } from "./test-utils";
 
 describe("t-wrapper E2E", () => {
   let tempDir: string;
 
   beforeEach(() => {
-    tempDir = fs.mkdtempSync(path.join(os.tmpdir(), "i18n-wrapper-e2e-"));
+    tempDir = createTempDir("i18n-wrapper-e2e-");
   });
 
   afterEach(() => {
-    if (fs.existsSync(tempDir)) {
-      fs.rmSync(tempDir, { recursive: true, force: true });
-    }
+    removeDir(tempDir);
   });
 
   it("한국어 문자열을 t() 함수로 변환해야 함", async () => {
@@ -68,13 +64,13 @@ describe("t-wrapper E2E", () => {
   alert("테스트 메시지");
 }`;
 
-    fs.writeFileSync(testFile, originalContent, "utf-8");
+    setFile(testFile, originalContent);
 
     await runTranslationWrapper({
       sourcePattern: path.join(tempDir, "**/*.ts"),
     });
 
-    const modifiedContent = fs.readFileSync(testFile, "utf-8");
+    const modifiedContent = readFile(testFile);
     expect(modifiedContent).toContain("t(");
     expect(modifiedContent).toContain("useTranslation");
     // 유니코드 이스케이프 때문에 정확한 문자열 매칭 대신 패턴 체크
@@ -132,7 +128,7 @@ describe("t-wrapper E2E", () => {
     const originalContent = `function ClientComp() {
   return <div>안녕하세요</div>;
 }`;
-    fs.writeFileSync(testFile, originalContent, "utf-8");
+    setFile(testFile, originalContent);
 
     await runTranslationWrapper({
       sourcePattern: path.join(tempDir, "**/*.tsx"),
@@ -140,7 +136,7 @@ describe("t-wrapper E2E", () => {
       framework: "nextjs",
     });
 
-    const modified = fs.readFileSync(testFile, "utf-8");
+    const modified = readFile(testFile);
     expect(modified).toMatch(/["']use client["']/);
     expect(modified).toContain("useTranslation");
     expect(modified).toContain("t(");
@@ -151,7 +147,7 @@ describe("t-wrapper E2E", () => {
     const originalContent = `function ClientReact() {
   return <div>안녕하세요</div>;
 }`;
-    fs.writeFileSync(testFile, originalContent, "utf-8");
+    setFile(testFile, originalContent);
 
     await runTranslationWrapper({
       sourcePattern: path.join(tempDir, "**/*.tsx"),
@@ -159,7 +155,7 @@ describe("t-wrapper E2E", () => {
       framework: "react",
     });
 
-    const modified = fs.readFileSync(testFile, "utf-8");
+    const modified = readFile(testFile);
     expect(modified).not.toMatch(/["']use client["']/);
     expect(modified).toContain("useTranslation");
     expect(modified).toContain("t(");
@@ -170,14 +166,14 @@ describe("t-wrapper E2E", () => {
     const originalContent = `function ServerComp() {
   return <div>안녕하세요</div>;
 }`;
-    fs.writeFileSync(testFile, originalContent, "utf-8");
+    setFile(testFile, originalContent);
 
     await runTranslationWrapper({
       sourcePattern: path.join(tempDir, "**/*.tsx"),
       mode: "server",
     });
 
-    const modified = fs.readFileSync(testFile, "utf-8");
+    const modified = readFile(testFile);
     expect(modified).toContain("await getServerTranslation");
     expect(modified).toContain("const { t } =");
     expect(modified).toContain("t(");
@@ -188,7 +184,7 @@ describe("t-wrapper E2E", () => {
     const originalContent = `function ServerCustom() {
   return <div>안녕하세요</div>;
 }`;
-    fs.writeFileSync(testFile, originalContent, "utf-8");
+    setFile(testFile, originalContent);
 
     await runTranslationWrapper({
       sourcePattern: path.join(tempDir, "**/*.tsx"),
@@ -196,7 +192,7 @@ describe("t-wrapper E2E", () => {
       serverTranslationFunction: "getServerT",
     });
 
-    const modified = fs.readFileSync(testFile, "utf-8");
+    const modified = readFile(testFile);
     expect(modified).toContain("await getServerT");
     expect(modified).toContain("import { getServerT } from");
   });
