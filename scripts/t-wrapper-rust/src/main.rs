@@ -37,18 +37,15 @@ fn main() {
     }
 
     // wrap_translations 호출
-    match wrap_translations(Some(config)) {
-        Ok(result) => {
-            let time_in_seconds = result.total_time_ms as f64 / 1000.0;
-            println!(
-                "✅ Processed {} file(s) in {:.2}s",
-                result.processed_files.len(),
-                time_in_seconds
-            );
-        }
-        Err(e) => {
-            eprintln!("{} {}", ConsoleMessages::FATAL_ERROR, e);
-            std::process::exit(1);
-        }
+    if let Ok(result) = wrap_translations(Some(config)) {
+        let time_in_seconds = result.total_time_ms as f64 / 1000.0;
+        println!(
+            "✅ Processed {} file(s) in {:.2}s",
+            result.processed_files.len(),
+            time_in_seconds
+        );
+    } else {
+        eprintln!("{} {}", ConsoleMessages::FATAL_ERROR, "Error occurred");
+        std::process::exit(1);
     }
 }
