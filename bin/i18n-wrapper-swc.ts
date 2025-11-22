@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 
-import { runTranslationWrapper, ScriptConfig } from "../scripts/t-wrapper";
+import { TranslationWrapper } from "../scripts/t-wrapper/translation-wrapper";
+import { ScriptConfig } from "../scripts/common/default-config";
 import { loadConfig } from "../scripts/config-loader";
 
 const args = process.argv.slice(2);
@@ -66,7 +67,8 @@ console.log("⚠️  Running with SWC parser (experimental mode)");
 console.log("⚠️  Note: SWC may be slower than Babel due to AST conversion overhead.");
 console.log("⚠️  For best performance, use the default Babel parser: npx i18n-wrapper");
 
-runTranslationWrapper(config).catch((error) => {
+const wrapper = new TranslationWrapper(config);
+wrapper.processFiles().catch((error) => {
   console.error("❌ Translation wrapper failed:", error);
   process.exit(1);
 });
