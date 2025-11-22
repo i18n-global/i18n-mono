@@ -52,7 +52,7 @@ impl StringConstants {
     pub const I18N_IGNORE_JSX: &'static str = "{/* i18n-ignore";
     pub const TRANSLATION_FUNCTION: &'static str = "t";
     pub const USE_TRANSLATION: &'static str = "useTranslation";
-    pub const GET_SERVER_TRANSLATION: &'static str = "getServerTranslation";
+    pub const GET_SERVER_TRANSLATION: &'static str = "getTranslations";
     pub const COMPLETION_TITLE: &'static str = "Translation Wrapper Completed";
     pub const DEFAULT_ENV: &'static str = "production";
     pub const VARIABLE_KIND: &'static str = "const";
