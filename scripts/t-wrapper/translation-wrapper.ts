@@ -32,14 +32,7 @@ export class TranslationWrapper {
     });
   }
 
-  /**
-   * 컴포넌트 변환 처리
-   * @param path - 함수 AST 경로
-   * @param componentName - 컴포넌트 이름
-   * @param code - 소스 코드
-   * @param isFileModified - 파일 수정 여부 플래그 (참조)
-   * @param modifiedComponentPaths - 수정된 컴포넌트 경로 배열 (참조)
-   */
+  /** 컴포넌트 변환 처리 */
   private processComponent(
     path: NodePath<t.Function>,
     componentName: string | null | undefined,
@@ -49,8 +42,7 @@ export class TranslationWrapper {
   ): void {
     if (
       componentName &&
-      (isReactComponent(componentName) ||
-        isReactCustomHook(componentName))
+      (isReactComponent(componentName) || isReactCustomHook(componentName))
     ) {
       const transformResult = transformFunctionBody(path, code);
       if (transformResult.wasModified) {

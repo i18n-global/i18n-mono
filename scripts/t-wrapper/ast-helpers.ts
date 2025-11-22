@@ -122,12 +122,7 @@ export function isReactComponentOrHook(name: string): boolean {
   return isReactComponent(name) || isReactCustomHook(name);
 }
 
-/**
- * 함수 본문(body)에 이미 번역 함수 호출이 있는지 확인
- * @param body - 함수 본문 NodePath
- * @param functionName - 확인할 함수명 (useTranslation 또는 getServerTranslation 등)
- * @returns 함수 호출이 있으면 true
- */
+/** 함수 본문(body)에 이미 번역 함수 호출이 있는지 확인 */
 export function hasTranslationFunctionCall(
   body: NodePath<t.BlockStatement | t.Expression>,
   functionName: string

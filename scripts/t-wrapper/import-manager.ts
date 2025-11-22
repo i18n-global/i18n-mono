@@ -6,13 +6,7 @@ import traverse from "@babel/traverse";
 import * as t from "@babel/types";
 import { STRING_CONSTANTS } from "./constants";
 
-/**
- * AST에 named import가 필요한지 확인하고 추가
- * @param ast - AST 파일 노드
- * @param source - import 소스 (예: "i18nexus")
- * @param importedName - import할 이름 (예: "useTranslation")
- * @returns import가 추가되었거나 이미 존재하면 true
- */
+/** AST에 named import가 필요한지 확인하고 추가 */
 export function ensureNamedImport(
   ast: t.File,
   source: string,
@@ -64,11 +58,7 @@ export function ensureNamedImport(
   return hasSpecifier;
 }
 
-/**
- * AST에 "use client" 디렉티브가 필요한지 확인하고 추가
- * @param ast - AST 파일 노드
- * @returns 디렉티브가 추가되었거나 이미 존재하면 true
- */
+/** AST에 "use client" 디렉티브가 필요한지 확인하고 추가 */
 export function ensureUseClientDirective(ast: t.File): boolean {
   // 이미 존재하면 패스
   const hasDirective = (ast.program.directives || []).some(
