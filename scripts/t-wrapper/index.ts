@@ -29,5 +29,13 @@ ${CLI_HELP.EXAMPLES}
     }
   }
 
-  new TranslationWrapper(config).processFiles().catch(console.error);
+  new TranslationWrapper(config)
+    .processFiles()
+    .then((result) => {
+      const timeInSeconds = (result.totalTime / 1000).toFixed(2);
+      console.log(
+        `✅ Processed ${result.processedFiles.length} file(s) in ${timeInSeconds}s`
+      );
+    })
+    .catch(console.error);
 }

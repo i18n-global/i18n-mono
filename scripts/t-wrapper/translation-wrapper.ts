@@ -121,7 +121,9 @@ export class TranslationWrapper {
 
   public async processFiles(): Promise<{
     processedFiles: string[];
+    totalTime: number;
   }> {
+    const startTime = Date.now();
     const filePaths = await glob(this.config.sourcePattern);
     const processedFiles: string[] = [];
 
@@ -165,8 +167,11 @@ export class TranslationWrapper {
       }
     }
 
+    const totalTime = Date.now() - startTime;
+
     return {
       processedFiles,
+      totalTime,
     };
   }
 }
