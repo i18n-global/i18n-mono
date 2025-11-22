@@ -5,7 +5,7 @@ import Link from "next/link";
 import { DownloadStats } from "@/app/_entities/download";
 
 export default function HomePage() {
-  const { t } = useTranslation('home');
+  const { t } = useTranslation();
 
   return (
     <main className="overflow-x-hidden">
