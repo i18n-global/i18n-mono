@@ -1,10 +1,10 @@
 /// TranslationWrapper 구조체
 /// 한국어 문자열을 t() 함수로 변환하고 useTranslation 훅을 추가
 
-use crate::ast_helpers::is_react_component;
-use crate::ast_transformers::{transform_function_body, transform_module};
-use crate::import_manager::{add_import_if_needed, create_use_translation_hook, add_server_translation_import};
-use crate::constants::StringConstants;
+use crate::ast::ast_helpers::is_react_component;
+use crate::ast::ast_transformers::{transform_function_body, transform_module};
+use crate::manager::import_manager::{add_import_if_needed, create_use_translation_hook, add_server_translation_import};
+use crate::utils::constants::StringConstants;
 use crate::parser::{parse_file, generate_code, ParseOptions};
 use anyhow::Result;
 use glob::glob;

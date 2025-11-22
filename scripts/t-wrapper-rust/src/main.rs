@@ -2,7 +2,7 @@
 /// SWC를 사용하여 AST 변환 수행
 
 use t_wrapper_rust::{run_translation_wrapper, ScriptConfig};
-use t_wrapper_rust::constants::{ConsoleMessages, CliOptions, CliHelp};
+use t_wrapper_rust::utils::constants::{ConsoleMessages, CliOptions, CliHelp};
 use std::env;
 
 fn main() {

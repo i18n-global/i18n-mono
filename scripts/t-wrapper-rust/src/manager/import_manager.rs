@@ -1,6 +1,6 @@
 /// Import 관리 유틸리티
 
-use crate::constants::StringConstants;
+use crate::utils::constants::StringConstants;
 use swc_ecma_ast::*;
 use swc_ecma_visit::{VisitMut, VisitMutWith};
 use swc_common::DUMMY_SP;

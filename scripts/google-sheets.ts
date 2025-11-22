@@ -493,37 +493,37 @@ export class GoogleSheetsManager {
       });
     } else {
       // 레거시 구조: locales/en.json, locales/ko.json
-      const files = fs
+    const files = fs
         .readdirSync(namespacePath)
-        .filter((file) => file.endsWith(".json") && file !== "index.ts");
+      .filter((file) => file.endsWith(".json") && file !== "index.ts");
 
-      const translationData: Record<string, Record<string, string>> = {};
+    const translationData: Record<string, Record<string, string>> = {};
 
-      // 각 언어 파일 읽기
-      for (const file of files) {
-        const lang = path.basename(file, ".json"); // en.json -> en
+    // 각 언어 파일 읽기
+    for (const file of files) {
+      const lang = path.basename(file, ".json"); // en.json -> en
         const filePath = path.join(namespacePath, file);
 
-        try {
-          const content = JSON.parse(fs.readFileSync(filePath, "utf-8"));
-          translationData[lang] = content;
+      try {
+        const content = JSON.parse(fs.readFileSync(filePath, "utf-8"));
+        translationData[lang] = content;
 
-          Object.keys(content).forEach((key) => {
-            allKeys.add(key);
-          });
-        } catch (error) {
-          console.warn(`⚠️  Failed to read ${filePath}:`, error);
-        }
-      }
-
-      // 모든 키에 대해 번역 행 생성
-      allKeys.forEach((key) => {
-        const row: TranslationRow = { key };
-        Object.keys(translationData).forEach((lang) => {
-          row[lang] = translationData[lang][key] || "";
+        Object.keys(content).forEach((key) => {
+          allKeys.add(key);
         });
-        translations.push(row);
+      } catch (error) {
+        console.warn(`⚠️  Failed to read ${filePath}:`, error);
+      }
+    }
+
+    // 모든 키에 대해 번역 행 생성
+    allKeys.forEach((key) => {
+      const row: TranslationRow = { key };
+      Object.keys(translationData).forEach((lang) => {
+        row[lang] = translationData[lang][key] || "";
       });
+      translations.push(row);
+    });
     }
 
     return translations;
