@@ -11,7 +11,7 @@ import {
   isReactComponentOrHook,
   createTranslationBinding,
   hasTranslationFunctionCall,
-} from "./ast-helpers";
+} from "../ast/ast-helpers";
 import { parse } from "@babel/parser";
 import traverse from "@babel/traverse";
 import * as t from "@babel/types";

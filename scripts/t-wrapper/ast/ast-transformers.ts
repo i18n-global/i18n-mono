@@ -6,7 +6,7 @@
 import { NodePath } from "@babel/traverse";
 import * as t from "@babel/types";
 import { hasIgnoreComment, shouldSkipPath } from "./ast-helpers";
-import { STRING_CONSTANTS, REGEX_PATTERNS } from "./constants";
+import { STRING_CONSTANTS, REGEX_PATTERNS } from "../utils/constants";
 
 export interface TransformResult {
   wasModified: boolean;

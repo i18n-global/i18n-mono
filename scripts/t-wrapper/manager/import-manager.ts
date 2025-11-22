@@ -4,7 +4,7 @@
 
 import traverse from "@babel/traverse";
 import * as t from "@babel/types";
-import { STRING_CONSTANTS } from "./constants";
+import { STRING_CONSTANTS } from "../utils/constants";
 
 /** AST에 named import가 필요한지 확인하고 추가 */
 export function ensureNamedImport(

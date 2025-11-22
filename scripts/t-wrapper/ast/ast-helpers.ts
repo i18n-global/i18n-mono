@@ -5,7 +5,7 @@
 
 import { NodePath } from "@babel/traverse";
 import * as t from "@babel/types";
-import { STRING_CONSTANTS, REGEX_PATTERNS } from "./constants";
+import { STRING_CONSTANTS, REGEX_PATTERNS } from "../utils/constants";
 
 /**
  * i18n-ignore 주석이 노드 바로 위에 있는지 확인

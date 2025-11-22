@@ -2,9 +2,9 @@
  * translation-wrapper 테스트
  */
 
-import { processFiles } from "./translation-wrapper";
+import { processFiles } from "../translation-wrapper";
 import * as path from "path";
-import { writeFile, readFile, createTempDir, removeDir } from "./fs-utils";
+import { writeFile, readFile, createTempDir, removeDir } from "../utils/fs-utils";
 
 describe("translation-wrapper", () => {
   let tempDir: string;

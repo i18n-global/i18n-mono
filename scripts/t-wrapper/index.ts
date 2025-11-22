@@ -2,7 +2,7 @@
 
 import { ScriptConfig } from "../common/default-config";
 import { processFiles } from "./translation-wrapper";
-import { CLI_OPTIONS, CLI_HELP } from "./constants";
+import { CLI_OPTIONS, CLI_HELP } from "./utils/constants";
 
 // CLI 실행 부분
 if (require.main === module) {
