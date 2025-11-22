@@ -4,8 +4,8 @@
  */
 
 import * as path from "path";
-import { processFiles } from "./translation-wrapper";
-import { writeFile, readFile, createTempDir, removeDir } from "./fs-utils";
+import { processFiles } from "../translation-wrapper";
+import { writeFile, readFile, createTempDir, removeDir } from "../utils/fs-utils";
 
 describe("t-wrapper E2E", () => {
   let tempDir: string;

@@ -5,7 +5,7 @@
 
 import {
   ensureNamedImport,
-} from "./import-manager";
+} from "../manager/import-manager";
 import { parse } from "@babel/parser";
 import * as t from "@babel/types";
 

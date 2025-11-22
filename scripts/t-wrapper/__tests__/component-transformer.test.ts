@@ -1,7 +1,7 @@
 import { parse } from "@babel/parser";
 import traverse, { NodePath } from "@babel/traverse";
 import * as t from "@babel/types";
-import { tryTransformComponent } from "./component-transformer";
+import { tryTransformComponent } from "../ast/component-transformer";
 
 describe("component-transformer", () => {
   describe("tryTransformComponent", () => {

@@ -1,14 +1,14 @@
 import { NodePath } from "@babel/traverse";
 import * as t from "@babel/types";
-import { ScriptConfig } from "../common/default-config";
-import { generateCode } from "../common/ast/parser-utils";
+import { ScriptConfig } from "../../common/default-config";
+import { generateCode } from "../../common/ast/parser-utils";
 import {
   hasTranslationFunctionCall,
   createTranslationBinding,
-} from "./ast-helpers";
-import { ensureNamedImport, ensureUseClientDirective } from "./import-manager";
-import { STRING_CONSTANTS } from "./constants";
-import { writeFile } from "./fs-utils";
+} from "../ast/ast-helpers";
+import { ensureNamedImport, ensureUseClientDirective } from "../manager/import-manager";
+import { STRING_CONSTANTS } from "../utils/constants";
+import { writeFile } from "../utils/fs-utils";
 
 /**
  * AST에 번역 바인딩 및 import 추가

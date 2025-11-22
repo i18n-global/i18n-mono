@@ -3,7 +3,7 @@
  * AST 변환 로직 테스트
  */
 
-import { transformFunctionBody } from "./ast-transformers";
+import { transformFunctionBody } from "../ast/ast-transformers";
 import { parse } from "@babel/parser";
 import traverse, { NodePath } from "@babel/traverse";
 import * as t from "@babel/types";
