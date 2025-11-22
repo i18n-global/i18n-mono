@@ -36,10 +36,21 @@ export class TranslationWrapper {
   /** 컴포넌트 변환 처리 */
   private processComponent(
     path: NodePath<t.Function>,
-    componentName: string | null | undefined,
     code: string,
     modifiedComponentPaths: NodePath<t.Function>[]
   ): boolean {
+    // componentName 추출
+    let componentName: string | null | undefined;
+    if (path.isFunctionDeclaration() && path.node.id) {
+      componentName = path.node.id.name;
+    } else if (
+      path.isArrowFunctionExpression() &&
+      t.isVariableDeclarator(path.parent) &&
+      t.isIdentifier(path.parent.id)
+    ) {
+      componentName = path.parent.id.name;
+    }
+
     if (
       componentName &&
       (isReactComponent(componentName) || isReactCustomHook(componentName))
@@ -157,24 +168,18 @@ export class TranslationWrapper {
         // Step 4: 컴포넌트 내부 처리
         traverse(ast, {
           FunctionDeclaration: (path) => {
-            isFileModified = this.processComponent(
-              path,
-              path.node.id?.name,
-              code,
-              modifiedComponentPaths
-            );
+            if (this.processComponent(path, code, modifiedComponentPaths)) {
+              isFileModified = true;
+            }
           },
           ArrowFunctionExpression: (path) => {
             if (
               t.isVariableDeclarator(path.parent) &&
               t.isIdentifier(path.parent.id)
             ) {
-              isFileModified = this.processComponent(
-                path,
-                path.parent.id.name,
-                code,
-                modifiedComponentPaths
-              );
+              if (this.processComponent(path, code, modifiedComponentPaths)) {
+                isFileModified = true;
+              }
             }
           },
         });
