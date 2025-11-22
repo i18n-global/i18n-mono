@@ -290,16 +290,6 @@ export class PerformanceMonitor {
     PerformanceReporter.printError(error, context);
   }
 
-  /**
-   * 성능 데이터 플러시 (프로세스 종료 전 호출)
-   */
-  async flush(): Promise<void> {
-    if (isDebugMode && this.enabled) {
-      console.log("[Performance Monitor] 🔄 Flushing data...");
-      console.log(`[Performance Monitor] Metrics collected: ${this.metrics.length}`);
-      console.log("[Performance Monitor] ✅ Flush completed");
-    }
-  }
 }
 
 /**

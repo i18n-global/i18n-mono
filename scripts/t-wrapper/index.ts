@@ -42,12 +42,8 @@ export async function runTranslationWrapper(
     if (process.env.I18N_PERF_VERBOSE === "true") {
       wrapper.performanceMonitor.printReport(true);
     }
-
-    // 성능 데이터 플러시
-    await wrapper.performanceMonitor.flush();
   } catch (error) {
     console.error(CONSOLE_MESSAGES.FATAL_ERROR, error);
-    await wrapper.performanceMonitor.flush();
     throw error;
   }
 }
