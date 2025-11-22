@@ -21,27 +21,8 @@ export async function runTranslationWrapper(
 ) {
   const wrapper = new TranslationWrapper(config);
 
-  const startTime = Date.now();
-
   try {
-    const { processedFiles } = await wrapper.processFiles();
-
-    const endTime = Date.now();
-    const totalTime = endTime - startTime;
-
-    // 완료 리포트 출력
-    const report = wrapper.performanceMonitor.getReport();
-    PerformanceReporter.printCompletionReport(
-      report,
-      processedFiles,
-      totalTime,
-      STRING_CONSTANTS.COMPLETION_TITLE
-    );
-
-    // 상세 리포트 출력 (verbose mode인 경우)
-    if (process.env.I18N_PERF_VERBOSE === "true") {
-      wrapper.performanceMonitor.printReport(true);
-    }
+    await wrapper.processFiles();
   } catch (error) {
     console.error(CONSOLE_MESSAGES.FATAL_ERROR, error);
     throw error;
