@@ -2,6 +2,7 @@
 
 import { useTranslation } from "i18nexus";
 import Link from "next/link";
+import { CodeBlock } from "@/app/_shared/ui";
 
 export default function GettingStartedPage() {
   const { t } = useTranslation();
@@ -97,10 +98,8 @@ export default function GettingStartedPage() {
               </strong>{" "}
               {t("root layout.tsx에 추가하세요")}
             </p>
-            <div className="bg-slate-950 rounded-xl p-6 overflow-x-auto">
-              <pre className="text-sm">
-                <code className="text-slate-300">
-                  {`// app/layout.tsx
+            <CodeBlock language="typescript">
+{`// app/layout.tsx
 import { headers } from "next/headers";
 import { I18nProvider } from "i18nexus";
 import { getServerLanguage } from "i18nexus/server";
@@ -113,8 +112,8 @@ export default async function RootLayout({ children }) {
   return (
     <html lang={language}>
       <body>
-        <I18nProvider 
-          initialLanguage={language} 
+        <I18nProvider
+          initialLanguage={language}
           translations={translations}
         >
           {children}
@@ -123,9 +122,7 @@ export default async function RootLayout({ children }) {
     </html>
   );
 }`}
-                </code>
-              </pre>
-            </div>
+            </CodeBlock>
           </div>
 
           <div>
@@ -133,10 +130,8 @@ export default async function RootLayout({ children }) {
               <strong className="text-white">{t("번역 파일")}:</strong>{" "}
               {t("lib/i18n.ts 생성")}
             </p>
-            <div className="bg-slate-950 rounded-xl p-6 overflow-x-auto">
-              <pre className="text-sm">
-                <code className="text-slate-300">
-                  {`// lib/i18n.ts
+            <CodeBlock language="typescript">
+{`// lib/i18n.ts
 import en from "../locales/en.json";
 import ko from "../locales/ko.json";
 
@@ -144,9 +139,7 @@ export const translations = {
   en,
   ko,
 };`}
-                </code>
-              </pre>
-            </div>
+            </CodeBlock>
           </div>
         </div>
       </section>
