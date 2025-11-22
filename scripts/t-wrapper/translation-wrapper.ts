@@ -15,6 +15,7 @@ import {
 import { ensureNamedImport, ensureUseClientDirective } from "./import-manager";
 import { transformFunctionBody } from "./ast-transformers";
 import { CONSOLE_MESSAGES, STRING_CONSTANTS } from "./constants";
+import { PerformanceReporter } from "../common/performance-reporter";
 
 export class TranslationWrapper {
   public readonly config: Required<ScriptConfig>;
@@ -131,6 +132,7 @@ export class TranslationWrapper {
   public async processFiles(): Promise<{
     processedFiles: string[];
   }> {
+    const startTime = Date.now();
     this.performanceMonitor.start("translation_wrapper:total");
 
     const filePaths = await glob(this.config.sourcePattern);
@@ -199,6 +201,22 @@ export class TranslationWrapper {
       totalFiles: filePaths.length,
       processedFiles: processedFiles.length,
     });
+
+    // 완료 리포트 출력
+    const endTime = Date.now();
+    const totalTime = endTime - startTime;
+    const report = this.performanceMonitor.getReport();
+    PerformanceReporter.printCompletionReport(
+      report,
+      processedFiles,
+      totalTime,
+      STRING_CONSTANTS.COMPLETION_TITLE
+    );
+
+    // 상세 리포트 출력 (verbose mode인 경우)
+    if (process.env.I18N_PERF_VERBOSE === "true") {
+      this.performanceMonitor.printReport(true);
+    }
 
     return {
       processedFiles,
