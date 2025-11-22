@@ -3,7 +3,6 @@ import { glob } from "glob";
 import { writeFile, readFile } from "./fs-utils";
 import traverse, { NodePath } from "@babel/traverse";
 import * as t from "@babel/types";
-import { PerformanceMonitor } from "../common/performance-monitor";
 import { ScriptConfig, SCRIPT_CONFIG_DEFAULTS } from "../common/default-config";
 import { parseFile, generateCode } from "../common/ast/parser-utils";
 import {
@@ -14,23 +13,16 @@ import {
 } from "./ast-helpers";
 import { ensureNamedImport, ensureUseClientDirective } from "./import-manager";
 import { transformFunctionBody } from "./ast-transformers";
-import { CONSOLE_MESSAGES, STRING_CONSTANTS } from "./constants";
-import { PerformanceReporter } from "../common/performance-reporter";
+import { STRING_CONSTANTS } from "./constants";
 
 export class TranslationWrapper {
   public readonly config: Required<ScriptConfig>;
-  public performanceMonitor: PerformanceMonitor;
 
   constructor(config: Partial<ScriptConfig> = {}) {
     this.config = {
       ...SCRIPT_CONFIG_DEFAULTS,
       ...config,
     } as Required<ScriptConfig>;
-    this.performanceMonitor = new PerformanceMonitor({
-      enabled: this.config.enablePerformanceMonitoring,
-      environment: process.env.NODE_ENV || STRING_CONSTANTS.DEFAULT_ENV,
-      release: process.env.npm_package_version,
-    });
   }
 
   private processComponent(
@@ -130,15 +122,10 @@ export class TranslationWrapper {
   public async processFiles(): Promise<{
     processedFiles: string[];
   }> {
-    const startTime = Date.now();
-    this.performanceMonitor.start("translation_wrapper:total");
-
     const filePaths = await glob(this.config.sourcePattern);
     const processedFiles: string[] = [];
 
     for (const filePath of filePaths) {
-      this.performanceMonitor.start("file_processing", { filePath });
-
       let isFileModified = false;
       const code = readFile(filePath);
 
@@ -173,36 +160,9 @@ export class TranslationWrapper {
           this.applyTranslationsToFile(ast, filePath, modifiedComponentPaths);
           processedFiles.push(filePath);
         }
-        this.performanceMonitor.end("file_processing", {
-          filePath,
-          modified: isFileModified,
-        });
       } catch (error) {
-        this.performanceMonitor.captureError(error as Error, { filePath });
-        this.performanceMonitor.end("file_processing", {
-          filePath,
-          error: true,
-        });
+        // 에러 발생 시 조용히 스킵
       }
-    }
-
-    this.performanceMonitor.end("translation_wrapper:total", {
-      totalFiles: filePaths.length,
-      processedFiles: processedFiles.length,
-    });
-
-    const endTime = Date.now();
-    const totalTime = endTime - startTime;
-    const report = this.performanceMonitor.getReport();
-    PerformanceReporter.printCompletionReport(
-      report,
-      processedFiles,
-      totalTime,
-      STRING_CONSTANTS.COMPLETION_TITLE
-    );
-
-    if (process.env.I18N_PERF_VERBOSE === "true") {
-      this.performanceMonitor.printReport(true);
     }
 
     return {
