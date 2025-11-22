@@ -52,6 +52,88 @@ export class TranslationWrapper {
     return false;
   }
 
+  /** 수정된 파일에 번역 바인딩 및 import 추가 */
+  private applyTranslationsToFile(
+    ast: t.File,
+    filePath: string,
+    modifiedComponentPaths: NodePath<t.Function>[]
+  ): void {
+    const isServerMode = this.config.mode === "server";
+    const isClientMode = this.config.mode === "client";
+    const isNextjsFramework = this.config.framework === "nextjs";
+
+    // "use client" 디렉티브는 Next.js 환경에서 useTranslation 모드일 때만 추가
+    // - React/Vite 프로젝트에서는 필요 없음
+    // - 서버 번역 모드에서는 필요 없음 (서버 컴포넌트이므로)
+    if (isNextjsFramework && isClientMode) {
+      ensureUseClientDirective(ast);
+    }
+
+    // 사용된 번역 함수 추적 (중복 import 방지)
+    const usedTranslationFunctions = new Set<string>();
+
+    modifiedComponentPaths.forEach((componentPath) => {
+      if (
+        componentPath.scope.hasBinding(
+          STRING_CONSTANTS.TRANSLATION_FUNCTION
+        )
+      ) {
+        return;
+      }
+
+      const body = componentPath.get("body");
+
+      // 이미 번역 함수가 있는지 체크 (모드별)
+      const translationFunctionName = isServerMode
+        ? this.config.serverTranslationFunction
+        : STRING_CONSTANTS.USE_TRANSLATION;
+
+      if (hasTranslationFunctionCall(body, translationFunctionName)) {
+        return; // 이미 번역 함수가 있으면 스킵
+      }
+
+      // t 바인딩 생성 (모드별)
+      if (isServerMode) {
+        (componentPath.node as any).async = true;
+      }
+      const decl = createTranslationBinding(
+        isServerMode ? "server" : "client",
+        isServerMode ? this.config.serverTranslationFunction : undefined
+      );
+
+      // 선언문 추가 (공통 로직)
+      if (body.isBlockStatement()) {
+        body.unshiftContainer("body", decl);
+      } else {
+        // concise body → block으로 감싼 후 return 유지
+        const original = body.node as t.Expression;
+        (componentPath.node as any).body = t.blockStatement([
+          decl,
+          t.returnStatement(original),
+        ]);
+      }
+
+      // 사용된 번역 함수 기록 (이미 체크했으므로 무조건 추가됨)
+      usedTranslationFunctions.add(translationFunctionName);
+    });
+
+    // 필요한 import 추가 (중복 방지)
+    usedTranslationFunctions.forEach((functionName) => {
+      ensureNamedImport(
+        ast,
+        this.config.translationImportSource,
+        functionName
+      );
+    });
+
+    const output = generateCode(ast, this.config.parserType, {
+      retainLines: true,
+      comments: true,
+    });
+
+    fs.writeFileSync(filePath, output.code, "utf-8");
+  }
+
   public async processFiles(): Promise<{
     processedFiles: string[];
   }> {
@@ -110,81 +192,7 @@ export class TranslationWrapper {
         });
 
         if (isFileModified) {
-          const isServerMode = this.config.mode === "server";
-          const isClientMode = this.config.mode === "client";
-          const isNextjsFramework = this.config.framework === "nextjs";
-
-          // "use client" 디렉티브는 Next.js 환경에서 useTranslation 모드일 때만 추가
-          // - React/Vite 프로젝트에서는 필요 없음
-          // - 서버 번역 모드에서는 필요 없음 (서버 컴포넌트이므로)
-          if (isNextjsFramework && isClientMode) {
-            ensureUseClientDirective(ast);
-          }
-
-          // 사용된 번역 함수 추적 (중복 import 방지)
-          const usedTranslationFunctions = new Set<string>();
-
-          modifiedComponentPaths.forEach((componentPath) => {
-            if (
-              componentPath.scope.hasBinding(
-                STRING_CONSTANTS.TRANSLATION_FUNCTION
-              )
-            ) {
-              return;
-            }
-
-            const body = componentPath.get("body");
-
-            // 이미 번역 함수가 있는지 체크 (모드별)
-            const translationFunctionName = isServerMode
-              ? this.config.serverTranslationFunction
-              : STRING_CONSTANTS.USE_TRANSLATION;
-
-            if (hasTranslationFunctionCall(body, translationFunctionName)) {
-              return; // 이미 번역 함수가 있으면 스킵
-            }
-
-            // t 바인딩 생성 (모드별)
-            if (isServerMode) {
-              (componentPath.node as any).async = true;
-            }
-            const decl = createTranslationBinding(
-              isServerMode ? "server" : "client",
-              isServerMode ? this.config.serverTranslationFunction : undefined
-            );
-
-            // 선언문 추가 (공통 로직)
-            if (body.isBlockStatement()) {
-              body.unshiftContainer("body", decl);
-            } else {
-              // concise body → block으로 감싼 후 return 유지
-              const original = body.node as t.Expression;
-              (componentPath.node as any).body = t.blockStatement([
-                decl,
-                t.returnStatement(original),
-              ]);
-            }
-
-            // 사용된 번역 함수 기록 (이미 체크했으므로 무조건 추가됨)
-            usedTranslationFunctions.add(translationFunctionName);
-          });
-
-          // 필요한 import 추가 (중복 방지)
-          usedTranslationFunctions.forEach((functionName) => {
-            ensureNamedImport(
-              ast,
-              this.config.translationImportSource,
-              functionName
-            );
-          });
-
-          const output = generateCode(ast, this.config.parserType, {
-            retainLines: true,
-            comments: true,
-          });
-
-          fs.writeFileSync(filePath, output.code, "utf-8");
-
+          this.applyTranslationsToFile(ast, filePath, modifiedComponentPaths);
           processedFiles.push(filePath);
         }
         this.performanceMonitor.end("file_processing", {
