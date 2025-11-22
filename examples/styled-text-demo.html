@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Styled Text Demo - i18nexus</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 40px 20px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+    }
+
+    .container {
+      background: white;
+      border-radius: 16px;
+      padding: 40px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    }
+
+    h1 {
+      color: #667eea;
+      margin-top: 0;
+      font-size: 2.5em;
+    }
+
+    .example {
+      background: #f8f9fa;
+      border-radius: 8px;
+      padding: 20px;
+      margin: 20px 0;
+      border-left: 4px solid #667eea;
+    }
+
+    .example h3 {
+      margin-top: 0;
+      color: #495057;
+    }
+
+    .result {
+      font-size: 1.2em;
+      margin: 10px 0;
+      padding: 15px;
+      background: white;
+      border-radius: 4px;
+    }
+
+    .code {
+      background: #2d2d2d;
+      color: #f8f8f2;
+      padding: 20px;
+      border-radius: 8px;
+      overflow-x: auto;
+      margin: 20px 0;
+    }
+
+    .code pre {
+      margin: 0;
+      font-family: 'Courier New', monospace;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateY(-10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .example {
+      animation: slideIn 0.5s ease-out;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🎨 Styled Text Examples</h1>
+    <p style="font-size: 1.1em; color: #666;">번역된 텍스트의 일부분만 스타일 지정하기</p>
+
+    <div class="example">
+      <h3>1️⃣ 단일 텍스트 색칠</h3>
+      <div class="result">
+        안녕하세요 <span style="color: blue;">홍길동</span>님!
+      </div>
+      <div class="code">
+        <pre>t('welcome', { name: '홍길동' }, { name: { color: 'blue' } })</pre>
+      </div>
+    </div>
+
+    <div class="example">
+      <h3>2️⃣ 여러 스타일 조합</h3>
+      <div class="result">
+        안녕하세요 <span style="color: red; font-weight: bold; font-size: 20px; text-decoration: underline;">홍길동</span>님!
+      </div>
+      <div class="code">
+        <pre>t('welcome', { name: '홍길동' }, {
+  name: {
+    color: 'red',
+    fontWeight: 'bold',
+    fontSize: '20px',
+    textDecoration: 'underline'
+  }
+})</pre>
+      </div>
+    </div>
+
+    <div class="example">
+      <h3>3️⃣ 금액 강조</h3>
+      <div class="result">
+        총 <span style="color: #ff6b6b; font-weight: bold; font-size: 24px;">50,000</span>원
+      </div>
+      <div class="code">
+        <pre>t('price', { amount: '50,000' }, {
+  amount: {
+    color: '#ff6b6b',
+    fontWeight: 'bold',
+    fontSize: '24px'
+  }
+})</pre>
+      </div>
+    </div>
+
+    <div class="example">
+      <h3>4️⃣ 배지 스타일</h3>
+      <div class="result">
+        장바구니에 <span style="background-color: #4caf50; color: white; padding: 2px 8px; border-radius: 12px; font-weight: bold;">5</span>개 상품
+      </div>
+      <div class="code">
+        <pre>t('status', { count: '5' }, {
+  count: {
+    backgroundColor: '#4caf50',
+    color: 'white',
+    padding: '2px 8px',
+    borderRadius: '12px',
+    fontWeight: 'bold'
+  }
+})</pre>
+      </div>
+    </div>
+
+    <div class="example">
+      <h3>5️⃣ 여러 변수에 각각 다른 스타일</h3>
+      <div class="result">
+        <span style="color: #61dafb; font-weight: bold;">React</span>와 <span style="color: #3178c6; font-weight: bold;">TypeScript</span>를 사용할 수 있습니다
+      </div>
+      <div class="code">
+        <pre>t('multi', { first: 'React', second: 'TypeScript' }, {
+  first: { color: '#61dafb', fontWeight: 'bold' },
+  second: { color: '#3178c6', fontWeight: 'bold' }
+})</pre>
+      </div>
+    </div>
+
+    <div class="example">
+      <h3>6️⃣ 중요 정보 하이라이트</h3>
+      <div class="result">
+        이것은 <span style="background-color: #fff3cd; color: #856404; padding: 4px 8px; border-radius: 4px; font-weight: bold; border: 1px solid #ffc107;">매우 중요한</span> 정보입니다
+      </div>
+      <div class="code">
+        <pre>t('highlight', { important: '매우 중요한' }, {
+  important: {
+    backgroundColor: '#fff3cd',
+    color: '#856404',
+    padding: '4px 8px',
+    borderRadius: '4px',
+    fontWeight: 'bold',
+    border: '1px solid #ffc107'
+  }
+})</pre>
+      </div>
+    </div>
+
+    <div class="example">
+      <h3>7️⃣ 그라디언트 텍스트</h3>
+      <div class="result">
+        안녕하세요 <span style="background: linear-gradient(45deg, #f093fb 0%, #f5576c 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: bold; font-size: 20px;">Premium User</span>님!
+      </div>
+      <div class="code">
+        <pre>t('welcome', { name: 'Premium User' }, {
+  name: {
+    background: 'linear-gradient(45deg, #f093fb 0%, #f5576c 100%)',
+    WebkitBackgroundClip: 'text',
+    WebkitTextFillColor: 'transparent',
+    fontWeight: 'bold',
+    fontSize: '20px'
+  }
+})</pre>
+      </div>
+    </div>
+
+    <div class="example">
+      <h3>8️⃣ 애니메이션 텍스트</h3>
+      <div class="result">
+        장바구니에 <span style="color: #e91e63; font-weight: bold; animation: pulse 2s infinite;">NEW</span>개 상품
+      </div>
+      <div class="code">
+        <pre>t('status', { count: 'NEW' }, {
+  count: {
+    color: '#e91e63',
+    fontWeight: 'bold',
+    animation: 'pulse 2s infinite'
+  }
+})</pre>
+      </div>
+    </div>
+
+    <div style="margin-top: 40px; padding: 30px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 12px; color: white;">
+      <h2 style="margin-top: 0; color: white;">💡 핵심 포인트</h2>
+      <ul style="font-size: 1.1em; line-height: 1.8;">
+        <li><strong>세 번째 파라미터</strong>로 스타일 객체 전달</li>
+        <li><strong>React의 CSSProperties</strong> 모든 스타일 속성 사용 가능</li>
+        <li><strong>여러 변수</strong>에 각각 다른 스타일 지정 가능</li>
+        <li><strong>camelCase</strong> 사용 (예: backgroundColor, fontWeight)</li>
+        <li><strong>자동으로 &lt;span&gt; 태그</strong>로 렌더링</li>
+      </ul>
+    </div>
+
+    <div style="margin-top: 40px; padding: 20px; background: #f8f9fa; border-radius: 8px;">
+      <h3>📚 타입 정의</h3>
+      <div class="code">
+        <pre>type TranslationStyles = {
+  [variableName: string]: React.CSSProperties;
+};
+
+// 사용 예시
+t(
+  key: string,
+  variables?: { [key: string]: string | number },
+  styles?: TranslationStyles
+)</pre>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
