@@ -74,9 +74,7 @@ export class TranslationWrapper {
 
     modifiedComponentPaths.forEach((componentPath) => {
       if (
-        componentPath.scope.hasBinding(
-          STRING_CONSTANTS.TRANSLATION_FUNCTION
-        )
+        componentPath.scope.hasBinding(STRING_CONSTANTS.TRANSLATION_FUNCTION)
       ) {
         return;
       }
@@ -119,11 +117,7 @@ export class TranslationWrapper {
 
     // 필요한 import 추가 (중복 방지)
     usedTranslationFunctions.forEach((functionName) => {
-      ensureNamedImport(
-        ast,
-        this.config.translationImportSource,
-        functionName
-      );
+      ensureNamedImport(ast, this.config.translationImportSource, functionName);
     });
 
     const output = generateCode(ast, this.config.parserType, {
@@ -161,32 +155,24 @@ export class TranslationWrapper {
         // Step 4: 컴포넌트 내부 처리
         traverse(ast, {
           FunctionDeclaration: (path) => {
-            if (
-              this.processComponent(
-                path,
-                path.node.id?.name,
-                code,
-                modifiedComponentPaths
-              )
-            ) {
-              isFileModified = true;
-            }
+            isFileModified = this.processComponent(
+              path,
+              path.node.id?.name,
+              code,
+              modifiedComponentPaths
+            );
           },
           ArrowFunctionExpression: (path) => {
             if (
               t.isVariableDeclarator(path.parent) &&
               t.isIdentifier(path.parent.id)
             ) {
-              if (
-                this.processComponent(
-                  path,
-                  path.parent.id.name,
-                  code,
-                  modifiedComponentPaths
-                )
-              ) {
-                isFileModified = true;
-              }
+              isFileModified = this.processComponent(
+                path,
+                path.parent.id.name,
+                code,
+                modifiedComponentPaths
+              );
             }
           },
         });

@@ -7,6 +7,7 @@ import * as fs from "fs";
 import * as path from "path";
 import * as os from "os";
 import { runTranslationWrapper } from "./index";
+import { setFile, readFile } from "./test-utils";
 
 describe("t-wrapper E2E", () => {
   let tempDir: string;
@@ -27,13 +28,13 @@ describe("t-wrapper E2E", () => {
   return <div>안녕하세요</div>;
 }`;
 
-    fs.writeFileSync(testFile, originalContent, "utf-8");
+    setFile(testFile, originalContent);
 
     await runTranslationWrapper({
       sourcePattern: path.join(tempDir, "**/*.tsx"),
     });
 
-    const modifiedContent = fs.readFileSync(testFile, "utf-8");
+    const modifiedContent = readFile(testFile);
     expect(modifiedContent).toContain("t(");
     expect(modifiedContent).toContain("useTranslation");
     // 파일이 변환되었는지 확인 (원본과 다름)
@@ -47,13 +48,13 @@ describe("t-wrapper E2E", () => {
   return <div>{\`안녕하세요 \${name}님\`}</div>;
 }`;
 
-    fs.writeFileSync(testFile, originalContent, "utf-8");
+    setFile(testFile, originalContent);
 
     await runTranslationWrapper({
       sourcePattern: path.join(tempDir, "**/*.tsx"),
     });
 
-    const modifiedContent = fs.readFileSync(testFile, "utf-8");
+    const modifiedContent = readFile(testFile);
     expect(modifiedContent).toContain("t(");
     expect(modifiedContent).toContain("useTranslation");
     // 템플릿 리터럴이 변환되었는지 확인
@@ -95,13 +96,13 @@ describe("t-wrapper E2E", () => {
   return <div>안녕하세요</div>;
 }`;
 
-    fs.writeFileSync(testFile, originalContent, "utf-8");
+    setFile(testFile, originalContent);
 
     await runTranslationWrapper({
       sourcePattern: path.join(tempDir, "**/*.tsx"),
     });
 
-    const modifiedContent = fs.readFileSync(testFile, "utf-8");
+    const modifiedContent = readFile(testFile);
     expect(modifiedContent).toContain("t(");
     expect(modifiedContent).not.toContain("useTranslation");
     expect(modifiedContent).toContain("getServerTranslation");
@@ -115,13 +116,13 @@ describe("t-wrapper E2E", () => {
   return <div>{text}</div>;
 }`;
 
-    fs.writeFileSync(testFile, originalContent, "utf-8");
+    setFile(testFile, originalContent);
 
     await runTranslationWrapper({
       sourcePattern: path.join(tempDir, "**/*.tsx"),
     });
 
-    const modifiedContent = fs.readFileSync(testFile, "utf-8");
+    const modifiedContent = readFile(testFile);
     expect(modifiedContent).toContain('const text = "안녕하세요"');
     expect(modifiedContent).not.toContain('t("안녕하세요")');
   });
