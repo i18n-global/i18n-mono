@@ -5,7 +5,7 @@
 
 import * as path from "path";
 import { runTranslationWrapper } from "./index";
-import { setFile, readFile, createTempDir, removeDir } from "./test-utils";
+import { writeFile, readFile, createTempDir, removeDir } from "./fs-utils";
 
 describe("t-wrapper E2E", () => {
   let tempDir: string;
@@ -24,7 +24,7 @@ describe("t-wrapper E2E", () => {
   return <div>안녕하세요</div>;
 }`;
 
-    setFile(testFile, originalContent);
+    writeFile(testFile, originalContent);
 
     await runTranslationWrapper({
       sourcePattern: path.join(tempDir, "**/*.tsx"),
@@ -44,7 +44,7 @@ describe("t-wrapper E2E", () => {
   return <div>{\`안녕하세요 \${name}님\`}</div>;
 }`;
 
-    setFile(testFile, originalContent);
+    writeFile(testFile, originalContent);
 
     await runTranslationWrapper({
       sourcePattern: path.join(tempDir, "**/*.tsx"),
@@ -64,7 +64,7 @@ describe("t-wrapper E2E", () => {
   alert("테스트 메시지");
 }`;
 
-    setFile(testFile, originalContent);
+    writeFile(testFile, originalContent);
 
     await runTranslationWrapper({
       sourcePattern: path.join(tempDir, "**/*.ts"),
@@ -92,7 +92,7 @@ describe("t-wrapper E2E", () => {
   return <div>안녕하세요</div>;
 }`;
 
-    setFile(testFile, originalContent);
+    writeFile(testFile, originalContent);
 
     await runTranslationWrapper({
       sourcePattern: path.join(tempDir, "**/*.tsx"),
@@ -112,7 +112,7 @@ describe("t-wrapper E2E", () => {
   return <div>{text}</div>;
 }`;
 
-    setFile(testFile, originalContent);
+    writeFile(testFile, originalContent);
 
     await runTranslationWrapper({
       sourcePattern: path.join(tempDir, "**/*.tsx"),
@@ -128,7 +128,7 @@ describe("t-wrapper E2E", () => {
     const originalContent = `function ClientComp() {
   return <div>안녕하세요</div>;
 }`;
-    setFile(testFile, originalContent);
+    writeFile(testFile, originalContent);
 
     await runTranslationWrapper({
       sourcePattern: path.join(tempDir, "**/*.tsx"),
@@ -147,7 +147,7 @@ describe("t-wrapper E2E", () => {
     const originalContent = `function ClientReact() {
   return <div>안녕하세요</div>;
 }`;
-    setFile(testFile, originalContent);
+    writeFile(testFile, originalContent);
 
     await runTranslationWrapper({
       sourcePattern: path.join(tempDir, "**/*.tsx"),
@@ -166,7 +166,7 @@ describe("t-wrapper E2E", () => {
     const originalContent = `function ServerComp() {
   return <div>안녕하세요</div>;
 }`;
-    setFile(testFile, originalContent);
+    writeFile(testFile, originalContent);
 
     await runTranslationWrapper({
       sourcePattern: path.join(tempDir, "**/*.tsx"),
@@ -184,7 +184,7 @@ describe("t-wrapper E2E", () => {
     const originalContent = `function ServerCustom() {
   return <div>안녕하세요</div>;
 }`;
-    setFile(testFile, originalContent);
+    writeFile(testFile, originalContent);
 
     await runTranslationWrapper({
       sourcePattern: path.join(tempDir, "**/*.tsx"),
