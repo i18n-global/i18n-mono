@@ -85,7 +85,7 @@ export function writeASTToFile(
   filePath: string,
   config: Required<ScriptConfig>
 ): void {
-  const output = generateCode(ast, config.parserType, {
+  const output = generateCode(ast, {
     retainLines: true,
     comments: true,
   });

@@ -30,7 +30,7 @@ export async function wrapTranslations(
     const code = readFile(filePath);
 
     try {
-      const ast = parseFile(code, fullConfig.parserType, {
+      const ast = parseFile(code, {
         sourceType: "module",
         tsx: true,
         decorators: true,
