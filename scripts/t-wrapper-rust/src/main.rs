@@ -1,7 +1,7 @@
 /// t-wrapper Rust CLI
-/// SWC를 사용하여 AST 변환 수행
+/// TypeScript의 index.ts와 동일
 
-use t_wrapper_rust::{run_translation_wrapper, ScriptConfig};
+use t_wrapper_rust::{wrap_translations, ScriptConfig};
 use t_wrapper_rust::utils::constants::{ConsoleMessages, CliOptions, CliHelp};
 use std::env;
 
@@ -9,7 +9,6 @@ fn main() {
     let args: Vec<String> = env::args().skip(1).collect();
     let mut config = ScriptConfig::default();
 
-    // TypeScript 버전과 동일한 로직:
     // CLI 옵션 파싱
     let mut i = 0;
     while i < args.len() {
@@ -19,9 +18,6 @@ fn main() {
                     config.source_pattern = args[i + 1].clone();
                     i += 1;
                 }
-            }
-            CliOptions::DRY_RUN | CliOptions::DRY_RUN_SHORT => {
-                config.dry_run = true;
             }
             CliOptions::HELP | CliOptions::HELP_SHORT => {
                 println!(
@@ -40,10 +36,19 @@ fn main() {
         i += 1;
     }
 
-    // TypeScript 버전과 동일한 로직:
-    // runTranslationWrapper 호출 및 에러 처리
-    if let Err(e) = run_translation_wrapper(config) {
-        eprintln!("{} {}", ConsoleMessages::FATAL_ERROR, e);
-        std::process::exit(1);
+    // wrap_translations 호출
+    match wrap_translations(Some(config)) {
+        Ok(result) => {
+            let time_in_seconds = result.total_time_ms as f64 / 1000.0;
+            println!(
+                "✅ Processed {} file(s) in {:.2}s",
+                result.processed_files.len(),
+                time_in_seconds
+            );
+        }
+        Err(e) => {
+            eprintln!("{} {}", ConsoleMessages::FATAL_ERROR, e);
+            std::process::exit(1);
+        }
     }
 }
