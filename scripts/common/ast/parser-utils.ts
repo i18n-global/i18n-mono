@@ -6,7 +6,6 @@
 import { parse as babelParse } from "@babel/parser";
 import generate from "@babel/generator";
 import * as t from "@babel/types";
-import { parseFileWithSwc, generateCodeFromAst } from "../../swc-utils";
 
 export interface ParseOptions {
   sourceType?: "module" | "script";
@@ -61,33 +60,13 @@ export function parseWithBabel(
 }
 
 /**
- * SWC 파서로 코드 파싱
- */
-export function parseWithSwc(
-  code: string,
-  options: ParseOptions = {}
-): t.File {
-  return parseFileWithSwc(code, {
-    sourceType: options.sourceType || "module",
-    tsx: options.tsx !== false,
-    jsx: options.jsx !== false,
-    decorators: options.decorators !== false,
-  });
-}
-
-/**
- * 파서 타입에 따라 코드 파싱
+ * 코드 파싱 (Babel 사용)
  */
 export function parseFile(
   code: string,
-  parserType: "babel" | "swc" = "babel",
   options: ParseOptions = {}
 ): t.File {
-  if (parserType === "babel") {
-    return parseWithBabel(code, options);
-  } else {
-    return parseWithSwc(code, options);
-  }
+  return parseWithBabel(code, options);
 }
 
 /**
@@ -104,30 +83,12 @@ export function generateWithBabel(
 }
 
 /**
- * SWC로 AST를 코드로 생성
- */
-export function generateWithSwc(
-  ast: t.File,
-  options: GenerateOptions = {}
-): { code: string; map?: any } {
-  return generateCodeFromAst(ast, {
-    retainLines: options.retainLines !== false,
-    comments: options.comments !== false,
-  });
-}
-
-/**
- * 파서 타입에 따라 AST를 코드로 생성
+ * AST를 코드로 생성 (Babel 사용)
  */
 export function generateCode(
   ast: t.File,
-  parserType: "babel" | "swc" = "babel",
   options: GenerateOptions = {}
 ): { code: string; map?: any } {
-  if (parserType === "babel") {
-    return generateWithBabel(ast, options);
-  } else {
-    return generateWithSwc(ast, options);
-  }
+  return generateWithBabel(ast, options);
 }
 
