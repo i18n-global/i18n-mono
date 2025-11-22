@@ -19,20 +19,20 @@ function tryTransformComponent(
   code: string,
   modifiedComponentPaths: NodePath<t.Function>[]
 ): boolean {
-  let componentName: string | null | undefined;
+  let functionName: string | null | undefined;
   if (path.isFunctionDeclaration() && path.node.id) {
-    componentName = path.node.id.name;
+    functionName = path.node.id.name;
   } else if (
     path.isArrowFunctionExpression() &&
     t.isVariableDeclarator(path.parent) &&
     t.isIdentifier(path.parent.id)
   ) {
-    componentName = path.parent.id.name;
+    functionName = path.parent.id.name;
   }
 
   if (
-    componentName &&
-    (isReactComponent(componentName) || isReactCustomHook(componentName))
+    functionName &&
+    (isReactComponent(functionName) || isReactCustomHook(functionName))
   ) {
     const transformResult = transformFunctionBody(path, code);
     if (transformResult.wasModified) {
