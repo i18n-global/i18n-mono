@@ -1,9 +1,8 @@
 /**
  * translation-wrapper 테스트
- * TranslationWrapper 클래스 테스트
  */
 
-import { TranslationWrapper } from "./translation-wrapper";
+import { processFiles } from "./translation-wrapper";
 import * as path from "path";
 import { writeFile, readFile, createTempDir, removeDir } from "./fs-utils";
 
@@ -28,11 +27,9 @@ describe("translation-wrapper", () => {
 }`
       );
 
-      const wrapper = new TranslationWrapper({
+      const result = await processFiles({
         sourcePattern: path.join(tempDir, "**/*.tsx"),
       });
-
-      const result = await wrapper.processFiles();
       expect(result.processedFiles.length).toBeGreaterThan(0);
     });
 
@@ -45,13 +42,12 @@ describe("translation-wrapper", () => {
 }`
       );
 
-      const wrapper = new TranslationWrapper({
+      await processFiles({
         sourcePattern: path.join(tempDir, "**/*.tsx"),
         mode: "client",
         framework: "nextjs",
       } as any);
 
-      await wrapper.processFiles();
       const content = readFile(testFile);
       expect(content).toMatch(/["']use client["']/);
       expect(content).toContain("useTranslation");
@@ -67,13 +63,12 @@ describe("translation-wrapper", () => {
 }`
       );
 
-      const wrapper = new TranslationWrapper({
+      await processFiles({
         sourcePattern: path.join(tempDir, "**/*.tsx"),
         mode: "client",
         framework: "react",
       } as any);
 
-      await wrapper.processFiles();
       const content = readFile(testFile);
       expect(content).not.toMatch(/["']use client["']/);
       expect(content).toContain("useTranslation");
@@ -89,13 +84,12 @@ describe("translation-wrapper", () => {
 }`
       );
 
-      const wrapper = new TranslationWrapper({
+      await processFiles({
         sourcePattern: path.join(tempDir, "**/*.tsx"),
         mode: "server",
         serverTranslationFunction: "getServerT",
       } as any);
 
-      await wrapper.processFiles();
       const content = readFile(testFile);
       expect(content).toContain("await getServerT");
       expect(content).toContain("const { t } =");

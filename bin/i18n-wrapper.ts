@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-import { TranslationWrapper } from "../scripts/t-wrapper/translation-wrapper";
+import { processFiles } from "../scripts/t-wrapper/translation-wrapper";
 import { ScriptConfig } from "../scripts/common/default-config";
 import { loadConfig } from "../scripts/config-loader";
 
@@ -47,8 +47,7 @@ Features:
   }
 }
 
-const wrapper = new TranslationWrapper(config);
-wrapper.processFiles().catch((error) => {
+processFiles(config).catch((error) => {
   console.error("❌ Translation wrapper failed:", error);
   process.exit(1);
 });

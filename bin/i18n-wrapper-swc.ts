@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-import { TranslationWrapper } from "../scripts/t-wrapper/translation-wrapper";
+import { processFiles } from "../scripts/t-wrapper/translation-wrapper";
 import { ScriptConfig } from "../scripts/common/default-config";
 import { loadConfig } from "../scripts/config-loader";
 
@@ -47,10 +47,10 @@ Performance Comparison:
   성능 비교를 원하시면:
   
   # Babel 버전 (기본, 권장)
-  I18N_PERF_MONITOR=true I18N_PERF_VERBOSE=true npx i18n-wrapper
+  npx i18n-wrapper
   
   # SWC 버전 (실험적)
-  I18N_PERF_MONITOR=true I18N_PERF_VERBOSE=true npx i18n-wrapper-swc
+  npx i18n-wrapper-swc
   
   ⚠️  현재 테스트 결과: Babel이 SWC보다 빠릅니다.
   SWC AST를 Babel AST로 변환하는 과정에서 오버헤드가 발생합니다.
@@ -67,8 +67,7 @@ console.log("⚠️  Running with SWC parser (experimental mode)");
 console.log("⚠️  Note: SWC may be slower than Babel due to AST conversion overhead.");
 console.log("⚠️  For best performance, use the default Babel parser: npx i18n-wrapper");
 
-const wrapper = new TranslationWrapper(config);
-wrapper.processFiles().catch((error) => {
+processFiles(config).catch((error) => {
   console.error("❌ Translation wrapper failed:", error);
   process.exit(1);
 });

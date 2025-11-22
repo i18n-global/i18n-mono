@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 import { ScriptConfig } from "../common/default-config";
-import { TranslationWrapper } from "./translation-wrapper";
+import { processFiles } from "./translation-wrapper";
 import { CLI_OPTIONS, CLI_HELP } from "./constants";
 
 // CLI 실행 부분
@@ -29,8 +29,7 @@ ${CLI_HELP.EXAMPLES}
     }
   }
 
-  new TranslationWrapper(config)
-    .processFiles()
+  processFiles(config)
     .then((result) => {
       const timeInSeconds = (result.totalTime / 1000).toFixed(2);
       console.log(
