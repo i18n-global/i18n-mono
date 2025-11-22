@@ -370,6 +370,33 @@ describe('Namespace-based useTranslation', () => {
       consoleWarnSpy.mockRestore();
     });
 
+    it('should interpolate variables in missing translation keys (template literal fallback)', () => {
+      function TestComponent() {
+        const { t } = useTranslation('common');
+        return (
+          <div>
+            <div data-testid="korean">{t('{{user}}입니다' as any, { user: '나는' })}</div>
+            <div data-testid="english">{t('Hello {{name}}!' as any, { name: 'World' })}</div>
+            <div data-testid="mixed">{t('{{count}}개의 {{item}}' as any, { count: 5, item: '사과' })}</div>
+          </div>
+        );
+      }
+
+      render(
+        <I18nProvider
+          translations={namespaceTranslations}
+          languageManagerOptions={{ defaultLanguage: 'en' }}
+        >
+          <TestComponent />
+        </I18nProvider>
+      );
+
+      // Should interpolate variables even when key is not found
+      expect(screen.getByTestId('korean')).toHaveTextContent('나는입니다');
+      expect(screen.getByTestId('english')).toHaveTextContent('Hello World!');
+      expect(screen.getByTestId('mixed')).toHaveTextContent('5개의 사과');
+    });
+
     it('should return key when translation not found', () => {
       function TestComponent() {
         const { t } = useTranslation('common');
@@ -646,6 +673,34 @@ describe('useDynamicTranslation', () => {
       );
 
       expect(screen.getByTestId('translation')).toHaveTextContent('nonexistent.key');
+    });
+
+    it('should interpolate variables in missing dynamic keys (template literal fallback)', () => {
+      function TestComponent() {
+        const { t } = useDynamicTranslation();
+        return (
+          <div>
+            <div data-testid="korean">{t('{{user}}입니다', { user: '나는' })}</div>
+            <div data-testid="english">{t('Hello {{name}}!', { name: 'World' })}</div>
+            <div data-testid="number">{t('Total: ${{amount}}', { amount: 100 })}</div>
+          </div>
+        );
+      }
+
+      render(
+        <I18nProvider
+          translations={namespaceTranslations}
+          dynamicTranslations={dynamicTranslations}
+          languageManagerOptions={{ defaultLanguage: 'en' }}
+        >
+          <TestComponent />
+        </I18nProvider>
+      );
+
+      // Dynamic translations should also interpolate fallback keys
+      expect(screen.getByTestId('korean')).toHaveTextContent('나는입니다');
+      expect(screen.getByTestId('english')).toHaveTextContent('Hello World!');
+      expect(screen.getByTestId('number')).toHaveTextContent('Total: $100');
     });
 
     it('should work without dynamic translations provided', () => {
