@@ -12,37 +12,24 @@ import {
   hasTranslationFunctionCall,
   createTranslationBinding,
 } from "./ast-helpers";
-import { ensureNamedImport } from "./import-manager";
+import { ensureNamedImport, ensureUseClientDirective } from "./import-manager";
 import { transformFunctionBody } from "./ast-transformers";
 import { CONSOLE_MESSAGES, STRING_CONSTANTS } from "./constants";
-
-const DEFAULT_CONFIG = SCRIPT_CONFIG_DEFAULTS;
 
 export class TranslationWrapper {
   public readonly config: Required<ScriptConfig>;
   public performanceMonitor: PerformanceMonitor;
 
   constructor(config: Partial<ScriptConfig> = {}) {
-    this.config = { ...DEFAULT_CONFIG, ...config } as Required<ScriptConfig>;
+    this.config = {
+      ...SCRIPT_CONFIG_DEFAULTS,
+      ...config,
+    } as Required<ScriptConfig>;
     this.performanceMonitor = new PerformanceMonitor({
       enabled: this.config.enablePerformanceMonitoring,
       environment: process.env.NODE_ENV || STRING_CONSTANTS.DEFAULT_ENV,
       release: process.env.npm_package_version,
     });
-  }
-
-  private ensureUseClientDirective(ast: t.File) {
-    // 이미 존재하면 패스
-    const hasDirective = (ast.program.directives || []).some(
-      (d) => d.value.value === STRING_CONSTANTS.USE_CLIENT_DIRECTIVE
-    );
-    if (!hasDirective) {
-      const dir = t.directive(
-        t.directiveLiteral(STRING_CONSTANTS.USE_CLIENT_DIRECTIVE)
-      );
-      ast.program.directives = ast.program.directives || [];
-      ast.program.directives.unshift(dir);
-    }
   }
 
   public async processFiles(): Promise<{
@@ -115,7 +102,7 @@ export class TranslationWrapper {
           // - React/Vite 프로젝트에서는 필요 없음
           // - 서버 번역 모드에서는 필요 없음 (서버 컴포넌트이므로)
           if (isNextjsFramework && isClientMode) {
-            this.ensureUseClientDirective(ast);
+            ensureUseClientDirective(ast);
           }
 
           // 사용된 번역 함수 추적 (중복 import 방지)
