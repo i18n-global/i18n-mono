@@ -56,39 +56,35 @@ export class TranslationWrapper {
         // 수정된 컴포넌트 경로 저장
         const modifiedComponentPaths: NodePath<t.Function>[] = [];
 
+        // 컴포넌트 변환 공통 로직
+        const processComponent = (
+          path: NodePath<t.Function>,
+          componentName: string | null | undefined
+        ) => {
+          if (
+            componentName &&
+            (isReactComponent(componentName) ||
+              isReactCustomHook(componentName))
+          ) {
+            const transformResult = transformFunctionBody(path, code);
+            if (transformResult.wasModified) {
+              isFileModified = true;
+              modifiedComponentPaths.push(path);
+            }
+          }
+        };
+
         // Step 4: 컴포넌트 내부 처리
         traverse(ast, {
           FunctionDeclaration: (path) => {
-            const componentName = path.node.id?.name;
-            if (
-              componentName &&
-              (isReactComponent(componentName) ||
-                isReactCustomHook(componentName))
-            ) {
-              const transformResult = transformFunctionBody(path, code);
-              if (transformResult.wasModified) {
-                isFileModified = true;
-                modifiedComponentPaths.push(path);
-              }
-            }
+            processComponent(path, path.node.id?.name);
           },
           ArrowFunctionExpression: (path) => {
             if (
               t.isVariableDeclarator(path.parent) &&
               t.isIdentifier(path.parent.id)
             ) {
-              const componentName = path.parent.id.name;
-              if (
-                componentName &&
-                (isReactComponent(componentName) ||
-                  isReactCustomHook(componentName))
-              ) {
-                const transformResult = transformFunctionBody(path, code);
-                if (transformResult.wasModified) {
-                  isFileModified = true;
-                  modifiedComponentPaths.push(path);
-                }
-              }
+              processComponent(path, path.parent.id.name);
             }
           },
         });
