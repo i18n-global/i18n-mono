@@ -1,5 +1,5 @@
 /**
- * Import 관리 유틸리티
+ * Import 및 디렉티브 관리 유틸리티
  */
 
 import traverse from "@babel/traverse";
@@ -62,4 +62,25 @@ export function ensureNamedImport(
   }
 
   return hasSpecifier;
+}
+
+/**
+ * AST에 "use client" 디렉티브가 필요한지 확인하고 추가
+ * @param ast - AST 파일 노드
+ * @returns 디렉티브가 추가되었거나 이미 존재하면 true
+ */
+export function ensureUseClientDirective(ast: t.File): boolean {
+  // 이미 존재하면 패스
+  const hasDirective = (ast.program.directives || []).some(
+    (d) => d.value.value === STRING_CONSTANTS.USE_CLIENT_DIRECTIVE
+  );
+  if (!hasDirective) {
+    const dir = t.directive(
+      t.directiveLiteral(STRING_CONSTANTS.USE_CLIENT_DIRECTIVE)
+    );
+    ast.program.directives = ast.program.directives || [];
+    ast.program.directives.unshift(dir);
+    return true;
+  }
+  return false;
 }
