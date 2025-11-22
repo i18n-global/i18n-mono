@@ -5,10 +5,7 @@ import * as t from "@babel/types";
 import { ScriptConfig, SCRIPT_CONFIG_DEFAULTS } from "../common/default-config";
 import { parseFile } from "../common/ast/parser-utils";
 import { tryTransformComponent } from "./component-transformer";
-import {
-  applyTranslationsToAST,
-  writeASTToFile,
-} from "./translation-applier";
+import { applyTranslationsToAST, writeASTToFile } from "./translation-applier";
 
 export async function processFiles(
   config: Partial<ScriptConfig> = {}
