@@ -402,5 +402,5 @@ npm run build
 
 ## 다음 단계
 
-- [TYPE_SAFE_KEYS.md](./TYPE_SAFE_KEYS.md) - 고급 타입 안전 기능
-- [USETRANSLATION_TYPE_SAFE.md](./USETRANSLATION_TYPE_SAFE.md) - 수동 제네릭 지정
+- [Type-Safe Keys Guide](./type-safe-keys.md) - 고급 타입 안전 기능
+- [useTranslation Type-Safe Guide](./use-translation-type-safe.md) - 수동 제네릭 지정

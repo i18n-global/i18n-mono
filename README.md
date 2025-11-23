@@ -262,7 +262,7 @@ export function MyComponent() {
 
 ### 📚 Full Setup Guide
 
-For complete setup instructions and patterns, see **[TYPE_SAFE_SETUP.md](./TYPE_SAFE_SETUP.md)**
+For complete setup instructions and patterns, see **[Type-Safe Setup Guide](./docs/guides/type-safe-setup.md)**
 
 ---
 
