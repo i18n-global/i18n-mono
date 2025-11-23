@@ -4,21 +4,25 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-# SWC 고수준 API
-swc = "*"
-# SWC 의존성 - swc_ecma_parser가 다른 패키지 버전을 결정
+# SWC 모듈화된 패키지들 (swc 패키지 없이 직접 사용)
+# - parser: 코드 파싱
+# - ast: AST 타입 정의
+# - visit: AST 순회/변환
+# - codegen: 코드 생성
+# - common: 공통 유틸리티 (SourceMap, Handler 등)
 swc_ecma_parser = "27.0"
 swc_ecma_ast = "18.0"
 swc_ecma_visit = "18.0"
 swc_ecma_codegen = "20.0"
 swc_common = "17.0"
+# 파일 시스템 및 병렬 처리
 glob = "0.3"
-serde = { version = "1.0", features = ["derive"] }
-serde_json = "1.0"
-anyhow = "1.0"
-thiserror = "1.0"
-regex = "1.10"
 rayon = "1.8"
+# 에러 처리
+
+anyhow = "1.0"
+# 정규식 (한국어 감지 등)
+regex = "1.10"
 
 [dev-dependencies]
 # 테스트용 의존성
