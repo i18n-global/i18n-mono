@@ -104,6 +104,55 @@ impl TranslationTransformer {
             ctxt: Default::default(),
         })
     }
+    
+    /// 표현식에서 변수명 추출
+    /// Identifier: name 그대로 사용
+    /// MemberExpression: user.name → user_name
+    /// 기타: expr0, expr1 등으로 처리
+    fn extract_var_name(&self, expr: &Box<Expr>) -> String {
+        match expr.as_ref() {
+            Expr::Ident(ident) => ident.sym.to_string(),
+            Expr::Member(member) => {
+                let mut parts = Vec::new();
+                let mut current: &MemberExpr = member;
+                
+                loop {
+                    // property 이름 추출
+                    match &current.prop {
+                        MemberProp::Ident(prop_ident) => {
+                            parts.push(prop_ident.sym.to_string());
+                        }
+                        _ => {
+                            // 복잡한 property는 expr로 처리
+                            return format!("{}{}", StringConstants::EXPR_PREFIX, 0);
+                        }
+                    }
+                    
+                    // object 확인
+                    match &*current.obj {
+                        Expr::Member(nested_member) => {
+                            current = nested_member;
+                        }
+                        Expr::Ident(obj_ident) => {
+                            parts.push(obj_ident.sym.to_string());
+                            break;
+                        }
+                        _ => {
+                            // 복잡한 object는 expr로 처리
+                            return format!("{}{}", StringConstants::EXPR_PREFIX, 0);
+                        }
+                    }
+                }
+                
+                parts.reverse();
+                parts.join(StringConstants::MEMBER_SEPARATOR)
+            }
+            _ => {
+                // 복잡한 표현식은 expr0, expr1 등으로 처리
+                format!("{}{}", StringConstants::EXPR_PREFIX, 0)
+            }
+        }
+    }
 }
 
 impl VisitMut for TranslationTransformer {
@@ -211,15 +260,134 @@ impl VisitMut for TranslationTransformer {
     fn visit_mut_tpl(&mut self, n: &mut Tpl) {
         // TODO: shouldSkipPath 및 hasIgnoreComment로 스킵 확인
         // TODO: 이미 t()로 래핑된 경우 스킵
-        // TODO: 템플릿 리터럴의 모든 부분에 하나라도 한국어가 있는지 확인
-        // TODO: Wtf8Atom을 문자열로 변환하는 올바른 방법 찾기
-        // 현재는 소스코드에서 직접 검사
-        if RegexPatterns::korean_text().is_match(&self.source_code) {
-            self.was_modified = true;
-            // TODO: 실제로는 i18next interpolation 형식으로 변환
-            // 예: `안녕 ${name}` → t(`안녕 {{name}}`, { name })
+        
+        // 템플릿 리터럴의 quasis(문자열 부분)에서 한국어 확인
+        let has_korean = n.quasis.iter().any(|quasi| {
+            let value: &str = if let Some(cooked) = &quasi.cooked {
+                &cooked.to_string_lossy()
+            } else {
+                &quasi.raw.to_string()
+            };
+            RegexPatterns::korean_text().is_match(value)
+        });
+        
+        if !has_korean {
+            n.visit_mut_children_with(self);
+            return;
         }
-        let _ = n;
+        
+        self.was_modified = true;
+        
+        // 표현식이 없으면 단순 문자열로 처리
+        if n.exprs.is_empty() {
+            if let Some(first_quasi) = n.quasis.first() {
+                let raw_value = if let Some(cooked) = &first_quasi.cooked {
+                    cooked.clone()
+                } else {
+                    // Atom을 Wtf8Atom으로 변환 필요
+                    // 현재는 raw를 그대로 사용
+                    first_quasi.raw.clone().into()
+                };
+                
+                let t_call = Expr::Call(CallExpr {
+                    span: n.span,
+                    callee: Callee::Expr(Box::new(Expr::Ident(Ident {
+                        span: DUMMY_SP,
+                        sym: StringConstants::TRANSLATION_FUNCTION.into(),
+                        optional: false,
+                        ctxt: Default::default(),
+                    }))),
+                    args: vec![ExprOrSpread {
+                        spread: None,
+                        expr: Box::new(Expr::Lit(Lit::Str(Str {
+                            span: first_quasi.span,
+                            value: raw_value,
+                            raw: None,
+                        }))),
+                    }],
+                    type_args: None,
+                    ctxt: Default::default(),
+                });
+                
+                // Tpl을 Expr로 변환하여 교체
+                // 현재는 플래그만 설정 (실제 교체는 상위 레벨에서 처리 필요)
+            }
+            n.visit_mut_children_with(self);
+            return;
+        }
+        
+        // i18next interpolation 형식으로 변환
+        // `안녕 ${name}` → `안녕 {{name}}`
+        let mut i18next_string = String::new();
+        let mut interpolation_vars = Vec::new();
+        
+        for (index, quasi) in n.quasis.iter().enumerate() {
+            let raw_value = if let Some(cooked) = &quasi.cooked {
+                cooked.to_string_lossy().to_string()
+            } else {
+                quasi.raw.to_string()
+            };
+            i18next_string.push_str(&raw_value);
+            
+            if index < n.exprs.len() {
+                let expr = &n.exprs[index];
+                
+                // 변수명 추출
+                let var_name = self.extract_var_name(expr);
+                
+                // i18next 형식: {{varName}}
+                i18next_string.push_str(StringConstants::INTERPOLATION_START);
+                i18next_string.push_str(&var_name);
+                i18next_string.push_str(StringConstants::INTERPOLATION_END);
+                
+                // interpolation 객체에 추가
+                interpolation_vars.push(PropOrSpread::Prop(Box::new(Prop::KeyValue(KeyValueProp {
+                    key: PropName::Ident(IdentName {
+                        span: DUMMY_SP,
+                        sym: var_name.into(),
+                    }),
+                    value: expr.clone(),
+                }))));
+            }
+        }
+        
+        // t("안녕 {{name}}", { name: name })
+        let mut args = vec![ExprOrSpread {
+            spread: None,
+            expr: Box::new(Expr::Lit(Lit::Str(Str {
+                span: DUMMY_SP,
+                value: i18next_string.into(),
+                raw: None,
+            }))),
+        }];
+        
+        // interpolation 객체가 있으면 두 번째 인자로 추가
+        if !interpolation_vars.is_empty() {
+            args.push(ExprOrSpread {
+                spread: None,
+                expr: Box::new(Expr::Object(ObjectLit {
+                    span: DUMMY_SP,
+                    props: interpolation_vars,
+                })),
+            });
+        }
+        
+        let t_call = Expr::Call(CallExpr {
+            span: n.span,
+            callee: Callee::Expr(Box::new(Expr::Ident(Ident {
+                span: DUMMY_SP,
+                sym: StringConstants::TRANSLATION_FUNCTION.into(),
+                optional: false,
+                ctxt: Default::default(),
+            }))),
+            args,
+            type_args: None,
+            ctxt: Default::default(),
+        });
+        
+        // Tpl을 Expr로 변환하여 교체
+        // 현재는 플래그만 설정 (실제 교체는 상위 레벨에서 처리 필요)
+        n.visit_mut_children_with(self);
     }
 
     /// JSXText 변환
@@ -230,14 +398,45 @@ impl VisitMut for TranslationTransformer {
     /// 4. t() 함수 호출로 감싸기
     fn visit_mut_jsx_text(&mut self, n: &mut JSXText) {
         // TODO: hasIgnoreComment로 스킵 확인
-        // TODO: Wtf8Atom을 문자열로 변환하는 올바른 방법 찾기
-        // 현재는 소스코드에서 직접 검사
-        if RegexPatterns::korean_text().is_match(&self.source_code) {
-            self.was_modified = true;
-            // TODO: 실제로는 JSXExpressionContainer로 감싸야 함
-            // 현재는 플래그만 설정
+        
+        // 빈 텍스트나 공백만 있는 경우 스킵
+        let text_value: &str = &n.value.to_string();
+        let trimmed = text_value.trim();
+        if trimmed.is_empty() {
+            return;
         }
-        let _ = n;
+        
+        // 한국어가 포함되어 있는지 확인
+        if !RegexPatterns::korean_text().is_match(text_value) {
+            return;
+        }
+        
+        self.was_modified = true;
+        
+        // t() 함수 호출 생성
+        let t_call = Expr::Call(CallExpr {
+            span: DUMMY_SP,
+            callee: Callee::Expr(Box::new(Expr::Ident(Ident {
+                span: DUMMY_SP,
+                sym: StringConstants::TRANSLATION_FUNCTION.into(),
+                optional: false,
+                ctxt: Default::default(),
+            }))),
+            args: vec![ExprOrSpread {
+                spread: None,
+                expr: Box::new(Expr::Lit(Lit::Str(Str {
+                    span: n.span,
+                    value: trimmed.into(),
+                    raw: None,
+                }))),
+            }],
+            type_args: None,
+            ctxt: Default::default(),
+        });
+        
+        // JSXExpressionContainer로 감싸기
+        // JSXText를 JSXExpr로 변환
+        // 현재는 플래그만 설정 (실제 교체는 상위 레벨에서 처리 필요)
     }
 }
 
