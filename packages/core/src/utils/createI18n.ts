@@ -88,30 +88,15 @@ export function createI18n<
    * Wraps the base provider with your translation types
    */
   function TypedI18nProvider<TLanguage extends string = string>(
-    props: Omit<BaseI18nProviderProps<TLanguage, Record<string, Record<string, string>>>, 'translations'> & {
+    props: Omit<BaseI18nProviderProps<TLanguage, TTranslations>, 'translations'> & {
       translations?: TTranslations;
       dynamicTranslations?: Record<string, Record<string, string>>;
     }
   ) {
-    // Convert namespace translations to flat structure for I18nProvider
-    const flatTranslations = props.translations || translations;
-    const convertedTranslations = {} as Record<string, Record<string, string>>;
-    
-    // Flatten namespace structure
-    Object.keys(flatTranslations).forEach((namespace) => {
-      const namespaceData = flatTranslations[namespace];
-      Object.keys(namespaceData).forEach((lang) => {
-        if (!convertedTranslations[lang]) {
-          convertedTranslations[lang] = {};
-        }
-        Object.assign(convertedTranslations[lang], namespaceData[lang]);
-      });
-    });
-
-    return React.createElement(BaseI18nProvider<TLanguage, Record<string, Record<string, string>>>, {
+    return React.createElement(BaseI18nProvider<TLanguage, TTranslations>, {
       ...props,
-      translations: convertedTranslations,
-    } as BaseI18nProviderProps<TLanguage, Record<string, Record<string, string>>>);
+      translations: props.translations || translations,
+    } as BaseI18nProviderProps<TLanguage, TTranslations>);
   }
 
   /**
@@ -131,9 +116,7 @@ export function createI18n<
   function useTranslation<NS extends ExtractNamespaces<TTranslations>>(
     namespace: NS
   ): UseTranslationReturn<ExtractNamespaceKeys<TTranslations, NS>> {
-    // Note: useTranslationBase doesn't accept namespace parameter
-    // Namespace filtering should be handled at the translation level
-    return useTranslationBase<ExtractNamespaceKeys<TTranslations, NS>>();
+    return useTranslationBase<ExtractNamespaceKeys<TTranslations, NS>>(namespace);
   }
 
   return {

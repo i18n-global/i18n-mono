@@ -1,11 +1,6 @@
 import React, { ReactNode } from "react";
 import { LanguageManager, LanguageConfig, LanguageManagerOptions } from "../utils/languageManager";
 /**
- * Namespace translations structure
- * Record<namespace, Record<language, Record<key, value>>>
- */
-export type NamespaceTranslations = Record<string, Record<string, Record<string, string>>>;
-/**
  * Extract translation keys from a translations object
  * @example
  * type Keys = ExtractI18nKeys<typeof translations>;
