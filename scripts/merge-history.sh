@@ -34,10 +34,12 @@ cd core-temp
 # git-filter-repo가 설치되어 있는지 확인
 if command -v git-filter-repo &> /dev/null; then
   echo "  → git-filter-repo 사용 중..."
-  git filter-repo --to-subdirectory-filter packages/core --force
+  git filter-repo --to-subdirectory-filter packages/core --force --refs main
 else
   echo "  → git filter-branch 사용 중 (git-filter-repo 미설치)..."
-  git filter-branch --prune-empty --subdirectory-filter . -- --all
+  # 태그 제거 후 진행
+  git tag -l | xargs git tag -d 2>/dev/null || true
+  git filter-branch -f --prune-empty --subdirectory-filter . -- --all
   # 수동으로 경로 변경
   git filter-branch -f --tree-filter '
     mkdir -p packages/core
@@ -68,9 +70,11 @@ cd tools-temp
 
 if command -v git-filter-repo &> /dev/null; then
   echo "  → git-filter-repo 사용 중..."
-  git filter-repo --to-subdirectory-filter packages/tools --force
+  git filter-repo --to-subdirectory-filter packages/tools --force --refs main
 else
   echo "  → git filter-branch 사용 중..."
+  # 태그 제거 후 진행
+  git tag -l | xargs git tag -d 2>/dev/null || true
   git filter-branch -f --tree-filter '
     mkdir -p packages/tools
     find . -maxdepth 1 -not -name . -not -name .git -not -name packages -exec mv {} packages/tools/ \;
@@ -99,9 +103,11 @@ cd demo-temp
 
 if command -v git-filter-repo &> /dev/null; then
   echo "  → git-filter-repo 사용 중..."
-  git filter-repo --to-subdirectory-filter apps/demo --force
+  git filter-repo --to-subdirectory-filter apps/demo --force --refs main
 else
   echo "  → git filter-branch 사용 중..."
+  # 태그 제거 후 진행
+  git tag -l | xargs git tag -d 2>/dev/null || true
   git filter-branch -f --tree-filter '
     mkdir -p apps/demo
     find . -maxdepth 1 -not -name . -not -name .git -not -name apps -exec mv {} apps/demo/ \;
