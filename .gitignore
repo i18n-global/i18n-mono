@@ -56,3 +56,10 @@ firebase-debug.log
 # Temporary files
 *.tmp
 *.temp
+
+# Turborepo
+.turbo
+
+# Backup directories
+*-backup/
+**/*-backup/

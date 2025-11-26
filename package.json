@@ -1,0 +1,30 @@
+{
+  "name": "i18nexus-monorepo",
+  "version": "1.0.0",
+  "private": true,
+  "description": "i18nexus monorepo - Type-safe React i18n toolkit with intelligent automation",
+  "workspaces": [
+    "packages/core",
+    "packages/tools",
+    "apps/demo"
+  ],
+  "scripts": {
+    "build": "turbo run build",
+    "test": "turbo run test",
+    "lint": "turbo run lint",
+    "dev": "turbo run dev",
+    "clean": "turbo run clean",
+    "format": "prettier --write \"**/*.{ts,tsx,json,md}\"",
+    "publish:core": "turbo run build --filter=i18nexus",
+    "publish:tools": "turbo run build --filter=i18nexus-tools"
+  },
+  "devDependencies": {
+    "turbo": "^2.0.0",
+    "prettier": "^3.0.0"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
+  },
+  "packageManager": "npm@9.0.0"
+}

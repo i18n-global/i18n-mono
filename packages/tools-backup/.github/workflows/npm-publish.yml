@@ -1,0 +1,209 @@
+name: Publish to npm
+
+on:
+  push:
+    branches:
+      - main
+    paths-ignore:
+      - "**.md"
+      - "docs/**"
+      - "test-*.tsx"
+      - "src/test-*.tsx"
+  workflow_dispatch:
+    inputs:
+      version_type:
+        description: 'Version bump type (leave empty to use current version)'
+        required: false
+        type: choice
+        options:
+          - ''
+          - patch
+          - minor
+          - major
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      id-token: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          registry-url: "https://registry.npmjs.org"
+
+      - name: Configure Git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Determine version bump type
+        id: version-bump
+        run: |
+          if [ "${{ github.event_name }}" == "workflow_dispatch" ] && [ -n "${{ github.event.inputs.version_type }}" ]; then
+            echo "type=${{ github.event.inputs.version_type }}" >> $GITHUB_OUTPUT
+            echo "should_bump=true" >> $GITHUB_OUTPUT
+          else
+            # 커밋 메시지에서 버전 타입 추출
+            COMMIT_MSG="${{ github.event.head_commit.message }}"
+            if echo "$COMMIT_MSG" | grep -qiE "release:\s*(major|minor|patch)"; then
+              TYPE=$(echo "$COMMIT_MSG" | grep -oiE "release:\s*(major|minor|patch)" | awk '{print $2}' | tr '[:upper:]' '[:lower:]')
+              echo "type=$TYPE" >> $GITHUB_OUTPUT
+              echo "should_bump=true" >> $GITHUB_OUTPUT
+            elif echo "$COMMIT_MSG" | grep -qiE "\[major\]|\[minor\]|\[patch\]"; then
+              TYPE=$(echo "$COMMIT_MSG" | grep -oiE "\[(major|minor|patch)\]" | tr -d '[]' | tr '[:upper:]' '[:lower:]')
+              echo "type=$TYPE" >> $GITHUB_OUTPUT
+              echo "should_bump=true" >> $GITHUB_OUTPUT
+            else
+              # 버전 타입이 없으면 기본값으로 patch 사용 (사용자 혼동 방지)
+              echo "type=patch" >> $GITHUB_OUTPUT
+              echo "should_bump=true" >> $GITHUB_OUTPUT
+              echo "⚠️  No version type specified in commit message, defaulting to patch"
+            fi
+          fi
+          if [ "$(cat $GITHUB_OUTPUT | grep '^should_bump=' | cut -d'=' -f2)" == "true" ]; then
+            echo "Version bump type: $(cat $GITHUB_OUTPUT | grep '^type=' | cut -d'=' -f2)"
+          else
+            echo "No version bump needed, using current version"
+          fi
+
+      - name: Get current version
+        id: current-version
+        run: |
+          CURRENT_VERSION=$(node -p "require('./package.json').version")
+          echo "version=$CURRENT_VERSION" >> $GITHUB_OUTPUT
+          echo "Current version: $CURRENT_VERSION"
+
+      - name: Bump version
+        if: steps.version-bump.outputs.should_bump == 'true'
+        id: new-version
+        run: |
+          BUMP_TYPE="${{ steps.version-bump.outputs.type }}"
+          CURRENT_VERSION="${{ steps.current-version.outputs.version }}"
+          
+          # 버전 증가
+          npm version $BUMP_TYPE --no-git-tag-version
+          
+          NEW_VERSION=$(node -p "require('./package.json').version")
+          echo "version=$NEW_VERSION" >> $GITHUB_OUTPUT
+          echo "New version: $NEW_VERSION (bumped from $CURRENT_VERSION)"
+
+      - name: Commit version bump
+        if: steps.version-bump.outputs.should_bump == 'true'
+        run: |
+          git add package.json
+          git commit -m "chore: 버전 ${{ steps.new-version.outputs.version }}으로 업데이트 [skip ci]"
+          git push origin main
+
+      - name: Get package version
+        id: package-version
+        run: |
+          if [ "${{ steps.version-bump.outputs.should_bump }}" == "true" ]; then
+            echo "version=${{ steps.new-version.outputs.version }}" >> $GITHUB_OUTPUT
+          else
+            echo "version=${{ steps.current-version.outputs.version }}" >> $GITHUB_OUTPUT
+          fi
+          echo "Using version: $(cat $GITHUB_OUTPUT | grep '^version=' | cut -d'=' -f2)"
+
+      - name: Check if version exists on npm
+        id: check-version
+        run: |
+          if npm view i18nexus-tools@${{ steps.package-version.outputs.version }} version 2>/dev/null; then
+            echo "exists=true" >> $GITHUB_OUTPUT
+            echo "Version ${{ steps.package-version.outputs.version }} already exists on npm"
+          else
+            echo "exists=false" >> $GITHUB_OUTPUT
+            echo "Version ${{ steps.package-version.outputs.version }} is new"
+          fi
+        continue-on-error: true
+
+      - name: Install dependencies
+        if: steps.check-version.outputs.exists != 'true'
+        run: npm install
+
+      - name: Build
+        if: steps.check-version.outputs.exists != 'true'
+        run: npm run build
+
+      - name: Run tests
+        if: steps.check-version.outputs.exists != 'true'
+        run: npm test
+
+      - name: Publish to npm
+        if: steps.check-version.outputs.exists != 'true'
+        run: npm publish --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Create Git tag
+        if: steps.check-version.outputs.exists != 'true'
+        run: |
+          VERSION=${{ steps.package-version.outputs.version }}
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          # Check if tag already exists
+          if git rev-parse "v$VERSION" >/dev/null 2>&1; then
+            echo "Tag v$VERSION already exists, skipping tag creation"
+          else
+            git tag -a "v$VERSION" -m "Release v$VERSION"
+            git push origin "v$VERSION"
+            echo "Tag v$VERSION created and pushed"
+          fi
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Check if Release exists
+        if: steps.check-version.outputs.exists != 'true'
+        id: release-check
+        run: |
+          VERSION=${{ steps.package-version.outputs.version }}
+          if gh release view "v$VERSION" >/dev/null 2>&1; then
+            echo "Release v$VERSION already exists"
+            echo "release_exists=true" >> $GITHUB_OUTPUT
+          else
+            echo "Release v$VERSION does not exist"
+            echo "release_exists=false" >> $GITHUB_OUTPUT
+          fi
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Create GitHub Release
+        if: steps.check-version.outputs.exists != 'true' && steps.release-check.outputs.release_exists == 'false'
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: v${{ steps.package-version.outputs.version }}
+          release_name: Release v${{ steps.package-version.outputs.version }}
+          body: |
+            ## 🎉 Release v${{ steps.package-version.outputs.version }}
+
+            ### 📦 Installation
+
+            \`\`\`bash
+            npm install -g i18nexus-tools@${{ steps.package-version.outputs.version }}
+            \`\`\`
+
+            ### 🔗 Links
+
+            - 📖 [Documentation](https://github.com/${{ github.repository }}/tree/main/docs)
+            - 📦 [npm Package](https://www.npmjs.com/package/i18nexus-tools/v/${{ steps.package-version.outputs.version }})
+
+            See documentation for full changelog and usage guide.
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Skip - Version already published
+        if: steps.check-version.outputs.exists == 'true'
+        run: |
+          echo "⏭️  Skipping publish - version ${{ steps.package-version.outputs.version }} already exists on npm"

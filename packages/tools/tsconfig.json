@@ -12,8 +12,17 @@
     "moduleResolution": "node",
     "resolveJsonModule": true,
     "declaration": true,
+    "types": ["jest", "node"],
     "jsx": "react"
   },
   "include": ["bin/**/*", "scripts/**/*"],
-  "exclude": ["node_modules", "dist", "**/*.test.ts", "**/__tests__/**", "**/*.test.tsx", "**/test-src/**", "scripts/t-wrapper-rust/**"]
+  "exclude": [
+    "node_modules",
+    "dist",
+    "**/*.test.ts",
+    "**/__tests__/**",
+    "**/*.test.tsx",
+    "**/test-src/**",
+    "scripts/t-wrapper-rust/**"
+  ]
 }

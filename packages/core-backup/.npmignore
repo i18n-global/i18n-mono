@@ -1,0 +1,36 @@
+# Source files
+src/
+examples/
+
+# Test files
+**/__tests__/
+**/*.test.ts
+**/*.test.tsx
+setupTests.ts
+jest.config.js
+
+# Config files
+tsconfig.json
+tsconfig.build.json
+eslint.config.mjs
+.eslintrc*
+.prettierrc*
+
+# Documentation (except README)
+DEVTOOLS.md
+DEVTOOLS_QUICKSTART.md
+DEVTOOLS_SUMMARY.md
+DEVTOOLS_VISUAL_GUIDE.md
+CONTRIBUTING.md
+COMPLETION_REPORT.md
+TYPED_CONFIG.md
+
+# CI/CD
+.github/
+.gitignore
+
+# Misc
+node_modules/
+*.log
+.DS_Store
+

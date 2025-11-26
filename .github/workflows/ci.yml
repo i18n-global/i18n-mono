@@ -7,12 +7,9 @@ on:
     branches: [main]
 
 jobs:
-  test-core:
-    name: Test Core Package
+  build-and-test:
+    name: Build and Test
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: packages/core
     
     steps:
       - name: Checkout code
@@ -22,102 +19,23 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: "20"
-          cache: "npm"
-          cache-dependency-path: packages/core/package-lock.json
+
+      - name: Setup Turbo
+        uses: turbo/setup-action@v1
+        with:
+          version: latest
 
       - name: Install dependencies
-        run: |
-          if [ -f package-lock.json ]; then
-            npm ci
-          else
-            npm install
-          fi
+        run: npm ci
 
       - name: Build
-        run: npm run build
+        run: turbo run build
         continue-on-error: true
 
-      - name: Run tests
-        run: npm test || echo "Tests skipped"
+      - name: Test
+        run: turbo run test
         continue-on-error: true
 
-  test-tools:
-    name: Test Tools Package
-    runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: packages/tools
-    
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: "20"
-
-      - name: Install dependencies
-        run: |
-          if [ -f package-lock.json ]; then
-            npm ci
-          else
-            npm install
-          fi
-
-      - name: Build
-        run: npm run build
-        continue-on-error: true
-
-      - name: Run tests
-        run: npm test || echo "Tests skipped"
-        continue-on-error: true
-
-  test-demo:
-    name: Test Demo App
-    runs-on: ubuntu-latest
-    
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: "20"
-          cache: "npm"
-          cache-dependency-path: apps/demo/package-lock.json
-
-      - name: Build core package
-        working-directory: packages/core
-        run: |
-          if [ -f package-lock.json ]; then
-            npm ci
-          else
-            npm install
-          fi
-          npm run build || echo "Core build failed, continuing..."
-
-      - name: Build tools package
-        working-directory: packages/tools
-        run: |
-          if [ -f package-lock.json ]; then
-            npm ci
-          else
-            npm install
-          fi
-          npm run build || echo "Tools build failed, continuing..."
-
-      - name: Install demo dependencies
-        working-directory: apps/demo
-        run: |
-          # 로컬 패키지를 사용하므로 package-lock.json이 동기화되지 않을 수 있음
-          # npm install을 사용하여 lock 파일을 업데이트
-          npm install
-
-      - name: Build demo
-        working-directory: apps/demo
-        run: npm run build || echo "Demo build failed"
-        env:
-          NEXT_PUBLIC_VERCEL_ENV: test
+      - name: Lint
+        run: turbo run lint
         continue-on-error: true

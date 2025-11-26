@@ -1,0 +1,115 @@
+{
+  "name": "i18nexus",
+  "version": "2.11.1",
+  "description": "Type-safe React i18n toolkit with intelligent automation and SSR support",
+  "main": "dist/index.js",
+  "module": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "default": "./dist/index.js"
+    },
+    "./server": {
+      "types": "./dist/utils/server.d.ts",
+      "import": "./dist/utils/server.js",
+      "default": "./dist/utils/server.js"
+    }
+  },
+  "scripts": {
+    "build": "npm run clean && tsc -p tsconfig.build.json",
+    "clean": "rm -rf dist",
+    "dev": "tsc -p tsconfig.build.json --watch",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "lint": "eslint src/**/*.{ts,tsx} --fix",
+    "format": "prettier --write src/**/*.{ts,tsx}",
+    "prepare": "npm run build",
+    "prepublishOnly": "npm run build",
+    "prepack": "npm run build",
+    "version": "(npm run format || true) && git add -A src || true",
+    "postversion": "git push && git push --tags",
+    "validate": "npm run build && npm run test",
+    "publish:dry": "npm pack --dry-run",
+    "publish:check": "npm run validate && npm run publish:dry"
+  },
+  "keywords": [
+    "react",
+    "i18n",
+    "internationalization",
+    "translation",
+    "cookie",
+    "google-sheets",
+    "typescript",
+    "babel",
+    "ast"
+  ],
+  "author": "Your Name <your.email@example.com>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/manNomi/i18nexus.git",
+    "directory": "packages/i18nexus"
+  },
+  "bugs": {
+    "url": "https://github.com/manNomi/i18nexus/issues"
+  },
+  "homepage": "https://github.com/manNomi/i18nexus/tree/main/packages/i18nexus#readme",
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "peerDependencies": {
+    "react": ">=16.8.0",
+    "react-dom": ">=16.8.0"
+  },
+  "dependencies": {
+    "@babel/generator": "^7.23.0",
+    "@babel/parser": "^7.23.0",
+    "@babel/traverse": "^7.23.0",
+    "@babel/types": "^7.23.0",
+    "commander": "^11.0.0",
+    "glob": "^10.3.0",
+    "googleapis": "^128.0.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.23.0",
+    "@babel/preset-env": "^7.23.0",
+    "@babel/preset-react": "^7.22.0",
+    "@babel/preset-typescript": "^7.23.0",
+    "@eslint/js": "^9.36.0",
+    "@testing-library/jest-dom": "^6.1.0",
+    "@testing-library/react": "^13.4.0",
+    "@types/babel__generator": "^7.6.0",
+    "@types/babel__traverse": "^7.20.0",
+    "@types/jest": "^29.5.0",
+    "@types/node": "^20.8.0",
+    "@types/react": "^18.2.0",
+    "@types/react-dom": "^18.2.0",
+    "@typescript-eslint/eslint-plugin": "^6.9.0",
+    "@typescript-eslint/parser": "^6.9.0",
+    "eslint": "^8.57.1",
+    "eslint-config-prettier": "^9.0.0",
+    "eslint-plugin-prettier": "^5.0.0",
+    "eslint-plugin-react": "^7.37.5",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "globals": "^16.4.0",
+    "i18next": "^23.6.0",
+    "jest": "^29.7.0",
+    "jest-environment-jsdom": "^29.7.0",
+    "prettier": "^3.0.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-i18next": "^13.3.0",
+    "ts-jest": "^29.1.0",
+    "typescript": "^5.2.0",
+    "typescript-eslint": "^8.44.1"
+  },
+  "engines": {
+    "node": ">=16.0.0",
+    "npm": ">=8.0.0"
+  }
+}
