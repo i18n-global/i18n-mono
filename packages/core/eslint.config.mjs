@@ -2,16 +2,6 @@ import globals from "globals";
 import pluginJs from "@eslint/js";
 import tseslint from "typescript-eslint";
 import pluginReact from "eslint-plugin-react";
-import { FlatCompat } from "@eslint/eslintrc";
-import { dirname } from "path";
-import { fileURLToPath } from "url";
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
-
-const compat = new FlatCompat({
-  baseDirectory: __dirname,
-});
 
 export default [
   {files: ["**/*.{js,mjs,cjs,ts,jsx,tsx}"]},
@@ -26,7 +16,6 @@ export default [
       },
     },
   },
-  ...compat.extends("airbnb", "airbnb-typescript", "airbnb/hooks"),
   {
     rules: {
       "react/react-in-jsx-scope": "off",
@@ -51,7 +40,17 @@ export default [
         }
       ],
       "no-console": "warn",
-      "import/prefer-default-export": "off"
+      "import/prefer-default-export": "off",
+      // Airbnb 스타일 규칙 추가
+      "indent": ["error", 2],
+      "quotes": ["error", "single"],
+      "semi": ["error", "always"],
+      "comma-dangle": ["error", "always-multiline"],
+      "object-curly-spacing": ["error", "always"],
+      "array-bracket-spacing": ["error", "never"],
+      "max-len": ["warn", { "code": 100, "ignoreUrls": true }],
+      "no-trailing-spaces": "error",
+      "eol-last": ["error", "always"]
     }
   }
 ];
