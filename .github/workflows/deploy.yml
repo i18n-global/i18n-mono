@@ -61,10 +61,6 @@ jobs:
     permissions:
       contents: write
       id-token: write
-    defaults:
-      run:
-        working-directory: packages/core
-    
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -85,6 +81,7 @@ jobs:
 
       - name: Get current version
         id: version
+        working-directory: packages/core
         run: |
           VERSION=$(node -p "require('./package.json').version")
           echo "version=$VERSION" >> $GITHUB_OUTPUT
@@ -131,10 +128,6 @@ jobs:
     permissions:
       contents: write
       id-token: write
-    defaults:
-      run:
-        working-directory: packages/tools
-    
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -155,6 +148,7 @@ jobs:
 
       - name: Get current version
         id: version
+        working-directory: packages/tools
         run: |
           VERSION=$(node -p "require('./package.json').version")
           echo "version=$VERSION" >> $GITHUB_OUTPUT
@@ -175,6 +169,7 @@ jobs:
 
       - name: Publish to NPM
         if: steps.check-version.outputs.exists != 'true'
+        working-directory: packages/tools
         run: npm publish --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
