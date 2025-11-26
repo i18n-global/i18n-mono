@@ -88,15 +88,25 @@ export function createI18n<
    * Wraps the base provider with your translation types
    */
   function TypedI18nProvider<TLanguage extends string = string>(
-    props: Omit<BaseI18nProviderProps<TLanguage, TTranslations>, 'translations'> & {
+    props: Omit<BaseI18nProviderProps<TLanguage, Record<string, Record<string, string>>>, 'translations'> & {
       translations?: TTranslations;
       dynamicTranslations?: Record<string, Record<string, string>>;
     }
   ) {
-    return React.createElement(BaseI18nProvider<TLanguage, TTranslations>, {
+    // Ensure translations passed to BaseI18nProvider match its expected type
+    // Flatten namespace structure to flat structure expected by BaseI18nProvider
+    const flattenedTranslations = Object.keys(props.translations || translations).reduce((acc, namespace) => {
+      const nsTranslations = (props.translations || translations)[namespace];
+      Object.keys(nsTranslations).forEach(lang => {
+        acc[lang] = { ...acc[lang], ...nsTranslations[lang] };
+      });
+      return acc;
+    }, {} as Record<string, Record<string, string>>);
+
+    return React.createElement(BaseI18nProvider<TLanguage, Record<string, Record<string, string>>>, {
       ...props,
-      translations: props.translations || translations,
-    } as BaseI18nProviderProps<TLanguage, TTranslations>);
+      translations: flattenedTranslations,
+    });
   }
 
   /**
@@ -116,7 +126,9 @@ export function createI18n<
   function useTranslation<NS extends ExtractNamespaces<TTranslations>>(
     namespace: NS
   ): UseTranslationReturn<ExtractNamespaceKeys<TTranslations, NS>> {
-    return useTranslationBase<ExtractNamespaceKeys<TTranslations, NS>>(namespace);
+    // Note: useTranslationBase doesn't accept namespace parameter
+    // Namespace filtering should be handled at the translation level
+    return useTranslationBase<ExtractNamespaceKeys<TTranslations, NS>>();
   }
 
   return {
