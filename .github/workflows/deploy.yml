@@ -223,7 +223,23 @@ jobs:
         env:
           NEXT_PUBLIC_VERCEL_ENV: production
 
+      - name: Check Vercel Secrets
+        id: check-vercel-secrets
+        run: |
+          if [ -z "${{ secrets.VERCEL_TOKEN }}" ] || [ -z "${{ secrets.VERCEL_ORG_ID }}" ] || [ -z "${{ secrets.VERCEL_PROJECT_ID }}" ]; then
+            echo "skipped=true" >> $GITHUB_OUTPUT
+            echo "⚠️ Vercel secrets가 설정되지 않았습니다. 배포를 건너뜁니다."
+            echo "💡 Vercel 배포를 활성화하려면 GitHub Secrets에 다음을 설정하세요:"
+            echo "   - VERCEL_TOKEN"
+            echo "   - VERCEL_ORG_ID"
+            echo "   - VERCEL_PROJECT_ID"
+          else
+            echo "skipped=false" >> $GITHUB_OUTPUT
+            echo "✅ Vercel secrets가 설정되어 있습니다."
+          fi
+
       - name: Deploy to Vercel
+        if: steps.check-vercel-secrets.outputs.skipped != 'true'
         uses: amondnet/vercel-action@v25
         id: vercel-deploy
         with:
@@ -233,8 +249,18 @@ jobs:
           vercel-args: '--prod'
           working-directory: apps/demo
 
+      - name: Skip Vercel Deployment
+        if: steps.check-vercel-secrets.outputs.skipped == 'true'
+        run: |
+          echo "⏭️ Vercel 배포를 건너뜁니다."
+          echo "📝 Vercel 배포를 활성화하려면 GitHub Secrets를 설정하세요."
+          echo "   자세한 내용은 DEPLOYMENT_GUIDE.md를 참조하세요."
+
       - name: Comment PR
-        if: github.event_name == 'pull_request'
+        if: |
+          github.event_name == 'pull_request' &&
+          steps.check-vercel-secrets.outputs.skipped != 'true' &&
+          steps.vercel-deploy.outcome == 'success'
         uses: actions/github-script@v7
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
