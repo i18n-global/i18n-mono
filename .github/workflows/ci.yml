@@ -1,0 +1,112 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test-core:
+    name: Test Core Package
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: packages/core
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build
+        run: npm run build
+
+      - name: Run tests
+        run: npm test
+
+  test-tools:
+    name: Test Tools Package
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: packages/tools
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build
+        run: npm run build
+
+      - name: Run tests
+        run: npm test
+
+  test-demo:
+    name: Test Demo App
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: apps/demo
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Checkout core package
+        uses: actions/checkout@v4
+        with:
+          repository: i18n-global/i18nexus
+          path: ../packages/core
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Checkout tools package
+        uses: actions/checkout@v4
+        with:
+          repository: i18n-global/i18nexus-tools
+          path: ../packages/tools
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build core package
+        run: |
+          cd ../packages/core
+          npm ci
+          npm run build
+
+      - name: Build tools package
+        run: |
+          cd ../packages/tools
+          npm ci
+          npm run build
+
+      - name: Install demo dependencies
+        run: npm ci
+
+      - name: Build demo
+        run: npm run build
+        env:
+          NEXT_PUBLIC_VERCEL_ENV: test
+
