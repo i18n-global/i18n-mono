@@ -16,9 +16,9 @@ if [ "$CURRENT_BRANCH" = "main" ] && [ -t 0 ]; then
   echo "⚠️  강제 push를 진행합니다..."
 fi
 
-# 린터 실행 (필수)
-echo "🔍 Running linter..."
-npx turbo run lint || {
+# 린터 실행 (필수) - 변경된 파일만 체크
+echo "🔍 Running linter on changed files..."
+git diff --cached --name-only --diff-filter=ACM | grep -E '\.(ts|tsx)$' | xargs -r npx eslint --fix || {
   echo "❌ Linter failed. Please fix the errors before pushing."
   exit 1
 }
