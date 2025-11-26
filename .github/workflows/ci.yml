@@ -20,11 +20,6 @@ jobs:
         with:
           node-version: "20"
 
-      - name: Setup Turbo
-        uses: turbo/setup-action@v1
-        with:
-          version: latest
-
       - name: Install dependencies
         run: npm ci
 
