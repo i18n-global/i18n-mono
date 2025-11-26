@@ -1,0 +1,9 @@
+echo "🔍 Running linter on staged files..."
+
+# lint-staged로 변경된 파일만 린트 (필수)
+npx lint-staged || {
+  echo "❌ Linter failed. Please fix the errors before committing."
+  exit 1
+}
+
+echo "✅ Linter passed!"

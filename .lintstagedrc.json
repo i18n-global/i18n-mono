@@ -1,0 +1,15 @@
+{
+  "packages/core/**/*.{ts,tsx}": [
+    "cd packages/core && npm run lint",
+    "prettier --write"
+  ],
+  "packages/tools/**/*.{ts,tsx}": [
+    "cd packages/tools && npm run lint",
+    "prettier --write"
+  ],
+  "apps/demo/**/*.{ts,tsx}": [
+    "cd apps/demo && npm run lint",
+    "prettier --write"
+  ],
+  "*.{json,md}": ["prettier --write"]
+}

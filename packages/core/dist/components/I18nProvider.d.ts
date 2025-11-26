@@ -7,6 +7,13 @@ import { LanguageManager, LanguageConfig, LanguageManagerOptions } from "../util
  * // "greeting" | "farewell" | "welcome"
  */
 export type ExtractI18nKeys<T extends Record<string, Record<string, string>>> = keyof T[keyof T] & string;
+/**
+ * Namespace translations structure
+ * Record<namespace, Record<language, Record<key, value>>>
+ */
+export type NamespaceTranslations = Record<string, // namespace
+Record<string, // language
+Record<string, string>>>;
 export interface I18nContextType<TLanguage extends string = string, TKeys extends string = string> {
     currentLanguage: TLanguage;
     changeLanguage: (lang: TLanguage) => Promise<void>;

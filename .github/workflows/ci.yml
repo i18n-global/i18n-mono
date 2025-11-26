@@ -23,14 +23,14 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Lint
+        run: npx turbo run lint
+        continue-on-error: false
+
       - name: Build
         run: npx turbo run build
         continue-on-error: true
 
       - name: Test
         run: npx turbo run test
-        continue-on-error: true
-
-      - name: Lint
-        run: npx turbo run lint
         continue-on-error: true
