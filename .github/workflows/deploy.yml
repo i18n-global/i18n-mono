@@ -81,7 +81,7 @@ jobs:
         run: npm ci
 
       - name: Build with Turbo
-        run: turbo run build --filter=i18nexus
+        run: npx turbo run build --filter=i18nexus
 
       - name: Get current version
         id: version
