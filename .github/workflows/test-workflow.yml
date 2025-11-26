@@ -1,0 +1,30 @@
+name: Test Workflow
+
+on:
+  workflow_dispatch:
+
+jobs:
+  test-turbo:
+    name: Test Turbo Installation
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Verify Turbo installation
+        run: |
+          npx turbo --version
+          echo "✅ Turbo is installed successfully"
+
+      - name: Test Turbo build (dry-run)
+        run: npx turbo build --dry-run
+
