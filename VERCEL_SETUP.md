@@ -1,8 +1,47 @@
 # Vercel 배포 설정 가이드
 
-Vercel 배포를 활성화하려면 GitHub Secrets에 다음을 설정해야 합니다.
+## 🎯 권장 방법: Vercel Dashboard에서 직접 연결 (Secrets 불필요)
 
-## 🔐 필요한 Secrets
+Vercel은 GitHub 저장소를 직접 연결하면 자동으로 배포됩니다. 이 방법이 가장 간단하고 권장됩니다.
+
+## 방법 1: Vercel Dashboard에서 직접 연결 (권장) ⭐
+
+### 설정 단계
+
+1. **Vercel Dashboard 접속**
+   - https://vercel.com 접속
+   - 로그인
+
+2. **프로젝트 Import**
+   - "Add New..." → "Project" 클릭
+   - GitHub 저장소: `i18n-global/i18n-mono` 선택
+   - **Root Directory**: `apps/demo` 설정 ⚠️ 중요!
+   - Framework Preset: Next.js (자동 감지)
+   - Build Command: `npm run build` (기본값)
+   - Output Directory: `.next` (기본값)
+
+3. **Deploy**
+   - "Deploy" 버튼 클릭
+   - 자동으로 빌드 및 배포 시작
+
+### 장점
+- ✅ Secrets 설정 불필요
+- ✅ 자동 배포: GitHub push 시 자동 배포
+- ✅ Preview URL: PR마다 자동 생성
+- ✅ 간단한 설정: 대시보드에서 쉽게 설정
+
+### 작동 방식
+- `main` 브랜치 push → Production 배포
+- Pull Request → Preview 배포
+- 자동 HTTPS 및 SSL 인증서
+
+---
+
+## 방법 2: GitHub Actions를 통한 배포 (선택사항)
+
+GitHub Actions를 통해 배포하려면 Secrets가 필요합니다. 일반적으로는 방법 1을 권장합니다.
+
+### 🔐 필요한 Secrets
 
 GitHub 저장소 (`i18n-global/i18n-mono`)의 **Settings → Secrets and variables → Actions**에서 설정:
 

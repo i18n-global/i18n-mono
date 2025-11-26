@@ -195,7 +195,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   deploy-demo:
-    name: Deploy Demo to Vercel
+    name: Build Demo (Vercel 배포는 Vercel Dashboard에서 자동 처리)
     needs: detect-changes
     if: |
       needs.detect-changes.outputs.demo == 'true' ||
@@ -204,7 +204,6 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
-      pull-requests: write
     
     steps:
       - name: Checkout code
@@ -223,51 +222,14 @@ jobs:
         env:
           NEXT_PUBLIC_VERCEL_ENV: production
 
-      - name: Check Vercel Secrets
-        id: check-vercel-secrets
+      - name: Build Success Notice
         run: |
-          if [ -z "${{ secrets.VERCEL_TOKEN }}" ] || [ -z "${{ secrets.VERCEL_ORG_ID }}" ] || [ -z "${{ secrets.VERCEL_PROJECT_ID }}" ]; then
-            echo "skipped=true" >> $GITHUB_OUTPUT
-            echo "⚠️ Vercel secrets가 설정되지 않았습니다. 배포를 건너뜁니다."
-            echo "💡 Vercel 배포를 활성화하려면 GitHub Secrets에 다음을 설정하세요:"
-            echo "   - VERCEL_TOKEN"
-            echo "   - VERCEL_ORG_ID"
-            echo "   - VERCEL_PROJECT_ID"
-          else
-            echo "skipped=false" >> $GITHUB_OUTPUT
-            echo "✅ Vercel secrets가 설정되어 있습니다."
-          fi
-
-      - name: Deploy to Vercel
-        if: steps.check-vercel-secrets.outputs.skipped != 'true'
-        uses: amondnet/vercel-action@v25
-        id: vercel-deploy
-        with:
-          vercel-token: ${{ secrets.VERCEL_TOKEN }}
-          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
-          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
-          vercel-args: '--prod'
-          working-directory: apps/demo
-
-      - name: Skip Vercel Deployment
-        if: steps.check-vercel-secrets.outputs.skipped == 'true'
-        run: |
-          echo "⏭️ Vercel 배포를 건너뜁니다."
-          echo "📝 Vercel 배포를 활성화하려면 GitHub Secrets를 설정하세요."
-          echo "   자세한 내용은 DEPLOYMENT_GUIDE.md를 참조하세요."
-
-      - name: Comment PR
-        if: |
-          github.event_name == 'pull_request' &&
-          steps.check-vercel-secrets.outputs.skipped != 'true' &&
-          steps.vercel-deploy.outcome == 'success'
-        uses: actions/github-script@v7
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          script: |
-            github.rest.issues.createComment({
-              issue_number: context.issue.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: '🚀 배포가 완료되었습니다!\n\n' + '${{ steps.vercel-deploy.outputs.preview-url }}'
-            })
+          echo "✅ Demo 앱 빌드 완료"
+          echo ""
+          echo "📝 Vercel 배포는 Vercel Dashboard에서 자동으로 처리됩니다:"
+          echo "   1. Vercel Dashboard → Add New Project"
+          echo "   2. GitHub 저장소: i18n-global/i18n-mono 선택"
+          echo "   3. Root Directory: apps/demo 설정"
+          echo "   4. Deploy 버튼 클릭"
+          echo ""
+          echo "💡 Vercel이 자동으로 GitHub push를 감지하여 배포합니다."
