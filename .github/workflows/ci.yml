@@ -24,13 +24,13 @@ jobs:
         run: npm ci
 
       - name: Build
-        run: turbo run build
+        run: npx turbo run build
         continue-on-error: true
 
       - name: Test
-        run: turbo run test
+        run: npx turbo run test
         continue-on-error: true
 
       - name: Lint
-        run: turbo run lint
+        run: npx turbo run lint
         continue-on-error: true

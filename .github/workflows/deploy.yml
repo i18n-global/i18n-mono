@@ -151,7 +151,7 @@ jobs:
         run: npm ci
 
       - name: Build with Turbo
-        run: turbo run build --filter=i18nexus-tools
+        run: npx turbo run build --filter=i18nexus-tools
 
       - name: Get current version
         id: version
@@ -215,7 +215,7 @@ jobs:
         run: npm ci
 
       - name: Build with Turbo
-        run: turbo run build --filter=i18nexus-demo
+        run: npx turbo run build --filter=i18nexus-demo
         env:
           NEXT_PUBLIC_VERCEL_ENV: production
 
