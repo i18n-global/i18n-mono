@@ -3,10 +3,9 @@
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
+import { signIn } from "@/features/auth-login/api/signIn";
 import { i18n } from "@/locales";
 import { useError } from "@/shared/ui";
-
-import { signIn } from "../api/signIn";
 
 export default function LoginForm() {
   const { t } = i18n.useTranslation();

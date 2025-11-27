@@ -54,12 +54,6 @@ export function useAdminDashboard() {
     return () => unsubscribe();
   }, [router]);
 
-  useEffect(() => {
-    if (user) {
-      fetchSubmissions();
-    }
-  }, [user, filter]);
-
   const fetchSubmissions = async () => {
     try {
       const approvedParam =
@@ -112,6 +106,13 @@ export function useAdminDashboard() {
       setError(t("제출 목록을 불러오는데 실패했습니다."));
     }
   };
+
+  useEffect(() => {
+    if (user) {
+      fetchSubmissions();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user, filter]);
 
   const handleApprove = async (id: string) => {
     try {

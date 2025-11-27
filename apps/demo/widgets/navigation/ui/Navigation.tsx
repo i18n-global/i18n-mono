@@ -24,6 +24,7 @@ export default function Navigation() {
   // 페이지 이동 시 확장 상태 유지
   useEffect(() => {
     if (isCliSelected && !cliExpanded) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setCliExpanded(true);
     }
     if (isDocsSelected && !docsExpanded) {

@@ -167,6 +167,7 @@ export default [
       "import/resolver": {
         typescript: {
           alwaysTryTypes: true,
+          project: "./tsconfig.json",
         },
         alias: {
           map: [["@", "./"]],
@@ -179,4 +180,11 @@ export default [
     ...config,
     files: ["**/*.{ts,tsx}"],
   })),
+  // Next.js 자동 생성 파일 제외
+  {
+    files: ["next-env.d.ts"],
+    rules: {
+      "@typescript-eslint/triple-slash-reference": "off",
+    },
+  },
 ];

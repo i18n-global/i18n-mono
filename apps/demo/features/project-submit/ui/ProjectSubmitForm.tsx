@@ -3,11 +3,10 @@
 import { useState } from "react";
 
 import { ProjectCard } from "@/entities/project";
+import { fetchMetadata } from "@/features/project-submit/api/fetchMetadata";
+import { submitProject } from "@/features/project-submit/api/submitProject";
 import { i18n } from "@/locales";
 import { useError } from "@/shared/ui";
-
-import { fetchMetadata } from "../api/fetchMetadata";
-import { submitProject } from "../api/submitProject";
 
 interface MetadataPreview {
   autoTitle: string;

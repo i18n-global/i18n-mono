@@ -1,7 +1,6 @@
 import { collection, getDocs, orderBy, query, where } from "firebase/firestore";
 
-import type { ProjectSubmission } from "@/shared/lib";
-import { db } from "@/shared/lib";
+import { db, type ProjectSubmission } from "@/shared/lib";
 
 /**
  * Get projects from Firestore

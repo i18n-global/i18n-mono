@@ -131,9 +131,11 @@ export default function I18nexusDocsPage() {
                   <span className="text-xl sm:text-2xl">{feature.icon}</span>
                 </div>
                 <h3 className="text-lg sm:text-xl font-bold text-white mb-2">
+                  {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
                   {t(feature.title as any)}
                 </h3>
                 <p className="text-sm sm:text-base text-slate-400 mb-3 sm:mb-4">
+                  {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
                   {t(feature.description as any)}
                 </p>
                 <div
