@@ -88,7 +88,7 @@ describe("Namespace-based useTranslation", () => {
   describe("Basic Translation", () => {
     it("should translate from correct namespace", () => {
       function TestComponent() {
-        const { t } = i18n.i18n.useTranslation("common");
+        const { t } = i18n.useTranslation("common");
         return <div data-testid="translation">{t("welcome")}</div>;
       }
 
