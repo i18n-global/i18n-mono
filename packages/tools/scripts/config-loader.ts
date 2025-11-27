@@ -18,7 +18,7 @@ export interface I18nexusConfig {
    * - 'client': useTranslation() 사용
    * - 'server': getServerTranslation() 사용
    * - 생략 시 기존 판단 로직 유지
-   * 
+   *
    * ⚠️ 주의: 이 옵션은 번역 함수 선택만 담당합니다.
    * "use client" 디렉티브는 framework 옵션과 함께 결정됩니다.
    */
@@ -50,9 +50,22 @@ export interface I18nexusConfig {
     enabled: boolean;
     basePath: string; // 페이지/라우트의 기준이 되는 폴더 (예: "src/app", "src/pages")
     defaultNamespace: string; // basePath 외부 파일의 기본 네임스페이스 (예: "common")
-    framework?: "nextjs-app" | "nextjs-pages" | "tanstack-file" | "tanstack-folder" | "react-router" | "remix" | "other";
+    framework?:
+      | "nextjs-app"
+      | "nextjs-pages"
+      | "tanstack-file"
+      | "tanstack-folder"
+      | "react-router"
+      | "remix"
+      | "other";
     ignorePatterns?: string[]; // 사용자 정의 무시 패턴 (정규식)
   };
+  /**
+   * Fallback 네임스페이스 설정
+   * createI18n에서 네임스페이스를 지정하지 않을 때 사용할 기본 네임스페이스
+   * @example "common"
+   */
+  fallbackNamespace?: string;
 }
 
 const DEFAULT_CONFIG: I18nexusConfig = {
@@ -76,14 +89,14 @@ const DEFAULT_CONFIG: I18nexusConfig = {
  */
 export function loadConfig(
   configPath: string = "i18nexus.config.json",
-  options?: { silent?: boolean }
+  options?: { silent?: boolean },
 ): I18nexusConfig {
   const absolutePath = pathLib.resolve(process.cwd(), configPath);
 
   if (!fs.existsSync(absolutePath)) {
     if (!options?.silent) {
       console.log(
-        "⚠️  i18nexus.config.json not found, using default configuration"
+        "⚠️  i18nexus.config.json not found, using default configuration",
       );
       console.log("💡 Run 'i18n-sheets init' to create a config file");
     }
@@ -108,7 +121,7 @@ export function loadConfig(
     if (!options?.silent) {
       console.warn(
         `⚠️  Failed to load ${configPath}, using default configuration:`,
-        error
+        error,
       );
     }
     return DEFAULT_CONFIG;
@@ -120,7 +133,7 @@ export function loadConfig(
  * 서버 환경에서 사용하기 적합합니다.
  */
 export function loadConfigSilently(
-  configPath: string = "i18nexus.config.json"
+  configPath: string = "i18nexus.config.json",
 ): I18nexusConfig {
   return loadConfig(configPath, { silent: true });
 }

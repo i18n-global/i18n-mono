@@ -4,6 +4,7 @@ export type {
   I18nProviderProps,
   I18nContextType,
   ExtractI18nKeys,
+  NamespaceTranslations,
 } from "./components/I18nProvider";
 export { I18NexusDevtools } from "./components/I18NexusDevtools";
 export type { I18NexusDevtoolsProps } from "./components/I18NexusDevtools";
@@ -65,3 +66,12 @@ export {
 
 // Type-safe i18n creator with namespace support
 export { createI18n } from "./utils/createI18n";
+export type {
+  CreateI18nReturn,
+  CreateI18nOptions,
+  ExtractNamespaces,
+  ExtractNamespaceKeys,
+  ExtractAllKeys,
+  ExtractFallbackKeys,
+  ExtractNamespaceWithFallback,
+} from "./utils/createI18n";

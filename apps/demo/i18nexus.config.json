@@ -4,6 +4,7 @@
   "localesDir": "./locales",
   "sourcePattern": "app/**/*.{js,jsx,ts,tsx}",
   "translationImportSource": "i18nexus",
+  "fallbackNamespace": "common",
   "googleSheets": {
     "spreadsheetId": "1hF4-m_gwpYmfkHsRknfjyMhnbUvw5IuOhYAqy7VATxE",
     "credentialsPath": "./credentials.json",
