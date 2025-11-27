@@ -13,4 +13,6 @@ export { LanguageManager, defaultLanguageManager, } from "./utils/languageManage
 export { defineConfig } from "./utils/types";
 // Dynamic translation utilities
 export { createDynamicTranslation, buildTranslationParams, buildConditionalTranslation, mapToTranslationParams, } from "./utils/dynamicTranslation";
+// Type-safe i18n creator with namespace support
+export { createI18n } from "./utils/createI18n";
 //# sourceMappingURL=index.js.map

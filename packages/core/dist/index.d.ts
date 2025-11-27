@@ -13,4 +13,5 @@ export type { LanguageConfig, LanguageManagerOptions, } from "./utils/languageMa
 export { defineConfig } from "./utils/types";
 export type { ExtractLanguages } from "./utils/types";
 export { createDynamicTranslation, buildTranslationParams, buildConditionalTranslation, mapToTranslationParams, } from "./utils/dynamicTranslation";
+export { createI18n } from "./utils/createI18n";
 //# sourceMappingURL=index.d.ts.map

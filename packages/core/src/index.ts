@@ -62,3 +62,6 @@ export {
   buildConditionalTranslation,
   mapToTranslationParams,
 } from "./utils/dynamicTranslation";
+
+// Type-safe i18n creator with namespace support
+export { createI18n } from "./utils/createI18n";
