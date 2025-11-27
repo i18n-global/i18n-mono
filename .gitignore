@@ -63,3 +63,7 @@ firebase-debug.log
 # Backup directories
 *-backup/
 **/*-backup/
+
+# Package manager lock files (use root package-lock.json only)
+**/pnpm-lock.yaml
+**/yarn.lock

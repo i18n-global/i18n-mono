@@ -1,6 +1,11 @@
 import type { NextConfig } from "next";
+import * as path from "path";
 
 const nextConfig: NextConfig = {
+  // Next.js workspace root 경고 해결
+  // Turborepo 모노레포에서 올바른 root 디렉토리 지정
+  outputFileTracingRoot: path.join(__dirname, "../../"),
+
   eslint: {
     // Warning: This allows production builds to successfully complete even if
     // your project has ESLint errors.
