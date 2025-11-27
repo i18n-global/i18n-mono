@@ -7,9 +7,41 @@ on:
     branches: [main]
 
 jobs:
+  detect-changes:
+    name: Detect Changed Packages
+    runs-on: ubuntu-latest
+    outputs:
+      core: ${{ steps.filter.outputs.core }}
+      tools: ${{ steps.filter.outputs.tools }}
+      demo: ${{ steps.filter.outputs.demo }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      
+      - uses: dorny/paths-filter@v2
+        id: filter
+        with:
+          filters: |
+            core:
+              - 'packages/core/**'
+              - 'turbo.json'
+              - 'package.json'
+            tools:
+              - 'packages/tools/**'
+              - 'turbo.json'
+              - 'package.json'
+            demo:
+              - 'apps/demo/**'
+              - 'packages/core/**'
+              - 'packages/tools/**'
+              - 'turbo.json'
+              - 'package.json'
+
   build-and-test:
     name: Build and Test
     runs-on: ubuntu-latest
+    needs: detect-changes
     
     steps:
       - name: Checkout code
@@ -24,17 +56,69 @@ jobs:
         run: npm ci
 
       - name: Build core packages first
-        run: npx turbo run build --filter=i18nexus --filter=i18nexus-tools
+        if: needs.detect-changes.outputs.core == 'true' || needs.detect-changes.outputs.tools == 'true'
+        run: |
+          if [ "${{ needs.detect-changes.outputs.core }}" == "true" ]; then
+            npx turbo run build --filter=i18nexus
+          fi
+          if [ "${{ needs.detect-changes.outputs.tools }}" == "true" ]; then
+            npx turbo run build --filter=i18nexus-tools
+          fi
         continue-on-error: false
 
       - name: Lint
-        run: npx turbo run lint
+        run: |
+          FILTERS=""
+          if [ "${{ needs.detect-changes.outputs.core }}" == "true" ]; then
+            FILTERS="$FILTERS --filter=i18nexus"
+          fi
+          if [ "${{ needs.detect-changes.outputs.tools }}" == "true" ]; then
+            FILTERS="$FILTERS --filter=i18nexus-tools"
+          fi
+          if [ "${{ needs.detect-changes.outputs.demo }}" == "true" ]; then
+            FILTERS="$FILTERS --filter=i18nexus-demo"
+          fi
+          if [ -n "$FILTERS" ]; then
+            npx turbo run lint $FILTERS
+          else
+            echo "No packages changed, skipping lint"
+          fi
         continue-on-error: false
 
       - name: Build
-        run: npx turbo run build
+        run: |
+          FILTERS=""
+          if [ "${{ needs.detect-changes.outputs.core }}" == "true" ]; then
+            FILTERS="$FILTERS --filter=i18nexus"
+          fi
+          if [ "${{ needs.detect-changes.outputs.tools }}" == "true" ]; then
+            FILTERS="$FILTERS --filter=i18nexus-tools"
+          fi
+          if [ "${{ needs.detect-changes.outputs.demo }}" == "true" ]; then
+            FILTERS="$FILTERS --filter=i18nexus-demo"
+          fi
+          if [ -n "$FILTERS" ]; then
+            npx turbo run build $FILTERS
+          else
+            echo "No packages changed, skipping build"
+          fi
         continue-on-error: true
 
       - name: Test
-        run: npx turbo run test
+        run: |
+          FILTERS=""
+          if [ "${{ needs.detect-changes.outputs.core }}" == "true" ]; then
+            FILTERS="$FILTERS --filter=i18nexus"
+          fi
+          if [ "${{ needs.detect-changes.outputs.tools }}" == "true" ]; then
+            FILTERS="$FILTERS --filter=i18nexus-tools"
+          fi
+          if [ "${{ needs.detect-changes.outputs.demo }}" == "true" ]; then
+            FILTERS="$FILTERS --filter=i18nexus-demo"
+          fi
+          if [ -n "$FILTERS" ]; then
+            npx turbo run test $FILTERS
+          else
+            echo "No packages changed, skipping test"
+          fi
         continue-on-error: true
