@@ -5,8 +5,8 @@
  * manual type annotations.
  */
 
-import React from 'react';
-import { createI18n, useDynamicTranslation } from './src/index';
+import React from "react";
+import { createI18n, useDynamicTranslation } from "./src/index";
 
 // ✅ Step 1: Define translations with 'as const' for literal types
 const translations = {
@@ -14,36 +14,36 @@ const translations = {
     en: {
       welcome: "Welcome",
       goodbye: "Goodbye",
-      greeting: "Hello {{name}}"
+      greeting: "Hello {{name}}",
     },
     ko: {
       welcome: "환영합니다",
       goodbye: "안녕히 가세요",
-      greeting: "안녕하세요 {{name}}"
-    }
+      greeting: "안녕하세요 {{name}}",
+    },
   },
   menu: {
     en: {
       home: "Home",
       about: "About",
-      contact: "Contact"
+      contact: "Contact",
     },
     ko: {
       home: "홈",
       about: "소개",
-      contact: "연락처"
-    }
+      contact: "연락처",
+    },
   },
   error: {
     en: {
       notfound: "Page not found",
-      servererror: "Server error"
+      servererror: "Server error",
     },
     ko: {
       notfound: "페이지를 찾을 수 없습니다",
-      servererror: "서버 오류"
-    }
-  }
+      servererror: "서버 오류",
+    },
+  },
 } as const;
 
 // Dynamic translations (no type safety)
@@ -51,17 +51,19 @@ const dynamicTranslations = {
   en: {
     "item.type.0": "League",
     "item.type.1": "Cup",
-    "error.404": "Not Found"
+    "error.404": "Not Found",
   },
   ko: {
     "item.type.0": "리그",
     "item.type.1": "컵",
-    "error.404": "찾을 수 없음"
-  }
+    "error.404": "찾을 수 없음",
+  },
 };
 
-// ✅ Step 2: Create typed i18n system
-const i18n = createI18n(translations);
+// ✅ Step 2: Create typed i18n system with fallback namespace
+const i18n = createI18n(translations, {
+  fallbackNamespace: "common", // ✅ Set fallback namespace
+});
 
 // ✅ Step 3: Use in your app
 function App() {
@@ -72,8 +74,8 @@ function App() {
         defaultLanguage: "en",
         availableLanguages: [
           { code: "en", name: "English" },
-          { code: "ko", name: "한국어" }
-        ]
+          { code: "ko", name: "한국어" },
+        ],
       }}
     >
       <Header />
@@ -81,6 +83,7 @@ function App() {
       <Content />
       <ErrorExample />
       <DynamicExample />
+      <SimplifiedExample />
     </i18n.I18nProvider>
   );
 }
@@ -138,6 +141,33 @@ function Content() {
   );
 }
 
+function SimplifiedExample() {
+  // ✅ NEW: No namespace needed! Access all keys
+  const { t } = i18n.useTranslation();
+
+  return (
+    <div>
+      <h2>{t("welcome")}</h2>
+      {/* ✅ Autocomplete shows ALL keys from ALL namespaces */}
+
+      <nav>
+        <a href="/">{t("home")}</a>
+        {/* ✅ Works! "home" is from "menu" namespace */}
+
+        <a href="/about">{t("about")}</a>
+        {/* ✅ Works! "about" is from "menu" namespace */}
+      </nav>
+
+      <p>{t("notfound")}</p>
+      {/* ✅ Works! "notfound" is from "error" namespace */}
+
+      {/* ❌ This would be a TypeScript error: */}
+      {/* t("invalid"); */}
+      {/* Because "invalid" doesn't exist in any namespace */}
+    </div>
+  );
+}
+
 function ErrorExample() {
   const { t } = i18n.useTranslation("error");
 
@@ -155,7 +185,7 @@ function DynamicExample() {
 
   const items = [
     { type: 0, label: "item.type.0" },
-    { type: 1, label: "item.type.1" }
+    { type: 1, label: "item.type.1" },
   ];
 
   return (
@@ -177,10 +207,14 @@ function DynamicExample() {
 type Namespaces = Parameters<typeof i18n.useTranslation>[0];
 // Should be: "common" | "menu" | "error"
 
-type CommonKeys = Parameters<ReturnType<typeof i18n.useTranslation<"common">>["t"]>[0];
+type CommonKeys = Parameters<
+  ReturnType<typeof i18n.useTranslation<"common">>["t"]
+>[0];
 // Should be: "welcome" | "goodbye" | "greeting"
 
-type MenuKeys = Parameters<ReturnType<typeof i18n.useTranslation<"menu">>["t"]>[0];
+type MenuKeys = Parameters<
+  ReturnType<typeof i18n.useTranslation<"menu">>["t"]
+>[0];
 // Should be: "home" | "about" | "contact"
 
 console.log("✅ Type inference example compiled successfully!");
