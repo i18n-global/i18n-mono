@@ -160,7 +160,7 @@ export default function HomePage() {
             </h2>
             <p className="text-base sm:text-xl text-slate-400 max-w-3xl mx-auto px-4">
               {t(
-                "전통적인 i18n 방식은 개발 속도를 늦추고 유지보수를 어렵게 만듭니다",
+                "전통적인 i18n 방식은 개발 속도를 늦추고 유지보수를 어렵게 만듭니다"
               )}
             </p>
           </div>
@@ -187,7 +187,7 @@ export default function HomePage() {
               </h3>
               <p className="text-sm sm:text-base text-slate-400 leading-relaxed">
                 {t(
-                  "모든 텍스트를 일일이 t() 함수로 감싸는 반복 작업. 실수하면 번역이 누락됩니다.",
+                  "모든 텍스트를 일일이 t() 함수로 감싸는 반복 작업. 실수하면 번역이 누락됩니다."
                 )}
               </p>
             </div>
@@ -213,7 +213,7 @@ export default function HomePage() {
               </h3>
               <p className="text-sm sm:text-base text-slate-400 leading-relaxed">
                 {t(
-                  "SSR 환경에서 서버와 클라이언트 언어가 달라 발생하는 hydration mismatch 에러.",
+                  "SSR 환경에서 서버와 클라이언트 언어가 달라 발생하는 hydration mismatch 에러."
                 )}
               </p>
             </div>
@@ -239,7 +239,7 @@ export default function HomePage() {
               </h3>
               <p className="text-sm sm:text-base text-slate-400 leading-relaxed">
                 {t(
-                  "여러 JSON 파일을 수동으로 관리하고 동기화해야 하는 번거로움.",
+                  "여러 JSON 파일을 수동으로 관리하고 동기화해야 하는 번거로움."
                 )}
               </p>
             </div>
@@ -271,7 +271,7 @@ export default function HomePage() {
               </h3>
               <p className="text-sm sm:text-base text-slate-400 leading-relaxed">
                 {t(
-                  "i18next 설정, 라우팅, 미들웨어 등 초기 셋업이 복잡하고 시간이 오래 걸립니다.",
+                  "i18next 설정, 라우팅, 미들웨어 등 초기 셋업이 복잡하고 시간이 오래 걸립니다."
                 )}
               </p>
             </div>
@@ -293,7 +293,7 @@ export default function HomePage() {
             </h2>
             <p className="text-base sm:text-xl text-slate-400 max-w-3xl mx-auto px-4">
               {t(
-                "i18nexus는 자동화와 최적화로 번역 관리의 모든 고민을 끝냅니다",
+                "i18nexus는 자동화와 최적화로 번역 관리의 모든 고민을 끝냅니다"
               )}
             </p>
           </div>
@@ -320,7 +320,7 @@ export default function HomePage() {
               </h3>
               <p className="text-slate-300 leading-relaxed mb-4">
                 {t(
-                  "i18n-wrapper CLI가 코드를 분석해 자동으로 번역 함수를 적용합니다.",
+                  "i18n-wrapper CLI가 코드를 분석해 자동으로 번역 함수를 적용합니다."
                 )}
               </p>
               <pre className="bg-slate-950 text-slate-200 p-3 rounded-lg text-xs overflow-x-auto">
@@ -349,7 +349,7 @@ export default function HomePage() {
               </h3>
               <p className="text-slate-300 leading-relaxed">
                 {t(
-                  "쿠키 기반 언어 관리로 서버와 클라이언트가 항상 동일한 언어를 사용합니다.",
+                  "쿠키 기반 언어 관리로 서버와 클라이언트가 항상 동일한 언어를 사용합니다."
                 )}
               </p>
             </div>
@@ -375,7 +375,7 @@ export default function HomePage() {
               </h3>
               <p className="text-slate-300 leading-relaxed">
                 {t(
-                  "번역 파일을 Google Sheets로 관리하고 자동 동기화할 수 있습니다.",
+                  "번역 파일을 Google Sheets로 관리하고 자동 동기화할 수 있습니다."
                 )}
               </p>
             </div>
@@ -613,7 +613,7 @@ export default function RootLayout({ children }) {
                   <pre className="bg-slate-950 text-slate-200 p-4 rounded-xl overflow-x-auto border border-slate-800">
                     <code className="text-sm font-mono">
                       {t(
-                        '// app/page.tsx\n"use client";\nimport { useTranslation } from \'i18nexus\';\n\nexport default function Home() {\n  const { t } = useTranslation();\n\n  return (\n    <div>\n      <h1>{t("\uC548\uB155\uD558\uC138\uC694!")}</h1>\n      <p>{t("\uB2E4\uAD6D\uC5B4 \uC9C0\uC6D0\uC774 \uD65C\uC131\uD654\uB418\uC5C8\uC2B5\uB2C8\uB2E4")}</p>\n    </div>\n  );\n}',
+                        "// app/page.tsx\n\"use client\";\nimport { useTranslation } from 'i18nexus';\n\nexport default function Home() {\n  const { t } = useTranslation();\n\n  return (\n    <div>\n      <h1>{t(\"\uC548\uB155\uD558\uC138\uC694!\")}</h1>\n      <p>{t(\"\uB2E4\uAD6D\uC5B4 \uC9C0\uC6D0\uC774 \uD65C\uC131\uD654\uB418\uC5C8\uC2B5\uB2C8\uB2E4\")}</p>\n    </div>\n  );\n}"
                       )}
                     </code>
                   </pre>
@@ -855,7 +855,7 @@ export default function RootLayout({ children }) {
           <pre className="text-slate-300 text-sm font-mono">
             <code>
               {t(
-                "\n\u251C\u2500\u2500 locales/\n\u2502   \u251C\u2500\u2500 index.ts            \n\u2502   \u251C\u2500\u2500 en.json             # \uC601\uC5B4 \uBC88\uC5ED\n\u2502   \u2514\u2500\u2500 ko.json             # \uD55C\uAD6D\uC5B4 \uBC88\uC5ED\n\u2514\u2500\u2500 i18nexus.config.json    # i18nexus \uC124\uC815 \uD30C\uC77C",
+                "\n\u251C\u2500\u2500 locales/\n\u2502   \u251C\u2500\u2500 index.ts            \n\u2502   \u251C\u2500\u2500 en.json             # \uC601\uC5B4 \uBC88\uC5ED\n\u2502   \u2514\u2500\u2500 ko.json             # \uD55C\uAD6D\uC5B4 \uBC88\uC5ED\n\u2514\u2500\u2500 i18nexus.config.json    # i18nexus \uC124\uC815 \uD30C\uC77C"
               )}
             </code>
           </pre>
@@ -964,7 +964,7 @@ export default function RootLayout({ children }) {
               </div>
               <p className="text-slate-400 mb-4">
                 {t(
-                  "쿠키 기반 언어 관리 및 SSR 지원을 갖춘 완전한 React i18n 툴킷",
+                  "쿠키 기반 언어 관리 및 SSR 지원을 갖춘 완전한 React i18n 툴킷"
                 )}
               </p>
               <div className="flex flex-wrap gap-2 mb-4">
@@ -1013,7 +1013,7 @@ export default function RootLayout({ children }) {
               </div>
               <p className="text-slate-400 mb-4">
                 {t(
-                  "코드 변환부터 Google Sheets 통합까지 i18n 워크플로우를 자동화하는 강력한 CLI 도구",
+                  "코드 변환부터 Google Sheets 통합까지 i18n 워크플로우를 자동화하는 강력한 CLI 도구"
                 )}
               </p>
               <div className="flex flex-wrap gap-2 mb-4">

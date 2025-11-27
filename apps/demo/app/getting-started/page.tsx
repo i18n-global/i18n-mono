@@ -178,7 +178,7 @@ export const translations = {
             <div className="space-y-3">
               <p className="text-sm">
                 {t(
-                  "i18n-wrapper 실행 후 일부 파일에서 에러가 발생할 수 있습니다:",
+                  "i18n-wrapper 실행 후 일부 파일에서 에러가 발생할 수 있습니다:"
                 )}
               </p>
               <ol className="space-y-2 ml-6 text-sm">
@@ -188,7 +188,7 @@ export const translations = {
                   </strong>
                   <br />
                   {t(
-                    "파일이 서버 컴포넌트인 경우 (use client가 없는 경우), 훅 대신 서버 유틸리티를 사용해야 합니다",
+                    "파일이 서버 컴포넌트인 경우 (use client가 없는 경우), 훅 대신 서버 유틸리티를 사용해야 합니다"
                   )}
                 </li>
                 <li>
@@ -197,7 +197,7 @@ export const translations = {
                   </strong>
                   <br />
                   {t(
-                    "에러를 확인하고 use client를 추가할지 createServerTranslation()을 사용할지 결정하세요",
+                    "에러를 확인하고 use client를 추가할지 createServerTranslation()을 사용할지 결정하세요"
                   )}
                 </li>
               </ol>
@@ -213,7 +213,7 @@ export const translations = {
               <pre className="text-xs overflow-x-auto">
                 <code className="text-slate-300">
                   {t(
-                    '"use client";\nimport { useTranslation } from "i18nexus";\n\nexport default function Page() {\n  const { t } = i18n.useTranslation();\n  return <div>{t("\uC548\uB155\uD558\uC138\uC694")}</div>;\n}',
+                    "\"use client\";\nimport { useTranslation } from \"i18nexus\";\n\nexport default function Page() {\n  const { t } = i18n.useTranslation();\n  return <div>{t(\"\uC548\uB155\uD558\uC138\uC694\")}</div>;\n}"
                   )}
                 </code>
               </pre>
@@ -227,7 +227,7 @@ export const translations = {
               <pre className="text-xs overflow-x-auto">
                 <code className="text-slate-300">
                   {t(
-                    'import { headers } from "next/headers";\nimport { getServerLanguage, \n  createServerTranslation } from "i18nexus/server";\n\nexport default async function Page() {\n  const lang = getServerLanguage(await headers());\n  const t = createServerTranslation(lang, translations);\n  return <div>{t("\uC548\uB155\uD558\uC138\uC694")}</div>;\n}',
+                    "import { headers } from \"next/headers\";\nimport { getServerLanguage, \n  createServerTranslation } from \"i18nexus/server\";\n\nexport default async function Page() {\n  const lang = getServerLanguage(await headers());\n  const t = createServerTranslation(lang, translations);\n  return <div>{t(\"\uC548\uB155\uD558\uC138\uC694\")}</div>;\n}"
                   )}
                 </code>
               </pre>
@@ -259,7 +259,7 @@ export const translations = {
             </h3>
             <p className="text-sm">
               {t(
-                "Next.js App Router를 사용하는 경우, -p 플래그를 사용하여 올바른 디렉토리를 지정하세요",
+                "Next.js App Router를 사용하는 경우, -p 플래그를 사용하여 올바른 디렉토리를 지정하세요"
               )}
               :
             </p>
@@ -317,7 +317,7 @@ export const translations = {
                 <pre className="text-xs overflow-x-auto">
                   <code className="text-slate-300">
                     {t(
-                      '{\n  "\uC548\uB155\uD558\uC138\uC694": "\uC548\uB155\uD558\uC138\uC694",\n  "\uD658\uC601\uD569\uB2C8\uB2E4": "\uD658\uC601\uD569\uB2C8\uB2E4"\n}',
+                      "{\n  \"\uC548\uB155\uD558\uC138\uC694\": \"\uC548\uB155\uD558\uC138\uC694\",\n  \"\uD658\uC601\uD569\uB2C8\uB2E4\": \"\uD658\uC601\uD569\uB2C8\uB2E4\"\n}"
                     )}
                   </code>
                 </pre>
@@ -332,7 +332,7 @@ export const translations = {
                 <pre className="text-xs overflow-x-auto">
                   <code className="text-slate-300">
                     {t(
-                      '{\n  "\uC548\uB155\uD558\uC138\uC694": "Hello",\n  "\uD658\uC601\uD569\uB2C8\uB2E4": "Welcome"\n}',
+                      "{\n  \"\uC548\uB155\uD558\uC138\uC694\": \"Hello\",\n  \"\uD658\uC601\uD569\uB2C8\uB2E4\": \"Welcome\"\n}"
                     )}
                   </code>
                 </pre>

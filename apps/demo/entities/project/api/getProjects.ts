@@ -7,7 +7,7 @@ import { db, type ProjectSubmission } from "@/shared/lib";
  * @param approvedOnly - Filter by approved status (true/false/undefined for all)
  */
 export async function getProjects(
-  approvedOnly?: boolean,
+  approvedOnly?: boolean
 ): Promise<ProjectSubmission[]> {
   // Return empty array if Firebase is not configured
   if (!db) {
@@ -18,14 +18,14 @@ export async function getProjects(
   try {
     let q = query(
       collection(db, "submissions"),
-      orderBy("submittedAt", "desc"),
+      orderBy("submittedAt", "desc")
     );
 
     if (approvedOnly !== undefined) {
       q = query(
         collection(db, "submissions"),
         where("approved", "==", approvedOnly),
-        orderBy("submittedAt", "desc"),
+        orderBy("submittedAt", "desc")
       );
     }
 
@@ -46,7 +46,7 @@ export async function getProjects(
       errorObj.message?.includes("Missing or insufficient permissions")
     ) {
       console.warn(
-        "Firestore permission denied. Please configure Firestore Security Rules to allow read access. Returning empty projects list.",
+        "Firestore permission denied. Please configure Firestore Security Rules to allow read access. Returning empty projects list."
       );
       return [];
     }

@@ -44,7 +44,7 @@ export default function GoogleSheetsPage() {
         <div className="bg-slate-900 rounded-xl border border-slate-700 p-6">
           <p className="text-slate-300 mb-4">
             {t(
-              "Google Sheets 통합을 통해 번역가, 기획자, 개발자가 함께 번역 작업을 할 수 있습니다. 로컬 JSON 파일과 Google Sheets를 양방향으로 동기화할 수 있습니다.",
+              "Google Sheets 통합을 통해 번역가, 기획자, 개발자가 함께 번역 작업을 할 수 있습니다. 로컬 JSON 파일과 Google Sheets를 양방향으로 동기화할 수 있습니다."
             )}
           </p>
           <div className="space-y-2">
@@ -121,7 +121,7 @@ export default function GoogleSheetsPage() {
                 </h3>
                 <ol className="space-y-2 text-slate-300 text-sm list-decimal list-inside">
                   <li>{t("API 및 서비스 > 라이브러리로 이동")}</li>
-                  <li>{t('"Google Sheets API" 검색')}</li>
+                  <li>{t("\"Google Sheets API\" 검색")}</li>
                   <li>{t("사용 설정 클릭")}</li>
                 </ol>
               </div>
@@ -166,7 +166,7 @@ export default function GoogleSheetsPage() {
                   <li>{t("JSON 유형 선택")}</li>
                   <li>
                     {t(
-                      "다운로드된 JSON 파일을 프로젝트 루트에 저장 (예: credentials.json)",
+                      "다운로드된 JSON 파일을 프로젝트 루트에 저장 (예: credentials.json)"
                     )}
                   </li>
                 </ol>
@@ -174,7 +174,7 @@ export default function GoogleSheetsPage() {
                   <p className="text-yellow-300 text-xs">
                     ⚠️{" "}
                     {t(
-                      "주의: credentials.json 파일은 절대 Git에 커밋하지 마세요! .gitignore에 추가하세요.",
+                      "주의: credentials.json 파일은 절대 Git에 커밋하지 마세요! .gitignore에 추가하세요."
                     )}
                   </p>
                 </div>
@@ -208,7 +208,7 @@ export default function GoogleSheetsPage() {
                   <li>{t("공유 버튼 클릭")}</li>
                   <li>
                     {t(
-                      "서비스 계정 이메일 추가 (credentials.json의 client_email)",
+                      "서비스 계정 이메일 추가 (credentials.json의 client_email)"
                     )}
                   </li>
                   <li>{t("편집자 권한 부여")}</li>
@@ -260,7 +260,7 @@ export default function GoogleSheetsPage() {
         <div className="bg-slate-900 rounded-xl border border-slate-700 p-6 mb-6">
           <p className="text-slate-300 mb-4">
             {t(
-              "로컬 번역 파일을 Google Sheets로 업로드합니다. 기존 Sheets의 데이터는 완전히 대체됩니다.",
+              "로컬 번역 파일을 Google Sheets로 업로드합니다. 기존 Sheets의 데이터는 완전히 대체됩니다."
             )}
           </p>
 
@@ -270,7 +270,7 @@ export default function GoogleSheetsPage() {
           <pre className="bg-slate-950 rounded-lg p-4 text-sm border border-slate-800 mb-4">
             <code className="text-green-400">
               {
-                'npx i18n-upload --spreadsheet-id "YOUR_ID" --credentials "./credentials.json"'
+                "npx i18n-upload --spreadsheet-id \"YOUR_ID\" --credentials \"./credentials.json\""
               }
             </code>
           </pre>
@@ -294,7 +294,7 @@ export default function GoogleSheetsPage() {
             <div className="border-l-4 border-yellow-500 pl-4">
               <code className="text-yellow-400">--sheet-name</code>
               <p className="text-slate-400 text-sm mt-1">
-                {t('시트 이름 (기본값: "Translations")')}
+                {t("시트 이름 (기본값: \"Translations\")")}
               </p>
             </div>
           </div>
@@ -333,7 +333,7 @@ export default function GoogleSheetsPage() {
         <div className="bg-slate-900 rounded-xl border border-slate-700 p-6 mb-6">
           <p className="text-slate-300 mb-4">
             {t(
-              "Google Sheets의 번역을 로컬 파일로 다운로드합니다. 증분 업데이트 방식으로 기존 번역을 보존합니다.",
+              "Google Sheets의 번역을 로컬 파일로 다운로드합니다. 증분 업데이트 방식으로 기존 번역을 보존합니다."
             )}
           </p>
 
@@ -343,7 +343,7 @@ export default function GoogleSheetsPage() {
           <pre className="bg-slate-950 rounded-lg p-4 text-sm border border-slate-800 mb-4">
             <code className="text-green-400">
               {
-                'npx i18n-download --spreadsheet-id "YOUR_ID" --credentials "./credentials.json"'
+                "npx i18n-download --spreadsheet-id \"YOUR_ID\" --credentials \"./credentials.json\""
               }
             </code>
           </pre>
@@ -380,7 +380,7 @@ export default function GoogleSheetsPage() {
           </h4>
           <p className="text-slate-300 text-sm mb-3">
             {t(
-              "i18n-download는 기존 번역을 보존하면서 Sheets의 변경사항만 가져옵니다:",
+              "i18n-download는 기존 번역을 보존하면서 Sheets의 변경사항만 가져옵니다:"
             )}
           </p>
           <ul className="space-y-2 text-slate-300 text-sm">
@@ -417,7 +417,7 @@ export default function GoogleSheetsPage() {
           <pre className="bg-slate-950 rounded-lg p-4 text-sm border border-slate-800 mb-4">
             <code className="text-green-400">
               {
-                'npx i18n-download-force --spreadsheet-id "YOUR_ID" --credentials "./credentials.json"'
+                "npx i18n-download-force --spreadsheet-id \"YOUR_ID\" --credentials \"./credentials.json\""
               }
             </code>
           </pre>
@@ -485,7 +485,7 @@ export default function GoogleSheetsPage() {
               <span className="text-red-400 mr-2">•</span>
               <span>
                 {t(
-                  "Sheets를 단일 진실 공급원(Single Source of Truth)로 사용할 때만 사용하세요",
+                  "Sheets를 단일 진실 공급원(Single Source of Truth)로 사용할 때만 사용하세요"
                 )}
               </span>
             </li>
@@ -508,7 +508,7 @@ export default function GoogleSheetsPage() {
             <pre className="bg-slate-950 rounded-lg p-4 text-sm border border-slate-800 overflow-x-auto">
               <code className="text-slate-300">
                 {t(
-                  '# 1. \uCF54\uB4DC\uC5D0\uC11C \uBC88\uC5ED \uD0A4 \uCD94\uCD9C\nnpx i18n-extractor -p "app/**/*.tsx" -d "./locales"\n\n# 2. \uB85C\uCEEC \uBC88\uC5ED\uC744 Google Sheets\uB85C \uC5C5\uB85C\uB4DC\nnpx i18n-upload --spreadsheet-id "YOUR_ID"\n\n# 3. \uD300\uC6D0\uB4E4\uC774 Google Sheets\uC5D0\uC11C \uBC88\uC5ED \uC791\uC5C5 \uC2DC\uC791',
+                  "# 1. \uCF54\uB4DC\uC5D0\uC11C \uBC88\uC5ED \uD0A4 \uCD94\uCD9C\nnpx i18n-extractor -p \"app/**/*.tsx\" -d \"./locales\"\n\n# 2. \uB85C\uCEEC \uBC88\uC5ED\uC744 Google Sheets\uB85C \uC5C5\uB85C\uB4DC\nnpx i18n-upload --spreadsheet-id \"YOUR_ID\"\n\n# 3. \uD300\uC6D0\uB4E4\uC774 Google Sheets\uC5D0\uC11C \uBC88\uC5ED \uC791\uC5C5 \uC2DC\uC791"
                 )}
               </code>
             </pre>
@@ -522,7 +522,7 @@ export default function GoogleSheetsPage() {
             <pre className="bg-slate-950 rounded-lg p-4 text-sm border border-slate-800 overflow-x-auto">
               <code className="text-slate-300">
                 {t(
-                  '# 1. \uAC1C\uBC1C\uC790: \uC0C8\uB85C\uC6B4 \uAE30\uB2A5 \uCD94\uAC00 \uD6C4 \uD0A4 \uCD94\uCD9C\nnpx i18n-extractor\n\n# 2. \uAC1C\uBC1C\uC790: \uC0C8 \uD0A4\uB97C Sheets\uC5D0 \uC5C5\uB85C\uB4DC\nnpx i18n-upload --spreadsheet-id "YOUR_ID"\n\n# 3. \uBC88\uC5ED\uAC00: Google Sheets\uC5D0\uC11C \uBC88\uC5ED \uC791\uC5C5\n\n# 4. \uAC1C\uBC1C\uC790: \uBC88\uC5ED \uC644\uB8CC \uD6C4 \uB85C\uCEEC\uB85C \uB2E4\uC6B4\uB85C\uB4DC\nnpx i18n-download --spreadsheet-id "YOUR_ID"\n\n# 5. Git\uC5D0 \uBCC0\uACBD\uC0AC\uD56D \uCEE4\uBC0B\ngit add locales/\ngit commit -m "Update translations"',
+                  "# 1. \uAC1C\uBC1C\uC790: \uC0C8\uB85C\uC6B4 \uAE30\uB2A5 \uCD94\uAC00 \uD6C4 \uD0A4 \uCD94\uCD9C\nnpx i18n-extractor\n\n# 2. \uAC1C\uBC1C\uC790: \uC0C8 \uD0A4\uB97C Sheets\uC5D0 \uC5C5\uB85C\uB4DC\nnpx i18n-upload --spreadsheet-id \"YOUR_ID\"\n\n# 3. \uBC88\uC5ED\uAC00: Google Sheets\uC5D0\uC11C \uBC88\uC5ED \uC791\uC5C5\n\n# 4. \uAC1C\uBC1C\uC790: \uBC88\uC5ED \uC644\uB8CC \uD6C4 \uB85C\uCEEC\uB85C \uB2E4\uC6B4\uB85C\uB4DC\nnpx i18n-download --spreadsheet-id \"YOUR_ID\"\n\n# 5. Git\uC5D0 \uBCC0\uACBD\uC0AC\uD56D \uCEE4\uBC0B\ngit add locales/\ngit commit -m \"Update translations\""
                 )}
               </code>
             </pre>
@@ -536,7 +536,7 @@ export default function GoogleSheetsPage() {
             <pre className="bg-slate-950 rounded-lg p-4 text-sm border border-slate-800 overflow-x-auto">
               <code className="text-slate-300">
                 {t(
-                  '# .github/workflows/sync-translations.yml\nname: Sync Translations\n\non:\n  schedule:\n    - cron: \'0 2 * * *\'  # \uB9E4\uC77C \uC624\uC804 2\uC2DC\n  workflow_dispatch:  # \uC218\uB3D9 \uC2E4\uD589 \uAC00\uB2A5\n\njobs:\n  sync:\n    runs-on: ubuntu-latest\n    steps:\n      - uses: actions/checkout@v3\n      \n      - name: Download translations\n        run: |\n          npx i18n-download \\\\\n            --spreadsheet-id "\\${{ secrets.SHEET_ID }}" \\\\\n            --credentials ./credentials.json\n      \n      - name: Create PR if changes\n        uses: peter-evans/create-pull-request@v5\n        with:\n          title: "Update translations from Sheets"\n          commit-message: "chore: sync translations"',
+                  "# .github/workflows/sync-translations.yml\nname: Sync Translations\n\non:\n  schedule:\n    - cron: '0 2 * * *'  # \uB9E4\uC77C \uC624\uC804 2\uC2DC\n  workflow_dispatch:  # \uC218\uB3D9 \uC2E4\uD589 \uAC00\uB2A5\n\njobs:\n  sync:\n    runs-on: ubuntu-latest\n    steps:\n      - uses: actions/checkout@v3\n      \n      - name: Download translations\n        run: |\n          npx i18n-download \\\\\n            --spreadsheet-id \"\\${{ secrets.SHEET_ID }}\" \\\\\n            --credentials ./credentials.json\n      \n      - name: Create PR if changes\n        uses: peter-evans/create-pull-request@v5\n        with:\n          title: \"Update translations from Sheets\"\n          commit-message: \"chore: sync translations\""
                 )}
               </code>
             </pre>
@@ -555,7 +555,7 @@ export default function GoogleSheetsPage() {
             </h4>
             <p className="text-slate-300">
               {t(
-                "대부분의 경우 i18n-download를 사용하세요. 안전하게 변경사항만 가져옵니다.",
+                "대부분의 경우 i18n-download를 사용하세요. 안전하게 변경사항만 가져옵니다."
               )}
             </p>
           </div>
@@ -567,7 +567,7 @@ export default function GoogleSheetsPage() {
             </h4>
             <p className="text-slate-300 mb-2">
               {t(
-                "credentials.json을 .gitignore에 추가하고 환경 변수나 시크릿으로 관리하세요.",
+                "credentials.json을 .gitignore에 추가하고 환경 변수나 시크릿으로 관리하세요."
               )}
             </p>
             <pre className="bg-slate-950 rounded p-2 text-xs mt-2">
@@ -586,7 +586,7 @@ credentials.json
             </h4>
             <p className="text-slate-300">
               {t(
-                "Google Sheets의 첫 행은 언어 코드여야 하며, 첫 열은 번역 키여야 합니다. 이 구조를 변경하지 마세요.",
+                "Google Sheets의 첫 행은 언어 코드여야 하며, 첫 열은 번역 키여야 합니다. 이 구조를 변경하지 마세요."
               )}
             </p>
           </div>
@@ -628,7 +628,7 @@ credentials.json
             <ul className="space-y-1 text-slate-400 text-sm list-disc list-inside">
               <li>
                 {t(
-                  "Google Cloud Console에서 Google Sheets API가 활성화되었는지 확인",
+                  "Google Cloud Console에서 Google Sheets API가 활성화되었는지 확인"
                 )}
               </li>
               <li>{t("올바른 프로젝트를 선택했는지 확인")}</li>

@@ -47,8 +47,8 @@ export default function ProjectSubmitForm() {
       if (errorMessage.includes("Invalid URL")) {
         setError(
           t(
-            "올바르지 않은 URL 형식입니다. https:// 로 시작하는 전체 URL을 입력해주세요.",
-          ),
+            "올바르지 않은 URL 형식입니다. https:// 로 시작하는 전체 URL을 입력해주세요."
+          )
         );
       } else if (
         errorMessage.includes("JSON") ||
@@ -56,18 +56,18 @@ export default function ProjectSubmitForm() {
       ) {
         setError(
           t(
-            "서버 응답을 처리할 수 없습니다. URL이 올바른지 확인하고 다시 시도해주세요.",
-          ),
+            "서버 응답을 처리할 수 없습니다. URL이 올바른지 확인하고 다시 시도해주세요."
+          )
         );
       } else if (errorMessage.includes(t("요청 한도"))) {
         setError(
           t(
-            "메타데이터 서비스의 요청 한도를 초과했습니다. 잠시 후 다시 시도해주세요.",
-          ),
+            "메타데이터 서비스의 요청 한도를 초과했습니다. 잠시 후 다시 시도해주세요."
+          )
         );
       } else if (errorMessage.includes(t("접근할 수 없습니다"))) {
         setError(
-          t("URL에 접근할 수 없습니다. 공개 접근 가능한 URL인지 확인해주세요."),
+          t("URL에 접근할 수 없습니다. 공개 접근 가능한 URL인지 확인해주세요.")
         );
       } else if (
         errorMessage.includes("external service") ||
@@ -76,8 +76,8 @@ export default function ProjectSubmitForm() {
       ) {
         setError(
           t(
-            "메타데이터 서비스에 일시적인 문제가 있습니다. 잠시 후 다시 시도해주세요.",
-          ),
+            "메타데이터 서비스에 일시적인 문제가 있습니다. 잠시 후 다시 시도해주세요."
+          )
         );
       } else if (
         errorMessage.includes("aborted") ||
@@ -85,15 +85,15 @@ export default function ProjectSubmitForm() {
       ) {
         setError(
           t(
-            "요청 시간이 초과되었습니다. 네트워크 연결을 확인하고 다시 시도해주세요.",
-          ),
+            "요청 시간이 초과되었습니다. 네트워크 연결을 확인하고 다시 시도해주세요."
+          )
         );
       } else {
         setError(
           t(
             "\uBBF8\uB9AC\uBCF4\uAE30 \uC0DD\uC131 \uC2E4\uD328: {{errorMessage}}",
-            { errorMessage },
-          ),
+            { errorMessage }
+          )
         );
       }
     } finally {
@@ -149,7 +149,7 @@ export default function ProjectSubmitForm() {
         </h1>
         <p className="text-base sm:text-lg text-slate-300 max-w-2xl mx-auto px-4">
           {t(
-            "i18nexus를 사용하는 프로젝트를 공유하고 커뮤니티에 영감을 주세요",
+            "i18nexus를 사용하는 프로젝트를 공유하고 커뮤니티에 영감을 주세요"
           )}
         </p>
       </div>
@@ -255,7 +255,7 @@ export default function ProjectSubmitForm() {
 
             <span className="text-sm text-slate-300 leading-relaxed">
               {t(
-                "위 정보 제공에 동의하며, i18nexus 쇼케이스에 공개될 수 있음을\n              이해합니다. 관리자 검토 후 공개됩니다. (필수)",
+                "위 정보 제공에 동의하며, i18nexus 쇼케이스에 공개될 수 있음을\n              이해합니다. 관리자 검토 후 공개됩니다. (필수)"
               )}
             </span>
           </label>

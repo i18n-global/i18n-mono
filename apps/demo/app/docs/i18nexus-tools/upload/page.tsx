@@ -45,7 +45,7 @@ export default function I18nUploadPage() {
               i18n-upload
             </code>
             {t(
-              "는 로컬의 번역 JSON 파일들을 Google Sheets로 업로드하는 CLI 도구입니다. 팀원들과 번역 작업을 협업하기 위한 첫 단계입니다.",
+              "는 로컬의 번역 JSON 파일들을 Google Sheets로 업로드하는 CLI 도구입니다. 팀원들과 번역 작업을 협업하기 위한 첫 단계입니다."
             )}
           </p>
           <div className="space-y-2">
@@ -119,7 +119,7 @@ export default function I18nUploadPage() {
             </p>
             <p className="text-slate-400 text-sm">
               {t(
-                "Sheets URL에서 확인: https://docs.google.com/spreadsheets/d/[SPREADSHEET_ID]/edit",
+                "Sheets URL에서 확인: https://docs.google.com/spreadsheets/d/[SPREADSHEET_ID]/edit"
               )}
             </p>
           </div>
@@ -145,7 +145,7 @@ export default function I18nUploadPage() {
               <span className="text-sm text-slate-500">{t("문자열")}</span>
             </div>
             <p className="text-slate-300 mb-2">
-              {t('업로드할 시트 이름 (기본값: "Translations")')}
+              {t("업로드할 시트 이름 (기본값: \"Translations\")")}
             </p>
             <pre className="bg-slate-950 rounded-lg p-3 text-sm mt-2">
               <code className="text-slate-400">
@@ -160,7 +160,7 @@ export default function I18nUploadPage() {
               <span className="text-sm text-slate-500">{t("문자열")}</span>
             </div>
             <p className="text-slate-300 mb-2">
-              {t('번역 파일 디렉토리 (기본값: "./locales")')}
+              {t("번역 파일 디렉토리 (기본값: \"./locales\")")}
             </p>
             <pre className="bg-slate-950 rounded-lg p-3 text-sm mt-2">
               <code className="text-slate-400">
@@ -201,7 +201,7 @@ export default function I18nUploadPage() {
               </h3>
               <p className="text-slate-400 text-sm">
                 {t(
-                  "JSON 데이터를 Google Sheets 형식으로 변환합니다. 첫 행은 언어 코드, 첫 열은 번역 키가 됩니다.",
+                  "JSON 데이터를 Google Sheets 형식으로 변환합니다. 첫 행은 언어 코드, 첫 열은 번역 키가 됩니다."
                 )}
               </p>
             </div>
@@ -217,7 +217,7 @@ export default function I18nUploadPage() {
               </h3>
               <p className="text-slate-400 text-sm">
                 {t(
-                  "Google Sheets의 기존 데이터를 지우고 새 데이터로 완전히 대체합니다.",
+                  "Google Sheets의 기존 데이터를 지우고 새 데이터로 완전히 대체합니다."
                 )}
               </p>
             </div>
@@ -252,7 +252,7 @@ export default function I18nUploadPage() {
               <span className="text-red-400 mr-2">•</span>
               <span>
                 {t(
-                  "i18n-upload는 Google Sheets의 기존 데이터를 완전히 삭제하고 새 데이터로 대체합니다",
+                  "i18n-upload는 Google Sheets의 기존 데이터를 완전히 삭제하고 새 데이터로 대체합니다"
                 )}
               </span>
             </li>
@@ -272,7 +272,7 @@ export default function I18nUploadPage() {
               <span className="text-red-400 mr-2">•</span>
               <span>
                 {t(
-                  "이후에는 i18n-download를 사용하여 Sheets에서 번역을 가져옵니다",
+                  "이후에는 i18n-download를 사용하여 Sheets에서 번역을 가져옵니다"
                 )}
               </span>
             </li>
@@ -320,7 +320,7 @@ export default function I18nUploadPage() {
             </h4>
             <p className="text-slate-300">
               {t(
-                "프로젝트 시작 시 한 번만 업로드하고, 이후에는 Sheets에서 번역 작업을 진행하세요.",
+                "프로젝트 시작 시 한 번만 업로드하고, 이후에는 Sheets에서 번역 작업을 진행하세요."
               )}
             </p>
           </div>
@@ -342,7 +342,7 @@ export default function I18nUploadPage() {
             </h4>
             <p className="text-slate-300">
               {t(
-                "업로드 후 Sheets URL을 팀원들과 공유하여 함께 번역 작업을 시작하세요.",
+                "업로드 후 Sheets URL을 팀원들과 공유하여 함께 번역 작업을 시작하세요."
               )}
             </p>
           </div>

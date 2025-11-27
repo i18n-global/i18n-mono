@@ -14,7 +14,7 @@ export async function POST(request: NextRequest) {
     } catch {
       return NextResponse.json(
         { error: "Invalid URL format" },
-        { status: 400 },
+        { status: 400 }
       );
     }
 
@@ -37,7 +37,7 @@ export async function POST(request: NextRequest) {
       console.error(
         "❌ Microlink API error:",
         response.status,
-        response.statusText,
+        response.statusText
       );
 
       // Rate limit 에러인 경우
@@ -47,7 +47,7 @@ export async function POST(request: NextRequest) {
             error: "Metadata service rate limit exceeded",
             details: "Please try again later",
           },
-          { status: 429 },
+          { status: 429 }
         );
       }
 
@@ -56,7 +56,7 @@ export async function POST(request: NextRequest) {
           error: "Metadata service error occurred",
           details: `HTTP ${response.status}: ${response.statusText}`,
         },
-        { status: 500 },
+        { status: 500 }
       );
     }
 
@@ -71,7 +71,7 @@ export async function POST(request: NextRequest) {
           error: "Metadata service returned unexpected response",
           details: `Expected JSON but got ${contentType}`,
         },
-        { status: 500 },
+        { status: 500 }
       );
     }
 
@@ -88,7 +88,7 @@ export async function POST(request: NextRequest) {
             error: "Cannot access URL",
             details: "Domain does not exist or is inaccessible",
           },
-          { status: 400 },
+          { status: 400 }
         );
       }
 
@@ -97,7 +97,7 @@ export async function POST(request: NextRequest) {
           error: "Failed to extract metadata",
           details: data.message || "Unknown error from metadata service",
         },
-        { status: 500 },
+        { status: 500 }
       );
     }
 
@@ -130,7 +130,7 @@ export async function POST(request: NextRequest) {
         error: "Failed to fetch metadata",
         details: errorObj.message || "Unknown error",
       },
-      { status: 500 },
+      { status: 500 }
     );
   }
 }

@@ -47,7 +47,7 @@ export default function I18nDownloadPage() {
               i18n-download
             </code>
             {t(
-              "는 Google Sheets의 번역을 로컬 JSON 파일로 다운로드하는 CLI 도구입니다. 증분 업데이트 방식으로 기존 번역을 보존하며 안전하게 병합합니다.",
+              "는 Google Sheets의 번역을 로컬 JSON 파일로 다운로드하는 CLI 도구입니다. 증분 업데이트 방식으로 기존 번역을 보존하며 안전하게 병합합니다."
             )}
           </p>
           <div className="space-y-2">
@@ -177,7 +177,7 @@ export default function I18nDownloadPage() {
               </h3>
               <p className="text-slate-400 text-sm">
                 {t(
-                  "병합된 결과를 로컬 파일에 저장하고 변경 내역을 표시합니다.",
+                  "병합된 결과를 로컬 파일에 저장하고 변경 내역을 표시합니다."
                 )}
               </p>
             </div>
@@ -217,7 +217,7 @@ export default function I18nDownloadPage() {
               <span className="text-sm text-slate-500">{t("문자열")}</span>
             </div>
             <p className="text-slate-300">
-              {t('읽을 시트 이름 (기본값: "Translations")')}
+              {t("읽을 시트 이름 (기본값: \"Translations\")")}
             </p>
           </div>
 
@@ -227,7 +227,7 @@ export default function I18nDownloadPage() {
               <span className="text-sm text-slate-500">{t("문자열")}</span>
             </div>
             <p className="text-slate-300">
-              {t('번역 파일 저장 디렉토리 (기본값: "./locales")')}
+              {t("번역 파일 저장 디렉토리 (기본값: \"./locales\")")}
             </p>
           </div>
         </div>
@@ -300,7 +300,7 @@ export default function I18nDownloadPage() {
                 <strong>{t("백업 권장")}</strong>
                 <p className="text-sm text-slate-400 mt-1">
                   {t(
-                    "Git 등의 버전 관리를 사용하면 언제든 이전 상태로 복구할 수 있습니다.",
+                    "Git 등의 버전 관리를 사용하면 언제든 이전 상태로 복구할 수 있습니다."
                   )}
                 </p>
               </div>
@@ -388,7 +388,7 @@ export default function I18nDownloadPage() {
             </h4>
             <p className="text-slate-300">
               {t(
-                "번역가가 작업을 완료하면 정기적으로 다운로드하여 번역을 최신 상태로 유지하세요.",
+                "번역가가 작업을 완료하면 정기적으로 다운로드하여 번역을 최신 상태로 유지하세요."
               )}
             </p>
           </div>
@@ -410,7 +410,7 @@ export default function I18nDownloadPage() {
             </h4>
             <p className="text-slate-300">
               {t(
-                "다운로드 후 출력되는 변경 내역을 확인하여 예상치 못한 변경이 없는지 검토하세요.",
+                "다운로드 후 출력되는 변경 내역을 확인하여 예상치 못한 변경이 없는지 검토하세요."
               )}
             </p>
           </div>

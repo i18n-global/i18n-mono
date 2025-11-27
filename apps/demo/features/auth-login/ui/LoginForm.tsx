@@ -40,18 +40,18 @@ export default function LoginForm() {
         errorMessage = t("비밀번호가 올바르지 않습니다.");
       } else if (firebaseError.code === "auth/too-many-requests") {
         errorMessage = t(
-          "너무 많은 로그인 시도가 있었습니다. 잠시 후 다시 시도해주세요.",
+          "너무 많은 로그인 시도가 있었습니다. 잠시 후 다시 시도해주세요."
         );
       } else if (firebaseError.code === "auth/network-request-failed") {
         errorMessage = t(
-          "네트워크 오류가 발생했습니다. 인터넷 연결을 확인해주세요.",
+          "네트워크 오류가 발생했습니다. 인터넷 연결을 확인해주세요."
         );
       } else if (
         firebaseError.code === "auth/configuration-not-found" ||
         firebaseError.message?.includes("auth/invalid-api-key")
       ) {
         errorMessage = t(
-          "Firebase Authentication이 올바르게 설정되지 않았습니다. Firebase Console에서 Authentication을 활성화해주세요.",
+          "Firebase Authentication이 올바르게 설정되지 않았습니다. Firebase Console에서 Authentication을 활성화해주세요."
         );
       }
 
@@ -150,7 +150,7 @@ export default function LoginForm() {
           </li>
           <li className="flex items-start">
             <span className="text-purple-400 mr-2">2.</span>
-            <span>{t('Sign-in method에서 "Email/Password" 활성화')}</span>
+            <span>{t("Sign-in method에서 \"Email/Password\" 활성화")}</span>
           </li>
           <li className="flex items-start">
             <span className="text-purple-400 mr-2">3.</span>

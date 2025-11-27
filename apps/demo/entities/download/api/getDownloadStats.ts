@@ -14,7 +14,7 @@ const PACKAGE_START_DATES: Record<string, string> = {
 };
 
 export async function getDownloadStats(
-  packageName: string,
+  packageName: string
 ): Promise<DownloadStats> {
   const startDate = PACKAGE_START_DATES[packageName];
 

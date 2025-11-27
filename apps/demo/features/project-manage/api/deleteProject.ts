@@ -9,7 +9,7 @@ interface DeleteResponse {
 }
 
 export async function deleteProject(
-  projectId: string,
+  projectId: string
 ): Promise<DeleteResponse> {
   const response = await fetch(`/api/projects/${projectId}`, {
     method: "DELETE",

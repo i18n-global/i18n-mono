@@ -81,7 +81,7 @@ export default function UseLanguageSwitcherPage() {
               useLanguageSwitcher
             </code>
             {t(
-              "는 현재 언어 상태를 관리하고 언어를 전환하는 기능을 제공하는 React 훅입니다.",
+              "는 현재 언어 상태를 관리하고 언어를 전환하는 기능을 제공하는 React 훅입니다."
             )}
           </p>
           <div className="space-y-2">
@@ -141,7 +141,7 @@ console.log(currentLanguage); // "ko" or "en"`}</code>
               </div>
               <p className="text-slate-300 mb-2">
                 {t(
-                  "언어를 변경하는 함수입니다. 변경된 언어는 쿠키에 자동으로 저장됩니다.",
+                  "언어를 변경하는 함수입니다. 변경된 언어는 쿠키에 자동으로 저장됩니다."
                 )}
               </p>
               <pre className="bg-slate-950 rounded-lg p-3 overflow-x-auto">
@@ -296,7 +296,7 @@ export default function FancyLanguageSwitcher() {
             </h4>
             <p className="text-slate-300">
               {t(
-                "i18nexus는 자동으로 모든 컴포넌트를 업데이트합니다. 수동으로 페이지를 리로드할 필요가 없습니다.",
+                "i18nexus는 자동으로 모든 컴포넌트를 업데이트합니다. 수동으로 페이지를 리로드할 필요가 없습니다."
               )}
             </p>
           </div>
@@ -308,7 +308,7 @@ export default function FancyLanguageSwitcher() {
             </h4>
             <p className="text-slate-300">
               {t(
-                "현재 선택된 언어를 명확하게 표시하여 사용자가 현재 언어를 쉽게 알 수 있도록 하세요.",
+                "현재 선택된 언어를 명확하게 표시하여 사용자가 현재 언어를 쉽게 알 수 있도록 하세요."
               )}
             </p>
           </div>
@@ -320,7 +320,7 @@ export default function FancyLanguageSwitcher() {
             </h4>
             <p className="text-slate-300 mb-2">
               {t(
-                "useLanguageSwitcher는 클라이언트 훅입니다. 서버 컴포넌트에서는 사용할 수 없습니다.",
+                "useLanguageSwitcher는 클라이언트 훅입니다. 서버 컴포넌트에서는 사용할 수 없습니다."
               )}
             </p>
             <pre className="bg-slate-950 rounded-lg p-3 overflow-x-auto">

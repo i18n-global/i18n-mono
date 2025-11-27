@@ -97,7 +97,7 @@ export default function ProviderPage() {
               <pre className="bg-slate-950 text-slate-300 p-4 rounded-lg overflow-x-auto text-sm border border-slate-800">
                 <code>
                   {t(
-                    'import { I18nProvider } from "i18nexus";\nimport { cookies } from "next/headers";\n\nexport default function RootLayout({ children }) {\n  const language = cookies().get("i18n-language")?.value || "ko";\n\n  return (\n    <html lang={language}>\n      <body>\n        <I18nProvider\n          initialLanguage={language}\n          languageManagerOptions={{\n            defaultLanguage: "ko",\n            availableLanguages: [\n              { code: "ko", name: "\uD55C\uAD6D\uC5B4", flag: "\uD83C\uDDF0\uD83C\uDDF7" },\n              { code: "en", name: "English", flag: "\uD83C\uDDFA\uD83C\uDDF8" },\n            ],\n          }}\n          translations={{\n            ko: { "\uD658\uC601\uD569\uB2C8\uB2E4": "\uD658\uC601\uD569\uB2C8\uB2E4" },\n            en: { "\uD658\uC601\uD569\uB2C8\uB2E4": "Welcome" },\n          }}\n        >\n          {children}\n        </I18nProvider>\n      </body>\n    </html>\n  );\n}',
+                    "import { I18nProvider } from \"i18nexus\";\nimport { cookies } from \"next/headers\";\n\nexport default function RootLayout({ children }) {\n  const language = cookies().get(\"i18n-language\")?.value || \"ko\";\n\n  return (\n    <html lang={language}>\n      <body>\n        <I18nProvider\n          initialLanguage={language}\n          languageManagerOptions={{\n            defaultLanguage: \"ko\",\n            availableLanguages: [\n              { code: \"ko\", name: \"\uD55C\uAD6D\uC5B4\", flag: \"\uD83C\uDDF0\uD83C\uDDF7\" },\n              { code: \"en\", name: \"English\", flag: \"\uD83C\uDDFA\uD83C\uDDF8\" },\n            ],\n          }}\n          translations={{\n            ko: { \"\uD658\uC601\uD569\uB2C8\uB2E4\": \"\uD658\uC601\uD569\uB2C8\uB2E4\" },\n            en: { \"\uD658\uC601\uD569\uB2C8\uB2E4\": \"Welcome\" },\n          }}\n        >\n          {children}\n        </I18nProvider>\n      </body>\n    </html>\n  );\n}"
                   )}
                 </code>
               </pre>
@@ -118,7 +118,7 @@ export default function ProviderPage() {
               <pre className="bg-slate-950 text-slate-300 p-4 rounded-lg overflow-x-auto text-sm border border-slate-800">
                 <code>
                   {t(
-                    '"use client";\n\nimport { useTranslation, useLanguageSwitcher } from "i18nexus";\n\nexport default function HomePage() {\n  const { t } = i18n.useTranslation();\n  const { currentLanguage, changeLanguage } = useLanguageSwitcher();\n\n  return (\n    <div>\n      <h1>{t("\uD658\uC601\uD569\uB2C8\uB2E4")}</h1>\n      <button onClick={() => changeLanguage("en")}>\n        English\n      </button>\n    </div>\n  );\n}',
+                    "\"use client\";\n\nimport { useTranslation, useLanguageSwitcher } from \"i18nexus\";\n\nexport default function HomePage() {\n  const { t } = i18n.useTranslation();\n  const { currentLanguage, changeLanguage } = useLanguageSwitcher();\n\n  return (\n    <div>\n      <h1>{t(\"\uD658\uC601\uD569\uB2C8\uB2E4\")}</h1>\n      <button onClick={() => changeLanguage(\"en\")}>\n        English\n      </button>\n    </div>\n  );\n}"
                   )}
                 </code>
               </pre>
@@ -221,7 +221,7 @@ export default function ProviderPage() {
             <pre className="bg-slate-950 text-slate-300 p-4 rounded-lg text-sm mb-4 border border-slate-800">
               <code>
                 {t(
-                  'const { t } = i18n.useTranslation();\n\n// Simple usage\nt("key")\nt("\uD55C\uAD6D\uC5B4 \uD14D\uC2A4\uD2B8")',
+                  "const { t } = i18n.useTranslation();\n\n// Simple usage\nt(\"key\")\nt(\"\uD55C\uAD6D\uC5B4 \uD14D\uC2A4\uD2B8\")"
                 )}
               </code>
             </pre>

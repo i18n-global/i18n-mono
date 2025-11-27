@@ -9,7 +9,7 @@ import { auth } from "@/shared/lib";
 export async function signOut(): Promise<void> {
   if (!auth) {
     throw new Error(
-      "Firebase Authentication is not configured. Please set up Firebase environment variables.",
+      "Firebase Authentication is not configured. Please set up Firebase environment variables."
     );
   }
 

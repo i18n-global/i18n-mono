@@ -24,7 +24,7 @@ export async function fetchMetadata(url: string): Promise<MetadataResponse> {
   } catch (jsonError) {
     console.error("JSON parsing error:", jsonError);
     throw new Error(
-      "서버 응답을 처리할 수 없습니다. 잠시 후 다시 시도해주세요.",
+      "서버 응답을 처리할 수 없습니다. 잠시 후 다시 시도해주세요."
     );
   }
 

@@ -9,7 +9,7 @@ interface ApproveResponse {
 }
 
 export async function approveProject(
-  projectId: string,
+  projectId: string
 ): Promise<ApproveResponse> {
   const response = await fetch(`/api/projects/${projectId}`, {
     method: "PATCH",

@@ -41,7 +41,7 @@ export default function ServerComponentsPage() {
         <div className="bg-slate-900 rounded-xl border border-slate-700 p-6">
           <p className="text-slate-300 mb-4">
             {t(
-              "Next.js의 서버 컴포넌트에서는 useTranslation 훅을 사용할 수 없습니다. 대신 서버 전용 함수를 사용해야 합니다.",
+              "Next.js의 서버 컴포넌트에서는 useTranslation 훅을 사용할 수 없습니다. 대신 서버 전용 함수를 사용해야 합니다."
             )}
           </p>
           <div className="space-y-2">
@@ -279,7 +279,7 @@ export default async function ServerPage() {
         <div className="bg-slate-900 rounded-xl border border-slate-700 p-6 mb-4">
           <p className="text-slate-300 mb-4">
             {t(
-              "서버 컴포넌트와 클라이언트 컴포넌트를 함께 사용하면 최적의 성능을 얻을 수 있습니다.",
+              "서버 컴포넌트와 클라이언트 컴포넌트를 함께 사용하면 최적의 성능을 얻을 수 있습니다."
             )}
           </p>
         </div>
@@ -349,7 +349,7 @@ export default function LanguageSwitcher() {
             </h4>
             <p className="text-slate-300 mb-2">
               {t(
-                "서버와 클라이언트가 같은 언어를 사용하도록 쿠키에서 언어를 읽어야 합니다.",
+                "서버와 클라이언트가 같은 언어를 사용하도록 쿠키에서 언어를 읽어야 합니다."
               )}
             </p>
             <pre className="bg-slate-950 rounded-lg p-3 overflow-x-auto">
@@ -368,7 +368,7 @@ const language = getServerLanguage(headersList);
             </h4>
             <p className="text-slate-300">
               {t(
-                "서버 컴포넌트는 언어 변경 시 자동으로 업데이트되지 않습니다. 클라이언트 컴포넌트에서 언어를 변경하면 쿠키가 업데이트되고, 페이지를 새로고침하면 서버 컴포넌트도 새 언어로 렌더링됩니다.",
+                "서버 컴포넌트는 언어 변경 시 자동으로 업데이트되지 않습니다. 클라이언트 컴포넌트에서 언어를 변경하면 쿠키가 업데이트되고, 페이지를 새로고침하면 서버 컴포넌트도 새 언어로 렌더링됩니다."
               )}
             </p>
           </div>

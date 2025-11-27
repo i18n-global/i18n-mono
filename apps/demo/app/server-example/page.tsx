@@ -28,7 +28,7 @@ export default async function ServerExamplePage() {
         </h1>
         <p className="text-base sm:text-lg text-slate-300">
           {t(
-            "이 페이지는 서버 컴포넌트입니다 - 'use client' 지시문이 필요 없습니다!",
+            "이 페이지는 서버 컴포넌트입니다 - 'use client' 지시문이 필요 없습니다!"
           )}
         </p>
       </div>
@@ -203,7 +203,7 @@ export default async function Page() {
         </h3>
         <p className="text-slate-300 text-xs sm:text-sm">
           {t(
-            "이 페이지에서 언어를 변경하려면 헤더의 언어 전환기(클라이언트 컴포넌트)를 사용하세요. 쿠키에서 새 언어로 페이지가 다시 로드됩니다.",
+            "이 페이지에서 언어를 변경하려면 헤더의 언어 전환기(클라이언트 컴포넌트)를 사용하세요. 쿠키에서 새 언어로 페이지가 다시 로드됩니다."
           )}
         </p>
       </div>

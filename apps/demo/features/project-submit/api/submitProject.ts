@@ -19,7 +19,7 @@ interface SubmitResponse {
 }
 
 export async function submitProject(
-  payload: SubmitProjectPayload,
+  payload: SubmitProjectPayload
 ): Promise<SubmitResponse> {
   const response = await fetch("/api/submissions", {
     method: "POST",
