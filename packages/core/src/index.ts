@@ -10,7 +10,23 @@ export { I18NexusDevtools } from "./components/I18NexusDevtools";
 export type { I18NexusDevtoolsProps } from "./components/I18NexusDevtools";
 
 // Hooks
-export { useTranslation, useLanguageSwitcher } from "./hooks/useTranslation";
+/**
+ * @deprecated 직접 useTranslation을 import하는 것은 권장하지 않습니다.
+ * createI18n을 사용하여 타입 안전한 i18n 시스템을 생성하세요.
+ *
+ * @example
+ * ```typescript
+ * // ❌ 레거시 방식 (권장하지 않음)
+ * import { useTranslation } from 'i18nexus';
+ * const { t } = useTranslation();
+ *
+ * // ✅ 권장 방식
+ * import { createI18n } from 'i18nexus';
+ * const i18n = createI18n(translations, { fallbackNamespace: "common" });
+ * const { t } = i18n.useTranslation();
+ * ```
+ */
+export { useLanguageSwitcher } from "./hooks/useTranslation";
 export type {
   UseTranslationReturn,
   UseLanguageSwitcherReturn,

@@ -1,5 +1,9 @@
 /**
  * Tests for variable interpolation in translations
+ *
+ * Note: These tests use the base I18nProvider and useTranslation hook directly
+ * to test the core interpolation functionality. For type-safe usage,
+ * use createI18n instead (see createI18n.test.tsx and fallback-namespace.test.tsx)
  */
 
 import React from "react";

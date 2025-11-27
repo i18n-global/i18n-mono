@@ -82,9 +82,9 @@ export type ServerTranslationVariables = Record<string, string | number>;
  */
 export declare function createServerTranslation(language: string, translations: Record<string, Record<string, string>>): (key: string, variables?: ServerTranslationVariables | string, fallback?: string) => string;
 /**
- * Get server-side translations object
+ * Get server-side translations object with type safety
  *
- * @example
+ * @example Basic usage
  * ```tsx
  * import { getServerTranslations } from 'i18nexus/server';
  * import { translations } from '@/lib/i18n';
@@ -94,11 +94,23 @@ export declare function createServerTranslation(language: string, translations: 
  *   const language = getServerLanguage(headersList);
  *   const dict = getServerTranslations(language, translations);
  *
- *   return <h1>{dict["Welcome"]}</h1>;
+ *   return <h1>{dict["welcome"]}</h1>;  // ✅ Type-safe!
  * }
  * ```
+ *
+ * @example With type inference
+ * ```tsx
+ * const translations = {
+ *   en: { welcome: "Welcome", logout: "Logout" },
+ *   ko: { welcome: "환영합니다", logout: "로그아웃" }
+ * } as const;
+ *
+ * const dict = getServerTranslations("en", translations);
+ * dict.welcome;  // ✅ Autocomplete works!
+ * dict.invalid;  // ❌ TypeScript error
+ * ```
  */
-export declare function getServerTranslations(language: string, translations: Record<string, Record<string, string>>): Record<string, string>;
+export declare function getServerTranslations<T extends Record<string, Record<string, string>>>(language: string, translations: T): T[keyof T];
 /**
  * Load translations from a directory (for use with auto-generated index.ts)
  * This function attempts to dynamically import translations from the specified directory

@@ -215,9 +215,9 @@ export function createServerTranslation(language, translations) {
     };
 }
 /**
- * Get server-side translations object
+ * Get server-side translations object with type safety
  *
- * @example
+ * @example Basic usage
  * ```tsx
  * import { getServerTranslations } from 'i18nexus/server';
  * import { translations } from '@/lib/i18n';
@@ -227,12 +227,24 @@ export function createServerTranslation(language, translations) {
  *   const language = getServerLanguage(headersList);
  *   const dict = getServerTranslations(language, translations);
  *
- *   return <h1>{dict["Welcome"]}</h1>;
+ *   return <h1>{dict["welcome"]}</h1>;  // ✅ Type-safe!
  * }
+ * ```
+ *
+ * @example With type inference
+ * ```tsx
+ * const translations = {
+ *   en: { welcome: "Welcome", logout: "Logout" },
+ *   ko: { welcome: "환영합니다", logout: "로그아웃" }
+ * } as const;
+ *
+ * const dict = getServerTranslations("en", translations);
+ * dict.welcome;  // ✅ Autocomplete works!
+ * dict.invalid;  // ❌ TypeScript error
  * ```
  */
 export function getServerTranslations(language, translations) {
-    return translations[language] || translations["en"] || {};
+    return (translations[language] || translations["en"] || {});
 }
 /**
  * Load translations from a directory (for use with auto-generated index.ts)

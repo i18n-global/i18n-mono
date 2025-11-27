@@ -1,3 +1,10 @@
+/**
+ * Tests for I18nProvider core functionality
+ *
+ * Note: These tests verify the base Provider behavior.
+ * For type-safe i18n usage, use createI18n (see createI18n.test.tsx)
+ */
+
 import React from "react";
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import "@testing-library/jest-dom";
