@@ -1,11 +1,14 @@
 "use client";
 
-import { useTranslation, useLanguageSwitcher } from "i18nexus";
+import { useLanguageSwitcher } from "i18nexus";
 import Link from "next/link";
 
+import { i18n } from "@/locales";
+
 export default function UseLanguageSwitcherPage() {
-  const { t } = useTranslation();
-  const { currentLanguage, changeLanguage, availableLanguages } = useLanguageSwitcher();
+  const { t } = i18n.useTranslation();
+  const { currentLanguage, changeLanguage, availableLanguages } =
+    useLanguageSwitcher();
 
   return (
     <main className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
@@ -17,7 +20,8 @@ export default function UseLanguageSwitcherPage() {
         <span className="text-slate-500 mx-2">/</span>
         <Link
           href="/docs/i18nexus"
-          className="text-blue-400 hover:text-blue-300">
+          className="text-blue-400 hover:text-blue-300"
+        >
           {t("i18nexus")}
         </Link>
         <span className="text-slate-500 mx-2">/</span>
@@ -43,7 +47,8 @@ export default function UseLanguageSwitcherPage() {
         <div className="bg-gradient-to-br from-slate-900 to-slate-800 rounded-xl border border-slate-700 p-6">
           <div className="mb-4">
             <p className="text-slate-300 mb-4">
-              {t("현재 언어")}: <span className="text-blue-400 font-bold">{currentLanguage}</span>
+              {t("현재 언어")}:{" "}
+              <span className="text-blue-400 font-bold">{currentLanguage}</span>
             </p>
             <div className="flex gap-3">
               {availableLanguages.map((lang) => (
@@ -76,21 +81,17 @@ export default function UseLanguageSwitcherPage() {
               useLanguageSwitcher
             </code>
             {t(
-              "는 현재 언어 상태를 관리하고 언어를 전환하는 기능을 제공하는 React 훅입니다."
+              "는 현재 언어 상태를 관리하고 언어를 전환하는 기능을 제공하는 React 훅입니다.",
             )}
           </p>
           <div className="space-y-2">
             <div className="flex items-start">
               <span className="text-green-400 mr-2">✓</span>
-              <span className="text-slate-300">
-                {t("현재 언어 상태 조회")}
-              </span>
+              <span className="text-slate-300">{t("현재 언어 상태 조회")}</span>
             </div>
             <div className="flex items-start">
               <span className="text-green-400 mr-2">✓</span>
-              <span className="text-slate-300">
-                {t("동적 언어 전환")}
-              </span>
+              <span className="text-slate-300">{t("동적 언어 전환")}</span>
             </div>
             <div className="flex items-start">
               <span className="text-green-400 mr-2">✓</span>
@@ -100,9 +101,7 @@ export default function UseLanguageSwitcherPage() {
             </div>
             <div className="flex items-start">
               <span className="text-green-400 mr-2">✓</span>
-              <span className="text-slate-300">
-                {t("자동 쿠키 저장")}
-              </span>
+              <span className="text-slate-300">{t("자동 쿠키 저장")}</span>
             </div>
           </div>
         </div>
@@ -141,7 +140,9 @@ console.log(currentLanguage); // "ko" or "en"`}</code>
                 </code>
               </div>
               <p className="text-slate-300 mb-2">
-                {t("언어를 변경하는 함수입니다. 변경된 언어는 쿠키에 자동으로 저장됩니다.")}
+                {t(
+                  "언어를 변경하는 함수입니다. 변경된 언어는 쿠키에 자동으로 저장됩니다.",
+                )}
               </p>
               <pre className="bg-slate-950 rounded-lg p-3 overflow-x-auto">
                 <code className="text-sm text-slate-400">{`const { changeLanguage } = useLanguageSwitcher();
@@ -180,9 +181,7 @@ availableLanguages.map(lang => (
 
       {/* Usage Examples */}
       <section className="mb-12">
-        <h2 className="text-3xl font-bold text-white mb-6">
-          {t("사용 예제")}
-        </h2>
+        <h2 className="text-3xl font-bold text-white mb-6">{t("사용 예제")}</h2>
 
         {/* Basic Usage */}
         <div className="mb-8">
@@ -288,9 +287,7 @@ export default function FancyLanguageSwitcher() {
 
       {/* Best Practices */}
       <section className="mb-12">
-        <h2 className="text-3xl font-bold text-white mb-6">
-          {t("모범 사례")}
-        </h2>
+        <h2 className="text-3xl font-bold text-white mb-6">{t("모범 사례")}</h2>
         <div className="space-y-4">
           <div className="bg-green-900/20 border border-green-500/30 rounded-lg p-6">
             <h4 className="text-lg font-semibold text-green-400 mb-2 flex items-center">
@@ -299,7 +296,7 @@ export default function FancyLanguageSwitcher() {
             </h4>
             <p className="text-slate-300">
               {t(
-                "i18nexus는 자동으로 모든 컴포넌트를 업데이트합니다. 수동으로 페이지를 리로드할 필요가 없습니다."
+                "i18nexus는 자동으로 모든 컴포넌트를 업데이트합니다. 수동으로 페이지를 리로드할 필요가 없습니다.",
               )}
             </p>
           </div>
@@ -310,7 +307,9 @@ export default function FancyLanguageSwitcher() {
               {t("권장: 사용자 경험을 위한 시각적 피드백")}
             </h4>
             <p className="text-slate-300">
-              {t("현재 선택된 언어를 명확하게 표시하여 사용자가 현재 언어를 쉽게 알 수 있도록 하세요.")}
+              {t(
+                "현재 선택된 언어를 명확하게 표시하여 사용자가 현재 언어를 쉽게 알 수 있도록 하세요.",
+              )}
             </p>
           </div>
 
@@ -321,7 +320,7 @@ export default function FancyLanguageSwitcher() {
             </h4>
             <p className="text-slate-300 mb-2">
               {t(
-                "useLanguageSwitcher는 클라이언트 훅입니다. 서버 컴포넌트에서는 사용할 수 없습니다."
+                "useLanguageSwitcher는 클라이언트 훅입니다. 서버 컴포넌트에서는 사용할 수 없습니다.",
               )}
             </p>
             <pre className="bg-slate-950 rounded-lg p-3 overflow-x-auto">
@@ -346,7 +345,8 @@ export default function Page() {
         <div className="grid md:grid-cols-2 gap-4">
           <Link
             href="/docs/i18nexus/use-translation"
-            className="bg-slate-900 border border-slate-700 rounded-lg p-4 hover:border-blue-500 transition-colors">
+            className="bg-slate-900 border border-slate-700 rounded-lg p-4 hover:border-blue-500 transition-colors"
+          >
             <h4 className="text-lg font-semibold text-white mb-2">
               useTranslation →
             </h4>
@@ -356,7 +356,8 @@ export default function Page() {
           </Link>
           <Link
             href="/docs/i18nexus/provider"
-            className="bg-slate-900 border border-slate-700 rounded-lg p-4 hover:border-blue-500 transition-colors">
+            className="bg-slate-900 border border-slate-700 rounded-lg p-4 hover:border-blue-500 transition-colors"
+          >
             <h4 className="text-lg font-semibold text-white mb-2">
               I18nProvider →
             </h4>

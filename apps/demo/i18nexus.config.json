@@ -5,6 +5,7 @@
   "sourcePattern": "app/**/*.{js,jsx,ts,tsx}",
   "translationImportSource": "i18nexus",
   "fallbackNamespace": "common",
+  "namespaceLocation": "app",
   "googleSheets": {
     "spreadsheetId": "1hF4-m_gwpYmfkHsRknfjyMhnbUvw5IuOhYAqy7VATxE",
     "credentialsPath": "./credentials.json",

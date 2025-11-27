@@ -1,10 +1,11 @@
 "use client";
 
-import { useTranslation } from "i18nexus";
 import Link from "next/link";
 
+import { i18n } from "@/locales";
+
 export default function ServerComponentsPage() {
-  const { t } = useTranslation();
+  const { t } = i18n.useTranslation();
 
   return (
     <main className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
@@ -16,7 +17,8 @@ export default function ServerComponentsPage() {
         <span className="text-slate-500 mx-2">/</span>
         <Link
           href="/docs/i18nexus"
-          className="text-blue-400 hover:text-blue-300">
+          className="text-blue-400 hover:text-blue-300"
+        >
           {t("i18nexus")}
         </Link>
         <span className="text-slate-500 mx-2">/</span>
@@ -39,7 +41,7 @@ export default function ServerComponentsPage() {
         <div className="bg-slate-900 rounded-xl border border-slate-700 p-6">
           <p className="text-slate-300 mb-4">
             {t(
-              "Next.js의 서버 컴포넌트에서는 useTranslation 훅을 사용할 수 없습니다. 대신 서버 전용 함수를 사용해야 합니다."
+              "Next.js의 서버 컴포넌트에서는 useTranslation 훅을 사용할 수 없습니다. 대신 서버 전용 함수를 사용해야 합니다.",
             )}
           </p>
           <div className="space-y-2">
@@ -51,21 +53,15 @@ export default function ServerComponentsPage() {
             </div>
             <div className="flex items-start">
               <span className="text-green-400 mr-2">✓</span>
-              <span className="text-slate-300">
-                {t("더 빠른 초기 로딩")}
-              </span>
+              <span className="text-slate-300">{t("더 빠른 초기 로딩")}</span>
             </div>
             <div className="flex items-start">
               <span className="text-green-400 mr-2">✓</span>
-              <span className="text-slate-300">
-                {t("더 나은 SEO")}
-              </span>
+              <span className="text-slate-300">{t("더 나은 SEO")}</span>
             </div>
             <div className="flex items-start">
               <span className="text-yellow-400 mr-2">⚠</span>
-              <span className="text-slate-300">
-                {t("동적 언어 전환 불가")}
-              </span>
+              <span className="text-slate-300">{t("동적 언어 전환 불가")}</span>
             </div>
           </div>
         </div>
@@ -231,9 +227,7 @@ export default async function ServerPage() {
               </div>
             </div>
             <div className="mt-4 p-3 bg-purple-900/30 rounded-lg">
-              <code className="text-xs text-purple-300">
-                useTranslation()
-              </code>
+              <code className="text-xs text-purple-300">useTranslation()</code>
             </div>
           </div>
         </div>
@@ -255,7 +249,9 @@ export default async function ServerPage() {
               <li className="list-disc">{t("정적 콘텐츠 (블로그, 문서)")}</li>
               <li className="list-disc">{t("SEO가 중요한 페이지")}</li>
               <li className="list-disc">{t("초기 로딩 속도가 중요한 경우")}</li>
-              <li className="list-disc">{t("사용자 상호작용이 필요 없는 페이지")}</li>
+              <li className="list-disc">
+                {t("사용자 상호작용이 필요 없는 페이지")}
+              </li>
             </ul>
           </div>
 
@@ -282,7 +278,9 @@ export default async function ServerPage() {
 
         <div className="bg-slate-900 rounded-xl border border-slate-700 p-6 mb-4">
           <p className="text-slate-300 mb-4">
-            {t("서버 컴포넌트와 클라이언트 컴포넌트를 함께 사용하면 최적의 성능을 얻을 수 있습니다.")}
+            {t(
+              "서버 컴포넌트와 클라이언트 컴포넌트를 함께 사용하면 최적의 성능을 얻을 수 있습니다.",
+            )}
           </p>
         </div>
 
@@ -350,7 +348,9 @@ export default function LanguageSwitcher() {
               {t("하이드레이션 불일치 방지")}
             </h4>
             <p className="text-slate-300 mb-2">
-              {t("서버와 클라이언트가 같은 언어를 사용하도록 쿠키에서 언어를 읽어야 합니다.")}
+              {t(
+                "서버와 클라이언트가 같은 언어를 사용하도록 쿠키에서 언어를 읽어야 합니다.",
+              )}
             </p>
             <pre className="bg-slate-950 rounded-lg p-3 overflow-x-auto">
               <code className="text-sm text-slate-400">{`// layout.tsx에서
@@ -368,7 +368,7 @@ const language = getServerLanguage(headersList);
             </h4>
             <p className="text-slate-300">
               {t(
-                "서버 컴포넌트는 언어 변경 시 자동으로 업데이트되지 않습니다. 클라이언트 컴포넌트에서 언어를 변경하면 쿠키가 업데이트되고, 페이지를 새로고침하면 서버 컴포넌트도 새 언어로 렌더링됩니다."
+                "서버 컴포넌트는 언어 변경 시 자동으로 업데이트되지 않습니다. 클라이언트 컴포넌트에서 언어를 변경하면 쿠키가 업데이트되고, 페이지를 새로고침하면 서버 컴포넌트도 새 언어로 렌더링됩니다.",
               )}
             </p>
           </div>
@@ -381,7 +381,8 @@ const language = getServerLanguage(headersList);
         <div className="grid md:grid-cols-2 gap-4">
           <Link
             href="/docs/i18nexus/use-translation"
-            className="bg-slate-900 border border-slate-700 rounded-lg p-4 hover:border-blue-500 transition-colors">
+            className="bg-slate-900 border border-slate-700 rounded-lg p-4 hover:border-blue-500 transition-colors"
+          >
             <h4 className="text-lg font-semibold text-white mb-2">
               useTranslation →
             </h4>
@@ -391,7 +392,8 @@ const language = getServerLanguage(headersList);
           </Link>
           <Link
             href="/server-example"
-            className="bg-slate-900 border border-slate-700 rounded-lg p-4 hover:border-green-500 transition-colors">
+            className="bg-slate-900 border border-slate-700 rounded-lg p-4 hover:border-green-500 transition-colors"
+          >
             <h4 className="text-lg font-semibold text-white mb-2">
               {t("라이브 예제")} →
             </h4>

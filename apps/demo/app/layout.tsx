@@ -1,16 +1,17 @@
+import "./globals.css";
+
+import { I18NexusDevtools } from "i18nexus";
+import { getServerLanguage } from "i18nexus/server";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono, Noto_Sans_KR } from "next/font/google";
 import localFont from "next/font/local";
-import "./globals.css";
 import { headers } from "next/headers";
-import { getServerLanguage } from "i18nexus/server";
-
-import { I18NexusDevtools } from "i18nexus";
 import Script from "next/script";
-import { Analytics, FirebaseStatus, GlobalErrorProvider } from "@/app/_shared/ui";
-import ClientProvider from "@/app/_shared/ui/ClientProvider";
-import { Header } from "@/app/_widgets/navigation";
+
 import { translations } from "@/locales";
+import { Analytics, FirebaseStatus, GlobalErrorProvider } from "@/shared/ui";
+import ClientProvider from "@/shared/ui/ClientProvider";
+import { Header } from "@/widgets/navigation";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -52,7 +53,8 @@ export default async function RootLayout({
   return (
     <html lang={language}>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} ${notoSansKR.variable} ${bmHannaPro.variable} antialiased`}>
+        className={`${geistSans.variable} ${geistMono.variable} ${notoSansKR.variable} ${bmHannaPro.variable} antialiased`}
+      >
         {/* Google Analytics: gtag.js (GA4) - uses NEXT_PUBLIC_GA_ID */}
         {process.env.NEXT_PUBLIC_GA_ID ? (
           <>

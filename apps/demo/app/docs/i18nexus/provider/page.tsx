@@ -1,10 +1,11 @@
 "use client";
 
-import { useTranslation } from "i18nexus";
 import Link from "next/link";
 
+import { i18n } from "@/locales";
+
 export default function I18nProviderPage() {
-  const { t } = useTranslation();
+  const { t } = i18n.useTranslation();
 
   return (
     <main className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
@@ -16,7 +17,8 @@ export default function I18nProviderPage() {
         <span className="text-slate-500 mx-2">/</span>
         <Link
           href="/docs/i18nexus"
-          className="text-blue-400 hover:text-blue-300">
+          className="text-blue-400 hover:text-blue-300"
+        >
           {t("i18nexus")}
         </Link>
         <span className="text-slate-500 mx-2">/</span>
@@ -42,7 +44,7 @@ export default function I18nProviderPage() {
               I18nProvider
             </code>
             {t(
-              "는 전체 애플리케이션에 국제화 컨텍스트를 제공하는 루트 컴포넌트입니다. 언어 상태를 관리하고, 쿠키 영속성을 처리하며, SSR에서 하이드레이션 불일치가 없음을 보장합니다."
+              "는 전체 애플리케이션에 국제화 컨텍스트를 제공하는 루트 컴포넌트입니다. 언어 상태를 관리하고, 쿠키 영속성을 처리하며, SSR에서 하이드레이션 불일치가 없음을 보장합니다.",
             )}
           </p>
           <div className="space-y-2">
@@ -93,7 +95,7 @@ export default function I18nProviderPage() {
               </div>
               <p className="text-slate-300">
                 {t(
-                  "사용할 초기 언어 코드입니다. translations 객체의 키 중 하나와 일치해야 합니다."
+                  "사용할 초기 언어 코드입니다. translations 객체의 키 중 하나와 일치해야 합니다.",
                 )}
               </p>
               <pre className="bg-slate-950 rounded-lg p-3 mt-2 overflow-x-auto">
@@ -112,14 +114,15 @@ export default function I18nProviderPage() {
               </div>
               <p className="text-slate-300">
                 {t(
-                  "지원되는 모든 언어에 대한 번역 키와 값을 포함하는 객체입니다."
+                  "지원되는 모든 언어에 대한 번역 키와 값을 포함하는 객체입니다.",
                 )}
               </p>
               <pre className="bg-slate-950 rounded-lg p-3 mt-2 overflow-x-auto">
-                <code className="text-sm text-slate-400">{t("translations={{\n  en: { \"Welcome\": \"Welcome\" },\n  ko: { \"Welcome\": \"\uD658\uC601\uD569\uB2C8\uB2E4\" }\n}}")
-
-
-                  }</code>
+                <code className="text-sm text-slate-400">
+                  {t(
+                    'translations={{\n  en: { "Welcome": "Welcome" },\n  ko: { "Welcome": "\uD658\uC601\uD569\uB2C8\uB2E4" }\n}}',
+                  )}
+                </code>
               </pre>
             </div>
 
@@ -148,13 +151,11 @@ export default function I18nProviderPage() {
                 {t("언어 관리를 위한 추가 설정입니다.")}
               </p>
               <pre className="bg-slate-950 rounded-lg p-3 mt-2 overflow-x-auto">
-                <code className="text-sm text-slate-400">{t("languageManagerOptions={{\n  defaultLanguage: \"ko\",\n  availableLanguages: [\n    { code: \"ko\", name: \"\uD55C\uAD6D\uC5B4\", flag: \"\uD83C\uDDF0\uD83C\uDDF7\" },\n    { code: \"en\", name: \"English\", flag: \"\uD83C\uDDFA\uD83C\uDDF8\" }\n  ]\n}}")
-
-
-
-
-
-                  }</code>
+                <code className="text-sm text-slate-400">
+                  {t(
+                    'languageManagerOptions={{\n  defaultLanguage: "ko",\n  availableLanguages: [\n    { code: "ko", name: "\uD55C\uAD6D\uC5B4", flag: "\uD83C\uDDF0\uD83C\uDDF7" },\n    { code: "en", name: "English", flag: "\uD83C\uDDFA\uD83C\uDDF8" }\n  ]\n}}',
+                  )}
+                </code>
               </pre>
             </div>
           </div>
@@ -227,7 +228,7 @@ export default async function RootLayout({ children }) {
             <p className="text-blue-300">
               <strong>💡 {t("왜 중요한가")}:</strong>{" "}
               {t(
-                "서버에서 쿠키로부터 언어를 읽음으로써, 초기 HTML이 클라이언트가 예상하는 것과 일치하도록 보장하여 하이드레이션 불일치를 방지합니다."
+                "서버에서 쿠키로부터 언어를 읽음으로써, 초기 HTML이 클라이언트가 예상하는 것과 일치하도록 보장하여 하이드레이션 불일치를 방지합니다.",
               )}
             </p>
           </div>
@@ -239,35 +240,11 @@ export default async function RootLayout({ children }) {
             {t("고급 설정")}
           </h3>
           <pre className="bg-slate-950 rounded-lg p-6 overflow-x-auto border border-slate-800">
-            <code className="text-sm text-slate-300">{t("// app/layout.tsx\nimport { I18nProvider } from \"i18nexus\";\nimport { translations } from \"@/lib/i18n\";\n\nconst languageManagerOptions = {\n  defaultLanguage: \"ko\",\n  availableLanguages: [\n    { code: \"ko\", name: \"\uD55C\uAD6D\uC5B4\", flag: \"\uD83C\uDDF0\uD83C\uDDF7\" },\n    { code: \"en\", name: \"English\", flag: \"\uD83C\uDDFA\uD83C\uDDF8\" },\n    { code: \"ja\", name: \"\u65E5\u672C\u8A9E\", flag: \"\uD83C\uDDEF\uD83C\uDDF5\" },\n  ],\n  cookieOptions: {\n    maxAge: 365 * 24 * 60 * 60, // 1 year\n    path: \"/\",\n    sameSite: \"lax\",\n  }\n};\n\nexport default function RootLayout({ children }) {\n  return (\n    <I18nProvider \n      initialLanguage=\"ko\" \n      translations={translations}\n      languageManagerOptions={languageManagerOptions}\n    >\n      {children}\n    </I18nProvider>\n  );\n}")
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-              }</code>
+            <code className="text-sm text-slate-300">
+              {t(
+                '// app/layout.tsx\nimport { I18nProvider } from "i18nexus";\nimport { translations } from "@/lib/i18n";\n\nconst languageManagerOptions = {\n  defaultLanguage: "ko",\n  availableLanguages: [\n    { code: "ko", name: "\uD55C\uAD6D\uC5B4", flag: "\uD83C\uDDF0\uD83C\uDDF7" },\n    { code: "en", name: "English", flag: "\uD83C\uDDFA\uD83C\uDDF8" },\n    { code: "ja", name: "\u65E5\u672C\u8A9E", flag: "\uD83C\uDDEF\uD83C\uDDF5" },\n  ],\n  cookieOptions: {\n    maxAge: 365 * 24 * 60 * 60, // 1 year\n    path: "/",\n    sameSite: "lax",\n  }\n};\n\nexport default function RootLayout({ children }) {\n  return (\n    <I18nProvider \n      initialLanguage="ko" \n      translations={translations}\n      languageManagerOptions={languageManagerOptions}\n    >\n      {children}\n    </I18nProvider>\n  );\n}',
+              )}
+            </code>
           </pre>
         </div>
       </section>
@@ -283,7 +260,7 @@ export default async function RootLayout({ children }) {
             </h4>
             <p className="text-slate-300">
               {t(
-                "모든 컴포넌트가 번역에 접근할 수 있도록 루트 레이아웃 레벨에서 항상 전체 애플리케이션을 I18nProvider로 감싸세요."
+                "모든 컴포넌트가 번역에 접근할 수 있도록 루트 레이아웃 레벨에서 항상 전체 애플리케이션을 I18nProvider로 감싸세요.",
               )}
             </p>
           </div>
@@ -295,7 +272,7 @@ export default async function RootLayout({ children }) {
             </h4>
             <p className="text-slate-300">
               {t(
-                "Next.js 애플리케이션의 경우, 하이드레이션 불일치를 방지하기 위해 항상 서버에서 쿠키로부터 언어를 읽으세요."
+                "Next.js 애플리케이션의 경우, 하이드레이션 불일치를 방지하기 위해 항상 서버에서 쿠키로부터 언어를 읽으세요.",
               )}
             </p>
           </div>
@@ -307,7 +284,7 @@ export default async function RootLayout({ children }) {
             </h4>
             <p className="text-slate-300">
               {t(
-                "I18nProvider 컴포넌트를 중첩하지 마세요. 루트 레벨에서 하나의 provider만 사용하세요."
+                "I18nProvider 컴포넌트를 중첩하지 마세요. 루트 레벨에서 하나의 provider만 사용하세요.",
               )}
             </p>
           </div>
@@ -319,7 +296,7 @@ export default async function RootLayout({ children }) {
             </h4>
             <p className="text-slate-300">
               {t(
-                "initialLanguage prop은 한 번만 설정해야 합니다. 언어를 동적으로 변경하려면 useLanguageSwitcher의 changeLanguage()를 사용하세요."
+                "initialLanguage prop은 한 번만 설정해야 합니다. 언어를 동적으로 변경하려면 useLanguageSwitcher의 changeLanguage()를 사용하세요.",
               )}
             </p>
           </div>
@@ -332,7 +309,8 @@ export default async function RootLayout({ children }) {
         <div className="grid md:grid-cols-2 gap-4">
           <Link
             href="/docs/i18nexus/use-translation"
-            className="bg-slate-900 border border-slate-700 rounded-lg p-4 hover:border-blue-500 transition-colors">
+            className="bg-slate-900 border border-slate-700 rounded-lg p-4 hover:border-blue-500 transition-colors"
+          >
             <h4 className="text-lg font-semibold text-white mb-2">
               useTranslation →
             </h4>
@@ -342,7 +320,8 @@ export default async function RootLayout({ children }) {
           </Link>
           <Link
             href="/docs/i18nexus/use-language-switcher"
-            className="bg-slate-900 border border-slate-700 rounded-lg p-4 hover:border-blue-500 transition-colors">
+            className="bg-slate-900 border border-slate-700 rounded-lg p-4 hover:border-blue-500 transition-colors"
+          >
             <h4 className="text-lg font-semibold text-white mb-2">
               useLanguageSwitcher →
             </h4>
@@ -352,6 +331,6 @@ export default async function RootLayout({ children }) {
           </Link>
         </div>
       </section>
-    </main>);
-
+    </main>
+  );
 }

@@ -1,60 +1,13 @@
-# Source files (빌드된 dist만 배포)
-src/
-bin/
-scripts/
+# Rust 관련 파일 제외
+scripts/t-wrapper-rust/
 
-# Test files
-test-*.tsx
-**/*test*.tsx
+# 테스트 파일 제외
+**/__tests__/
 **/*.test.ts
-**/*.test.js
-**/*.spec.ts
-**/*.spec.js
+**/*.test.tsx
+**/test-src/
 
-# TypeScript config
+# 개발 파일 제외
 tsconfig.json
-
-# Git
-.git/
-.gitignore
-.github/
-
-# Documentation (README는 포함)
-docs/
-*.md
-!README.md
-!CHANGELOG.md
-
-# Migration guides (개발자용 참고 문서, npm 배포 제외)
-docs/migration/
-RUST_*.md
-*MIGRATION*.md
-SENTRY_PERFORMANCE_GUIDE.md
-
-# Development files
-node_modules/
-.DS_Store
-.vscode/
-.idea/
-
-# Examples and test data
-examples/
-constants.ts
-test-*.tsx
-
-# Build artifacts
-*.log
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-
-# Coverage
-coverage/
-.nyc_output/
-
-# Misc
-.env
-.env.local
-.env.test
-*.orig
-
+.eslintrc.js
+.prettierrc

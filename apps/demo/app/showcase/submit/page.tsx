@@ -1,4 +1,4 @@
-import { ProjectSubmitForm } from "@/app/_features/project-submit";
+import { ProjectSubmitForm } from "@/features/project-submit";
 
 export default function ShowcaseSubmitPage() {
   return (

@@ -1,4 +1,4 @@
-import { LoginForm } from "@/app/_features/auth-login";
+import { LoginForm } from "@/features/auth-login";
 
 export default function AdminLoginPage() {
   return (

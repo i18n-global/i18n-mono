@@ -1,10 +1,11 @@
 "use client";
 
-import { useTranslation } from "i18nexus";
 import Link from "next/link";
 
+import { i18n } from "@/locales";
+
 export default function I18nexusDocsPage() {
-  const { t } = useTranslation();
+  const { t } = i18n.useTranslation();
 
   const features = [
     {
@@ -111,7 +112,9 @@ export default function I18nexusDocsPage() {
 
       {/* Features Grid */}
       <div className="mb-12 sm:mb-16">
-        <h2 className="text-2xl sm:text-3xl font-bold text-white mb-6 sm:mb-8">{t("핵심 기능")}</h2>
+        <h2 className="text-2xl sm:text-3xl font-bold text-white mb-6 sm:mb-8">
+          {t("핵심 기능")}
+        </h2>
         <div className="grid sm:grid-cols-2 gap-4 sm:gap-6">
           {features.map((feature) => {
             const colors =
@@ -120,19 +123,22 @@ export default function I18nexusDocsPage() {
               <Link
                 key={feature.href}
                 href={feature.href}
-                className={`group bg-slate-900 rounded-lg sm:rounded-xl border ${colors.border} p-4 sm:p-6 transition-all hover:shadow-lg ${colors.shadow} hover:-translate-y-1`}>
+                className={`group bg-slate-900 rounded-lg sm:rounded-xl border ${colors.border} p-4 sm:p-6 transition-all hover:shadow-lg ${colors.shadow} hover:-translate-y-1`}
+              >
                 <div
-                  className={`inline-flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 ${colors.bg} ${colors.hover} rounded-lg mb-3 sm:mb-4 transition-colors`}>
+                  className={`inline-flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 ${colors.bg} ${colors.hover} rounded-lg mb-3 sm:mb-4 transition-colors`}
+                >
                   <span className="text-xl sm:text-2xl">{feature.icon}</span>
                 </div>
                 <h3 className="text-lg sm:text-xl font-bold text-white mb-2">
-                  {t(feature.title)}
+                  {t(feature.title as any)}
                 </h3>
                 <p className="text-sm sm:text-base text-slate-400 mb-3 sm:mb-4">
-                  {t(feature.description as string)}
+                  {t(feature.description as any)}
                 </p>
                 <div
-                  className={`inline-flex items-center ${colors.text} font-medium`}>
+                  className={`inline-flex items-center ${colors.text} font-medium`}
+                >
                   {t("자세히 알아보기")}{" "}
                   <span className="ml-2 group-hover:translate-x-1 transition-transform">
                     →
@@ -177,10 +183,11 @@ export default function RootLayout({ children }) {
             </h3>
             <pre className="bg-slate-950 rounded-lg p-3 sm:p-4 overflow-x-auto">
               <code className="text-xs sm:text-sm text-slate-300">{`"use client";
-import { useTranslation, useLanguageSwitcher } from "i18nexus";
+import { i18n } from "@/locales";
+import { useLanguageSwitcher } from "i18nexus";
 
 export default function MyComponent() {
-  const { t } = useTranslation();
+  const { t } = i18n.useTranslation();
   const { currentLanguage, changeLanguage } = useLanguageSwitcher();
   
   return (

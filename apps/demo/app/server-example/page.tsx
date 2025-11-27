@@ -1,7 +1,7 @@
+import { createServerTranslation, getServerLanguage } from "i18nexus/server";
 import { headers } from "next/headers";
-import { getServerLanguage, createServerTranslation } from "i18nexus/server";
-
 import Link from "next/link";
+
 import { translations } from "@/locales";
 // ✅ Server Component - "use client" 없음!
 export default async function ServerExamplePage() {
@@ -18,7 +18,8 @@ export default async function ServerExamplePage() {
       <div className="mb-8 sm:mb-12">
         <Link
           href="/"
-          className="inline-flex items-center text-blue-400 hover:text-blue-300 mb-4 sm:mb-6 text-sm sm:text-base">
+          className="inline-flex items-center text-blue-400 hover:text-blue-300 mb-4 sm:mb-6 text-sm sm:text-base"
+        >
           <span className="mr-2">←</span>
           {t("홈으로 돌아가기")}
         </Link>
@@ -27,7 +28,7 @@ export default async function ServerExamplePage() {
         </h1>
         <p className="text-base sm:text-lg text-slate-300">
           {t(
-            "이 페이지는 서버 컴포넌트입니다 - 'use client' 지시문이 필요 없습니다!"
+            "이 페이지는 서버 컴포넌트입니다 - 'use client' 지시문이 필요 없습니다!",
           )}
         </p>
       </div>
@@ -84,7 +85,9 @@ export default async function ServerExamplePage() {
 
       {/* Code Example */}
       <section className="bg-slate-900 rounded-xl sm:rounded-2xl border border-slate-700 p-4 sm:p-6 lg:p-8 mb-6 sm:mb-8">
-        <h2 className="text-xl sm:text-2xl font-bold text-white mb-3 sm:mb-4">{t("사용 방법")}</h2>
+        <h2 className="text-xl sm:text-2xl font-bold text-white mb-3 sm:mb-4">
+          {t("사용 방법")}
+        </h2>
         <div className="bg-slate-950 rounded-lg sm:rounded-xl p-4 sm:p-6 mb-4 border border-slate-800">
           <pre className="text-slate-300 text-xs sm:text-sm font-mono overflow-x-auto">
             <code>{`import { headers } from "next/headers";
@@ -171,7 +174,9 @@ export default async function Page() {
 
       {/* Current State */}
       <section className="mt-6 sm:mt-8 bg-slate-900 rounded-xl sm:rounded-2xl border border-slate-700 p-4 sm:p-6 lg:p-8">
-        <h2 className="text-xl sm:text-2xl font-bold text-white mb-3 sm:mb-4">{t("현재 상태")}</h2>
+        <h2 className="text-xl sm:text-2xl font-bold text-white mb-3 sm:mb-4">
+          {t("현재 상태")}
+        </h2>
         <div className="space-y-2 sm:space-y-3 text-sm sm:text-base text-slate-300">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between bg-slate-950 p-3 sm:p-4 rounded-lg gap-1 sm:gap-0">
             <span className="font-semibold">{t("현재 언어")}:</span>
@@ -198,10 +203,10 @@ export default async function Page() {
         </h3>
         <p className="text-slate-300 text-xs sm:text-sm">
           {t(
-            "이 페이지에서 언어를 변경하려면 헤더의 언어 전환기(클라이언트 컴포넌트)를 사용하세요. 쿠키에서 새 언어로 페이지가 다시 로드됩니다."
+            "이 페이지에서 언어를 변경하려면 헤더의 언어 전환기(클라이언트 컴포넌트)를 사용하세요. 쿠키에서 새 언어로 페이지가 다시 로드됩니다.",
           )}
         </p>
       </div>
-    </main>);
-
+    </main>
+  );
 }

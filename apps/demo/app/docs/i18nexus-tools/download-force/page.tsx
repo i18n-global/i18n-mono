@@ -1,10 +1,11 @@
 "use client";
 
-import { useTranslation } from "i18nexus";
 import Link from "next/link";
 
+import { i18n } from "@/locales";
+
 export default function I18nDownloadForcePage() {
-  const { t } = useTranslation();
+  const { t } = i18n.useTranslation();
 
   return (
     <main className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
@@ -16,7 +17,8 @@ export default function I18nDownloadForcePage() {
         <span className="text-slate-500 mx-2">/</span>
         <Link
           href="/docs/i18nexus-tools"
-          className="text-blue-400 hover:text-blue-300">
+          className="text-blue-400 hover:text-blue-300"
+        >
           {t("i18nexus-tools")}
         </Link>
         <span className="text-slate-500 mx-2">/</span>
@@ -48,7 +50,7 @@ export default function I18nDownloadForcePage() {
             </h3>
             <p className="text-slate-300 text-sm">
               {t(
-                "이 명령어는 로컬 번역 파일을 Google Sheets의 데이터로 완전히 덮어씁니다. 로컬에만 있는 번역이 모두 삭제됩니다. 일반적으로 i18n-download를 사용하는 것이 안전합니다."
+                "이 명령어는 로컬 번역 파일을 Google Sheets의 데이터로 완전히 덮어씁니다. 로컬에만 있는 번역이 모두 삭제됩니다. 일반적으로 i18n-download를 사용하는 것이 안전합니다.",
               )}
             </p>
           </div>
@@ -64,7 +66,7 @@ export default function I18nDownloadForcePage() {
               i18n-download-force
             </code>
             {t(
-              "는 Google Sheets를 단일 진실 공급원(Single Source of Truth)으로 사용할 때를 위한 명령어입니다. 로컬 번역 파일을 Sheets의 데이터로 완전히 대체합니다."
+              "는 Google Sheets를 단일 진실 공급원(Single Source of Truth)으로 사용할 때를 위한 명령어입니다. 로컬 번역 파일을 Sheets의 데이터로 완전히 대체합니다.",
             )}
           </p>
           <div className="space-y-2">
@@ -99,7 +101,7 @@ export default function I18nDownloadForcePage() {
             </h4>
             <p className="text-slate-300 text-sm">
               {t(
-                "모든 번역 작업이 Google Sheets에서만 이루어지고, 로컬 파일은 단순히 Sheets의 복사본인 경우"
+                "모든 번역 작업이 Google Sheets에서만 이루어지고, 로컬 파일은 단순히 Sheets의 복사본인 경우",
               )}
             </p>
           </div>
@@ -111,7 +113,7 @@ export default function I18nDownloadForcePage() {
             </h4>
             <p className="text-slate-300 text-sm">
               {t(
-                "로컬에서 번역을 직접 수정하지 않고, Sheets에서만 번역을 관리하는 경우"
+                "로컬에서 번역을 직접 수정하지 않고, Sheets에서만 번역을 관리하는 경우",
               )}
             </p>
           </div>
@@ -123,7 +125,7 @@ export default function I18nDownloadForcePage() {
             </h4>
             <p className="text-slate-300 text-sm">
               {t(
-                "로컬 파일이 손상되었거나 문제가 있어서 Sheets의 깨끗한 버전으로 다시 시작하고 싶은 경우"
+                "로컬 파일이 손상되었거나 문제가 있어서 Sheets의 깨끗한 버전으로 다시 시작하고 싶은 경우",
               )}
             </p>
           </div>
@@ -313,7 +315,7 @@ export default function I18nDownloadForcePage() {
             </h4>
             <p className="text-slate-300 mb-2">
               {t(
-                "명령 실행 전에 현재 상태를 Git에 커밋하세요. 문제가 생기면 되돌릴 수 있습니다."
+                "명령 실행 전에 현재 상태를 Git에 커밋하세요. 문제가 생기면 되돌릴 수 있습니다.",
               )}
             </p>
             <pre className="bg-slate-950 rounded p-2 text-xs mt-2">
@@ -368,7 +370,7 @@ npx i18n-download-force`}
             </h4>
             <p className="text-slate-300">
               {t(
-                "팀에서 Google Sheets를 단일 진실 공급원으로 사용하기로 명확히 합의한 경우에만 사용하세요."
+                "팀에서 Google Sheets를 단일 진실 공급원으로 사용하기로 명확히 합의한 경우에만 사용하세요.",
               )}
             </p>
           </div>
@@ -380,7 +382,7 @@ npx i18n-download-force`}
             </h4>
             <p className="text-slate-300">
               {t(
-                "자동화된 배포 파이프라인에서 Sheets로부터 항상 최신 번역을 가져오는 용도로 사용할 수 있습니다."
+                "자동화된 배포 파이프라인에서 Sheets로부터 항상 최신 번역을 가져오는 용도로 사용할 수 있습니다.",
               )}
             </p>
           </div>
@@ -393,7 +395,8 @@ npx i18n-download-force`}
         <div className="grid md:grid-cols-2 gap-4">
           <Link
             href="/docs/i18nexus-tools/download"
-            className="bg-slate-900 border border-slate-700 rounded-lg p-6 hover:border-blue-500 transition-colors">
+            className="bg-slate-900 border border-slate-700 rounded-lg p-6 hover:border-blue-500 transition-colors"
+          >
             <h4 className="text-lg font-semibold text-white mb-2 flex items-center">
               <span className="mr-2">📥</span>
               i18n-download →
@@ -404,7 +407,8 @@ npx i18n-download-force`}
           </Link>
           <Link
             href="/docs/i18nexus-tools/google-sheets"
-            className="bg-slate-900 border border-slate-700 rounded-lg p-6 hover:border-yellow-500 transition-colors">
+            className="bg-slate-900 border border-slate-700 rounded-lg p-6 hover:border-yellow-500 transition-colors"
+          >
             <h4 className="text-lg font-semibold text-white mb-2 flex items-center">
               <span className="mr-2">📊</span>
               Google Sheets {t("가이드")} →

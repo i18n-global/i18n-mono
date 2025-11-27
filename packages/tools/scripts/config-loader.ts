@@ -61,6 +61,15 @@ export interface I18nexusConfig {
     ignorePatterns?: string[]; // 사용자 정의 무시 패턴 (정규식)
   };
   /**
+   * 네임스페이스 위치 설정 (간편 설정)
+   * 이 위치의 최상위 폴더가 네임스페이스가 됩니다.
+   * @example "/src/pages" - pages 하위의 최상위 폴더가 네임스페이스가 됩니다.
+   * @example "src/app/(routes)" - (routes) 하위의 최상위 폴더가 네임스페이스가 됩니다.
+   *
+   * 이 옵션이 설정되면 namespacing.basePath로 자동 변환됩니다.
+   */
+  namespaceLocation?: string;
+  /**
    * Fallback 네임스페이스 설정
    * createI18n에서 네임스페이스를 지정하지 않을 때 사용할 기본 네임스페이스
    * @example "common"
@@ -108,13 +117,26 @@ export function loadConfig(
     const fileContent = fs.readFileSync(absolutePath, "utf-8");
     const config = JSON.parse(fileContent);
 
+    // namespaceLocation이 설정되어 있으면 namespacing.basePath로 변환
+    let finalConfig = { ...config };
+    if (config.namespaceLocation) {
+      finalConfig.namespacing = {
+        enabled: true,
+        basePath: config.namespaceLocation,
+        defaultNamespace: config.namespacing?.defaultNamespace || "common",
+        framework: config.namespacing?.framework || "nextjs-app",
+        ignorePatterns: config.namespacing?.ignorePatterns || [],
+        ...config.namespacing,
+      };
+    }
+
     // 기본값과 병합
     return {
       ...DEFAULT_CONFIG,
-      ...config,
+      ...finalConfig,
       googleSheets: {
         ...DEFAULT_CONFIG.googleSheets,
-        ...(config.googleSheets || {}),
+        ...(finalConfig.googleSheets || {}),
       },
     };
   } catch (error) {

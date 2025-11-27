@@ -14,7 +14,7 @@ export async function POST(request: NextRequest) {
     } catch {
       return NextResponse.json(
         { error: "Invalid URL format" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -27,17 +27,17 @@ export async function POST(request: NextRequest) {
     const response = await fetch(microlinkUrl, {
       headers: {
         "User-Agent": "i18nexus-showcase/1.0",
-        Accept: "application/json"
+        Accept: "application/json",
       },
       // 15초 타임아웃 (스크린샷 생성 시간 고려)
-      signal: AbortSignal.timeout(15000)
+      signal: AbortSignal.timeout(15000),
     });
 
     if (!response.ok) {
       console.error(
         "❌ Microlink API error:",
         response.status,
-        response.statusText
+        response.statusText,
       );
 
       // Rate limit 에러인 경우
@@ -47,7 +47,7 @@ export async function POST(request: NextRequest) {
             error: "Metadata service rate limit exceeded",
             details: "Please try again later",
           },
-          { status: 429 }
+          { status: 429 },
         );
       }
 
@@ -56,7 +56,7 @@ export async function POST(request: NextRequest) {
           error: "Metadata service error occurred",
           details: `HTTP ${response.status}: ${response.statusText}`,
         },
-        { status: 500 }
+        { status: 500 },
       );
     }
 
@@ -71,7 +71,7 @@ export async function POST(request: NextRequest) {
           error: "Metadata service returned unexpected response",
           details: `Expected JSON but got ${contentType}`,
         },
-        { status: 500 }
+        { status: 500 },
       );
     }
 
@@ -88,7 +88,7 @@ export async function POST(request: NextRequest) {
             error: "Cannot access URL",
             details: "Domain does not exist or is inaccessible",
           },
-          { status: 400 }
+          { status: 400 },
         );
       }
 
@@ -97,7 +97,7 @@ export async function POST(request: NextRequest) {
           error: "Failed to extract metadata",
           details: data.message || "Unknown error from metadata service",
         },
-        { status: 500 }
+        { status: 500 },
       );
     }
 
@@ -112,25 +112,25 @@ export async function POST(request: NextRequest) {
       thumbnailUrl: ogImage || screenshotImage || "/default-thumbnail.svg",
       screenshotUrl: screenshotImage || null, // 상세보기용 스크린샷
       ogImageUrl: ogImage || null, // 원본 메타 이미지
-      url
+      url,
     };
 
     console.log("✅ Metadata extracted successfully:", {
       hasOgImage: !!ogImage,
-      hasScreenshot: !!screenshotImage
+      hasScreenshot: !!screenshotImage,
     });
     return NextResponse.json(metadata);
   } catch (error: unknown) {
     console.error("❌ Metadata fetch error:", error);
 
-    const errorObj = error as {message?: string;};
+    const errorObj = error as { message?: string };
 
     return NextResponse.json(
       {
         error: "Failed to fetch metadata",
-        details: errorObj.message || "Unknown error"
+        details: errorObj.message || "Unknown error",
       },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

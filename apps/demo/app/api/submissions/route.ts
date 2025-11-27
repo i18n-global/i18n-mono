@@ -1,18 +1,19 @@
-import { NextRequest, NextResponse } from "next/server";
-import { revalidatePath } from "next/cache";
-import { db } from "@/lib/firebase";
 import {
-  collection,
   addDoc,
+  collection,
+  deleteDoc,
+  doc,
   getDocs,
-  query,
-  where,
   orderBy,
+  query,
   Timestamp,
   updateDoc,
-  doc,
-  deleteDoc,
+  where,
 } from "firebase/firestore";
+import { revalidatePath } from "next/cache";
+import { NextRequest, NextResponse } from "next/server";
+
+import { db } from "@/lib/firebase";
 
 // POST: 새 제출 생성
 export async function POST(request: NextRequest) {
@@ -21,10 +22,11 @@ export async function POST(request: NextRequest) {
     if (!db) {
       return NextResponse.json(
         {
-          error: "Firestore Database is not configured. Please set up Firebase environment variables.",
+          error:
+            "Firestore Database is not configured. Please set up Firebase environment variables.",
           code: "FIRESTORE_NOT_CONFIGURED",
         },
-        { status: 503 }
+        { status: 503 },
       );
     }
 
@@ -36,13 +38,13 @@ export async function POST(request: NextRequest) {
       autoDescription,
       thumbnailUrl,
       screenshotUrl,
-      contactEmail
+      contactEmail,
     } = body;
 
     if (!url || !autoTitle) {
       return NextResponse.json(
         { error: "URL and title are required" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -55,7 +57,7 @@ export async function POST(request: NextRequest) {
       screenshotUrl: screenshotUrl || null,
       contactEmail: contactEmail || null,
       approved: false,
-      submittedAt: Timestamp.now()
+      submittedAt: Timestamp.now(),
     };
 
     const docRef = await addDoc(collection(db, "submissions"), submissionData);
@@ -66,7 +68,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({
       id: docRef.id,
-      ...submissionData
+      ...submissionData,
     });
   } catch (error: unknown) {
     console.error("Submission creation error:", error);
@@ -84,7 +86,7 @@ export async function POST(request: NextRequest) {
             "Firestore Database is not configured. Please create Firestore Database in Firebase Console.",
           code: "FIRESTORE_NOT_CONFIGURED",
         },
-        { status: 503 }
+        { status: 503 },
       );
     }
 
@@ -93,7 +95,7 @@ export async function POST(request: NextRequest) {
         error: "Failed to create submission",
         message: errorObj.message || "Unknown error",
       },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
@@ -105,10 +107,11 @@ export async function GET(request: NextRequest) {
     if (!db) {
       return NextResponse.json(
         {
-          error: "Firestore Database is not configured. Please set up Firebase environment variables.",
+          error:
+            "Firestore Database is not configured. Please set up Firebase environment variables.",
           code: "FIRESTORE_NOT_CONFIGURED",
         },
-        { status: 503 }
+        { status: 503 },
       );
     }
 
@@ -117,7 +120,7 @@ export async function GET(request: NextRequest) {
 
     let q = query(
       collection(db, "submissions"),
-      orderBy("submittedAt", "desc")
+      orderBy("submittedAt", "desc"),
     );
 
     if (approvedFilter !== null) {
@@ -125,14 +128,14 @@ export async function GET(request: NextRequest) {
       q = query(
         collection(db, "submissions"),
         where("approved", "==", isApproved),
-        orderBy("submittedAt", "desc")
+        orderBy("submittedAt", "desc"),
       );
     }
 
     const querySnapshot = await getDocs(q);
     const submissions = querySnapshot.docs.map((doc) => ({
       id: doc.id,
-      ...doc.data()
+      ...doc.data(),
     }));
 
     return NextResponse.json(submissions);
@@ -159,7 +162,7 @@ export async function GET(request: NextRequest) {
             "https://console.firebase.google.com/u/0/project/i18nexus/firestore/indexes",
           message: errorObj.message,
         },
-        { status: 500 }
+        { status: 500 },
       );
     }
 
@@ -174,7 +177,7 @@ export async function GET(request: NextRequest) {
             "Firestore Database is not configured. Please create Firestore Database in Firebase Console.",
           code: "FIRESTORE_NOT_CONFIGURED",
         },
-        { status: 503 }
+        { status: 503 },
       );
     }
 
@@ -183,7 +186,7 @@ export async function GET(request: NextRequest) {
         error: "Failed to fetch submissions",
         message: errorObj.message || "Unknown error",
       },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
@@ -195,10 +198,11 @@ export async function PATCH(request: NextRequest) {
     if (!db) {
       return NextResponse.json(
         {
-          error: "Firestore Database is not configured. Please set up Firebase environment variables.",
+          error:
+            "Firestore Database is not configured. Please set up Firebase environment variables.",
           code: "FIRESTORE_NOT_CONFIGURED",
         },
-        { status: 503 }
+        { status: 503 },
       );
     }
 
@@ -208,7 +212,7 @@ export async function PATCH(request: NextRequest) {
     if (!id) {
       return NextResponse.json(
         { error: "Submission ID is required" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -231,7 +235,7 @@ export async function PATCH(request: NextRequest) {
     console.error("Submission update error:", error);
     return NextResponse.json(
       { error: "Failed to update submission" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
@@ -243,10 +247,11 @@ export async function DELETE(request: NextRequest) {
     if (!db) {
       return NextResponse.json(
         {
-          error: "Firestore Database is not configured. Please set up Firebase environment variables.",
+          error:
+            "Firestore Database is not configured. Please set up Firebase environment variables.",
           code: "FIRESTORE_NOT_CONFIGURED",
         },
-        { status: 503 }
+        { status: 503 },
       );
     }
 
@@ -256,7 +261,7 @@ export async function DELETE(request: NextRequest) {
     if (!id) {
       return NextResponse.json(
         { error: "Submission ID is required" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -270,7 +275,7 @@ export async function DELETE(request: NextRequest) {
     console.error("Submission deletion error:", error);
     return NextResponse.json(
       { error: "Failed to delete submission" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

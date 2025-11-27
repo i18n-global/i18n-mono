@@ -1,11 +1,13 @@
 "use client";
 
-import { useTranslation, useLanguageSwitcher } from "i18nexus";
+import { useLanguageSwitcher } from "i18nexus";
+
+import { i18n } from "@/locales";
 
 export default function ProviderPage() {
-  const { t } = useTranslation();
+  const { t } = i18n.useTranslation();
   const { currentLanguage, changeLanguage, availableLanguages } =
-  useLanguageSwitcher();
+    useLanguageSwitcher();
 
   return (
     <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -93,35 +95,11 @@ export default function ProviderPage() {
             </div>
             <div className="p-6">
               <pre className="bg-slate-950 text-slate-300 p-4 rounded-lg overflow-x-auto text-sm border border-slate-800">
-                <code>{t("import { I18nProvider } from \"i18nexus\";\nimport { cookies } from \"next/headers\";\n\nexport default function RootLayout({ children }) {\n  const language = cookies().get(\"i18n-language\")?.value || \"ko\";\n\n  return (\n    <html lang={language}>\n      <body>\n        <I18nProvider\n          initialLanguage={language}\n          languageManagerOptions={{\n            defaultLanguage: \"ko\",\n            availableLanguages: [\n              { code: \"ko\", name: \"\uD55C\uAD6D\uC5B4\", flag: \"\uD83C\uDDF0\uD83C\uDDF7\" },\n              { code: \"en\", name: \"English\", flag: \"\uD83C\uDDFA\uD83C\uDDF8\" },\n            ],\n          }}\n          translations={{\n            ko: { \"\uD658\uC601\uD569\uB2C8\uB2E4\": \"\uD658\uC601\uD569\uB2C8\uB2E4\" },\n            en: { \"\uD658\uC601\uD569\uB2C8\uB2E4\": \"Welcome\" },\n          }}\n        >\n          {children}\n        </I18nProvider>\n      </body>\n    </html>\n  );\n}")
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                  }</code>
+                <code>
+                  {t(
+                    'import { I18nProvider } from "i18nexus";\nimport { cookies } from "next/headers";\n\nexport default function RootLayout({ children }) {\n  const language = cookies().get("i18n-language")?.value || "ko";\n\n  return (\n    <html lang={language}>\n      <body>\n        <I18nProvider\n          initialLanguage={language}\n          languageManagerOptions={{\n            defaultLanguage: "ko",\n            availableLanguages: [\n              { code: "ko", name: "\uD55C\uAD6D\uC5B4", flag: "\uD83C\uDDF0\uD83C\uDDF7" },\n              { code: "en", name: "English", flag: "\uD83C\uDDFA\uD83C\uDDF8" },\n            ],\n          }}\n          translations={{\n            ko: { "\uD658\uC601\uD569\uB2C8\uB2E4": "\uD658\uC601\uD569\uB2C8\uB2E4" },\n            en: { "\uD658\uC601\uD569\uB2C8\uB2E4": "Welcome" },\n          }}\n        >\n          {children}\n        </I18nProvider>\n      </body>\n    </html>\n  );\n}',
+                  )}
+                </code>
               </pre>
             </div>
           </div>
@@ -138,23 +116,11 @@ export default function ProviderPage() {
             </div>
             <div className="p-6">
               <pre className="bg-slate-950 text-slate-300 p-4 rounded-lg overflow-x-auto text-sm border border-slate-800">
-                <code>{t("\"use client\";\n\nimport { useTranslation, useLanguageSwitcher } from \"i18nexus\";\n\nexport default function HomePage() {\n  const { t } = useTranslation();\n  const { currentLanguage, changeLanguage } = useLanguageSwitcher();\n\n  return (\n    <div>\n      <h1>{t(\"\uD658\uC601\uD569\uB2C8\uB2E4\")}</h1>\n      <button onClick={() => changeLanguage(\"en\")}>\n        English\n      </button>\n    </div>\n  );\n}")
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                  }</code>
+                <code>
+                  {t(
+                    '"use client";\n\nimport { useTranslation, useLanguageSwitcher } from "i18nexus";\n\nexport default function HomePage() {\n  const { t } = i18n.useTranslation();\n  const { currentLanguage, changeLanguage } = useLanguageSwitcher();\n\n  return (\n    <div>\n      <h1>{t("\uD658\uC601\uD569\uB2C8\uB2E4")}</h1>\n      <button onClick={() => changeLanguage("en")}>\n        English\n      </button>\n    </div>\n  );\n}',
+                  )}
+                </code>
               </pre>
             </div>
           </div>
@@ -180,8 +146,8 @@ export default function ProviderPage() {
                 </div>
                 <p className="text-slate-300 text-lg">
                   {
-                  availableLanguages.find((l) => l.code === currentLanguage)?.
-                  name
+                    availableLanguages.find((l) => l.code === currentLanguage)
+                      ?.name
                   }
                 </p>
               </div>
@@ -193,19 +159,20 @@ export default function ProviderPage() {
                 {t("언어 전환")}
               </h3>
               <div className="flex gap-4">
-                {availableLanguages.map((lang) =>
-                <button
-                  key={lang.code}
-                  onClick={() => changeLanguage(lang.code)}
-                  className={`flex-1 px-6 py-4 rounded-xl font-semibold transition-all duration-300 ${
-                  currentLanguage === lang.code ?
-                  "bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-lg shadow-blue-500/30 scale-105" :
-                  "bg-slate-800 text-slate-300 hover:bg-slate-700 border border-slate-700"}`
-                  }>
+                {availableLanguages.map((lang) => (
+                  <button
+                    key={lang.code}
+                    onClick={() => changeLanguage(lang.code)}
+                    className={`flex-1 px-6 py-4 rounded-xl font-semibold transition-all duration-300 ${
+                      currentLanguage === lang.code
+                        ? "bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-lg shadow-blue-500/30 scale-105"
+                        : "bg-slate-800 text-slate-300 hover:bg-slate-700 border border-slate-700"
+                    }`}
+                  >
                     <div className="text-2xl mb-1">{lang.flag}</div>
                     <div className="text-sm">{lang.name}</div>
                   </button>
-                )}
+                ))}
               </div>
               <p className="text-sm text-slate-400 text-center mt-4">
                 💡 {t("전환해보세요 - 쿠키에 저장됩니다!")}
@@ -220,20 +187,21 @@ export default function ProviderPage() {
             </h3>
             <div className="grid gap-3">
               {[
-              t("환영합니다"),
-              t("빠른 시작"),
-              t("왜 i18nexus인가?"),
-              t("쿠키 영속성")].
-              map((text, i) =>
-              <div
-                key={i}
-                className="flex items-center justify-between p-4 bg-slate-950 rounded-lg border border-slate-800">
+                t("환영합니다"),
+                t("빠른 시작"),
+                t("왜 i18nexus인가?"),
+                t("쿠키 영속성"),
+              ].map((text, i) => (
+                <div
+                  key={i}
+                  className="flex items-center justify-between p-4 bg-slate-950 rounded-lg border border-slate-800"
+                >
                   <span className="text-slate-500 text-sm font-mono">
                     {`t("${[t("환영합니다"), t("빠른 시작"), t("왜 i18nexus인가?"), t("쿠키 영속성")][i]}")`}
                   </span>
                   <span className="text-white font-medium">{text}</span>
                 </div>
-              )}
+              ))}
             </div>
           </div>
         </div>
@@ -251,11 +219,11 @@ export default function ProviderPage() {
               useTranslation()
             </h3>
             <pre className="bg-slate-950 text-slate-300 p-4 rounded-lg text-sm mb-4 border border-slate-800">
-              <code>{t("const { t } = useTranslation();\n\n// Simple usage\nt(\"key\")\nt(\"\uD55C\uAD6D\uC5B4 \uD14D\uC2A4\uD2B8\")")
-
-
-
-                }</code>
+              <code>
+                {t(
+                  'const { t } = i18n.useTranslation();\n\n// Simple usage\nt("key")\nt("\uD55C\uAD6D\uC5B4 \uD14D\uC2A4\uD2B8")',
+                )}
+              </code>
             </pre>
             <p className="text-slate-400 text-sm">
               {t("클라이언트 컴포넌트에서 번역 함수에 접근하기 위한 훅")}
@@ -281,6 +249,6 @@ changeLanguage("en")`}</code>
           </div>
         </div>
       </section>
-    </main>);
-
+    </main>
+  );
 }
