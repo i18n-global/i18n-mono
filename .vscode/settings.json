@@ -1,0 +1,7 @@
+{
+  "jest.autoRun": "off",
+  "jest.runMode": "on-demand",
+  "jest.rootPath": ".",
+  "jest.jestCommandLine": "npm test --",
+  "jest.disabledWorkspaceFolders": []
+}
