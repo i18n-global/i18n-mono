@@ -38,7 +38,11 @@ export class WorkerPool {
    * Worker Pool 초기화
    */
   async initialize(): Promise<void> {
-    const workerScript = path.join(__dirname, "worker.js");
+    // 테스트 환경에서는 .ts를, 프로덕션에서는 .js를 사용
+    const workerScript = path.join(
+      __dirname,
+      __filename.endsWith(".ts") ? "worker.ts" : "worker.js",
+    );
 
     for (let i = 0; i < this.workerCount; i++) {
       const worker = new Worker(workerScript);
