@@ -197,7 +197,7 @@ const text = "hello";`;
 
       // 구조 분해 패턴 확인
       expect(t.isObjectPattern(declarator.id)).toBe(true);
-      
+
       if (t.isObjectPattern(declarator.id)) {
         expect(declarator.id.properties).toHaveLength(1);
         const property = declarator.id.properties[0];
@@ -209,7 +209,7 @@ const text = "hello";`;
       // useTranslation 호출 확인
       expect(declarator.init).toBeDefined();
       expect(t.isCallExpression(declarator.init)).toBe(true);
-      
+
       if (declarator.init && t.isCallExpression(declarator.init)) {
         if (t.isIdentifier(declarator.init.callee)) {
           expect(declarator.init.callee.name).toBe("useTranslation");
@@ -229,10 +229,10 @@ const text = "hello";`;
       const declarator = decl.declarations[0];
       expect(declarator.init).toBeDefined();
       expect(t.isAwaitExpression(declarator.init)).toBe(true);
-      
+
       if (declarator.init && t.isAwaitExpression(declarator.init)) {
         expect(t.isCallExpression(declarator.init.argument)).toBe(true);
-        
+
         if (t.isCallExpression(declarator.init.argument)) {
           const callExpr = declarator.init.argument;
           if (t.isIdentifier(callExpr.callee)) {
@@ -248,7 +248,7 @@ const text = "hello";`;
 
       const declarator = decl.declarations[0];
       expect(declarator.init).toBeDefined();
-      
+
       if (declarator.init && t.isAwaitExpression(declarator.init)) {
         if (t.isCallExpression(declarator.init.argument)) {
           const callExpr = declarator.init.argument;
@@ -259,5 +259,4 @@ const text = "hello";`;
       }
     });
   });
-
 });

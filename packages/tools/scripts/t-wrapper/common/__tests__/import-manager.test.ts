@@ -3,9 +3,7 @@
  * Import 관리 로직 테스트
  */
 
-import {
-  ensureNamedImport,
-} from "../manager/import-manager";
+import { ensureNamedImport } from "../manager/import-manager";
 import { parse } from "@babel/parser";
 import * as t from "@babel/types";
 
@@ -32,7 +30,7 @@ function Component() {}`;
       const result = ensureNamedImport(ast, "next-i18next", "useTranslation");
       expect(result).toBe(true);
       const imports = ast.program.body.filter(
-        (node) => node.type === "ImportDeclaration"
+        (node) => node.type === "ImportDeclaration",
       );
       expect(imports.length).toBe(1);
     });
@@ -47,14 +45,14 @@ function Component() {}`;
       const result = ensureNamedImport(ast, "next-i18next", "useTranslation");
       expect(result).toBe(true);
       const importNode = ast.program.body.find(
-        (node) => node.type === "ImportDeclaration"
+        (node) => node.type === "ImportDeclaration",
       ) as t.ImportDeclaration;
       expect(importNode).toBeDefined();
       const hasUseTranslation = importNode.specifiers.some(
         (spec) =>
           t.isImportSpecifier(spec) &&
           t.isIdentifier(spec.imported) &&
-          spec.imported.name === "useTranslation"
+          spec.imported.name === "useTranslation",
       );
       expect(hasUseTranslation).toBe(true);
     });
@@ -72,7 +70,7 @@ function Component() {}`;
       expect(
         t.isImportSpecifier(importNode.specifiers[0]) &&
           t.isIdentifier(importNode.specifiers[0].imported) &&
-          importNode.specifiers[0].imported.name === "getServerTranslation"
+          importNode.specifiers[0].imported.name === "getServerTranslation",
       ).toBe(true);
     });
   });

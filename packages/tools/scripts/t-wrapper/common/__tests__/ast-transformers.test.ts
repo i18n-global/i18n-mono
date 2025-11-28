@@ -15,7 +15,10 @@ describe("ast-transformers", () => {
   const text = "안녕하세요";
   return <div>{text}</div>;
 }`;
-      const ast = parse(code, { sourceType: "module", plugins: ["typescript", "jsx"] });
+      const ast = parse(code, {
+        sourceType: "module",
+        plugins: ["typescript", "jsx"],
+      });
       let wasModified = false;
       traverse(ast, {
         FunctionDeclaration(path) {
@@ -30,7 +33,10 @@ describe("ast-transformers", () => {
       const code = `function Component() {
   return <div>{\`안녕 \${name}\`}</div>;
 }`;
-      const ast = parse(code, { sourceType: "module", plugins: ["typescript", "jsx"] });
+      const ast = parse(code, {
+        sourceType: "module",
+        plugins: ["typescript", "jsx"],
+      });
       let wasModified = false;
       traverse(ast, {
         FunctionDeclaration(path) {
@@ -46,16 +52,19 @@ describe("ast-transformers", () => {
   const user = { name: "홍길동" };
   return <div>{\`안녕하세요 \${user.name}님\`}</div>;
 }`;
-      const ast = parse(code, { sourceType: "module", plugins: ["typescript", "jsx"] });
+      const ast = parse(code, {
+        sourceType: "module",
+        plugins: ["typescript", "jsx"],
+      });
       let wasModified = false;
-      
+
       traverse(ast, {
         FunctionDeclaration(path) {
           const result = transformFunctionBody(path, code);
           wasModified = result.wasModified;
         },
       });
-      
+
       expect(wasModified).toBe(true);
     });
 
@@ -64,16 +73,19 @@ describe("ast-transformers", () => {
   const user = { profile: { name: "홍길동" } };
   return <div>{\`안녕하세요 \${user.profile.name}님\`}</div>;
 }`;
-      const ast = parse(code, { sourceType: "module", plugins: ["typescript", "jsx"] });
+      const ast = parse(code, {
+        sourceType: "module",
+        plugins: ["typescript", "jsx"],
+      });
       let wasModified = false;
-      
+
       traverse(ast, {
         FunctionDeclaration(path) {
           const result = transformFunctionBody(path, code);
           wasModified = result.wasModified;
         },
       });
-      
+
       expect(wasModified).toBe(true);
     });
 
@@ -81,7 +93,10 @@ describe("ast-transformers", () => {
       const code = `function Component() {
   return <div>안녕하세요</div>;
 }`;
-      const ast = parse(code, { sourceType: "module", plugins: ["typescript", "jsx"] });
+      const ast = parse(code, {
+        sourceType: "module",
+        plugins: ["typescript", "jsx"],
+      });
       let wasModified = false;
       traverse(ast, {
         FunctionDeclaration(path) {
@@ -96,7 +111,10 @@ describe("ast-transformers", () => {
       const code = `function Component() {
   return <div>{t("key")}</div>;
 }`;
-      const ast = parse(code, { sourceType: "module", plugins: ["typescript", "jsx"] });
+      const ast = parse(code, {
+        sourceType: "module",
+        plugins: ["typescript", "jsx"],
+      });
       let wasModified = false;
       traverse(ast, {
         FunctionDeclaration(path) {
@@ -112,7 +130,10 @@ describe("ast-transformers", () => {
   // i18n-ignore
   return <div>Hello</div>;
 }`;
-      const ast = parse(code, { sourceType: "module", plugins: ["typescript", "jsx"] });
+      const ast = parse(code, {
+        sourceType: "module",
+        plugins: ["typescript", "jsx"],
+      });
       let wasModified = false;
       traverse(ast, {
         FunctionDeclaration(path) {
@@ -124,4 +145,3 @@ describe("ast-transformers", () => {
     });
   });
 });
-

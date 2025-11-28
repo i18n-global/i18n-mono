@@ -19,7 +19,11 @@ describe("component-transformer", () => {
 
       traverse(ast, {
         FunctionDeclaration: (path) => {
-          const result = tryTransformComponent(path, code, modifiedComponentPaths);
+          const result = tryTransformComponent(
+            path,
+            code,
+            modifiedComponentPaths,
+          );
           expect(result).toBe(true);
           expect(modifiedComponentPaths.length).toBe(1);
         },
@@ -47,7 +51,7 @@ describe("component-transformer", () => {
             const result = tryTransformComponent(
               path,
               code,
-              modifiedComponentPaths
+              modifiedComponentPaths,
             );
             expect(result).toBe(true);
             expect(modifiedComponentPaths.length).toBe(1);
@@ -70,7 +74,11 @@ describe("component-transformer", () => {
 
       traverse(ast, {
         FunctionDeclaration: (path) => {
-          const result = tryTransformComponent(path, code, modifiedComponentPaths);
+          const result = tryTransformComponent(
+            path,
+            code,
+            modifiedComponentPaths,
+          );
           expect(result).toBe(true);
           expect(modifiedComponentPaths.length).toBe(1);
         },
@@ -91,7 +99,11 @@ describe("component-transformer", () => {
 
       traverse(ast, {
         FunctionDeclaration: (path) => {
-          const result = tryTransformComponent(path, code, modifiedComponentPaths);
+          const result = tryTransformComponent(
+            path,
+            code,
+            modifiedComponentPaths,
+          );
           expect(result).toBe(false);
           expect(modifiedComponentPaths.length).toBe(0);
         },
@@ -113,7 +125,11 @@ describe("component-transformer", () => {
       traverse(ast, {
         FunctionExpression: (path) => {
           // FunctionExpression은 처리하지 않음
-          const result = tryTransformComponent(path, code, modifiedComponentPaths);
+          const result = tryTransformComponent(
+            path,
+            code,
+            modifiedComponentPaths,
+          );
           expect(result).toBe(false);
         },
       });
@@ -133,7 +149,11 @@ describe("component-transformer", () => {
 
       traverse(ast, {
         FunctionDeclaration: (path) => {
-          const result = tryTransformComponent(path, code, modifiedComponentPaths);
+          const result = tryTransformComponent(
+            path,
+            code,
+            modifiedComponentPaths,
+          );
           // 한국어가 없으면 transformFunctionBody가 wasModified: false를 반환
           expect(result).toBe(false);
           expect(modifiedComponentPaths.length).toBe(0);
@@ -142,4 +162,3 @@ describe("component-transformer", () => {
     });
   });
 });
-
