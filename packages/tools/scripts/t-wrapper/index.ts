@@ -2,7 +2,7 @@
 
 import { ScriptConfig } from "../common/default-config";
 import { wrapTranslations } from "./wrapper";
-import { CLI_OPTIONS, CLI_HELP } from "./babel/utils/constants";
+import { CLI_OPTIONS, CLI_HELP } from "./common/utils/constants";
 
 // CLI 실행 부분
 if (require.main === module) {
@@ -19,7 +19,6 @@ if (require.main === module) {
       case CLI_OPTIONS.HELP_SHORT:
         console.log(`
 ${CLI_HELP.USAGE}
-
 ${CLI_HELP.OPTIONS}
 
 ${CLI_HELP.EXAMPLES}

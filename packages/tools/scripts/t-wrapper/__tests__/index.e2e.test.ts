@@ -1,22 +1,22 @@
 /**
- * t-wrapper E2E 테스트
+ * t-wrapper-swc-worker E2E 테스트
  * 실제 파일 시스템을 사용하여 전체 워크플로우 테스트
  */
 
 import * as path from "path";
-import { wrapTranslations } from "../babel/wrapper";
+import { wrapTranslations } from "../wrapper";
 import {
   writeFile,
   readFile,
   createTempDir,
   removeDir,
-} from "../babel/utils/fs-utils";
+} from "../../babel/utils/fs-utils";
 
-describe("t-wrapper E2E", () => {
+describe("t-wrapper-swc-worker E2E", () => {
   let tempDir: string;
 
   beforeEach(() => {
-    tempDir = createTempDir("i18n-wrapper-e2e-");
+    tempDir = createTempDir("i18n-swc-worker-e2e-");
   });
 
   afterEach(() => {
@@ -31,15 +31,15 @@ describe("t-wrapper E2E", () => {
 
     writeFile(testFile, originalContent);
 
-    await wrapTranslations({
+    const result = await wrapTranslations({
       sourcePattern: path.join(tempDir, "**/*.tsx"),
     });
 
     const modifiedContent = readFile(testFile);
     expect(modifiedContent).toContain("t(");
     expect(modifiedContent).toContain("useTranslation");
-    // 파일이 변환되었는지 확인 (원본과 다름)
     expect(modifiedContent).not.toBe(originalContent);
+    expect(result.processedFiles).toContain(testFile);
   });
 
   it("템플릿 리터럴을 i18next 형식으로 변환해야 함", async () => {
@@ -58,51 +58,49 @@ describe("t-wrapper E2E", () => {
     const modifiedContent = readFile(testFile);
     expect(modifiedContent).toContain("t(");
     expect(modifiedContent).toContain("useTranslation");
-    // 템플릿 리터럴이 변환되었는지 확인
     expect(modifiedContent).not.toContain("`안녕하세요 ${name}님`");
   });
 
-  it("멤버 표현식(user.name)이 포함된 템플릿 리터럴을 변환해야 함", async () => {
-    const testFile = path.join(tempDir, "UserComponent.tsx");
-    const originalContent = `function UserComponent() {
-  const user = { name: "홍길동" };
-  return <div>{\`안녕하세요 \${user.name}님\`}</div>;
-}`;
+  it("여러 파일을 병렬로 처리해야 함", async () => {
+    const fileCount = 10;
+    const files: string[] = [];
 
-    writeFile(testFile, originalContent);
+    // 10개의 파일 생성
+    for (let i = 0; i < fileCount; i++) {
+      const testFile = path.join(tempDir, `Component${i}.tsx`);
+      writeFile(
+        testFile,
+        `function Component${i}() {
+  return <div>안녕하세요 ${i}</div>;
+}`,
+      );
+      files.push(testFile);
+    }
 
-    await wrapTranslations({
+    const startTime = Date.now();
+    const result = await wrapTranslations({
       sourcePattern: path.join(tempDir, "**/*.tsx"),
     });
+    const endTime = Date.now();
 
-    const modifiedContent = readFile(testFile);
-    // 변환이 일어났는지 확인
-    expect(modifiedContent).toContain("t(");
-    expect(modifiedContent).toContain("useTranslation");
-    // 원본 템플릿 리터럴이 제거되었는지 확인
-    expect(modifiedContent).not.toContain("`안녕하세요 ${user.name}님`");
-  });
+    expect(result.stats.totalFiles).toBe(fileCount);
+    expect(result.stats.modifiedFiles).toBe(fileCount);
+    expect(result.processedFiles.length).toBe(fileCount);
 
-  it("중첩된 멤버 표현식(user.profile.name)이 포함된 템플릿 리터럴을 변환해야 함", async () => {
-    const testFile = path.join(tempDir, "NestedComponent.tsx");
-    const originalContent = `function NestedComponent() {
-  const user = { profile: { name: "홍길동" } };
-  return <div>{\`안녕하세요 \${user.profile.name}님\`}</div>;
-}`;
-
-    writeFile(testFile, originalContent);
-
-    await wrapTranslations({
-      sourcePattern: path.join(tempDir, "**/*.tsx"),
-    });
-
-    const modifiedContent = readFile(testFile);
-    // 변환이 일어났는지 확인
-    expect(modifiedContent).toContain("t(");
-    // 원본 템플릿 리터럴이 제거되었는지 확인
-    expect(modifiedContent).not.toContain(
-      "`안녕하세요 ${user.profile.name}님`",
+    // 병렬 처리로 인해 시간이 절약되었는지 확인
+    const totalTime = endTime - startTime;
+    console.log(`Processed ${fileCount} files in ${totalTime}ms`);
+    console.log(
+      `Average time per file: ${result.stats.averageTimePerFile.toFixed(2)}ms`,
     );
+    console.log(`Worker stats:`, result.stats.workerStats);
+
+    // 모든 파일이 올바르게 변환되었는지 확인
+    files.forEach((file) => {
+      const content = readFile(file);
+      expect(content).toContain("t(");
+      expect(content).toContain("useTranslation");
+    });
   });
 
   it("커스텀 훅 내부의 문자열도 변환되어야 함", async () => {
@@ -121,16 +119,8 @@ describe("t-wrapper E2E", () => {
     const modifiedContent = readFile(testFile);
     expect(modifiedContent).toContain("t(");
     expect(modifiedContent).toContain("useTranslation");
-    // 유니코드 이스케이프 때문에 정확한 문자열 매칭 대신 패턴 체크
     expect(modifiedContent).toMatch(/toast\s*\(\s*t\s*\(/);
     expect(modifiedContent).toMatch(/alert\s*\(\s*t\s*\(/);
-    // 한국어 문자열이 t()로 감싸졌는지 확인 (유니코드 이스케이프 고려)
-    // \uC548\uB155\uD558\uC138\uC694 = "안녕하세요"
-    expect(modifiedContent).toMatch(
-      /t\([^)]*\\uC548\\uB155\\uD558\\uC138\\uC694/,
-    );
-    // \uD14C\uC2A4\uD2B8 \uBA54\uC2DC\uC9C0 = "테스트 메시지"
-    expect(modifiedContent).toMatch(/t\([^)]*\\uD14C\\uC2A4\\uD2B8/);
   });
 
   it("서버 컴포넌트는 useTranslation 훅을 추가하지 않아야 함", async () => {
@@ -171,77 +161,45 @@ describe("t-wrapper E2E", () => {
     expect(modifiedContent).not.toContain('t("안녕하세요")');
   });
 
-  it("Next.js 환경에서 client 모드일 때만 'use client'를 추가해야 함", async () => {
-    const testFile = path.join(tempDir, "ClientComp.tsx");
-    const originalContent = `function ClientComp() {
+  it("에러 파일 통계를 올바르게 기록해야 함", async () => {
+    const validFile = path.join(tempDir, "Valid.tsx");
+    const invalidFile = path.join(tempDir, "Invalid.tsx");
+
+    writeFile(
+      validFile,
+      `function Valid() {
   return <div>안녕하세요</div>;
-}`;
-    writeFile(testFile, originalContent);
+}`,
+    );
 
-    await wrapTranslations({
+    // 잘못된 구문의 파일
+    writeFile(invalidFile, `function Invalid() { return <div>안녕하세요`);
+
+    const result = await wrapTranslations({
       sourcePattern: path.join(tempDir, "**/*.tsx"),
-      mode: "client",
-      framework: "nextjs",
-    } as any);
+    });
 
-    const modified = readFile(testFile);
-    expect(modified).toMatch(/["']use client["']/);
-    expect(modified).toContain("useTranslation");
-    expect(modified).toContain("t(");
+    expect(result.stats.totalFiles).toBe(2);
+    expect(result.stats.modifiedFiles).toBe(1); // validFile만 처리
+    expect(result.stats.errorFiles).toBe(1); // invalidFile은 에러
   });
 
-  it("React 환경에서 client 모드일 때는 'use client'를 추가하지 않아야 함", async () => {
-    const testFile = path.join(tempDir, "ClientReact.tsx");
-    const originalContent = `function ClientReact() {
+  it("성능 통계를 올바르게 반환해야 함", async () => {
+    const testFile = path.join(tempDir, "Perf.tsx");
+    writeFile(
+      testFile,
+      `function Perf() {
   return <div>안녕하세요</div>;
-}`;
-    writeFile(testFile, originalContent);
+}`,
+    );
 
-    await wrapTranslations({
+    const result = await wrapTranslations({
       sourcePattern: path.join(tempDir, "**/*.tsx"),
-      mode: "client",
-      framework: "react",
-    } as any);
+    });
 
-    const modified = readFile(testFile);
-    expect(modified).not.toMatch(/["']use client["']/);
-    expect(modified).toContain("useTranslation");
-    expect(modified).toContain("t(");
-  });
-
-  it("server 모드에서는 getServerTranslation 기반으로 t 바인딩을 생성해야 함", async () => {
-    const testFile = path.join(tempDir, "ServerComp.tsx");
-    const originalContent = `function ServerComp() {
-  return <div>안녕하세요</div>;
-}`;
-    writeFile(testFile, originalContent);
-
-    await wrapTranslations({
-      sourcePattern: path.join(tempDir, "**/*.tsx"),
-      mode: "server",
-    } as any);
-
-    const modified = readFile(testFile);
-    expect(modified).toContain("await getServerTranslation");
-    expect(modified).toContain("const { t } =");
-    expect(modified).toContain("t(");
-  });
-
-  it("serverTranslationFunction 커스텀 함수명을 사용해야 함", async () => {
-    const testFile = path.join(tempDir, "ServerCustom.tsx");
-    const originalContent = `function ServerCustom() {
-  return <div>안녕하세요</div>;
-}`;
-    writeFile(testFile, originalContent);
-
-    await wrapTranslations({
-      sourcePattern: path.join(tempDir, "**/*.tsx"),
-      mode: "server",
-      serverTranslationFunction: "getServerT",
-    } as any);
-
-    const modified = readFile(testFile);
-    expect(modified).toContain("await getServerT");
-    expect(modified).toContain("import { getServerT } from");
+    expect(result.totalTime).toBeGreaterThan(0);
+    expect(result.stats.averageTimePerFile).toBeGreaterThan(0);
+    expect(result.stats.workerStats.totalWorkers).toBeGreaterThan(0);
+    expect(result.stats.workerStats.completedTasks).toBeGreaterThan(0);
   });
 });

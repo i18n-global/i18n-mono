@@ -1,5 +1,5 @@
 import { glob } from "glob";
-import { readFile } from "./utils/fs-utils";
+import { readFile } from "../common/utils/fs-utils";
 import traverse, { NodePath } from "@babel/traverse";
 import * as t from "@babel/types";
 import {
@@ -7,11 +7,11 @@ import {
   SCRIPT_CONFIG_DEFAULTS,
 } from "../../common/default-config";
 import { parseFile } from "../../common/ast/parser-utils";
-import { tryTransformComponent } from "./ast/component-transformer";
+import { tryTransformComponent } from "../common/ast/component-transformer";
 import {
   applyTranslationsToAST,
   writeASTToFile,
-} from "./applier/translation-applier";
+} from "../common/applier/translation-applier";
 
 export async function wrapTranslations(
   config: Partial<ScriptConfig> = {},

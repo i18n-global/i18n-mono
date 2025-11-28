@@ -9,7 +9,7 @@ import {
   readFile,
   createTempDir,
   removeDir,
-} from "../babel/utils/fs-utils";
+} from "../common/utils/fs-utils";
 
 describe("translation-wrapper", () => {
   let tempDir: string;
