@@ -4,8 +4,13 @@
  */
 
 import * as path from "path";
-import { wrapTranslations } from "../wrapper";
-import { writeFile, readFile, createTempDir, removeDir } from "../utils/fs-utils";
+import { wrapTranslations } from "../babel/wrapper";
+import {
+  writeFile,
+  readFile,
+  createTempDir,
+  removeDir,
+} from "../babel/utils/fs-utils";
 
 describe("t-wrapper E2E", () => {
   let tempDir: string;
@@ -95,7 +100,9 @@ describe("t-wrapper E2E", () => {
     // 변환이 일어났는지 확인
     expect(modifiedContent).toContain("t(");
     // 원본 템플릿 리터럴이 제거되었는지 확인
-    expect(modifiedContent).not.toContain("`안녕하세요 ${user.profile.name}님`");
+    expect(modifiedContent).not.toContain(
+      "`안녕하세요 ${user.profile.name}님`",
+    );
   });
 
   it("커스텀 훅 내부의 문자열도 변환되어야 함", async () => {
@@ -120,7 +127,7 @@ describe("t-wrapper E2E", () => {
     // 한국어 문자열이 t()로 감싸졌는지 확인 (유니코드 이스케이프 고려)
     // \uC548\uB155\uD558\uC138\uC694 = "안녕하세요"
     expect(modifiedContent).toMatch(
-      /t\([^)]*\\uC548\\uB155\\uD558\\uC138\\uC694/
+      /t\([^)]*\\uC548\\uB155\\uD558\\uC138\\uC694/,
     );
     // \uD14C\uC2A4\uD2B8 \uBA54\uC2DC\uC9C0 = "테스트 메시지"
     expect(modifiedContent).toMatch(/t\([^)]*\\uD14C\\uC2A4\\uD2B8/);

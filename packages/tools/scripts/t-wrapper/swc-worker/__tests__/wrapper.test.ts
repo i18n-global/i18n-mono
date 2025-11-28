@@ -9,7 +9,7 @@ import {
   readFile,
   createTempDir,
   removeDir,
-} from "../../t-wrapper/utils/fs-utils";
+} from "../../babel/utils/fs-utils";
 
 describe("t-wrapper-swc-worker", () => {
   let tempDir: string;

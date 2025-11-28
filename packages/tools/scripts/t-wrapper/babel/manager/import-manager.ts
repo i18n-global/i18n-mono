@@ -10,7 +10,7 @@ import { STRING_CONSTANTS } from "../utils/constants";
 export function ensureNamedImport(
   ast: t.File,
   source: string,
-  importedName: string
+  importedName: string,
 ): boolean {
   let hasSource = false;
   let hasSpecifier = false;
@@ -32,8 +32,8 @@ export function ensureNamedImport(
         node.specifiers.push(
           t.importSpecifier(
             t.identifier(importedName),
-            t.identifier(importedName)
-          )
+            t.identifier(importedName),
+          ),
         );
         hasSpecifier = true;
       }
@@ -46,10 +46,10 @@ export function ensureNamedImport(
       [
         t.importSpecifier(
           t.identifier(importedName),
-          t.identifier(importedName)
+          t.identifier(importedName),
         ),
       ],
-      t.stringLiteral(source)
+      t.stringLiteral(source),
     );
     ast.program.body.unshift(decl);
     hasSpecifier = true;
@@ -62,11 +62,11 @@ export function ensureNamedImport(
 export function ensureUseClientDirective(ast: t.File): boolean {
   // 이미 존재하면 패스
   const hasDirective = (ast.program.directives || []).some(
-    (d) => d.value.value === STRING_CONSTANTS.USE_CLIENT_DIRECTIVE
+    (d) => d.value.value === STRING_CONSTANTS.USE_CLIENT_DIRECTIVE,
   );
   if (!hasDirective) {
     const dir = t.directive(
-      t.directiveLiteral(STRING_CONSTANTS.USE_CLIENT_DIRECTIVE)
+      t.directiveLiteral(STRING_CONSTANTS.USE_CLIENT_DIRECTIVE),
     );
     ast.program.directives = ast.program.directives || [];
     ast.program.directives.unshift(dir);

@@ -8,9 +8,9 @@
  * - 멀티코어 CPU 활용
  */
 
-import { ScriptConfig } from "../common/default-config";
+import { ScriptConfig } from "../../common/default-config";
 import { wrapTranslations } from "./wrapper";
-import { CLI_OPTIONS, CLI_HELP } from "../t-wrapper/utils/constants";
+import { CLI_OPTIONS, CLI_HELP } from "../babel/utils/constants";
 
 // CLI 실행 부분
 if (require.main === module) {

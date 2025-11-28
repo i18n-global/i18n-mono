@@ -35,4 +35,3 @@ export function removeDir(dirPath: string): void {
     fs.rmSync(dirPath, { recursive: true, force: true });
   }
 }
-

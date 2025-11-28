@@ -11,11 +11,11 @@ import traverse, { NodePath } from "@babel/traverse";
 import * as t from "@babel/types";
 import generate from "@babel/generator";
 import { WorkerTask, WorkerResult } from "./types";
-import { tryTransformComponent } from "../t-wrapper/ast/component-transformer";
+import { tryTransformComponent } from "../babel/ast/component-transformer";
 import {
   applyTranslationsToAST,
   writeASTToFile,
-} from "../t-wrapper/applier/translation-applier";
+} from "../babel/applier/translation-applier";
 
 if (!parentPort) {
   throw new Error("This file must be run as a Worker Thread");

@@ -10,7 +10,7 @@ import { transformFunctionBody } from "./ast-transformers";
 export function tryTransformComponent(
   path: NodePath<t.Function>,
   code: string,
-  modifiedComponentPaths: NodePath<t.Function>[]
+  modifiedComponentPaths: NodePath<t.Function>[],
 ): boolean {
   let functionName: string | null | undefined;
 
@@ -39,4 +39,3 @@ export function tryTransformComponent(
   }
   return false;
 }
-

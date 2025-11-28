@@ -2,7 +2,7 @@
  * Worker Thread 통신용 타입 정의
  */
 
-import { ScriptConfig } from "../common/default-config";
+import { ScriptConfig } from "../../common/default-config";
 
 /**
  * Worker로 전송할 작업 메시지

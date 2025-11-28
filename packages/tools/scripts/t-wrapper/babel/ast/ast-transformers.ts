@@ -17,7 +17,7 @@ export interface TransformResult {
  */
 export function transformFunctionBody(
   path: NodePath<t.Function>,
-  sourceCode: string
+  sourceCode: string,
 ): TransformResult {
   let wasModified = false;
 
@@ -41,7 +41,7 @@ export function transformFunctionBody(
         wasModified = true;
         const replacement = t.callExpression(
           t.identifier(STRING_CONSTANTS.TRANSLATION_FUNCTION),
-          [t.stringLiteral(subPath.node.value)]
+          [t.stringLiteral(subPath.node.value)],
         );
 
         if (t.isJSXAttribute(subPath.parent)) {
@@ -72,7 +72,7 @@ export function transformFunctionBody(
 
       // 템플릿 리터럴의 모든 부분에 하나라도 한국어가 있는지 확인
       const hasKorean = subPath.node.quasis.some((quasi) =>
-        REGEX_PATTERNS.KOREAN_TEXT.test(quasi.value.raw)
+        REGEX_PATTERNS.KOREAN_TEXT.test(quasi.value.raw),
       );
 
       if (!hasKorean) {
@@ -91,7 +91,7 @@ export function transformFunctionBody(
       if (expressions.length === 0) {
         const replacement = t.callExpression(
           t.identifier(STRING_CONSTANTS.TRANSLATION_FUNCTION),
-          [t.stringLiteral(quasis[0].value.raw)]
+          [t.stringLiteral(quasis[0].value.raw)],
         );
         subPath.replaceWith(replacement);
         return;
@@ -136,7 +136,7 @@ export function transformFunctionBody(
 
           // interpolation 객체에 추가
           interpolationVars.push(
-            t.objectProperty(t.identifier(varName), expr as t.Expression)
+            t.objectProperty(t.identifier(varName), expr as t.Expression),
           );
         }
       });
@@ -153,7 +153,7 @@ export function transformFunctionBody(
 
       const replacement = t.callExpression(
         t.identifier(STRING_CONSTANTS.TRANSLATION_FUNCTION),
-        args
+        args,
       );
       subPath.replaceWith(replacement);
     },
@@ -178,8 +178,8 @@ export function transformFunctionBody(
         const replacement = t.jsxExpressionContainer(
           t.callExpression(
             t.identifier(STRING_CONSTANTS.TRANSLATION_FUNCTION),
-            [t.stringLiteral(text)]
-          )
+            [t.stringLiteral(text)],
+          ),
         );
 
         subPath.replaceWith(replacement);

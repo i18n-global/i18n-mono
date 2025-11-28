@@ -1,75 +1,56 @@
+/**
+ * Adaptive Translation Wrapper
+ *
+ * 파일 개수에 따라 자동으로 최적 버전 선택:
+ * - < 3000 파일: Babel (단일 스레드)
+ * - >= 3000 파일: SWC + Workers (병렬 처리)
+ */
+
 import { glob } from "glob";
-import { readFile } from "./utils/fs-utils";
-import traverse, { NodePath } from "@babel/traverse";
-import * as t from "@babel/types";
 import { ScriptConfig, SCRIPT_CONFIG_DEFAULTS } from "../common/default-config";
-import { parseFile } from "../common/ast/parser-utils";
-import { tryTransformComponent } from "./ast/component-transformer";
-import {
-  applyTranslationsToAST,
-  writeASTToFile,
-} from "./applier/translation-applier";
+import { wrapTranslations as wrapWithBabel } from "./babel/wrapper";
+import { wrapTranslations as wrapWithWorkers } from "./swc-worker/wrapper";
+
+const FILE_COUNT_THRESHOLD = 3000;
 
 export async function wrapTranslations(
-  config: Partial<ScriptConfig> = {}
+  config: Partial<ScriptConfig> = {},
 ): Promise<{
   processedFiles: string[];
   totalTime: number;
+  stats?: any;
+  strategy?: "babel" | "swc-worker";
 }> {
   const fullConfig = {
     ...SCRIPT_CONFIG_DEFAULTS,
     ...config,
   } as Required<ScriptConfig>;
 
-  const startTime = Date.now();
+  // 1. 파일 개수 확인
   const filePaths = await glob(fullConfig.sourcePattern);
-  const processedFiles: string[] = [];
+  const fileCount = filePaths.length;
 
-  for (const filePath of filePaths) {
-    let isFileModified = false;
-    const code = readFile(filePath);
+  // 2. 전략 선택
+  const useWorkers = fileCount >= FILE_COUNT_THRESHOLD;
+  const strategy = useWorkers ? "swc-worker" : "babel";
 
-    try {
-      const ast = parseFile(code, {
-        sourceType: "module",
-        tsx: true,
-        decorators: true,
-      });
+  console.log(`📁 Found ${fileCount} files`);
+  console.log(
+    `🎯 Strategy: ${strategy} ${useWorkers ? "(parallel processing)" : "(single-threaded)"}`,
+  );
 
-      const modifiedComponentPaths: NodePath<t.Function>[] = [];
-
-      traverse(ast, {
-        FunctionDeclaration: (path) => {
-          if (tryTransformComponent(path, code, modifiedComponentPaths)) {
-            isFileModified = true;
-          }
-        },
-        ArrowFunctionExpression: (path) => {
-          if (
-            t.isVariableDeclarator(path.parent) &&
-            t.isIdentifier(path.parent.id)
-          ) {
-            if (tryTransformComponent(path, code, modifiedComponentPaths)) {
-              isFileModified = true;
-            }
-          }
-        },
-      });
-
-      if (isFileModified) {
-        applyTranslationsToAST(ast, modifiedComponentPaths, fullConfig);
-        writeASTToFile(ast, filePath, fullConfig);
-        processedFiles.push(filePath);
-      }
-    } catch (error) {
-      // 에러 발생 시 조용히 스킵
-    }
+  // 3. 선택된 전략으로 실행
+  if (useWorkers) {
+    const result = await wrapWithWorkers(config);
+    return {
+      ...result,
+      strategy: "swc-worker",
+    };
+  } else {
+    const result = await wrapWithBabel(config);
+    return {
+      ...result,
+      strategy: "babel",
+    };
   }
-
-  const totalTime = Date.now() - startTime;
-
-  return {
-    processedFiles,
-    totalTime,
-  };
 }

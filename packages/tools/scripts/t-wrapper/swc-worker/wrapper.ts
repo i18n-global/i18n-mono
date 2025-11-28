@@ -6,7 +6,10 @@
 
 import { glob } from "glob";
 import { readFileSync } from "fs";
-import { ScriptConfig, SCRIPT_CONFIG_DEFAULTS } from "../common/default-config";
+import {
+  ScriptConfig,
+  SCRIPT_CONFIG_DEFAULTS,
+} from "../../common/default-config";
 import { WorkerPool } from "./worker-pool";
 import { WorkerTask, WorkerResult } from "./types";
 

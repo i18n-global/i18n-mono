@@ -2,9 +2,14 @@
  * translation-wrapper 테스트
  */
 
-import { wrapTranslations } from "../wrapper";
+import { wrapTranslations } from "../babel/wrapper";
 import * as path from "path";
-import { writeFile, readFile, createTempDir, removeDir } from "../utils/fs-utils";
+import {
+  writeFile,
+  readFile,
+  createTempDir,
+  removeDir,
+} from "../babel/utils/fs-utils";
 
 describe("translation-wrapper", () => {
   let tempDir: string;
@@ -24,7 +29,7 @@ describe("translation-wrapper", () => {
         testFile,
         `function Component() {
   return <div>안녕하세요</div>;
-}`
+}`,
       );
 
       const result = await wrapTranslations({
@@ -39,7 +44,7 @@ describe("translation-wrapper", () => {
         testFile,
         `function ClientComp() {
   return <div>안녕하세요</div>;
-}`
+}`,
       );
 
       await wrapTranslations({
@@ -60,7 +65,7 @@ describe("translation-wrapper", () => {
         testFile,
         `function ClientComp() {
   return <div>안녕하세요</div>;
-}`
+}`,
       );
 
       await wrapTranslations({
@@ -81,7 +86,7 @@ describe("translation-wrapper", () => {
         testFile,
         `function ServerComp() {
   return <div>안녕하세요</div>;
-}`
+}`,
       );
 
       await wrapTranslations({

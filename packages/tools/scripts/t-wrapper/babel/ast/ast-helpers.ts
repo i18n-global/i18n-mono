@@ -19,7 +19,7 @@ export function hasIgnoreComment(path: NodePath, sourceCode?: string): boolean {
     const hasIgnore = node.leadingComments.some(
       (comment) =>
         comment.value.trim() === STRING_CONSTANTS.I18N_IGNORE ||
-        comment.value.trim().startsWith(STRING_CONSTANTS.I18N_IGNORE)
+        comment.value.trim().startsWith(STRING_CONSTANTS.I18N_IGNORE),
     );
     if (hasIgnore) return true;
   }
@@ -29,7 +29,7 @@ export function hasIgnoreComment(path: NodePath, sourceCode?: string): boolean {
     const hasIgnore = path.parentPath.node.leadingComments.some(
       (comment) =>
         comment.value.trim() === STRING_CONSTANTS.I18N_IGNORE ||
-        comment.value.trim().startsWith(STRING_CONSTANTS.I18N_IGNORE)
+        comment.value.trim().startsWith(STRING_CONSTANTS.I18N_IGNORE),
     );
     if (hasIgnore) return true;
   }
@@ -62,7 +62,7 @@ export function hasIgnoreComment(path: NodePath, sourceCode?: string): boolean {
  */
 export function shouldSkipPath(
   path: NodePath<t.StringLiteral>,
-  hasIgnoreCommentFn: (path: NodePath, sourceCode?: string) => boolean
+  hasIgnoreCommentFn: (path: NodePath, sourceCode?: string) => boolean,
 ): boolean {
   // i18n-ignore 주석이 있는 경우 스킵
   if (hasIgnoreCommentFn(path)) {
@@ -117,7 +117,7 @@ export function isReactCustomHook(name: string): boolean {
 /** 함수 본문(body)에 이미 번역 함수 호출이 있는지 확인 */
 export function hasTranslationFunctionCall(
   body: NodePath<t.BlockStatement | t.Expression>,
-  functionName: string
+  functionName: string,
 ): boolean {
   if (!body.isBlockStatement()) {
     return false;
@@ -146,14 +146,14 @@ export function hasTranslationFunctionCall(
  */
 export function createTranslationBinding(
   mode: "client" | "server",
-  serverFnName?: string
+  serverFnName?: string,
 ): t.VariableDeclaration {
   const pattern = t.objectPattern([
     t.objectProperty(
       t.identifier(STRING_CONSTANTS.TRANSLATION_FUNCTION),
       t.identifier(STRING_CONSTANTS.TRANSLATION_FUNCTION),
       false,
-      true
+      true,
     ),
   ]);
 
@@ -162,13 +162,13 @@ export function createTranslationBinding(
     // 서버 모드: await getServerTranslation()
     const fnName = serverFnName || STRING_CONSTANTS.GET_SERVER_TRANSLATION;
     callExpression = t.awaitExpression(
-      t.callExpression(t.identifier(fnName), [])
+      t.callExpression(t.identifier(fnName), []),
     );
   } else {
     // 클라이언트 모드: useTranslation()
     callExpression = t.callExpression(
       t.identifier(STRING_CONSTANTS.USE_TRANSLATION),
-      []
+      [],
     );
   }
 

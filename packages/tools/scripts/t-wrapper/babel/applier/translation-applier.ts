@@ -1,12 +1,15 @@
 import { NodePath } from "@babel/traverse";
 import * as t from "@babel/types";
-import { ScriptConfig } from "../../common/default-config";
-import { generateCode } from "../../common/ast/parser-utils";
+import { ScriptConfig } from "../../../common/default-config";
+import { generateCode } from "../../../common/ast/parser-utils";
 import {
   hasTranslationFunctionCall,
   createTranslationBinding,
 } from "../ast/ast-helpers";
-import { ensureNamedImport, ensureUseClientDirective } from "../manager/import-manager";
+import {
+  ensureNamedImport,
+  ensureUseClientDirective,
+} from "../manager/import-manager";
 import { STRING_CONSTANTS } from "../utils/constants";
 import { writeFile } from "../utils/fs-utils";
 
@@ -17,7 +20,7 @@ import { writeFile } from "../utils/fs-utils";
 export function applyTranslationsToAST(
   ast: t.File,
   modifiedComponentPaths: NodePath<t.Function>[],
-  config: Required<ScriptConfig>
+  config: Required<ScriptConfig>,
 ): void {
   const isServerMode = config.mode === "server";
   const isClientMode = config.mode === "client";
@@ -50,7 +53,7 @@ export function applyTranslationsToAST(
     }
     const decl = createTranslationBinding(
       isServerMode ? "server" : "client",
-      isServerMode ? config.serverTranslationFunction : undefined
+      isServerMode ? config.serverTranslationFunction : undefined,
     );
 
     // body 최상단에 추가
@@ -83,7 +86,7 @@ export function applyTranslationsToAST(
 export function writeASTToFile(
   ast: t.File,
   filePath: string,
-  config: Required<ScriptConfig>
+  config: Required<ScriptConfig>,
 ): void {
   const output = generateCode(ast, {
     retainLines: true,

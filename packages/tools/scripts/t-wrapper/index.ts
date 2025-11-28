@@ -2,7 +2,7 @@
 
 import { ScriptConfig } from "../common/default-config";
 import { wrapTranslations } from "./wrapper";
-import { CLI_OPTIONS, CLI_HELP } from "./utils/constants";
+import { CLI_OPTIONS, CLI_HELP } from "./babel/utils/constants";
 
 // CLI 실행 부분
 if (require.main === module) {
@@ -33,7 +33,7 @@ ${CLI_HELP.EXAMPLES}
     .then((result) => {
       const timeInSeconds = (result.totalTime / 1000).toFixed(2);
       console.log(
-        `✅ Processed ${result.processedFiles.length} file(s) in ${timeInSeconds}s`
+        `✅ Processed ${result.processedFiles.length} file(s) in ${timeInSeconds}s`,
       );
     })
     .catch(console.error);
