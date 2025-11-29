@@ -1,4 +1,4 @@
-import ShowcaseSubmitPage from "@/pages/showcase-submit";
+import ShowcaseSubmitPage from "@/page/showcase-submit";
 
 export default function Page() {
   return <ShowcaseSubmitPage />;

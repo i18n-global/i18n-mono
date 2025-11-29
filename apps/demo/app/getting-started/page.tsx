@@ -1,4 +1,4 @@
-import GettingStartedPage from "@/pages/getting-started";
+import GettingStartedPage from "@/page/getting-started";
 
 export default function Page() {
   return <GettingStartedPage />;

@@ -2,10 +2,10 @@
   "languages": ["en", "ko"],
   "defaultLanguage": "en",
   "localesDir": "./locales",
-  "sourcePattern": "{app,pages,widgets,features,entities,shared}/**/*.{js,jsx,ts,tsx}",
+  "sourcePattern": "{app,page,widgets,features,entities,shared}/**/*.{js,jsx,ts,tsx}",
   "translationImportSource": "i18nexus",
   "fallbackNamespace": "common",
-  "namespaceLocation": "pages",
+  "namespaceLocation": "page",
   "googleSheets": {
     "spreadsheetId": "1hF4-m_gwpYmfkHsRknfjyMhnbUvw5IuOhYAqy7VATxE",
     "credentialsPath": "./credentials.json",

@@ -1,4 +1,4 @@
-import AdminLoginPage from "@/pages/admin-login";
+import AdminLoginPage from "@/page/admin-login";
 
 export default function Page() {
   return <AdminLoginPage />;

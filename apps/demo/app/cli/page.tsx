@@ -1,4 +1,4 @@
-import CLIPage from "@/pages/cli";
+import CLIPage from "@/page/cli";
 
 export default function Page() {
   return <CLIPage />;
