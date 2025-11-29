@@ -1,18 +1,23 @@
 {
   "$schema": "https://turbo.build/schema.json",
+  "globalEnv": ["TURBO_TOKEN", "TURBO_TEAM"],
+  "remoteCache": {
+    "signature": true
+  },
   "tasks": {
     "build": {
       "dependsOn": ["^build"],
-      "outputs": ["dist/**", ".next/**", "!.next/cache/**"]
+      "outputs": ["dist/**", ".next/**", "!.next/cache/**"],
+      "cache": true
     },
     "test": {
       "dependsOn": ["build"],
-      "outputs": [],
-      "cache": false
+      "outputs": ["coverage/**"],
+      "cache": true
     },
     "lint": {
       "outputs": [],
-      "cache": false
+      "cache": true
     },
     "dev": {
       "cache": false,
@@ -23,7 +28,8 @@
     },
     "publish": {
       "dependsOn": ["build", "test"],
-      "outputs": []
+      "outputs": [],
+      "cache": false
     }
   }
 }
