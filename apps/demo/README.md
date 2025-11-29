@@ -1,370 +1,469 @@
-# i18nexus Demo
+# 🚀 i18nexus Demo Application
 
-A complete demonstration of the i18nexus React i18n toolkit with **type-safe** language management and modern design.
+> **Next.js 14 demo application showcasing all i18nexus features**
 
-## ✨ New Features
+i18nexus의 모든 기능을 실제로 확인할 수 있는 완전한 데모 애플리케이션입니다. Next.js 14 App Router, Server Components, Client Components, Firebase 통합 등 실제 프로덕션 환경에서 사용할 수 있는 모든 패턴을 보여줍니다.
 
-### 📱 Mobile-First Responsive Design
+🌐 **Live Demo**: [https://i18nexus-demo.vercel.app](https://i18nexus-demo.vercel.app)
 
-Comprehensive mobile optimization across all pages:
+## ✨ 데모 기능
 
-- **Tailwind responsive classes** - sm:, md:, lg: breakpoints
-- **Adaptive layouts** - Flexbox/Grid that reflows on mobile
-- **Touch-optimized UI** - Larger tap targets, better spacing
-- **Mobile navigation** - Slide-in sidebar with backdrop overlay
-- **Optimized typography** - Scales from mobile (text-sm) to desktop (text-xl)
-- **Performance** - Minimal layout shift, fast mobile rendering
+### 🔒 타입 안전 번역
 
-All pages work seamlessly from 320px (mobile) to 4K displays.
+- TypeScript 타입 자동 완성
+- 번역 키 컴파일 타임 검증
+- 매개변수 타입 체크
 
-### 🎯 Type-Safe Language Management
+### ⚡ Next.js 14 통합
 
-This demo showcases the new TypeScript configuration feature:
+- App Router 지원
+- Server Components에서의 번역
+- Client Components에서의 번역
+- Server Actions 지원
 
-- **Type-safe language codes** with IDE autocomplete
-- **Compile-time validation** for language switching
-- **Zero runtime errors** from invalid language codes
-- **Self-documenting code** with explicit types
+### 🌍 다국어 지원
 
-```typescript
-// i18nexus.config.ts
-export const config = defineConfig({
-  languages: ["en", "ko"] as const, // Type inference!
-  defaultLanguage: "ko",
-  translationImportSource: "i18nexus",
-  // ...
-});
+- 한국어 (ko)
+- English (en)
+- 日本語 (ja)
+- 中文 (zh)
 
-export type AppLanguages = (typeof config.languages)[number];
+### 🎨 UI/UX
+
+- 모던하고 반응형 디자인
+- 다크 모드 지원
+- 부드러운 애니메이션
+- 접근성 최적화
+
+### 🔥 Firebase 통합
+
+- 인증 (Authentication)
+- 데이터베이스 (Firestore)
+- 파일 업로드 (Storage)
+- 실시간 업데이트
+
+### 📊 관리자 대시보드
+
+- 프로젝트 관리
+- 번역 통계
+- 사용자 관리
+- 다운로드 추적
+
+## 🚀 빠른 시작
+
+### 1. 저장소 클론
+
+```bash
+git clone https://github.com/manNomi/i18nexus.git
+cd i18nexus/apps/demo
 ```
 
-### 🎨 Modern Design
-
-- React Hook Form-inspired clean UI
-- Responsive design with Tailwind CSS
-- Professional color scheme and typography
-- Smooth transitions and animations
-
-### 🌍 Complete Internationalization
-
-- **Korean (한국어)** - Primary language
-- **English** - Full translations
-- Type-safe language switching
-- Persistent storage with cookies
-- Automatic browser language detection
-
-## 🚀 Getting Started
-
-### Prerequisites
-
-- Node.js 18+
-- npm or yarn
-
-### Installation
+### 2. 의존성 설치
 
 ```bash
 npm install
 ```
 
-### Development
+### 3. 환경 변수 설정
+
+`.env.local` 파일을 생성하고 다음 내용을 추가합니다:
+
+```env
+# Firebase 설정
+NEXT_PUBLIC_FIREBASE_API_KEY=your-api-key
+NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=your-auth-domain
+NEXT_PUBLIC_FIREBASE_PROJECT_ID=your-project-id
+NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET=your-storage-bucket
+NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=your-sender-id
+NEXT_PUBLIC_FIREBASE_APP_ID=your-app-id
+
+# Analytics (선택사항)
+NEXT_PUBLIC_GA_ID=your-ga-id
+```
+
+### 4. 개발 서버 실행
 
 ```bash
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) in your browser.
+브라우저에서 [http://localhost:3000](http://localhost:3000)을 엽니다.
 
-### Build
-
-```bash
-npm run build
-npm run start
-```
-
-## 📁 Project Structure
+## 📁 프로젝트 구조
 
 ```
-├── app/
-│   ├── page.tsx                      # Main demo page (mobile-optimized)
-│   ├── layout.tsx                    # Root layout with I18nProvider
-│   ├── getting-started/
-│   │   └── page.tsx                 # Getting started guide
-│   ├── showcase/
-│   │   ├── page.tsx                 # Project showcase (public)
-│   │   └── submit/
-│   │       └── page.tsx             # Project submission
-│   ├── admin/
-│   │   ├── login/
-│   │   │   └── page.tsx             # Admin login
-│   │   └── dashboard/
-│   │       └── page.tsx             # Admin dashboard
-│   ├── docs/
-│   │   ├── i18nexus/
-│   │   │   └── page.tsx             # i18nexus library docs
-│   │   └── i18nexus-tools/
-│   │       └── page.tsx             # CLI tools docs
-│   ├── _widgets/
-│   │   ├── navigation/              # Responsive navigation
-│   │   ├── showcase-list/           # Showcase grid
-│   │   └── admin-dashboard/         # Dashboard widgets
-│   ├── _features/
-│   │   ├── project-submit/          # Submission form
-│   │   ├── project-manage/          # Admin management
-│   │   └── auth-login/              # Authentication
-│   └── _entities/
-│       └── project/                 # Project data layer
-├── locales/                         # Translation files
-│   ├── ko.json                      # Korean translations
-│   ├── en.json                      # English translations
-│   └── index.ts                     # Translation exports
-├── i18nexus.config.json             # i18nexus configuration
-└── package.json                     # Dependencies and scripts
+apps/demo/
+├── app/                          # Next.js App Router
+│   ├── layout.tsx                # 루트 레이아웃 + I18nProvider
+│   ├── page.tsx                  # 홈페이지
+│   ├── getting-started/          # 시작하기 페이지
+│   ├── showcase/                 # 쇼케이스
+│   ├── server-example/           # Server Component 예제
+│   ├── admin/                    # 관리자 페이지
+│   │   ├── dashboard/
+│   │   └── login/
+│   ├── api/                      # API 라우트
+│   │   ├── downloads/
+│   │   ├── metadata/
+│   │   └── submissions/
+│   └── docs/                     # 문서 페이지
+│       ├── i18nexus/
+│       └── i18nexus-tools/
+├── locales/                      # 번역 파일
+│   ├── ko.json                   # 한국어 공통 번역
+│   ├── en.json                   # 영어 공통 번역
+│   ├── page.tsx/                 # 홈페이지 번역
+│   ├── getting-started/          # 시작하기 페이지 번역
+│   └── docs/                     # 문서 페이지 번역
+├── entities/                     # 엔티티 (Feature-Sliced Design)
+│   ├── download/
+│   └── project/
+├── features/                     # 기능 (Feature-Sliced Design)
+│   ├── auth-login/
+│   ├── language-switch/
+│   ├── project-manage/
+│   └── project-submit/
+├── widgets/                      # 위젯
+│   ├── navigation/
+│   └── showcase-list/
+├── page-components/              # 페이지 컴포넌트
+│   └── admin-dashboard/
+├── shared/                       # 공유 컴포넌트 및 유틸
+│   ├── ui/
+│   └── lib/
+├── lib/                          # 라이브러리 설정
+│   ├── firebase.ts
+│   └── analytics.ts
+├── public/                       # 정적 파일
+├── i18nexus.config.json          # i18nexus 설정
+├── next.config.ts                # Next.js 설정
+└── package.json
 ```
 
-## 🌐 Translation Management
+## 🎯 주요 예제
 
-### Using CLI Tools
+### Server Component에서 번역 사용
 
-The project demonstrates all i18nexus CLI tools:
+```tsx
+// app/server-example/page.tsx
+import { getServerTranslation } from "i18nexus/server";
 
-```bash
-# Wrap hardcoded Korean strings automatically
-npx i18n-wrapper --pattern "app/**/*.tsx"
+export default async function ServerExample() {
+  const t = await getServerTranslation("server-example");
 
-# Extract translation keys
-npx i18n-extractor --pattern "app/**/*.tsx" --output "./locales"
-
-# Upload to Google Sheets (optional)
-npx i18n-upload --spreadsheet-id YOUR_SPREADSHEET_ID
-
-# Download from Google Sheets (optional)
-npx i18n-download --spreadsheet-id YOUR_SPREADSHEET_ID
-```
-
-### Translation Files
-
-All translations are stored in JSON format:
-
-- `locales/ko.json` - Korean translations
-- `locales/en.json` - English translations
-- `locales/index.ts` - Translation exports
-
-## 🎯 Key Features Demonstrated
-
-### 1. **Type-Safe Language Switching** 🆕
-
-```typescript
-import { useLanguageSwitcher } from "i18nexus";
-import { AppLanguages } from "@/i18nexus.config";
-
-function MyComponent() {
-  const { changeLanguage } = useLanguageSwitcher<AppLanguages>();
-
-  // ✅ Type-safe! IDE autocomplete!
-  changeLanguage("en");
-  changeLanguage("ko");
-
-  // ❌ Compile error!
-  // changeLanguage("fr");
+  return (
+    <div>
+      <h1>{t("title")}</h1>
+      <p>{t("description")}</p>
+    </div>
+  );
 }
 ```
 
-### 2. **Automatic String Wrapping**
-
-Run `npx i18n-wrapper` to automatically:
-
-- Detect Korean strings in your code
-- Wrap them with `t()` functions
-- Add necessary imports
-- Add `useTranslation` hooks
-
-### 3. **Translation Key Extraction**
-
-Run `npx i18n-extractor` to:
-
-- Extract all `t()` calls from your code
-- Generate/update JSON translation files
-- Preserve existing translations
-- Sort keys alphabetically
-
-### 4. **Custom Import Sources** 🆕
-
-Configure where `i18n-wrapper` imports from:
-
-```typescript
-// i18nexus.config.ts
-export const config = defineConfig({
-  // ...
-  translationImportSource: "@/lib/i18n", // Custom import!
-});
-```
-
-### 5. **Language Switching**
-
-- Seamless language switching with cookies
-- No page reload required
-- Persistent across sessions
-- Works with SSR
-
-### 6. **Next.js App Router Support**
-
-- Full Server Components support
-- Zero hydration mismatch
-- Automatic cookie-based language detection
-- Optimal performance
-
-## 🔧 Configuration
-
-### i18nexus Configuration
-
-The `i18nexus.config.js` (or `.ts`) file contains:
-
-```javascript
-module.exports = {
-  projectId: "demo-project",
-  translations: {
-    sourceDir: "./lib/translations",
-    languages: ["en", "ko"],
-    defaultLanguage: "ko",
-    format: "json",
-  },
-  commands: {
-    extract: {
-      source: ["app/**/*.{ts,tsx}", "lib/**/*.{ts,tsx}"],
-      output: "./lib/translations",
-      ignore: ["node_modules/**", ".next/**"],
-    },
-  },
-};
-```
-
-**TypeScript Version** (Recommended):
-
-```typescript
-import { defineConfig } from "i18nexus";
-
-export const config = defineConfig({
-  languages: ["en", "ko"] as const,
-  defaultLanguage: "ko",
-  localesDir: "./locales",
-  sourcePattern: "app/**/*.{ts,tsx}",
-  translationImportSource: "i18nexus",
-});
-
-export type AppLanguages = (typeof config.languages)[number];
-```
-
-### Next.js Configuration
-
-- Next.js 15 with App Router
-- TypeScript support
-- Tailwind CSS
-- i18nexus integration
-
-## 📝 Available Scripts
-
-- `npm run dev` - Start development server
-- `npm run build` - Build for production
-- `npm run start` - Start production server
-- `npm run lint` - Run ESLint
-
-## 🎓 What You'll Learn
-
-This demo teaches you:
-
-1. **Type-Safe i18n** - How to use TypeScript config for type safety
-2. **Automated Workflow** - Using CLI tools to automate i18n
-3. **Next.js Integration** - Proper App Router integration
-4. **Server Components** - When and how to use server vs client
-5. **Best Practices** - Recommended project structure
-6. **Custom Configuration** - How to customize i18nexus
-
-## 🌟 Highlights
-
-### Before i18nexus
+### Client Component에서 번역 사용
 
 ```tsx
-// Manual, error-prone
-function MyComponent() {
-  const [lang, setLang] = useState("ko");
-  const text = lang === "ko" ? "안녕하세요" : "Hello";
-
-  return <h1>{text}</h1>;
-}
-```
-
-### After i18nexus (with Type Safety!)
-
-```tsx
-// Automated, type-safe
+// app/components/LanguageSwitch.tsx
 "use client";
-
 import { useTranslation } from "i18nexus";
-import { AppLanguages } from "@/i18nexus.config";
 
-function MyComponent() {
-  const { t } = useTranslation<AppLanguages>();
+export default function LanguageSwitch() {
+  const { t, language, changeLanguage } = useTranslation();
 
-  return <h1>{t("안녕하세요")}</h1>;
+  return (
+    <div>
+      <select value={language} onChange={(e) => changeLanguage(e.target.value)}>
+        <option value="ko">한국어</option>
+        <option value="en">English</option>
+        <option value="ja">日本語</option>
+      </select>
+    </div>
+  );
 }
 ```
 
-**Benefits:**
+### 네임스페이스 사용
 
-- ✅ Type-safe language codes
-- ✅ Automatically wrapped with `npx i18n-wrapper`
-- ✅ Automatically extracted with `npx i18n-extractor`
-- ✅ No manual string management
-- ✅ IDE autocomplete support
+```tsx
+// app/docs/i18nexus/page.tsx
+"use client";
+import { useTranslation } from "i18nexus";
 
-## 📚 Documentation
+export default function DocsPage() {
+  // 페이지별 네임스페이스 사용
+  const { t } = useTranslation("docs/i18nexus");
 
-### In-App Pages
+  return (
+    <div>
+      <h1>{t("title")}</h1>
+      <p>{t("content")}</p>
+    </div>
+  );
+}
+```
 
-The demo includes comprehensive in-app documentation:
+### 동적 번역
 
-1. **Home** (`/`) - Overview and introduction
-2. **Getting Started** (`/getting-started`) - Step-by-step setup guide
-3. **Docs - i18nexus** (`/docs/i18nexus`) - React library documentation
-4. **Docs - i18nexus-tools** (`/docs/i18nexus-tools`) - CLI tools reference
-5. **Showcase** (`/showcase`) - Real projects using i18nexus
-6. **Admin Dashboard** (`/admin/dashboard`) - Showcase management (auth required)
+```tsx
+"use client";
+import { useTranslation } from "i18nexus";
 
-### Markdown Docs
+export default function DynamicExample() {
+  const { t } = useTranslation();
+  const userName = "홍길동";
+  const count = 5;
 
-- **[NAMESPACE_AUTOMATION.md](./docs/NAMESPACE_AUTOMATION.md)** - Namespace automation guide
-- **[QUICK_START.md](./QUICK_START.md)** - 3-step quick start
-- **[SHOWCASE_README.md](./SHOWCASE_README.md)** - Firebase showcase system
-- **[FIREBASE_QUICK_SETUP.md](./FIREBASE_QUICK_SETUP.md)** - Firebase configuration
+  return (
+    <div>
+      <h1>{t("welcome", { name: userName })}</h1>
+      <p>{t("items.count", { count })}</p>
+    </div>
+  );
+}
+```
 
-## 🎨 Design Principles
+## 🔥 Firebase 설정
 
-- **Mobile-First**: Responsive from 320px to 4K displays
-- **Clean & Modern**: Inspired by React Hook Form
-- **Accessible**: WCAG 2.1 compliant
-- **Touch-Optimized**: Larger tap targets, better mobile UX
-- **Performance**: Code splitting, optimized bundles, fast mobile rendering
-- **Developer Experience**: Type-safe, intuitive, with namespace automation
+### 1. Firebase 프로젝트 생성
 
-## 🤝 Contributing
+1. [Firebase Console](https://console.firebase.google.com/)에서 새 프로젝트 생성
+2. 웹 앱 추가
+3. 구성 정보를 `.env.local`에 추가
 
-This demo showcases i18nexus capabilities. Feel free to:
+### 2. Firestore 설정
 
-- Add more languages
-- Improve the design
-- Add more examples
-- Submit issues and suggestions
+```bash
+# Firestore 규칙 배포
+firebase deploy --only firestore:rules
+```
 
-## 📄 License
+`firestore.rules`:
 
-MIT License - see LICENSE file for details.
+```
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /projects/{project} {
+      allow read: if true;
+      allow write: if request.auth != null;
+    }
+  }
+}
+```
+
+### 3. Authentication 설정
+
+Firebase Console에서:
+
+1. Authentication > Sign-in method
+2. 이메일/비밀번호 활성화
+3. 관리자 사용자 생성
+
+자세한 설정은 [FIREBASE_SETUP.md](./FIREBASE_SETUP.md)를 참조하세요.
+
+## 📚 데모 페이지
+
+### 🏠 홈페이지 (`/`)
+
+- 프로젝트 소개
+- 주요 기능 소개
+- 빠른 시작 가이드
+
+### 📖 시작하기 (`/getting-started`)
+
+- 설치 방법
+- 기본 설정
+- 첫 번째 번역
+
+### 🎨 쇼케이스 (`/showcase`)
+
+- 실제 프로젝트 예제
+- 다양한 사용 사례
+- 베스트 프랙티스
+
+### ⚡ Server Example (`/server-example`)
+
+- Server Components 예제
+- SSR 번역
+- 성능 최적화
+
+### 📘 문서 (`/docs`)
+
+- i18nexus Core 문서
+- i18nexus Tools 문서
+- API 레퍼런스
+
+### 🔐 관리자 (`/admin`)
+
+- 로그인 (`/admin/login`)
+- 대시보드 (`/admin/dashboard`)
+- 프로젝트 관리
+- 통계 및 분석
+
+## 🛠️ 개발 스크립트
+
+```bash
+# 개발 서버 실행
+npm run dev
+
+# 프로덕션 빌드
+npm run build
+
+# 프로덕션 서버 실행
+npm start
+
+# 린트
+npm run lint
+
+# i18n 키 추출
+npm run i18n:extract
+
+# 번역 다운로드
+npm run i18n:download
+```
+
+## 🎨 커스터마이징
+
+### 스타일 수정
+
+`app/globals.css`에서 전역 스타일을 수정할 수 있습니다:
+
+```css
+:root {
+  --primary-color: #0070f3;
+  --secondary-color: #ff4081;
+  /* ... */
+}
+```
+
+### 컴포넌트 추가
+
+`shared/ui/` 폴더에 공통 UI 컴포넌트를 추가합니다:
+
+```tsx
+// shared/ui/Button.tsx
+export function Button({ children, onClick }: ButtonProps) {
+  return <button onClick={onClick}>{children}</button>;
+}
+```
+
+### 새 언어 추가
+
+1. `i18nexus.config.json`에 언어 추가:
+
+```json
+{
+  "supportedLanguages": ["ko", "en", "ja", "zh", "fr"]
+}
+```
+
+2. 번역 파일 생성:
+
+```bash
+touch locales/fr.json
+```
+
+3. 번역 추가:
+
+```json
+{
+  "welcome": "Bienvenue",
+  "hello": "Bonjour, {{name}}"
+}
+```
+
+## 📱 반응형 디자인
+
+모든 페이지는 다양한 화면 크기에 최적화되어 있습니다:
+
+- 📱 모바일 (< 768px)
+- 💻 태블릿 (768px - 1024px)
+- 🖥️ 데스크톱 (> 1024px)
+
+## ♿ 접근성
+
+WCAG 2.1 AA 레벨을 준수합니다:
+
+- 키보드 네비게이션
+- 스크린 리더 지원
+- 적절한 대비율
+- ARIA 속성
+
+## 🚀 배포
+
+### Vercel 배포
+
+```bash
+# Vercel CLI 설치
+npm i -g vercel
+
+# 배포
+vercel
+```
+
+또는 [Vercel Dashboard](https://vercel.com)에서 GitHub 저장소를 연결하세요.
+
+### 환경 변수 설정
+
+Vercel Dashboard에서 환경 변수를 추가합니다:
+
+1. 프로젝트 설정 > Environment Variables
+2. `.env.local`의 모든 변수 추가
+3. 재배포
+
+자세한 내용은 [VERCEL_SETUP.md](../../VERCEL_SETUP.md)를 참조하세요.
+
+## 🧪 테스트
+
+```bash
+# 단위 테스트
+npm test
+
+# E2E 테스트 (TODO)
+npm run test:e2e
+
+# 테스트 커버리지
+npm run test:coverage
+```
+
+## 📊 성능
+
+- ⚡ Lighthouse Score: 95+
+- 🎯 First Contentful Paint: < 1s
+- 🚀 Time to Interactive: < 2s
+- 📦 Bundle Size: < 100KB (gzipped)
+
+## 🐛 알려진 이슈
+
+- [ ] 일부 브라우저에서 쿠키 설정 문제 (Safari)
+- [ ] 네임스페이스 동적 로딩 시 깜빡임 (해결 중)
+
+## 🤝 기여하기
+
+데모 앱 개선에 기여해주세요:
+
+1. 새로운 예제 추가
+2. UI/UX 개선
+3. 버그 수정
+4. 문서 업데이트
+
+## 📄 라이선스
+
+MIT License
+
+## 📞 지원
+
+- 🐛 [이슈 리포트](https://github.com/manNomi/i18nexus/issues)
+- 💬 [토론](https://github.com/manNomi/i18nexus/discussions)
+- 📧 Email: support@i18nexus.com
+
+## 🔗 관련 링크
+
+- [i18nexus Core](../../packages/core/README.md)
+- [i18nexus Tools](../../packages/tools/README.md)
+- [Documentation](https://i18nexus.dev)
+- [Blog](https://blog.i18nexus.dev)
 
 ---
 
-<div align="center">
-
-**🚀 Start using i18nexus today!**
-
-[Documentation](https://github.com/manNomi/i18nexus) • [NPM Package](https://www.npmjs.com/package/i18nexus)
-
-</div>
+**Made with ❤️ by the i18nexus team**
