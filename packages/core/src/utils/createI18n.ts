@@ -82,6 +82,14 @@ export type ExtractNamespaceWithFallback<
 > = ExtractNamespaceKeys<T, NS> | ExtractFallbackKeys<T, Fallback>;
 
 /**
+ * Namespace loader function type for lazy loading
+ */
+export type NamespaceLoader = (
+  namespace: string,
+  language: string,
+) => Promise<Record<string, string>>;
+
+/**
  * Options for createI18n
  */
 export interface CreateI18nOptions<
@@ -99,6 +107,29 @@ export interface CreateI18nOptions<
    * @default true
    */
   enableFallback?: boolean;
+
+  /**
+   * Enable lazy loading of namespaces
+   * When true, namespaces are loaded on-demand instead of all at once
+   * @default false
+   */
+  lazy?: boolean;
+
+  /**
+   * Namespace loader function for lazy loading
+   * Required when lazy: true
+   * @param namespace - The namespace to load
+   * @param language - The language to load
+   * @returns Promise resolving to translations for that namespace+language
+   */
+  loadNamespace?: NamespaceLoader;
+
+  /**
+   * Preload specific namespaces on initialization
+   * Only used when lazy: true
+   * @default []
+   */
+  preloadNamespaces?: Array<keyof TTranslations>;
 }
 
 /**
@@ -137,6 +168,23 @@ export function createI18n<
 ) {
   const fallbackNamespace = options?.fallbackNamespace;
   const enableFallback = options?.enableFallback !== false;
+  const lazy = options?.lazy ?? false;
+  const loadNamespace = options?.loadNamespace;
+  const preloadNamespaces = options?.preloadNamespaces ?? [];
+
+  // Validate lazy mode configuration
+  if (lazy && !loadNamespace) {
+    throw new Error(
+      "createI18n: loadNamespace function is required when lazy mode is enabled",
+    );
+  }
+
+  // Loaded namespaces cache (for lazy mode)
+  const loadedNamespaces = new Map<
+    string,
+    Record<string, Record<string, string>>
+  >();
+
   /**
    * Typed I18nProvider component
    * Wraps the base provider with your translation types
@@ -150,26 +198,45 @@ export function createI18n<
       dynamicTranslations?: Record<string, Record<string, string>>;
     },
   ) {
-    // Ensure translations passed to BaseI18nProvider match its expected type
-    // Flatten namespace structure to flat structure expected by BaseI18nProvider
-    const flattenedTranslations = Object.keys(
-      props.translations || translations,
-    ).reduce(
-      (acc, namespace) => {
-        const nsTranslations = (props.translations || translations)[namespace];
-        Object.keys(nsTranslations).forEach((lang) => {
-          acc[lang] = { ...acc[lang], ...nsTranslations[lang] };
+    const [loadedTranslations, setLoadedTranslations] = React.useState<
+      Record<string, Record<string, string>>
+    >(() => {
+      if (lazy) {
+        // Lazy mode: only load preloaded namespaces initially
+        const initial: Record<string, Record<string, string>> = {};
+        preloadNamespaces.forEach((ns) => {
+          const nsTranslations = (props.translations || translations)[
+            ns as string
+          ];
+          if (nsTranslations) {
+            Object.keys(nsTranslations).forEach((lang) => {
+              initial[lang] = { ...initial[lang], ...nsTranslations[lang] };
+            });
+          }
         });
-        return acc;
-      },
-      {} as Record<string, Record<string, string>>,
-    );
+        return initial;
+      } else {
+        // Eager mode: flatten all namespaces
+        return Object.keys(props.translations || translations).reduce(
+          (acc, namespace) => {
+            const nsTranslations = (props.translations || translations)[
+              namespace
+            ];
+            Object.keys(nsTranslations).forEach((lang) => {
+              acc[lang] = { ...acc[lang], ...nsTranslations[lang] };
+            });
+            return acc;
+          },
+          {} as Record<string, Record<string, string>>,
+        );
+      }
+    });
 
     return React.createElement(
       BaseI18nProvider<TLanguage, Record<string, Record<string, string>>>,
       {
         ...props,
-        translations: flattenedTranslations,
+        translations: loadedTranslations,
       },
     );
   }
@@ -235,6 +302,43 @@ export function createI18n<
     options: {
       fallbackNamespace,
       enableFallback,
+      lazy,
+      preloadNamespaces,
+    },
+
+    /**
+     * Load a namespace dynamically (lazy mode only)
+     * @param namespace - The namespace to load
+     * @returns Promise that resolves when namespace is loaded
+     */
+    loadNamespace: async (namespace: keyof TTranslations) => {
+      if (!lazy) {
+        console.warn("loadNamespace() is only available in lazy mode");
+        return;
+      }
+      if (!loadNamespace) {
+        throw new Error("loadNamespace function not configured");
+      }
+
+      // Already loaded
+      if (loadedNamespaces.has(namespace as string)) {
+        return;
+      }
+
+      // Load for all languages
+      const languages = Object.keys(translations[namespace] || {});
+      const promises = languages.map(async (lang) => {
+        const data = await loadNamespace(namespace as string, lang);
+        return { lang, data };
+      });
+
+      const results = await Promise.all(promises);
+      const nsData: Record<string, Record<string, string>> = {};
+      results.forEach(({ lang, data }) => {
+        nsData[lang] = data;
+      });
+
+      loadedNamespaces.set(namespace as string, nsData);
     },
   };
 }

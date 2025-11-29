@@ -114,37 +114,87 @@ export function generateNamespaceIndexFile(
   outputDir: string,
   fallbackNamespace: string,
   dryRun: boolean,
+  lazy: boolean = true,
 ): void {
   const indexPath = pathLib.join(outputDir, "index.ts");
 
   // 네임스페이스를 알파벳 순으로 정렬
   const sortedNamespaces = [...namespaces].sort();
 
-  // Import 문 생성
-  const imports: string[] = ['import { createI18n } from "i18nexus";\n'];
+  if (lazy) {
+    // Lazy loading mode
+    const content = `import { createI18n } from "i18nexus";
 
-  sortedNamespaces.forEach((namespace) => {
-    languages.forEach((lang) => {
-      // 변수명: camelCase 변환 (kebab-case를 camelCase로)
-      const varName = `${lang}${toPascalCase(namespace)}`;
-      imports.push(`import ${varName} from "./${namespace}/${lang}.json";`);
-    });
-  });
+// Lazy loading용 타입 정의
+// 실제 translations는 사용 시 동적으로 로드됨
+export const translations = {} as const;
 
-  // translations 객체 생성
-  const translationsObj: string[] = [];
-  sortedNamespaces.forEach((namespace) => {
-    const langEntries = languages
-      .map((lang) => {
+// 동적 namespace 로더
+async function loadNamespace(namespace: string, lang: string) {
+  const module = await import(\`./\${namespace}/\${lang}.json\`);
+  return module.default;
+}
+
+// createI18n with lazy loading
+export const i18n = createI18n(translations, {
+  fallbackNamespace: "${fallbackNamespace}",
+  lazy: true,
+  loadNamespace,
+  preloadNamespaces: ["${fallbackNamespace}"], // fallback은 미리 로드
+});
+
+// 타입 안전성을 위한 namespace 목록
+export type AvailableNamespaces = ${sortedNamespaces.map((ns) => `"${ns}"`).join(" | ")};
+
+// 사용 가능한 언어
+export type AvailableLanguages = ${languages.map((lang) => `"${lang}"`).join(" | ")};
+
+/**
+ * Namespace를 미리 로드하는 헬퍼 함수
+ * 성능 최적화를 위해 필요한 namespace만 로드
+ * 
+ * @example
+ * await preloadNamespace("home");
+ * const { t } = i18n.useTranslation("home");
+ */
+export async function preloadNamespace(namespace: AvailableNamespaces) {
+  await i18n.loadNamespace(namespace);
+}
+`;
+
+    if (!dryRun) {
+      fs.writeFileSync(indexPath, content, "utf-8");
+      console.log(
+        `✅ Generated lazy-loading index.ts with ${sortedNamespaces.length} namespaces`,
+      );
+    }
+  } else {
+    // Eager loading mode (기존 방식)
+    // Import 문 생성
+    const imports: string[] = ['import { createI18n } from "i18nexus";\n'];
+
+    sortedNamespaces.forEach((namespace) => {
+      languages.forEach((lang) => {
+        // 변수명: camelCase 변환 (kebab-case를 camelCase로)
         const varName = `${lang}${toPascalCase(namespace)}`;
-        return `    ${lang}: ${varName},`;
-      })
-      .join("\n");
+        imports.push(`import ${varName} from "./${namespace}/${lang}.json";`);
+      });
+    });
 
-    translationsObj.push(`  "${namespace}": {\n${langEntries}\n  },`);
-  });
+    // translations 객체 생성
+    const translationsObj: string[] = [];
+    sortedNamespaces.forEach((namespace) => {
+      const langEntries = languages
+        .map((lang) => {
+          const varName = `${lang}${toPascalCase(namespace)}`;
+          return `    ${lang}: ${varName},`;
+        })
+        .join("\n");
 
-  const content = `${imports.join("\n")}
+      translationsObj.push(`  "${namespace}": {\n${langEntries}\n  },`);
+    });
+
+    const content = `${imports.join("\n")}
 
 // i18nexus는 namespace가 최상위인 구조를 기대합니다
 // { namespace: { language: { key: value } } }
@@ -158,11 +208,12 @@ export const i18n = createI18n(translations, {
 });
 `;
 
-  if (!dryRun) {
-    fs.writeFileSync(indexPath, content, "utf-8");
-    console.log(
-      `✅ Generated index.ts with ${sortedNamespaces.length} namespaces`,
-    );
+    if (!dryRun) {
+      fs.writeFileSync(indexPath, content, "utf-8");
+      console.log(
+        `✅ Generated index.ts with ${sortedNamespaces.length} namespaces`,
+      );
+    }
   }
 }
 
