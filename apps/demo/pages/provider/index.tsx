@@ -95,11 +95,35 @@ export default function ProviderPage() {
             </div>
             <div className="p-6">
               <pre className="bg-slate-950 text-slate-300 p-4 rounded-lg overflow-x-auto text-sm border border-slate-800">
-                <code>
-                  {t(
-                    'import { I18nProvider } from "i18nexus";\nimport { cookies } from "next/headers";\n\nexport default function RootLayout({ children }) {\n  const language = cookies().get("i18n-language")?.value || "ko";\n\n  return (\n    <html lang={language}>\n      <body>\n        <I18nProvider\n          initialLanguage={language}\n          languageManagerOptions={{\n            defaultLanguage: "ko",\n            availableLanguages: [\n              { code: "ko", name: "\uD55C\uAD6D\uC5B4", flag: "\uD83C\uDDF0\uD83C\uDDF7" },\n              { code: "en", name: "English", flag: "\uD83C\uDDFA\uD83C\uDDF8" },\n            ],\n          }}\n          translations={{\n            ko: { "\uD658\uC601\uD569\uB2C8\uB2E4": "\uD658\uC601\uD569\uB2C8\uB2E4" },\n            en: { "\uD658\uC601\uD569\uB2C8\uB2E4": "Welcome" },\n          }}\n        >\n          {children}\n        </I18nProvider>\n      </body>\n    </html>\n  );\n}',
-                  )}
-                </code>
+                <code>{`import { I18nProvider } from "i18nexus";
+import { cookies } from "next/headers";
+
+export default function RootLayout({ children }) {
+  const language = cookies().get("i18n-language")?.value || "ko";
+
+  return (
+    <html lang={language}>
+      <body>
+        <I18nProvider
+          initialLanguage={language}
+          languageManagerOptions={{
+            defaultLanguage: "ko",
+            availableLanguages: [
+              { code: "ko", name: "한국어", flag: "🇰🇷" },
+              { code: "en", name: "English", flag: "🇺🇸" },
+            ],
+          }}
+          translations={{
+            ko: { "환영합니다": "환영합니다" },
+            en: { "환영합니다": "Welcome" },
+          }}
+        >
+          {children}
+        </I18nProvider>
+      </body>
+    </html>
+  );
+}`}</code>
               </pre>
             </div>
           </div>
@@ -116,11 +140,10 @@ export default function ProviderPage() {
             </div>
             <div className="p-6">
               <pre className="bg-slate-950 text-slate-300 p-4 rounded-lg overflow-x-auto text-sm border border-slate-800">
-                <code>
-                  {t(
-                    `"use client";
+                <code>{`"use client";
 
-import { useTranslation, useLanguageSwitcher } from "i18nexus";
+import { useLanguageSwitcher } from "i18nexus";
+import { i18n } from "@/locales";
 
 export default function HomePage() {
   const { t } = i18n.useTranslation("provider");
@@ -134,9 +157,7 @@ export default function HomePage() {
       </button>
     </div>
   );
-}`,
-                  )}
-                </code>
+}`}</code>
               </pre>
             </div>
           </div>
@@ -235,15 +256,11 @@ export default function HomePage() {
               useTranslation()
             </h3>
             <pre className="bg-slate-950 text-slate-300 p-4 rounded-lg overflow-x-auto text-sm mb-4 border border-slate-800">
-              <code>
-                {t(
-                  `const { t } = i18n.useTranslation("provider");
+              <code>{`const { t } = i18n.useTranslation("provider");
 
 // Simple usage
 t("key")
-t("한국어 텍스트")`,
-                )}
-              </code>
+t("한국어 텍스트")`}</code>
             </pre>
             <p className="text-slate-400 text-sm">
               {t("클라이언트 컴포넌트에서 번역 함수에 접근하기 위한 훅")}

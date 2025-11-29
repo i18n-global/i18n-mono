@@ -280,6 +280,130 @@ export function createI18n<
     return useTranslationBase<any>();
   }
 
+  /**
+   * Server-side translation function for Next.js Server Components
+   * Automatically detects language from headers and returns typed translation function
+   *
+   * @param namespace - Optional namespace to use (e.g., "common", "menu")
+   * @returns Promise with translation function and language info
+   *
+   * @example Basic usage (auto-detects language from headers)
+   * ```tsx
+   * import { headers } from 'next/headers';
+   * import { i18n } from '@/locales';
+   *
+   * export default async function ServerPage() {
+   *   const { t } = await i18n.getServerTranslation("common");
+   *   return <h1>{t("welcome")}</h1>;
+   * }
+   * ```
+   *
+   * @example Without namespace (uses all keys)
+   * ```tsx
+   * const { t, language } = await i18n.getServerTranslation();
+   * ```
+   */
+  async function getServerTranslation<
+    NS extends ExtractNamespaces<TTranslations> | undefined = undefined,
+  >(namespace?: NS) {
+    // Try to import Next.js headers dynamically
+    let headersList: Headers;
+    try {
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore - next/headers is an optional peer dependency
+      const { headers } = await import("next/headers");
+      headersList = await headers();
+    } catch {
+      // Not in Next.js environment, use empty Headers
+      headersList = new Headers();
+    }
+
+    // Get language from headers (using server utility)
+    let language = "en";
+    try {
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore - import server utils
+      const { getServerLanguage } = await import("./server");
+      language = getServerLanguage(headersList);
+    } catch {
+      // Fallback to simple cookie parsing
+      const cookieHeader = headersList.get("cookie");
+      if (cookieHeader) {
+        const cookies = cookieHeader.split(";");
+        for (const cookie of cookies) {
+          const [name, value] = cookie.trim().split("=");
+          if (decodeURIComponent(name) === "i18n-language") {
+            language = decodeURIComponent(value);
+            break;
+          }
+        }
+      }
+    }
+
+    // Flatten translations for the detected language
+    const flattenedTranslations: Record<string, string> = {};
+
+    if (namespace) {
+      // Load specific namespace + fallback
+      const nsData = translations[namespace];
+      const fallbackData = fallbackNamespace
+        ? translations[fallbackNamespace]
+        : null;
+
+      if (nsData && nsData[language]) {
+        Object.assign(flattenedTranslations, nsData[language]);
+      }
+      if (
+        enableFallback &&
+        fallbackData &&
+        fallbackData[language] &&
+        namespace !== (fallbackNamespace as any)
+      ) {
+        Object.assign(flattenedTranslations, fallbackData[language]);
+      }
+    } else {
+      // Load all namespaces
+      Object.keys(translations).forEach((ns) => {
+        const nsData = translations[ns];
+        if (nsData && nsData[language]) {
+          Object.assign(flattenedTranslations, nsData[language]);
+        }
+      });
+    }
+
+    // Create translation function
+    function t(
+      key: NS extends undefined
+        ? ExtractAllKeys<TTranslations>
+        : Fallback extends keyof TTranslations
+          ? ExtractNamespaceWithFallback<
+              TTranslations,
+              NonNullable<NS>,
+              Fallback
+            >
+          : ExtractNamespaceKeys<TTranslations, NonNullable<NS>>,
+      variables?: Record<string, string | number>,
+    ): string {
+      const text = flattenedTranslations[key as string] || (key as string);
+
+      // Simple variable interpolation
+      if (!variables) {
+        return text;
+      }
+
+      return text.replace(/\{\{(\w+)\}\}/g, (match, variableName) => {
+        const value = variables[variableName];
+        return value !== undefined ? String(value) : match;
+      });
+    }
+
+    return {
+      t,
+      language,
+      translations: flattenedTranslations,
+    };
+  }
+
   return {
     /**
      * Typed I18nProvider - use this instead of the base provider
@@ -290,6 +414,11 @@ export function createI18n<
      * Typed useTranslation - auto-infers keys from namespace
      */
     useTranslation,
+
+    /**
+     * Server-side translation with auto language detection
+     */
+    getServerTranslation,
 
     /**
      * Original translations object (for reference)

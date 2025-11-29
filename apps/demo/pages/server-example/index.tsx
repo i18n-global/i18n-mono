@@ -1,16 +1,13 @@
-import { createServerTranslation, getServerLanguage } from "i18nexus/server";
-import { headers } from "next/headers";
 import Link from "next/link";
 
-import { translations } from "@/locales";
-// ✅ Server Component - "use client" 없음!
-export default async function ServerExamplePage() {
-  // 1. 서버에서 쿠키를 읽어 현재 언어 가져오기
-  const headersList = await headers();
-  const language = getServerLanguage(headersList);
+import { i18n } from "@/locales";
 
-  // 2. 서버 번역 함수 생성
-  const t = createServerTranslation(language, translations);
+export default async function ServerExamplePage() {
+  // 서버에서 자동으로 언어 감지 및 번역 함수 생성
+  const { t, language } = await i18n.getServerTranslation("server-example");
+
+  // Fallback namespace (common) 테스트
+  const commonKey = t("홈으로 돌아가기"); // common namespace에 있는 키
 
   return (
     <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 lg:py-16">
@@ -21,7 +18,7 @@ export default async function ServerExamplePage() {
           className="inline-flex items-center text-blue-400 hover:text-blue-300 mb-4 sm:mb-6 text-sm sm:text-base"
         >
           <span className="mr-2">←</span>
-          {t("홈으로 돌아가기")}
+          {commonKey} {/* fallback 테스트 */}
         </Link>
         <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-3 sm:mb-4">
           {t("서버 컴포넌트 예제")}
