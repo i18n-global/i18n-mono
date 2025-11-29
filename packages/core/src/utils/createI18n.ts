@@ -18,30 +18,62 @@
  *   }
  * } as const;
  *
- * // 2. Create typed i18n system
- * const { I18nProvider, useTranslation } = createI18n(translations);
+ * // 2. Create typed i18n system - no Provider needed!
+ * const i18n = createI18n(translations, { fallbackNamespace: "common" });
  *
  * // 3. Use in components - FULLY TYPED!
  * function MyComponent() {
- *   const { t } = useTranslation("common");  // ← No manual type needed!
- *
- *   return <h1>{t("welcome")}</h1>;  // ✅ Autocomplete works!
- *   // t("invalid");  // ❌ TypeScript Error - not in common namespace
+ *   const { t, language } = i18n.useTranslation("common");
+ *   return (
+ *     <div>
+ *       <h1>{t("welcome")}</h1>
+ *       <button onClick={() => i18n.changeLanguage('en')}>English</button>
+ *     </div>
+ *   );
  * }
  * ```
  */
 
 import React from "react";
 import {
-  I18nProvider as BaseI18nProvider,
-  I18nProviderProps as BaseI18nProviderProps,
-  ExtractI18nKeys,
-  NamespaceTranslations,
-} from "../components/I18nProvider";
-import {
-  useTranslation as useTranslationBase,
-  UseTranslationReturn,
-} from "../hooks/useTranslation";
+  LanguageManager,
+  LanguageManagerOptions,
+  LanguageConfig,
+} from "./languageManager";
+
+/**
+ * Extract translation keys from a translations object
+ * @example
+ * type Keys = ExtractI18nKeys<typeof translations>;
+ * // "greeting" | "farewell" | "welcome"
+ */
+export type ExtractI18nKeys<T extends Record<string, Record<string, string>>> =
+  keyof T[keyof T] & string;
+
+/**
+ * Namespace translations structure
+ * Record<namespace, Record<language, Record<key, value>>>
+ */
+export type NamespaceTranslations = Record<
+  string, // namespace
+  Record<
+    string, // language
+    Record<string, string> // key: value
+  >
+>;
+
+/**
+ * Translation function return type
+ */
+export interface UseTranslationReturn<K extends string = string> {
+  t: (
+    key: K,
+    variables?: Record<string, string | number>,
+    styles?: Record<string, React.CSSProperties>,
+  ) => string | React.ReactElement;
+  currentLanguage: string;
+  isReady: boolean;
+}
 
 /**
  * Extract namespace names from translations object
@@ -130,14 +162,20 @@ export interface CreateI18nOptions<
    * @default []
    */
   preloadNamespaces?: Array<keyof TTranslations>;
+
+  /**
+   * Language manager configuration
+   * Handles cookie/localStorage sync, language detection, etc.
+   */
+  languageManager?: LanguageManagerOptions;
 }
 
 /**
  * Create a type-safe i18n system with automatic key inference
  *
  * @param translations - Your translation object with namespaces
- * @param options - Optional configuration for fallback namespace
- * @returns Fully typed Provider and hooks
+ * @param options - Optional configuration for fallback namespace and language manager
+ * @returns Fully typed i18n object with hooks and utilities
  *
  * @example
  * ```typescript
@@ -146,17 +184,28 @@ export interface CreateI18nOptions<
  *   menu: { en: { ... }, ko: { ... } }
  * } as const;
  *
- * // With fallback namespace
- * const i18n = createI18n(translations, { fallbackNamespace: "common" });
+ * // Create i18n with language manager
+ * export const i18n = createI18n(translations, { 
+ *   fallbackNamespace: "common",
+ *   languageManager: {
+ *     defaultLanguage: 'ko',
+ *     availableLanguages: [
+ *       { code: 'ko', name: '한국어' },
+ *       { code: 'en', name: 'English' }
+ *     ]
+ *   }
+ * });
  *
- * // In your app
- * <i18n.I18nProvider>
- *   <App />
- * </i18n.I18nProvider>
- *
- * // In components
- * const { t } = i18n.useTranslation();  // No namespace needed! Uses all keys
- * const { t: tMenu } = i18n.useTranslation("menu");  // Specific namespace
+ * // Use directly without Provider
+ * function MyComponent() {
+ *   const { t, language } = i18n.useTranslation("common");
+ *   return (
+ *     <div>
+ *       <h1>{t("welcome")}</h1>
+ *       <button onClick={() => i18n.changeLanguage('en')}>English</button>
+ *     </div>
+ *   );
+ * }
  * ```
  */
 export function createI18n<
@@ -179,71 +228,124 @@ export function createI18n<
     );
   }
 
+  // Create global language manager instance
+  const languageManager = new LanguageManager(options?.languageManager);
+
+  // Global state for language (client-side only)
+  let currentLanguage: string | null = null;
+  const languageListeners = new Set<(language: string) => void>();
+
+  // Get current language (lazy initialization)
+  function getCurrentLanguage(): string {
+    if (typeof window === "undefined") {
+      // Server-side: return default
+      return languageManager.getCurrentLanguage();
+    }
+    if (currentLanguage === null) {
+      currentLanguage = languageManager.getCurrentLanguage();
+    }
+    return currentLanguage;
+  }
+
   // Loaded namespaces cache (for lazy mode)
   const loadedNamespaces = new Map<
     string,
     Record<string, Record<string, string>>
   >();
 
-  /**
-   * Typed I18nProvider component
-   * Wraps the base provider with your translation types
-   */
-  function TypedI18nProvider<TLanguage extends string = string>(
-    props: Omit<
-      BaseI18nProviderProps<TLanguage, Record<string, Record<string, string>>>,
-      "translations"
-    > & {
-      translations?: TTranslations;
-      dynamicTranslations?: Record<string, Record<string, string>>;
-    },
-  ) {
-    const [loadedTranslations, setLoadedTranslations] = React.useState<
-      Record<string, Record<string, string>>
-    >(() => {
-      if (lazy) {
-        // Lazy mode: only load preloaded namespaces initially
-        const initial: Record<string, Record<string, string>> = {};
-        preloadNamespaces.forEach((ns) => {
-          const nsTranslations = (props.translations || translations)[
-            ns as string
-          ];
-          if (nsTranslations) {
-            Object.keys(nsTranslations).forEach((lang) => {
-              initial[lang] = { ...initial[lang], ...nsTranslations[lang] };
-            });
-          }
-        });
-        return initial;
-      } else {
-        // Eager mode: flatten all namespaces
-        return Object.keys(props.translations || translations).reduce(
-          (acc, namespace) => {
-            const nsTranslations = (props.translations || translations)[
-              namespace
-            ];
-            Object.keys(nsTranslations).forEach((lang) => {
-              acc[lang] = { ...acc[lang], ...nsTranslations[lang] };
-            });
-            return acc;
-          },
-          {} as Record<string, Record<string, string>>,
-        );
-      }
-    });
+  // Helper functions for string interpolation
+  function interpolate(
+    text: string,
+    variables?: Record<string, string | number>,
+  ): string {
+    if (!variables) {
+      return text;
+    }
 
-    return React.createElement(
-      BaseI18nProvider<TLanguage, Record<string, Record<string, string>>>,
-      {
-        ...props,
-        translations: loadedTranslations,
-      },
-    );
+    return text.replace(/\{\{(\w+)\}\}/g, (match, variableName) => {
+      const value = variables[variableName];
+      return value !== undefined ? String(value) : match;
+    });
+  }
+
+  function interpolateWithStyles(
+    text: string,
+    variables: Record<string, string | number>,
+    styles: Record<string, React.CSSProperties>,
+  ): React.ReactElement {
+    const parts: (string | React.ReactElement)[] = [];
+    let lastIndex = 0;
+    const regex = /\{\{(\w+)\}\}/g;
+    let match;
+    let key = 0;
+
+    while ((match = regex.exec(text)) !== null) {
+      // Add text before the variable
+      if (match.index > lastIndex) {
+        parts.push(text.substring(lastIndex, match.index));
+      }
+
+      const variableName = match[1];
+      const value = variables[variableName];
+      const style = styles[variableName];
+
+      if (value !== undefined) {
+        if (style) {
+          // Wrap with span if style is provided
+          parts.push(
+            React.createElement(
+              "span",
+              { key: `var-${key++}`, style: style },
+              String(value),
+            ),
+          );
+        } else {
+          // Just add the value as string
+          parts.push(String(value));
+        }
+      } else {
+        // Keep placeholder if value not found
+        parts.push(match[0]);
+      }
+
+      lastIndex = regex.lastIndex;
+    }
+
+    // Add remaining text
+    if (lastIndex < text.length) {
+      parts.push(text.substring(lastIndex));
+    }
+
+    return React.createElement(React.Fragment, null, ...parts);
+  }
+
+  // Flatten translations for current language
+  function getFlattenedTranslations(language: string): Record<string, string> {
+    const flattened: Record<string, string> = {};
+    
+    if (lazy) {
+      // Lazy mode: only use loaded namespaces
+      loadedNamespaces.forEach((nsData) => {
+        if (nsData[language]) {
+          Object.assign(flattened, nsData[language]);
+        }
+      });
+    } else {
+      // Eager mode: flatten all namespaces
+      Object.keys(translations).forEach((ns) => {
+        const nsData = translations[ns];
+        if (nsData && nsData[language]) {
+          Object.assign(flattened, nsData[language]);
+        }
+      });
+    }
+    
+    return flattened;
   }
 
   /**
-   * Typed useTranslation hook
-   * Automatically infers keys based on the namespace
+   * Typed useTranslation hook - no Provider needed!
+   * Automatically subscribes to language changes and provides translation function
    *
    * @param namespace - Optional namespace to use (e.g., "common", "menu")
    *                   If not provided, returns all keys from all namespaces
@@ -252,14 +354,16 @@ export function createI18n<
    * @example
    * ```typescript
    * // Without namespace - access all keys
-   * const { t } = useTranslation();
-   * t("welcome");  // ✅ Works from any namespace
-   * t("home");     // ✅ Works from any namespace
+   * function MyComponent() {
+   *   const { t, language } = i18n.useTranslation();
+   *   return <div>{t("welcome")}</div>;
+   * }
    *
    * // With namespace - access specific namespace + fallback keys
-   * const { t } = useTranslation("menu");
-   * t("home");     // ✅ From menu namespace
-   * t("welcome");  // ✅ From fallback namespace (if enabled)
+   * function MenuComponent() {
+   *   const { t } = i18n.useTranslation("menu");
+   *   return <nav>{t("home")}</nav>;
+   * }
    * ```
    */
   function useTranslation<
@@ -273,11 +377,68 @@ export function createI18n<
         ? ExtractNamespaceWithFallback<TTranslations, NonNullable<NS>, Fallback>
         : ExtractNamespaceKeys<TTranslations, NonNullable<NS>>
   > {
-    // Note: useTranslationBase doesn't accept namespace parameter
-    // All namespaces are already flattened in the provider
-    // Type safety is enforced at compile time
-    // Runtime fallback behavior is handled by flattening all namespaces
-    return useTranslationBase<any>();
+    // Client-side only - subscribe to language changes
+    const [language, setLanguage] = React.useState<string>(() => 
+      getCurrentLanguage()
+    );
+
+    React.useEffect(() => {
+      // Update if language changed externally
+      const current = getCurrentLanguage();
+      if (current !== language) {
+        setLanguage(current);
+      }
+
+      // Subscribe to language changes
+      const unsubscribe = languageManager.addLanguageChangeListener(
+        (newLang) => {
+          currentLanguage = newLang;
+          setLanguage(newLang);
+          // Notify all other listeners
+          languageListeners.forEach((listener) => {
+            try {
+              listener(newLang);
+            } catch (error) {
+              console.error("Error in language listener:", error);
+            }
+          });
+        }
+      );
+
+      return unsubscribe;
+    }, []);
+
+    // Get translations for current language
+    const flattenedTranslations = React.useMemo(
+      () => getFlattenedTranslations(language),
+      [language]
+    );
+
+    // Create translation function
+    const translate = React.useCallback(
+      (
+        key: any,
+        variables?: Record<string, string | number>,
+        styles?: Record<string, React.CSSProperties>,
+      ): any => {
+        const text = flattenedTranslations[key] || key;
+
+        // If styles are provided, return React elements
+        if (styles && variables) {
+          return interpolateWithStyles(text, variables, styles);
+        }
+
+        // Otherwise return string
+        return interpolate(text, variables);
+      },
+      [flattenedTranslations]
+    );
+
+    return {
+      t: translate as any,
+      currentLanguage: language,
+      isReady: true,
+    };
   }
 
   /**
@@ -406,12 +567,8 @@ export function createI18n<
 
   return {
     /**
-     * Typed I18nProvider - use this instead of the base provider
-     */
-    I18nProvider: TypedI18nProvider,
-
-    /**
      * Typed useTranslation - auto-infers keys from namespace
+     * No Provider needed!
      */
     useTranslation,
 
@@ -419,6 +576,64 @@ export function createI18n<
      * Server-side translation with auto language detection
      */
     getServerTranslation,
+
+    /**
+     * Change current language
+     * @param lang - Language code to switch to
+     * @returns Promise that resolves when language is changed
+     * 
+     * @example
+     * ```typescript
+     * <button onClick={() => i18n.changeLanguage('en')}>
+     *   Switch to English
+     * </button>
+     * ```
+     */
+    changeLanguage: async (lang: string): Promise<void> => {
+      if (typeof window === "undefined") {
+        console.warn("changeLanguage() is only available on client-side");
+        return;
+      }
+      
+      const success = languageManager.setLanguage(lang);
+      if (success) {
+        currentLanguage = lang;
+      }
+    },
+
+    /**
+     * Get current language
+     */
+    getCurrentLanguage,
+
+    /**
+     * Get available languages
+     */
+    getAvailableLanguages: (): LanguageConfig[] => {
+      return languageManager.getAvailableLanguages();
+    },
+
+    /**
+     * Get language configuration for a specific language
+     */
+    getLanguageConfig: (code: string): LanguageConfig | undefined => {
+      return languageManager.getLanguageConfig(code);
+    },
+
+    /**
+     * Detect browser's preferred language
+     */
+    detectBrowserLanguage: (): string | null => {
+      return languageManager.detectBrowserLanguage();
+    },
+
+    /**
+     * Reset language to default
+     */
+    resetLanguage: (): void => {
+      languageManager.reset();
+      currentLanguage = null;
+    },
 
     /**
      * Original translations object (for reference)
