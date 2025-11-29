@@ -30,7 +30,7 @@
     "prepublishOnly": "npm run build",
     "prepack": "npm run build",
     "version": "(npm run format || true) && git add -A src || true",
-    "postversion": "git push && git push --tags",
+    "postversion": "echo '✅ Version updated successfully'",
     "validate": "npm run build && npm run test",
     "publish:dry": "npm pack --dry-run",
     "publish:check": "npm run validate && npm run publish:dry"

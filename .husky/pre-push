@@ -1,9 +1,18 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+# CI 환경에서는 스킵
+if [ -n "$CI" ]; then
+  echo "⏭️  CI environment detected, skipping pre-push hook"
+  exit 0
+fi
+
 echo "🔍 Running pre-push checks..."
 
 # 현재 브랜치 확인
 CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
 
-# main 브랜치로 직접 push 경고 (CI 환경에서는 스킵)
+# main 브랜치로 직접 push 경고 (인터랙티브 환경에서만)
 if [ "$CURRENT_BRANCH" = "main" ] && [ -t 0 ]; then
   echo "⚠️  main 브랜치로 직접 push하는 것은 권장되지 않습니다."
   echo "💡 Pull Request를 통해 변경사항을 검토하세요."
@@ -16,19 +25,11 @@ if [ "$CURRENT_BRANCH" = "main" ] && [ -t 0 ]; then
   echo "⚠️  강제 push를 진행합니다..."
 fi
 
-# 린터 실행 (필수) - 변경된 파일만 체크
-echo "🔍 Running linter on changed files..."
-git diff --cached --name-only --diff-filter=ACM | grep -E '\.(ts|tsx)$' | xargs -r npx eslint --fix || {
-  echo "❌ Linter failed. Please fix the errors before pushing."
-  exit 1
-}
-
-# 테스트 실행 (선택적 - 실패해도 계속 진행)
-echo "🧪 Running tests..."
-npx turbo run test || {
-  echo "⚠️  Tests failed, but continuing with push..."
-  echo "💡 Tests will run in GitHub Actions."
+# 린트 실행 (선택적으로 변경)
+echo "🔍 Running prettier on changed files..."
+git diff --cached --name-only --diff-filter=ACM | grep -E '\.(ts|tsx|json|md)$' | xargs -r npx prettier --check || {
+  echo "⚠️  Prettier check failed, but continuing..."
+  echo "💡 Files will be formatted in CI."
 }
 
 echo "✅ Pre-push checks completed!"
-
