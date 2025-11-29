@@ -114,7 +114,7 @@ export function generateNamespaceIndexFile(
   outputDir: string,
   fallbackNamespace: string,
   dryRun: boolean,
-  lazy: boolean = true,
+  lazy: boolean = false,
 ): void {
   const indexPath = pathLib.join(outputDir, "index.ts");
 
@@ -122,50 +122,59 @@ export function generateNamespaceIndexFile(
   const sortedNamespaces = [...namespaces].sort();
 
   if (lazy) {
-    // Lazy loading mode
+    // Lazy loading mode - 개선된 타입 안전성
+    // Type imports for all namespaces
+    const typeImports = sortedNamespaces
+      .flatMap((namespace) =>
+        languages.map((lang) => {
+          const varName = `${lang}${toPascalCase(namespace)}`;
+          return `import type ${varName} from "./${namespace}/${lang}.json";`;
+        }),
+      )
+      .join("\n");
+
+    // Type-safe translations structure
+    const translationsStructure = sortedNamespaces
+      .map((namespace) => {
+        const langEntries = languages
+          .map((lang) => {
+            const varName = `${lang}${toPascalCase(namespace)}`;
+            return `    ${lang}: {} as typeof ${varName},`;
+          })
+          .join("\n");
+        return `  "${namespace}": {\n${langEntries}\n  },`;
+      })
+      .join("\n");
+
     const content = `import { createI18n } from "i18nexus";
 
-// Lazy loading용 타입 정의
-// 실제 translations는 사용 시 동적으로 로드됨
-export const translations = {} as const;
+// 타입 안전성을 위해 모든 translations를 import (타입 정보만 사용)
+${typeImports}
 
-// 동적 namespace 로더
+// 타입 안전성을 위한 전체 translations 구조 (런타임에는 빈 객체, 타입만 제공)
+export const translations = {
+${translationsStructure}
+} as const;
+
+// 동적 namespace 로더 - 실제로 필요할 때만 로드
 async function loadNamespace(namespace: string, lang: string) {
   const module = await import(\`./\${namespace}/\${lang}.json\`);
   return module.default;
 }
 
-// createI18n with lazy loading
+// createI18n with lazy loading + 타입 안전성
 export const i18n = createI18n(translations, {
   fallbackNamespace: "${fallbackNamespace}",
   lazy: true,
   loadNamespace,
-  preloadNamespaces: ["${fallbackNamespace}"], // fallback은 미리 로드
+  preloadNamespaces: ["${fallbackNamespace}"], // fallback namespace는 미리 로드
 });
-
-// 타입 안전성을 위한 namespace 목록
-export type AvailableNamespaces = ${sortedNamespaces.map((ns) => `"${ns}"`).join(" | ")};
-
-// 사용 가능한 언어
-export type AvailableLanguages = ${languages.map((lang) => `"${lang}"`).join(" | ")};
-
-/**
- * Namespace를 미리 로드하는 헬퍼 함수
- * 성능 최적화를 위해 필요한 namespace만 로드
- * 
- * @example
- * await preloadNamespace("home");
- * const { t } = i18n.useTranslation("home");
- */
-export async function preloadNamespace(namespace: AvailableNamespaces) {
-  await i18n.loadNamespace(namespace);
-}
 `;
 
     if (!dryRun) {
       fs.writeFileSync(indexPath, content, "utf-8");
       console.log(
-        `✅ Generated lazy-loading index.ts with ${sortedNamespaces.length} namespaces`,
+        `✅ Generated lazy-loading index.ts with ${sortedNamespaces.length} namespaces (type-safe)`,
       );
     }
   } else {

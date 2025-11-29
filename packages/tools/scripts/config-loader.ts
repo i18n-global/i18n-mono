@@ -75,6 +75,13 @@ export interface I18nexusConfig {
    * @example "common"
    */
   fallbackNamespace?: string;
+  /**
+   * Lazy loading 활성화 여부
+   * true: 런타임에 필요한 namespace만 동적으로 로드
+   * false: 빌드 타임에 모든 namespace를 사전 로드
+   * @default false
+   */
+  lazy?: boolean;
 }
 
 const DEFAULT_CONFIG: I18nexusConfig = {

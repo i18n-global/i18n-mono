@@ -49,6 +49,7 @@ export interface ExtractorConfig {
   force?: boolean; // force 모드: 기존 값을 덮어씀
   namespacing?: NamespacingConfig; // 네임스페이스 자동화 설정
   skipValidation?: boolean; // 검증 스킵 (마이그레이션 시 사용)
+  lazy?: boolean; // lazy loading 활성화 여부
 }
 
 const DEFAULT_CONFIG: Required<ExtractorConfig> = {
@@ -63,6 +64,7 @@ const DEFAULT_CONFIG: Required<ExtractorConfig> = {
   outputFormat: OUTPUT_FORMATS.JSON,
   languages: [...COMMON_DEFAULTS.languages], // 기본 언어
   force: false, // 기본값: 기존 번역 유지
+  lazy: false, // 기본값: eager loading
   namespacing: {
     enabled: false, // 기본값: false (레거시 모드)
     basePath: "src/app",
@@ -82,15 +84,17 @@ export class TranslationExtractor {
   private namespaceKeys: Map<string, Map<string, ExtractedKey>> = new Map(); // namespace -> key -> ExtractedKey
 
   constructor(config: Partial<ExtractorConfig> = {}) {
-    // 프로젝트 config에서 namespacing 설정 로드
+    // 프로젝트 config에서 namespacing 및 lazy 설정 로드
     const projectConfig = loadConfig();
     const namespacingConfig = config.namespacing || projectConfig.namespacing;
+    const lazyConfig = config.lazy !== undefined ? config.lazy : projectConfig.lazy;
 
     this.config = {
       ...DEFAULT_CONFIG,
       ...config,
       namespacing: namespacingConfig || DEFAULT_CONFIG.namespacing,
       skipValidation: config.skipValidation || false,
+      lazy: lazyConfig !== undefined ? lazyConfig : false, // 기본값 false
     };
   }
 
@@ -244,6 +248,7 @@ export class TranslationExtractor {
           this.config.outputDir,
           this.config.namespacing.defaultNamespace,
           this.config.dryRun,
+          this.config.lazy, // lazy loading 옵션 전달
         );
       } else {
         // 레거시 모드: 기존 방식 유지

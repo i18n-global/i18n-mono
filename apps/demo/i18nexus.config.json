@@ -6,6 +6,7 @@
   "translationImportSource": "i18nexus",
   "fallbackNamespace": "common",
   "namespaceLocation": "page",
+  "lazy": true,
   "googleSheets": {
     "spreadsheetId": "1hF4-m_gwpYmfkHsRknfjyMhnbUvw5IuOhYAqy7VATxE",
     "credentialsPath": "./credentials.json",
