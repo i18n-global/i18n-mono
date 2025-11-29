@@ -1,6 +1,3 @@
-#!/usr/bin/env sh
-. "$(dirname -- "$0")/_/husky.sh"
-
 # CI 환경에서는 스킵
 if [ -n "$CI" ]; then
   echo "⏭️  CI environment detected, skipping pre-push hook"
