@@ -1,0 +1,17 @@
+{
+  "또는 yarn 사용:": "Or use yarn:",
+  "빠른 시작": "Quick Start",
+  "설치": "Installation",
+  "자세히 알아보기": "Learn More",
+  "컴포넌트에서 사용": "Usage in Components",
+  "쿠키 기반 언어 관리 및 SSR 지원을 갖춘 완전한 React i18n 툴킷": "Complete React i18n toolkit with cookie-based language management and SSR support",
+  "쿠키 기반 언어 영속성을 갖춘 React Context Provider": "React Context Provider with cookie-based language persistence",
+  "쿠키 영속성을 통한 언어 변경 훅": "Language switching hook with cookie persistence",
+  "클라이언트 컴포넌트에서 번역 함수에 접근하기 위한 훅": "Hook to access translation function in client components",
+  "하이드레이션 불일치 제로의 서버 사이드 번역": "Server-side translation with zero hydration mismatch",
+  "핵심 기능": "Core Features",
+  "홈": "Home",
+  "i18nexus 라이브러리": "i18nexus Library",
+  "i18nexus 문서": "i18nexus Documentation",
+  "I18nProvider 설정": "I18nProvider Setup"
+}
