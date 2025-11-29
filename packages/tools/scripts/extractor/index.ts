@@ -18,7 +18,12 @@ import {
   createExtractedKey,
   ExtractedKey,
 } from "./key-extractor";
-import { generateOutputData, writeOutputFile, writeOutputFileWithNamespace } from "./output-generator";
+import {
+  generateOutputData,
+  writeOutputFile,
+  writeOutputFileWithNamespace,
+  generateNamespaceIndexFile,
+} from "./output-generator";
 import {
   CONSOLE_MESSAGES,
   STRING_CONSTANTS,
@@ -104,7 +109,7 @@ export class TranslationExtractor {
             filePath,
             code,
             namespace,
-            this.config.namespacing
+            this.config.namespacing,
           );
           if (!validation.valid) {
             console.error(validation.error);
@@ -113,7 +118,8 @@ export class TranslationExtractor {
         }
       } else {
         // 레거시 모드: config에서 직접 지정하거나 defaultNamespace 사용
-        namespace = this.config.namespace || this.config.namespacing.defaultNamespace;
+        namespace =
+          this.config.namespace || this.config.namespacing.defaultNamespace;
       }
 
       // 확장 플러그인을 사용하여 파싱 (extractor는 더 많은 플러그인 필요)
@@ -195,7 +201,7 @@ export class TranslationExtractor {
 
       if (files.length === 0) {
         console.warn(
-          CONSOLE_MESSAGES.NO_FILES_FOUND(this.config.sourcePattern)
+          CONSOLE_MESSAGES.NO_FILES_FOUND(this.config.sourcePattern),
         );
         return;
       }
@@ -229,6 +235,16 @@ export class TranslationExtractor {
             dryRun: this.config.dryRun,
           });
         }
+
+        // 모든 네임스페이스를 통합하는 index.ts 파일 생성
+        const namespaces = Array.from(this.namespaceKeys.keys());
+        generateNamespaceIndexFile(
+          namespaces,
+          this.config.languages,
+          this.config.outputDir,
+          this.config.namespacing.defaultNamespace,
+          this.config.dryRun,
+        );
       } else {
         // 레거시 모드: 기존 방식 유지
         const keys = Array.from(this.extractedKeys.values());
@@ -260,7 +276,7 @@ export class TranslationExtractor {
 }
 
 export async function runTranslationExtractor(
-  config: Partial<ExtractorConfig> = {}
+  config: Partial<ExtractorConfig> = {},
 ): Promise<void> {
   const extractor = new TranslationExtractor(config);
   await extractor.extract();
