@@ -68,7 +68,10 @@ export default async function RootLayout({
           </>
         ) : null}
 
-        <ClientProvider translations={translations} initialLanguage={language}>
+        <ClientProvider
+          translations={translations as any}
+          initialLanguage={language}
+        >
           <GlobalErrorProvider>
             <Header />
             {children}

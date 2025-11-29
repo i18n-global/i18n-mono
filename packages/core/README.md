@@ -57,99 +57,86 @@ pnpm add i18nexus
 
 ## 🚀 빠른 시작
 
-### 1. 설정 파일 생성
+### 1. 번역 파일 생성
 
-프로젝트 루트에 `i18nexus.config.json` 파일을 생성합니다:
+```typescript
+// lib/i18n.ts
+import { createI18n } from "i18nexus";
 
-```json
-{
-  "defaultLanguage": "ko",
-  "supportedLanguages": ["ko", "en", "ja"],
-  "translationDir": "./locales",
-  "sourceDir": "./app"
-}
-```
-
-### 2. 번역 파일 생성
-
-`locales/ko.json`:
-
-```json
-{
-  "common": {
-    "welcome": "환영합니다",
-    "hello": "안녕하세요, {{name}}님",
-    "greeting": "좋은 {{time}}입니다"
+export const translations = {
+  common: {
+    ko: {
+      환영합니다: "환영합니다",
+      안녕하세요: "안녕하세요, {{name}}님",
+    },
+    en: {
+      환영합니다: "Welcome",
+      안녕하세요: "Hello, {{name}}",
+    },
   },
-  "button": {
-    "submit": "제출",
-    "cancel": "취소",
-    "save": "저장"
-  }
-}
-```
-
-`locales/en.json`:
-
-```json
-{
-  "common": {
-    "welcome": "Welcome",
-    "hello": "Hello, {{name}}",
-    "greeting": "Good {{time}}"
+  home: {
+    ko: {
+      시작하기: "시작하기",
+      "문서 보기": "문서 보기",
+    },
+    en: {
+      시작하기: "Get Started",
+      "문서 보기": "View Docs",
+    },
   },
-  "button": {
-    "submit": "Submit",
-    "cancel": "Cancel",
-    "save": "Save"
-  }
-}
+} as const;
+
+// 타입 안전한 i18n 시스템 생성
+export const i18n = createI18n(translations, {
+  fallbackNamespace: "common",
+});
 ```
 
-### 3. Provider 설정
+### 2. Provider 설정
 
 Next.js App Router의 루트 레이아웃에 Provider를 추가합니다:
 
 ```tsx
 // app/layout.tsx
-import { I18nProvider } from "i18nexus";
-import type { ReactNode } from "react";
+import { headers } from "next/headers";
+import { getServerLanguage } from "i18nexus/server";
+import { i18n } from "@/lib/i18n";
 
-export default function RootLayout({ children }: { children: ReactNode }) {
+export default async function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  const headersList = await headers();
+  const language = getServerLanguage(headersList);
+
   return (
-    <html>
+    <html lang={language}>
       <body>
-        <I18nProvider>{children}</I18nProvider>
+        <i18n.I18nProvider initialLanguage={language}>
+          {children}
+        </i18n.I18nProvider>
       </body>
     </html>
   );
 }
 ```
 
-### 4. 컴포넌트에서 사용
+### 3. 컴포넌트에서 사용
 
 #### Client Component
 
 ```tsx
 "use client";
-import { useTranslation } from "i18nexus";
+import { i18n } from "@/lib/i18n";
 
 export default function WelcomeClient() {
-  const { t, language, changeLanguage } = useTranslation();
+  const { t } = i18n.useTranslation("common");
 
   return (
     <div>
-      <h1>{t("common.welcome")}</h1>
-      <p>{t("common.hello", { name: "홍길동" })}</p>
-      <p>{t("common.greeting", { time: "아침" })}</p>
-
-      <div>
-        <button onClick={() => changeLanguage("ko")}>한국어</button>
-        <button onClick={() => changeLanguage("en")}>English</button>
-        <button onClick={() => changeLanguage("ja")}>日本語</button>
-      </div>
-
-      <p>Current Language: {language}</p>
+      <h1>{t("환영합니다")}</h1>
+      <p>{t("안녕하세요", { name: "홍길동" })}</p>
     </div>
   );
 }
@@ -158,15 +145,15 @@ export default function WelcomeClient() {
 #### Server Component
 
 ```tsx
-import { getServerTranslation } from "i18nexus/server";
+import { i18n } from "@/lib/i18n";
 
 export default async function WelcomeServer() {
-  const t = await getServerTranslation();
+  const { t } = await i18n.getServerTranslation("common");
 
   return (
     <div>
-      <h1>{t("common.welcome")}</h1>
-      <p>{t("common.hello", { name: "홍길동" })}</p>
+      <h1>{t("환영합니다")}</h1>
+      <p>{t("안녕하세요", { name: "홍길동" })}</p>
     </div>
   );
 }
@@ -174,48 +161,66 @@ export default async function WelcomeServer() {
 
 ## 📖 API 레퍼런스
 
-### `useTranslation(namespace?)`
+### `createI18n(translations, options?)`
+
+타입 안전한 i18n 시스템을 생성합니다.
+
+```typescript
+const i18n = createI18n(translations, {
+  fallbackNamespace: "common",
+  lazy: true,
+  loadNamespace: async (namespace, lang) => {
+    const module = await import(`./locales/${namespace}/${lang}.json`);
+    return module.default;
+  },
+});
+```
+
+**반환값:**
+
+- `I18nProvider` - Provider 컴포넌트
+- `useTranslation` - Client Component용 훅
+- `getServerTranslation` - Server Component용 함수
+
+### `i18n.useTranslation(namespace?)`
 
 Client Component에서 번역을 사용하는 Hook입니다.
 
 ```tsx
-const { t, language, changeLanguage, loadNamespace } = useTranslation("page");
+const { t } = i18n.useTranslation("common");
 ```
 
 **반환값:**
 
-- `t(key, params?)` - 번역 함수
-- `language` - 현재 언어
-- `changeLanguage(lang)` - 언어 변경 함수
-- `loadNamespace(namespace)` - 네임스페이스 동적 로딩
+- `t(key, variables?)` - 번역 함수
 
-### `getServerTranslation(namespace?)`
+### `i18n.getServerTranslation(namespace?)`
 
 Server Component에서 번역을 가져오는 함수입니다.
 
 ```tsx
-const t = await getServerTranslation("page");
+const { t, language } = await i18n.getServerTranslation("common");
 ```
 
 **반환값:**
 
-- `t(key, params?)` - 번역 함수
+- `t(key, variables?)` - 번역 함수
+- `language` - 현재 언어 (자동 감지)
 
-### `I18nProvider`
+### `useLanguageSwitcher()`
 
-다국어 컨텍스트를 제공하는 Provider 컴포넌트입니다.
+언어 전환 기능을 제공하는 Hook입니다.
 
 ```tsx
-<I18nProvider defaultLanguage="ko" cookieName="i18n-lang">
-  {children}
-</I18nProvider>
+const { currentLanguage, changeLanguage, availableLanguages } =
+  useLanguageSwitcher();
 ```
 
-**Props:**
+**반환값:**
 
-- `defaultLanguage?` - 기본 언어 (기본값: config의 defaultLanguage)
-- `cookieName?` - 쿠키 이름 (기본값: "i18n-language")
-- `children` - 자식 컴포넌트
+- `currentLanguage` - 현재 언어
+- `changeLanguage(lang)` - 언어 변경 함수
+- `availableLanguages` - 사용 가능한 언어 목록
 
 ## 🎨 고급 사용법
 

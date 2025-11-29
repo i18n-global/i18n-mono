@@ -60,7 +60,9 @@ export default function UseTranslationPage() {
           </div>
           <div className="bg-slate-950 rounded-lg p-6 border border-slate-700">
             <div className="text-sm text-slate-500 mb-2">{t("결과")}:</div>
-            <div className="text-2xl font-bold text-white">{t(demoKey)}</div>
+            <div className="text-2xl font-bold text-white">
+              {t(demoKey as any)}
+            </div>
           </div>
           <div className="mt-4 text-sm text-slate-400">
             <p>

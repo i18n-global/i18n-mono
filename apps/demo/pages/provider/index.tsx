@@ -3,6 +3,7 @@
 import { useLanguageSwitcher } from "i18nexus";
 
 import { i18n } from "@/locales";
+import { CodeBlock } from "@/shared/ui";
 
 export default function ProviderPage() {
   const { t } = i18n.useTranslation("provider");
@@ -94,8 +95,8 @@ export default function ProviderPage() {
               </h3>
             </div>
             <div className="p-6">
-              <pre className="bg-slate-950 text-slate-300 p-4 rounded-lg overflow-x-auto text-sm border border-slate-800">
-                <code>{`import { I18nProvider } from "i18nexus";
+              <CodeBlock language="tsx">
+                {`import { I18nProvider } from "i18nexus";
 import { cookies } from "next/headers";
 
 export default function RootLayout({ children }) {
@@ -123,8 +124,8 @@ export default function RootLayout({ children }) {
       </body>
     </html>
   );
-}`}</code>
-              </pre>
+}`}
+              </CodeBlock>
             </div>
           </div>
 
@@ -139,8 +140,8 @@ export default function RootLayout({ children }) {
               </h3>
             </div>
             <div className="p-6">
-              <pre className="bg-slate-950 text-slate-300 p-4 rounded-lg overflow-x-auto text-sm border border-slate-800">
-                <code>{`"use client";
+              <CodeBlock language="tsx">
+                {`"use client";
 
 import { useLanguageSwitcher } from "i18nexus";
 import { i18n } from "@/locales";
@@ -157,8 +158,8 @@ export default function HomePage() {
       </button>
     </div>
   );
-}`}</code>
-              </pre>
+}`}
+              </CodeBlock>
             </div>
           </div>
         </div>
@@ -255,13 +256,13 @@ export default function HomePage() {
             <h3 className="text-xl font-semibold text-blue-300 mb-4">
               useTranslation()
             </h3>
-            <pre className="bg-slate-950 text-slate-300 p-4 rounded-lg overflow-x-auto text-sm mb-4 border border-slate-800">
-              <code>{`const { t } = i18n.useTranslation("provider");
+            <CodeBlock language="typescript">
+              {`const { t } = i18n.useTranslation("provider");
 
 // Simple usage
 t("key")
-t("한국어 텍스트")`}</code>
-            </pre>
+t("한국어 텍스트")`}
+            </CodeBlock>
             <p className="text-slate-400 text-sm">
               {t("클라이언트 컴포넌트에서 번역 함수에 접근하기 위한 훅")}
             </p>
@@ -271,15 +272,15 @@ t("한국어 텍스트")`}</code>
             <h3 className="text-xl font-semibold text-indigo-300 mb-4">
               useLanguageSwitcher()
             </h3>
-            <pre className="bg-slate-950 text-slate-300 p-4 rounded-lg text-sm mb-4 border border-slate-800">
-              <code>{`const {
+            <CodeBlock language="typescript">
+              {`const {
   currentLanguage,
   changeLanguage,
   availableLanguages,
 } = useLanguageSwitcher();
 
-changeLanguage("en")`}</code>
-            </pre>
+changeLanguage("en")`}
+            </CodeBlock>
             <p className="text-slate-400 text-sm">
               {t("언어 전환 및 상태 관리를 위한 훅")}
             </p>

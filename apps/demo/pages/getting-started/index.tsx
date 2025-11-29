@@ -210,19 +210,15 @@ export const translations = {
                 <span className="text-green-400 mr-2">✓</span>
                 {t("클라이언트 컴포넌트의 경우")}
               </h4>
-              <pre className="text-xs overflow-x-auto">
-                <code className="text-slate-300">
-                  {t(
-                    `"use client";
-import { useTranslation } from "i18nexus";
+              <CodeBlock language="tsx">
+                {`"use client";
+import { i18n } from "@/locales";
 
 export default function Page() {
   const { t } = i18n.useTranslation("getting-started");
   return <div>{t("안녕하세요")}</div>;
-}`,
-                  )}
-                </code>
-              </pre>
+}`}
+              </CodeBlock>
             </div>
 
             <div className="bg-slate-900 rounded-xl p-4">
@@ -230,13 +226,14 @@ export default function Page() {
                 <span className="text-blue-400 mr-2">✓</span>
                 {t("서버 컴포넌트의 경우")}
               </h4>
-              <pre className="text-xs overflow-x-auto">
-                <code className="text-slate-300">
-                  {t(
-                    'import { headers } from "next/headers";\nimport { getServerLanguage, \n  createServerTranslation } from "i18nexus/server";\n\nexport default async function Page() {\n  const lang = getServerLanguage(await headers());\n  const t = createServerTranslation(lang, translations);\n  return <div>{t("\uC548\uB155\uD558\uC138\uC694")}</div>;\n}',
-                  )}
-                </code>
-              </pre>
+              <CodeBlock language="tsx">
+                {`import { i18n } from "@/locales";
+
+export default async function Page() {
+  const { t } = await i18n.getServerTranslation();
+  return <div>{t("안녕하세요")}</div>;
+}`}
+              </CodeBlock>
             </div>
           </div>
         </div>
@@ -319,30 +316,24 @@ export default function Page() {
               <p className="text-sm text-slate-400 mb-2">
                 {t("이전 (자동 생성)")}:
               </p>
-              <div className="bg-slate-950 rounded-xl p-4">
-                <pre className="text-xs overflow-x-auto">
-                  <code className="text-slate-300">
-                    {t(
-                      '{\n  "\uC548\uB155\uD558\uC138\uC694": "\uC548\uB155\uD558\uC138\uC694",\n  "\uD658\uC601\uD569\uB2C8\uB2E4": "\uD658\uC601\uD569\uB2C8\uB2E4"\n}',
-                    )}
-                  </code>
-                </pre>
-              </div>
+              <CodeBlock language="json">
+                {`{
+  "안녕하세요": "안녕하세요",
+  "환영합니다": "환영합니다"
+}`}
+              </CodeBlock>
             </div>
 
             <div>
               <p className="text-sm text-slate-400 mb-2">
                 {t("이후 (번역됨)")}:
               </p>
-              <div className="bg-slate-950 rounded-xl p-4">
-                <pre className="text-xs overflow-x-auto">
-                  <code className="text-slate-300">
-                    {t(
-                      '{\n  "\uC548\uB155\uD558\uC138\uC694": "Hello",\n  "\uD658\uC601\uD569\uB2C8\uB2E4": "Welcome"\n}',
-                    )}
-                  </code>
-                </pre>
-              </div>
+              <CodeBlock language="json">
+                {`{
+  "안녕하세요": "Hello",
+  "환영합니다": "Welcome"
+}`}
+              </CodeBlock>
             </div>
           </div>
         </div>
