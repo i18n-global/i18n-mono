@@ -87,14 +87,14 @@ export default function GettingStartedPage() {
         </div>
       </section>
 
-      {/* Step 3: Setup I18nProvider */}
+      {/* Step 3: Setup i18n */}
       <section className="bg-gradient-to-br from-green-950/50 to-emerald-950/50 rounded-2xl border border-green-800/50 p-8 mb-8">
         <div className="flex items-center mb-6">
           <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-emerald-600 rounded-xl flex items-center justify-center mr-4">
             <span className="text-white font-bold text-xl">3</span>
           </div>
           <h2 className="text-3xl font-bold text-white">
-            {t("I18nProvider 설정")}
+            {t("i18n 설정")}
           </h2>
         </div>
 
@@ -102,51 +102,50 @@ export default function GettingStartedPage() {
           <div>
             <p className="text-slate-300 mb-3">
               <strong className="text-white">
-                {t("Next.js App Router의 경우")}:
-              </strong>{" "}
-              {t("root layout.tsx에 추가하세요")}
+                {t("locales/index.ts 파일 생성")}:
+              </strong>
             </p>
             <CodeBlock language="typescript">
-              {`// app/layout.tsx
-import { headers } from "next/headers";
-import { I18nProvider } from "i18nexus";
-import { getServerLanguage } from "i18nexus/server";
-import { translations } from "@/lib/i18n";
+              {`// locales/index.ts
+import { createI18n } from "i18nexus";
 
-export default async function RootLayout({ children }) {
-  const headersList = await headers();
-  const language = getServerLanguage(headersList);
+export const translations = {} as const;
 
-  return (
-    <html lang={language}>
-      <body>
-        <I18nProvider
-          initialLanguage={language}
-          translations={translations}
-        >
-          {children}
-        </I18nProvider>
-      </body>
-    </html>
-  );
-}`}
+async function loadNamespace(namespace: string, lang: string) {
+  const module = await import(\`./\${namespace}/\${lang}.json\`);
+  return module.default;
+}
+
+export const i18n = createI18n(translations, {
+  fallbackNamespace: "common",
+  lazy: true,
+  loadNamespace,
+  preloadNamespaces: ["common"],
+  languageManager: {
+    defaultLanguage: "ko",
+    availableLanguages: [
+      { code: "ko", name: "한국어", flag: "🇰🇷" },
+      { code: "en", name: "English", flag: "🇺🇸" },
+    ],
+  },
+});`}
             </CodeBlock>
           </div>
 
           <div>
             <p className="text-slate-300 mb-3">
-              <strong className="text-white">{t("번역 파일")}:</strong>{" "}
-              {t("lib/i18n.ts 생성")}
+              <strong className="text-white">{t("Root Layout")}:</strong>{" "}
+              {t("Provider 없이 간단하게")}
             </p>
             <CodeBlock language="typescript">
-              {`// lib/i18n.ts
-import en from "../locales/en.json";
-import ko from "../locales/ko.json";
-
-export const translations = {
-  en,
-  ko,
-};`}
+              {`// app/layout.tsx
+export default function RootLayout({ children }) {
+  return (
+    <html lang="ko">
+      <body>{children}</body>
+    </html>
+  );
+}`}
             </CodeBlock>
           </div>
         </div>
@@ -197,7 +196,7 @@ export const translations = {
                   </strong>
                   <br />
                   {t(
-                    "에러를 확인하고 use client를 추가할지 createServerTranslation()을 사용할지 결정하세요",
+                    "에러를 확인하고 use client를 추가할지 getServerTranslation()을 사용할지 결정하세요",
                   )}
                 </li>
               </ol>

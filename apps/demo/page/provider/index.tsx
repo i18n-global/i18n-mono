@@ -18,8 +18,13 @@ export default function ProviderPage() {
           <span className="text-white font-bold text-2xl">🎨</span>
         </div>
         <h1 className="text-4xl md:text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-500 mb-4">
-          I18nProvider
+          I18nProvider (Deprecated)
         </h1>
+        <div className="bg-yellow-950/30 border border-yellow-800/50 rounded-lg p-4 mb-4">
+          <p className="text-yellow-300 text-sm">
+            ⚠️ I18nProvider는 더 이상 필요하지 않습니다. createI18n()을 사용하면 Provider 없이도 i18n을 사용할 수 있습니다.
+          </p>
+        </div>
         <p className="text-xl text-slate-300">
           {t("쿠키 기반 언어 영속성 및 SSR 지원을 갖춘 React Context Provider")}
         </p>
@@ -96,7 +101,8 @@ export default function ProviderPage() {
             </div>
             <div className="p-6">
               <CodeBlock language="tsx">
-                {`import { I18nProvider } from "i18nexus";
+                {`// ❌ 옛날 방식 (Provider 필요)
+import { I18nProvider } from "i18nexus";
 import { cookies } from "next/headers";
 
 export default function RootLayout({ children }) {
@@ -124,6 +130,18 @@ export default function RootLayout({ children }) {
       </body>
     </html>
   );
+}
+
+// ✅ 새로운 방식 (Provider 불필요)
+// locales/index.ts에서 createI18n으로 설정
+import { i18n } from "@/locales";
+
+export default function RootLayout({ children }) {
+  return (
+    <html lang="ko">
+      <body>{children}</body>
+    </html>
+  );
 }`}
               </CodeBlock>
             </div>
@@ -143,17 +161,15 @@ export default function RootLayout({ children }) {
               <CodeBlock language="tsx">
                 {`"use client";
 
-import { useLanguageSwitcher } from "i18nexus";
 import { i18n } from "@/locales";
 
 export default function HomePage() {
   const { t } = i18n.useTranslation("provider");
-  const { currentLanguage, changeLanguage } = useLanguageSwitcher();
 
   return (
     <div>
       <h1>{t("환영합니다")}</h1>
-      <button onClick={() => changeLanguage("en")}>
+      <button onClick={() => i18n.changeLanguage("en")}>
         English
       </button>
     </div>
@@ -270,19 +286,20 @@ t("한국어 텍스트")`}
 
           <div className="bg-slate-900 rounded-xl border border-slate-800 p-6">
             <h3 className="text-xl font-semibold text-indigo-300 mb-4">
-              useLanguageSwitcher()
+              i18n.changeLanguage()
             </h3>
             <CodeBlock language="typescript">
-              {`const {
-  currentLanguage,
-  changeLanguage,
-  availableLanguages,
-} = useLanguageSwitcher();
+              {`// 어디서나 직접 호출 가능
+i18n.changeLanguage("en");
 
-changeLanguage("en")`}
+// 가능한 언어 목록
+const languages = i18n.getAvailableLanguages();
+
+// 현재 언어
+const current = i18n.getCurrentLanguage();`}
             </CodeBlock>
             <p className="text-slate-400 text-sm">
-              {t("언어 전환 및 상태 관리를 위한 훅")}
+              {t("언어 전환 및 상태 관리를 위한 메서드")}
             </p>
           </div>
         </div>

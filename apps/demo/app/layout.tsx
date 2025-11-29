@@ -1,16 +1,12 @@
 import "./globals.css";
 
 import { I18NexusDevtools } from "i18nexus";
-import { getServerLanguage } from "i18nexus/server";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono, Noto_Sans_KR } from "next/font/google";
 import localFont from "next/font/local";
-import { headers } from "next/headers";
 import Script from "next/script";
 
-import { translations } from "@/locales";
 import { Analytics, FirebaseStatus, GlobalErrorProvider } from "@/shared/ui";
-import ClientProvider from "@/shared/ui/ClientProvider";
 import { Header } from "@/widgets/navigation";
 
 const geistSans = Geist({
@@ -46,15 +42,10 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  // Server Component: 쿠키에서 언어 읽기
-  const headersList = await headers();
-  const language = getServerLanguage(headersList);
-
   return (
-    <html lang={language}>
+    <html lang="ko">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} ${notoSansKR.variable} ${bmHannaPro.variable} antialiased`}
-      >
+        className={`${geistSans.variable} ${geistMono.variable} ${notoSansKR.variable} ${bmHannaPro.variable} antialiased`}>
         {/* Google Analytics: gtag.js (GA4) - uses NEXT_PUBLIC_GA_ID */}
         {process.env.NEXT_PUBLIC_GA_ID ? (
           <>
@@ -68,20 +59,15 @@ export default async function RootLayout({
           </>
         ) : null}
 
-        <ClientProvider
-          translations={translations as any}
-          initialLanguage={language}
-        >
-          <GlobalErrorProvider>
-            <Header />
-            {children}
-            {/* Client-side analytics tracker */}
-            <Analytics />
-            {/* Firebase connection status indicator - dev only */}
-            {process.env.NODE_ENV === "development" && <FirebaseStatus />}
-            {process.env.NODE_ENV === "development" && <I18NexusDevtools />}
-          </GlobalErrorProvider>
-        </ClientProvider>
+        <GlobalErrorProvider>
+          <Header />
+          {children}
+          {/* Client-side analytics tracker */}
+          <Analytics />
+          {/* Firebase connection status indicator - dev only */}
+          {process.env.NODE_ENV === "development" && <FirebaseStatus />}
+          {process.env.NODE_ENV === "development" && <I18NexusDevtools />}
+        </GlobalErrorProvider>
       </body>
     </html>
   );

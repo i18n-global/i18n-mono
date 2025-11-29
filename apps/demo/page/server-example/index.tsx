@@ -87,21 +87,15 @@ export default async function ServerExamplePage() {
         </h2>
         <div className="bg-slate-950 rounded-lg sm:rounded-xl p-4 sm:p-6 mb-4 border border-slate-800">
           <pre className="text-slate-300 text-xs sm:text-sm font-mono overflow-x-auto">
-            <code>{`import { headers } from "next/headers";
-import { getServerLanguage, createServerTranslation } from "i18nexus/server";
-import { translations } from "@/lib/i18n";
+            <code>{`import { i18n } from "@/locales";
 
 // ✅ Server Component (기본값)
 export default async function Page() {
-  // 1. 쿠키에서 언어 가져오기
-  const headersList = await headers();
-  const language = getServerLanguage(headersList);
+  // 자동으로 언어 감지 및 번역 함수 생성
+  const { t, language } = await i18n.getServerTranslation("common");
   
-  // 2. 번역 함수 생성
-  const t = createServerTranslation(language, translations);
-  
-  // 3. 사용!
-  return <h1>{t("Welcome")}</h1>;
+  // 사용!
+  return <h1>{t("환영합니다")}</h1>;
 }
 `}</code>
           </pre>
@@ -118,7 +112,7 @@ export default async function Page() {
           <div className="space-y-2 sm:space-y-3 text-xs sm:text-sm text-slate-300">
             <div className="flex items-start">
               <span className="text-green-400 mr-2">✓</span>
-              <span>{t("createServerTranslation() 사용")}</span>
+              <span>{t("getServerTranslation() 사용")}</span>
             </div>
             <div className="flex items-start">
               <span className="text-green-400 mr-2">✓</span>
@@ -186,7 +180,7 @@ export default async function Page() {
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between bg-slate-950 p-3 sm:p-4 rounded-lg gap-1 sm:gap-0">
             <span className="font-semibold">{t("번역 방법")}:</span>
             <span className="text-purple-400 font-mono text-sm sm:text-base">
-              createServerTranslation()
+              getServerTranslation()
             </span>
           </div>
         </div>
