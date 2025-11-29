@@ -78,11 +78,11 @@ export function useAdminDashboard() {
           // 인덱스 생성 링크가 있으면 표시
           const message = data.indexUrl
             ? t(
-              "Firestore \uC778\uB371\uC2A4\uAC00 \uD544\uC694\uD569\uB2C8\uB2E4. \uB9C1\uD06C\uB97C \uD074\uB9AD\uD558\uC5EC \uC0DD\uC131\uD574\uC8FC\uC138\uC694: {{\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\ndata_indexUrl}}",
-              {
-                data_indexUrl: data.indexUrl,
-              }
-            )
+                "Firestore \uC778\uB371\uC2A4\uAC00 \uD544\uC694\uD569\uB2C8\uB2E4. \uB9C1\uD06C\uB97C \uD074\uB9AD\uD558\uC5EC \uC0DD\uC131\uD574\uC8FC\uC138\uC694: {{\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\ndata_indexUrl}}",
+                {
+                  data_indexUrl: data.indexUrl,
+                },
+              )
             : data.error;
           setError(message);
 
@@ -93,8 +93,8 @@ export function useAdminDashboard() {
         } else if (data.code === "FIRESTORE_NOT_CONFIGURED") {
           setError(
             t(
-              "Firestore Database가 설정되지 않았습니다. FIREBASE_QUICK_SETUP.md를 참고하세요."
-            )
+              "Firestore Database가 설정되지 않았습니다. FIREBASE_QUICK_SETUP.md를 참고하세요.",
+            ),
           );
         } else {
           setError(data.error || t("제출 목록을 불러오는데 실패했습니다."));

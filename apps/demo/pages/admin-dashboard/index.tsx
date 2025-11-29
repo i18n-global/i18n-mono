@@ -3,7 +3,7 @@
 import { ProjectManageCard } from "@/features/project-manage";
 import { i18n } from "@/locales";
 
-import { useAdminDashboard } from "./useAdminDashboard";
+import { useAdminDashboard } from "./model/useAdminDashboard";
 
 export default function AdminDashboard() {
   const { t } = i18n.useTranslation();

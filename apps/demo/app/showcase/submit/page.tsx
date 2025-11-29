@@ -1,9 +1,5 @@
-import { ProjectSubmitForm } from "@/features/project-submit";
+import ShowcaseSubmitPage from "@/pages/showcase-submit";
 
-export default function ShowcaseSubmitPage() {
-  return (
-    <main>
-      <ProjectSubmitForm />
-    </main>
-  );
+export default function Page() {
+  return <ShowcaseSubmitPage />;
 }
