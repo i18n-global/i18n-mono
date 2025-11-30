@@ -252,6 +252,33 @@ export function createI18n<
     const [language, setLanguage] = React.useState<string>(() =>
       getCurrentLanguage(),
     );
+    const [isReady, setIsReady] = React.useState<boolean>(false);
+
+    // Namespace 로드
+    React.useEffect(() => {
+      if (lazy && namespace && loadNamespace) {
+        if (!loadedNamespaces.has(namespace as string)) {
+          const languages = Object.keys(translations[namespace] || {});
+          Promise.all(
+            languages.map(async (lang) => {
+              const data = await loadNamespace(String(namespace), lang);
+              return { lang, data };
+            }),
+          ).then((results) => {
+            const nsData: Record<string, Record<string, string>> = {};
+            results.forEach(({ lang, data }) => {
+              nsData[lang] = data;
+            });
+            loadedNamespaces.set(String(namespace), nsData);
+            setIsReady(true);
+          });
+        } else {
+          setIsReady(true);
+        }
+      } else {
+        setIsReady(true);
+      }
+    }, [namespace]);
 
     React.useEffect(() => {
       const current = getCurrentLanguage();
@@ -278,7 +305,7 @@ export function createI18n<
 
     const flattenedTranslations = React.useMemo(
       () => getFlattenedTranslations(language),
-      [language],
+      [language, isReady],
     );
 
     const translate = React.useCallback(
@@ -301,7 +328,7 @@ export function createI18n<
     return {
       t: translate as any,
       currentLanguage: language,
-      isReady: true,
+      isReady,
     };
   }
 
