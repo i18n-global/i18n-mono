@@ -8,7 +8,7 @@ import { LanguageSwitcher } from "@/features/language-switch";
 import { i18n } from "@/locales";
 
 export default function Navigation() {
-  const { t, isReady } = i18n.useTranslation();
+  const { t } = i18n.useTranslation();
   const pathname = usePathname();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [cliExpanded, setCliExpanded] = useState(false);
@@ -20,8 +20,8 @@ export default function Navigation() {
     setMounted(true);
   }, []);
 
-  if (!mounted || !isReady) {
-    return null; // 서버 렌더링 및 초기 로딩 시 아무것도 렌더링하지 않음
+  if (!mounted) {
+    return null; // 서버 렌더링 시 아무것도 렌더링하지 않음
   }
 
   // 현재 선택된 섹션 확인
