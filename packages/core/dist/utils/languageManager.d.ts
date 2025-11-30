@@ -20,6 +20,7 @@ export declare class LanguageManager {
     constructor(options?: LanguageManagerOptions);
     /**
      * 현재 언어 코드를 가져옵니다
+     * 클라이언트에서만 사용 (서버에서는 getDefaultLanguage() 사용)
      */
     getCurrentLanguage(): string;
     /**

@@ -22,8 +22,14 @@ export class LanguageManager {
     }
     /**
      * 현재 언어 코드를 가져옵니다
+     * 클라이언트에서만 사용 (서버에서는 getDefaultLanguage() 사용)
      */
     getCurrentLanguage() {
+        // 서버에서는 호출하지 않음 (클라이언트 컴포넌트는 서버에서 기본 언어로 렌더링)
+        if (typeof window === "undefined") {
+            return this.options.defaultLanguage;
+        }
+        // 클라이언트 환경
         // 1. 쿠키에서 확인
         const cookieLanguage = getCookie(this.options.cookieName);
         if (cookieLanguage && this.isValidLanguage(cookieLanguage)) {
