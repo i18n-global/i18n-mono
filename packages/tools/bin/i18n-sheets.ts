@@ -6,6 +6,7 @@ import {
   GoogleSheetsConfig,
 } from "../scripts/google-sheets";
 import { loadConfig } from "../scripts/config-loader";
+import { generateNamespaceIndexFile } from "../scripts/extractor/output-generator";
 import * as fs from "fs";
 import * as path from "path";
 
@@ -251,6 +252,20 @@ program
     "--typescript, --ts",
     "Generate TypeScript config file (.ts) instead of JSON"
   )
+  .option(
+    "--namespace-location <path>",
+    "Namespace location path (e.g., 'page', 'src/pages')",
+    "page"
+  )
+  .option(
+    "--fallback-namespace <name>",
+    "Fallback namespace name",
+    "common"
+  )
+  .option(
+    "--no-lazy",
+    "Disable lazy loading (use eager loading instead)"
+  )
   .action(async (options) => {
     try {
       console.log("🚀 Initializing i18nexus project...");
@@ -272,7 +287,10 @@ export const config = defineConfig({
   defaultLanguage: "${languages[0]}",
   localesDir: "${options.locales}",
   sourcePattern: "src/**/*.{ts,tsx,js,jsx}",
-  translationImportSource: "i18nexus",${
+  translationImportSource: "i18nexus",
+  fallbackNamespace: "${options.fallbackNamespace || "common"}",
+  namespaceLocation: "${options.namespaceLocation || "page"}",
+  lazy: ${options.lazy !== false ? "true" : "false"},${
     options.spreadsheet
       ? `
   googleSheets: {
@@ -303,6 +321,9 @@ export type AppLanguages = typeof config.languages[number];
           localesDir: options.locales,
           sourcePattern: "src/**/*.{js,jsx,ts,tsx}",
           translationImportSource: "i18nexus",
+          fallbackNamespace: options.fallbackNamespace || "common",
+          namespaceLocation: options.namespaceLocation || "page",
+          lazy: options.lazy !== false,
           googleSheets: {
             spreadsheetId: options.spreadsheet || "",
             credentialsPath: options.credentials,
@@ -323,9 +344,17 @@ export type AppLanguages = typeof config.languages[number];
         console.log(`✅ Created ${options.locales} directory`);
       }
 
-      // 3. 각 언어별 번역 파일 생성
+      // 3. 네임스페이스 모드: 기본 네임스페이스(common) 생성
+      const fallbackNamespace = options.fallbackNamespace || "common";
+      const namespaceDir = path.join(options.locales, fallbackNamespace);
+      if (!fs.existsSync(namespaceDir)) {
+        fs.mkdirSync(namespaceDir, { recursive: true });
+        console.log(`✅ Created namespace directory: ${namespaceDir}`);
+      }
+
+      // 4. 각 언어별 번역 파일 생성 (네임스페이스 구조)
       languages.forEach((lang: string) => {
-        const langFile = path.join(options.locales, `${lang}.json`);
+        const langFile = path.join(namespaceDir, `${lang}.json`);
         if (!fs.existsSync(langFile)) {
           fs.writeFileSync(langFile, JSON.stringify({}, null, 2));
           console.log(`✅ Created ${langFile}`);
@@ -334,23 +363,21 @@ export type AppLanguages = typeof config.languages[number];
         }
       });
 
-      // 4. index.ts 파일 생성
+      // 5. index.ts 파일 생성 (네임스페이스 모드 + lazy loading)
       const indexPath = path.join(options.locales, "index.ts");
       if (!fs.existsSync(indexPath)) {
-        const imports = languages
-          .map((lang: string) => `import ${lang} from "./${lang}.json";`)
-          .join("\n");
-        const exportObj = languages
-          .map((lang: string) => `  ${lang}: ${lang},`)
-          .join("\n");
-        const indexContent = `${imports}
-
-export const translations = {
-${exportObj}
-};
-`;
-        fs.writeFileSync(indexPath, indexContent);
-        console.log(`✅ Created ${indexPath}`);
+        const useLazy = options.lazy !== false;
+        generateNamespaceIndexFile(
+          [fallbackNamespace],
+          languages,
+          options.locales,
+          fallbackNamespace,
+          false, // dryRun
+          useLazy
+        );
+        console.log(
+          `✅ Created ${indexPath} with namespace mode${useLazy ? " + lazy loading" : ""}`
+        );
       } else {
         console.log(`⚠️  ${indexPath} already exists, skipping...`);
       }
@@ -411,11 +438,18 @@ GOOGLE_CREDENTIALS_PATH=${options.credentials}
       }
 
       console.log("\n✅ i18nexus project initialized successfully!");
+      console.log("\n📝 Project structure:");
+      console.log(`   ${options.locales}/`);
+      console.log(`   ├── ${fallbackNamespace}/`);
+      languages.forEach((lang) => {
+        console.log(`   │   ├── ${lang}.json`);
+      });
+      console.log(`   └── index.ts (namespace mode${options.lazy !== false ? " + lazy loading" : ""})`);
       console.log("\n📝 Next steps:");
       console.log("1. Update i18nexus.config.json with your project settings");
       console.log("2. Run 'i18n-wrapper' to wrap hardcoded strings");
       console.log(
-        "3. Run 'i18n-extractor' to extract translation keys to en.json and ko.json"
+        "3. Run 'i18n-extractor' to extract translation keys (automatically creates new namespaces)"
       );
       if (options.spreadsheet) {
         console.log("4. Run 'i18n-sheets upload' to sync with Google Sheets");
