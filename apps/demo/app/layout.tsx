@@ -5,7 +5,12 @@ import { Geist, Geist_Mono, Noto_Sans_KR } from "next/font/google";
 import localFont from "next/font/local";
 import Script from "next/script";
 
-import { Analytics, FirebaseStatus, GlobalErrorProvider } from "@/shared/ui";
+import {
+  Analytics,
+  FirebaseStatus,
+  GlobalErrorProvider,
+  ScrollRestorer,
+} from "@/shared/ui";
 import Navigation from "@/widgets/Navigation";
 
 const geistSans = Geist({
@@ -60,6 +65,7 @@ export default async function RootLayout({
         ) : null}
 
         <GlobalErrorProvider>
+          <ScrollRestorer />
           <Navigation />
           {children}
           {/* Client-side analytics tracker */}

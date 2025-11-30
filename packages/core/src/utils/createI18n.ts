@@ -543,7 +543,17 @@ export function createI18n<
 
         // 새로고침 옵션이 활성화된 경우 페이지 새로고침
         if (options?.reload) {
-          window.location.reload();
+          // 스크롤 위치를 sessionStorage에 저장
+          sessionStorage.setItem(
+            "i18n-scroll-position",
+            JSON.stringify({
+              x: window.scrollX,
+              y: window.scrollY,
+            }),
+          );
+
+          // 현재 URL로 이동
+          window.location.href = window.location.href;
         }
       }
     },
