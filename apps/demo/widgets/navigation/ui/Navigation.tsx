@@ -8,11 +8,21 @@ import { LanguageSwitcher } from "@/features/language-switch";
 import { i18n } from "@/locales";
 
 export default function Navigation() {
-  const { t } = i18n.useTranslation();
+  const { t, isReady } = i18n.useTranslation();
   const pathname = usePathname();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [cliExpanded, setCliExpanded] = useState(false);
   const [docsExpanded, setDocsExpanded] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
+  // Hydration 에러 방지를 위해 클라이언트 마운트 후에만 렌더링
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted || !isReady) {
+    return null; // 서버 렌더링 및 초기 로딩 시 아무것도 렌더링하지 않음
+  }
 
   // 현재 선택된 섹션 확인
   const isCliSelected =
