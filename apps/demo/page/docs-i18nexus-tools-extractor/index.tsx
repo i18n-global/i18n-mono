@@ -230,7 +230,7 @@ export default function I18nExtractorPage() {
                     "기존 번역 파일을 읽고, 새로운 키만 추가하며 기존 번역은 모두 보존합니다.",
                   )}
                 </p>
-                <div className="grid md:grid-cols-2 gap-3 mt-3">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mt-3">
                   <div>
                     <p className="text-xs text-slate-500 mb-1">
                       {t("기존 파일")}:
@@ -539,7 +539,7 @@ export default function I18nExtractorPage() {
       {/* Next Steps */}
       <section>
         <h2 className="text-3xl font-bold text-white mb-6">{t("다음 단계")}</h2>
-        <div className="grid md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <Link
             href="/docs/i18nexus-tools/wrapper"
             className="bg-slate-900 border border-slate-700 rounded-lg p-6 hover:border-purple-500 transition-colors"

@@ -128,7 +128,7 @@ export default function HomePage() {
             </p>
           </div>
 
-          <div className="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto mb-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto mb-8">
             <DownloadStats
               packageName="i18nexus"
               displayName="i18nexus"
@@ -165,7 +165,7 @@ export default function HomePage() {
             </p>
           </div>
 
-          <div className="grid sm:grid-cols-2 gap-4 sm:gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
             <div className="bg-slate-900/80 backdrop-blur rounded-xl sm:rounded-2xl border border-red-900/30 p-5 sm:p-8 hover:border-red-500/50 transition-colors">
               <div className="w-12 h-12 sm:w-14 sm:h-14 bg-red-500/10 rounded-lg sm:rounded-xl flex items-center justify-center mb-3 sm:mb-4">
                 <svg
@@ -298,7 +298,7 @@ export default function HomePage() {
             </p>
           </div>
 
-          <div className="grid sm:grid-cols-2 gap-4 sm:gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
             <div className="bg-slate-800/50 rounded-2xl border border-green-500/20 p-8 hover:border-green-500/40 transition-all">
               <div className="w-14 h-14 bg-green-500/10 rounded-xl flex items-center justify-center mb-4">
                 <svg
@@ -419,7 +419,7 @@ export default function HomePage() {
             </p>
           </div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             {/* Feature 1 */}
             <div className="group text-center">
               <div className="w-20 h-20 bg-blue-500/10 rounded-2xl flex items-center justify-center mx-auto mb-6 border border-blue-500/20 group-hover:border-blue-500/40 transition-all">
@@ -670,7 +670,7 @@ export default function RootLayout({ children }) {
             </p>
           </div>
 
-          <div className="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto">
             {/* i18nexus Library Docs */}
             <Link
               href="/docs/i18nexus"

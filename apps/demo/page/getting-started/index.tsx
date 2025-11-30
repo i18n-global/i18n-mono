@@ -93,9 +93,7 @@ export default function GettingStartedPage() {
           <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-emerald-600 rounded-xl flex items-center justify-center mr-4">
             <span className="text-white font-bold text-xl">3</span>
           </div>
-          <h2 className="text-3xl font-bold text-white">
-            {t("i18n 설정")}
-          </h2>
+          <h2 className="text-3xl font-bold text-white">{t("i18n 설정")}</h2>
         </div>
 
         <div className="space-y-4">
@@ -203,7 +201,7 @@ export default function RootLayout({ children }) {
             </div>
           </div>
 
-          <div className="grid md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="bg-slate-900 rounded-xl p-4">
               <h4 className="text-white font-semibold mb-2 flex items-center">
                 <span className="text-green-400 mr-2">✓</span>
@@ -310,7 +308,7 @@ export default async function Page() {
         <div className="space-y-4 text-slate-300">
           <p>{t("locales/en.json 파일을 열고 영어 번역을 추가하세요")}</p>
 
-          <div className="grid md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <p className="text-sm text-slate-400 mb-2">
                 {t("이전 (자동 생성)")}:

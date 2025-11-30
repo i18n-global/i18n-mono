@@ -357,7 +357,7 @@ export default async function Page() {
       {/* See Also */}
       <section>
         <h2 className="text-3xl font-bold text-white mb-6">{t("참고 자료")}</h2>
-        <div className="grid md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <Link
             href="/docs/i18nexus/use-translation"
             className="bg-slate-900 border border-slate-700 rounded-lg p-4 hover:border-blue-500 transition-colors"

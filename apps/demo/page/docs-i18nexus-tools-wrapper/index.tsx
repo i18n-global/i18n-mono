@@ -164,7 +164,7 @@ export default function I18nWrapperPage() {
       <section className="mb-12">
         <h2 className="text-3xl font-bold text-white mb-6">{t("변환 예제")}</h2>
 
-        <div className="grid md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* Before */}
           <div>
             <div className="flex items-center mb-3">
@@ -205,7 +205,7 @@ export default function I18nWrapperPage() {
           <h3 className="text-xl font-semibold text-purple-400 mb-4">
             {t("복잡한 예제")}
           </h3>
-          <div className="grid md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
               <h4 className="text-sm font-medium text-slate-400 mb-2">
                 {t("이전")}:
@@ -423,7 +423,7 @@ export default function I18nWrapperPage() {
       {/* Next Steps */}
       <section>
         <h2 className="text-3xl font-bold text-white mb-6">{t("다음 단계")}</h2>
-        <div className="grid md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <Link
             href="/docs/i18nexus-tools/extractor"
             className="bg-slate-900 border border-slate-700 rounded-lg p-6 hover:border-green-500 transition-colors"

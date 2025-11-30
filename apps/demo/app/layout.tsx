@@ -1,6 +1,5 @@
 import "./globals.css";
 
-import { I18NexusDevtools } from "i18nexus";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono, Noto_Sans_KR } from "next/font/google";
 import localFont from "next/font/local";
@@ -45,7 +44,8 @@ export default async function RootLayout({
   return (
     <html lang="ko">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} ${notoSansKR.variable} ${bmHannaPro.variable} antialiased`}>
+        className={`${geistSans.variable} ${geistMono.variable} ${notoSansKR.variable} ${bmHannaPro.variable} antialiased`}
+      >
         {/* Google Analytics: gtag.js (GA4) - uses NEXT_PUBLIC_GA_ID */}
         {process.env.NEXT_PUBLIC_GA_ID ? (
           <>
@@ -66,7 +66,6 @@ export default async function RootLayout({
           <Analytics />
           {/* Firebase connection status indicator - dev only */}
           {process.env.NODE_ENV === "development" && <FirebaseStatus />}
-          {process.env.NODE_ENV === "development" && <I18NexusDevtools />}
         </GlobalErrorProvider>
       </body>
     </html>

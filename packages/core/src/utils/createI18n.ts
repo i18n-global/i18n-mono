@@ -127,6 +127,29 @@ export function createI18n<
     Record<string, Record<string, string>>
   >();
 
+  // 프리로드 네임스페이스 (lazy 모드에서만)
+  if (lazy && loadNamespace && preloadNamespaces.length > 0) {
+    Promise.all(
+      preloadNamespaces.map(async (ns) => {
+        const languages = Object.keys(translations[ns] || {});
+        const promises = languages.map(async (lang) => {
+          const data = await loadNamespace(String(ns), lang);
+          return { lang, data };
+        });
+
+        const results = await Promise.all(promises);
+        const nsData: Record<string, Record<string, string>> = {};
+        results.forEach(({ lang, data }) => {
+          nsData[lang] = data;
+        });
+
+        loadedNamespaces.set(String(ns), nsData);
+      }),
+    ).catch((error) => {
+      console.error("Failed to preload namespaces:", error);
+    });
+  }
+
   // 문자열 보간 함수
   function interpolate(
     text: string,

@@ -103,7 +103,7 @@ export default async function Page() {
       </section>
 
       {/* Comparison */}
-      <section className="grid sm:grid-cols-2 gap-4 sm:gap-6">
+      <section className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
         <div className="bg-gradient-to-br from-blue-950/50 to-blue-900/30 rounded-xl sm:rounded-2xl border border-blue-800/50 p-4 sm:p-6">
           <h3 className="text-lg sm:text-xl font-bold text-blue-400 mb-3 sm:mb-4 flex items-center">
             <span className="mr-2">🖥️</span>

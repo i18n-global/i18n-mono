@@ -244,7 +244,7 @@ export default function I18nexusToolsPage() {
         <h2 className="text-3xl font-bold text-white mb-8">
           {t("사용 가능한 도구")}
         </h2>
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {tools.map((tool) => {
             const colors =
               colorClasses[tool.color as keyof typeof colorClasses];
@@ -318,7 +318,7 @@ export default function I18nexusToolsPage() {
       {/* Features */}
       <section>
         <h2 className="text-3xl font-bold text-white mb-6">{t("주요 기능")}</h2>
-        <div className="grid md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="bg-slate-900 rounded-xl border border-slate-700 p-6">
             <h3 className="text-xl font-semibold text-white mb-3 flex items-center">
               <span className="mr-2">🤖</span>

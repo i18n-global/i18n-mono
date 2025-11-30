@@ -314,7 +314,7 @@ export default function I18nDownloadPage() {
         <h2 className="text-3xl font-bold text-white mb-6">
           i18n-download vs i18n-download-force
         </h2>
-        <div className="grid md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="bg-gradient-to-br from-blue-900/30 to-cyan-900/30 border border-blue-700/50 rounded-xl p-6">
             <h3 className="text-xl font-semibold text-blue-300 mb-4 flex items-center">
               <span className="mr-2">📥</span>
@@ -420,7 +420,7 @@ export default function I18nDownloadPage() {
       {/* Next Steps */}
       <section>
         <h2 className="text-3xl font-bold text-white mb-6">{t("다음 단계")}</h2>
-        <div className="grid md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <Link
             href="/docs/i18nexus-tools/download-force"
             className="bg-slate-900 border border-slate-700 rounded-lg p-6 hover:border-red-500 transition-colors"

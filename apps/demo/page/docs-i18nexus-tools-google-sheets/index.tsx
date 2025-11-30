@@ -425,7 +425,7 @@ export default function GoogleSheetsPage() {
           <h3 className="text-lg font-semibold text-red-300 mb-3 mt-6">
             {t("일반 download와 차이점")}
           </h3>
-          <div className="grid md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="bg-blue-900/20 border border-blue-700/50 rounded-lg p-4">
               <h4 className="font-semibold text-blue-300 mb-2">
                 i18n-download
@@ -651,7 +651,7 @@ credentials.json
       {/* Next Steps */}
       <section>
         <h2 className="text-3xl font-bold text-white mb-6">{t("다음 단계")}</h2>
-        <div className="grid md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <Link
             href="/docs/i18nexus-tools/extractor"
             className="bg-slate-900 border border-slate-700 rounded-lg p-6 hover:border-green-500 transition-colors"

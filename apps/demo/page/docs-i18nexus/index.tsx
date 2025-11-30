@@ -115,7 +115,7 @@ export default function I18nexusDocsPage() {
         <h2 className="text-2xl sm:text-3xl font-bold text-white mb-6 sm:mb-8">
           {t("핵심 기능")}
         </h2>
-        <div className="grid sm:grid-cols-2 gap-4 sm:gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
           {features.map((feature) => {
             const colors =
               colorClasses[feature.color as keyof typeof colorClasses];

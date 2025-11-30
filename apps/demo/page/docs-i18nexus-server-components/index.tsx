@@ -156,7 +156,7 @@ export default async function ServerPage() {
           {t("서버 컴포넌트 vs 클라이언트 컴포넌트")}
         </h2>
 
-        <div className="grid md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="bg-gradient-to-br from-blue-950/50 to-blue-900/30 rounded-xl border border-blue-800/50 p-6">
             <h3 className="text-xl font-bold text-blue-400 mb-4 flex items-center">
               <span className="mr-2">🖥️</span>
@@ -378,7 +378,7 @@ const language = getServerLanguage(headersList);
       {/* See Also */}
       <section>
         <h2 className="text-3xl font-bold text-white mb-6">{t("참고 자료")}</h2>
-        <div className="grid md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <Link
             href="/docs/i18nexus/use-translation"
             className="bg-slate-900 border border-slate-700 rounded-lg p-4 hover:border-blue-500 transition-colors"

@@ -61,7 +61,7 @@ npx i18n-wrapper --pattern "app/page.tsx"`}</code>
             </pre>
           </div>
 
-          <div className="grid md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="bg-slate-900 rounded-xl border border-slate-800 p-6">
               <div className="flex items-center mb-3">
                 <span className="text-red-400 mr-2">📝</span>
@@ -195,7 +195,7 @@ npx i18n-extractor --dry-run`}</code>
             {t("팀 협업을 위해 Google Sheets와 번역을 동기화합니다")}
           </p>
 
-          <div className="grid md:grid-cols-2 gap-6 mb-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
             <div className="bg-slate-900 rounded-xl border border-slate-800 p-6">
               <h3 className="text-lg font-semibold text-yellow-300 mb-3 flex items-center">
                 <span className="mr-2">📤</span>

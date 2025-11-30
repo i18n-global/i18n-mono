@@ -21,7 +21,8 @@ export default function ProviderPage() {
         </h1>
         <div className="bg-yellow-950/30 border border-yellow-800/50 rounded-lg p-4 mb-4">
           <p className="text-yellow-300 text-sm">
-            ⚠️ I18nProvider는 더 이상 필요하지 않습니다. createI18n()을 사용하면 Provider 없이도 i18n을 사용할 수 있습니다.
+            ⚠️ I18nProvider는 더 이상 필요하지 않습니다. createI18n()을 사용하면
+            Provider 없이도 i18n을 사용할 수 있습니다.
           </p>
         </div>
         <p className="text-xl text-slate-300">
@@ -32,7 +33,7 @@ export default function ProviderPage() {
       {/* Features Grid */}
       <section className="mb-16">
         <h2 className="text-2xl font-bold text-white mb-8">{t("주요 기능")}</h2>
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           <div className="bg-gradient-to-br from-blue-950/50 to-blue-900/30 border border-blue-800/50 rounded-xl p-6">
             <div className="w-12 h-12 bg-blue-500/20 rounded-lg flex items-center justify-center mb-4">
               <span className="text-2xl">🍪</span>
@@ -187,7 +188,7 @@ export default function HomePage() {
         </h2>
 
         <div className="bg-gradient-to-br from-slate-900 to-slate-800 rounded-2xl border border-slate-700 p-8">
-          <div className="grid md:grid-cols-2 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             {/* Current Language Display */}
             <div className="space-y-4">
               <h3 className="text-lg font-semibold text-white mb-4">
@@ -266,7 +267,7 @@ export default function HomePage() {
           {t("API 레퍼런스")}
         </h2>
 
-        <div className="grid md:grid-cols-2 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           <div className="bg-slate-900 rounded-xl border border-slate-800 p-6">
             <h3 className="text-xl font-semibold text-blue-300 mb-4">
               useTranslation()
