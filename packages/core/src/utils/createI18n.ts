@@ -238,9 +238,27 @@ export function createI18n<
   // Get current language (lazy initialization)
   function getCurrentLanguage(): string {
     if (typeof window === "undefined") {
-      // Server-side: return default
-      return languageManager.getCurrentLanguage();
+      // Server-side: try to get from headers if available
+      try {
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore - next/headers is an optional peer dependency
+        const { headers } = require("next/headers");
+        const headersList = headers();
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore - import server utils
+        const { getServerLanguage } = require("./server");
+        return getServerLanguage(headersList, {
+          cookieName: languageManager.getCookieName(),
+          defaultLanguage: languageManager.getDefaultLanguage(),
+          availableLanguages: languageManager.getAvailableLanguageCodes(),
+        });
+      } catch {
+        // Not in Next.js environment or headers not available
+        // Return default language
+        return languageManager.getDefaultLanguage();
+      }
     }
+    // Client-side: use language manager
     if (currentLanguage === null) {
       currentLanguage = languageManager.getCurrentLanguage();
     }
@@ -622,8 +640,14 @@ export function createI18n<
 
     /**
      * Detect browser's preferred language
+     * Server-side: returns null (browser detection not available)
+     * Client-side: detects from navigator.languages
      */
     detectBrowserLanguage: (): string | null => {
+      if (typeof window === "undefined") {
+        // Server-side: browser detection not available
+        return null;
+      }
       return languageManager.detectBrowserLanguage();
     },
 

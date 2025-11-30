@@ -39,6 +39,14 @@ export declare class LanguageManager {
      */
     getAvailableLanguageCodes(): string[];
     /**
+     * 쿠키 이름을 가져옵니다 (서버에서 사용)
+     */
+    getCookieName(): string;
+    /**
+     * 기본 언어를 가져옵니다 (서버에서 사용)
+     */
+    getDefaultLanguage(): string;
+    /**
      * 특정 언어의 설정을 가져옵니다
      */
     getLanguageConfig(languageCode: string): LanguageConfig | undefined;

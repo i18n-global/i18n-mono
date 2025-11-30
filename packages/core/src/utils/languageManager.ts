@@ -157,6 +157,20 @@ export class LanguageManager {
   }
 
   /**
+   * 쿠키 이름을 가져옵니다 (서버에서 사용)
+   */
+  getCookieName(): string {
+    return this.options.cookieName;
+  }
+
+  /**
+   * 기본 언어를 가져옵니다 (서버에서 사용)
+   */
+  getDefaultLanguage(): string {
+    return this.options.defaultLanguage;
+  }
+
+  /**
    * 특정 언어의 설정을 가져옵니다
    */
   getLanguageConfig(languageCode: string): LanguageConfig | undefined {
