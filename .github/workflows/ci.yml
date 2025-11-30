@@ -75,9 +75,10 @@ jobs:
           if [ "${{ needs.detect-changes.outputs.tools }}" == "true" ]; then
             FILTERS="$FILTERS --filter=i18nexus-tools"
           fi
-          if [ "${{ needs.detect-changes.outputs.demo }}" == "true" ]; then
-            FILTERS="$FILTERS --filter=i18nexus-demo"
-          fi
+          # demo는 CI에서 제외 (Vercel에서 자동 빌드)
+          # if [ "${{ needs.detect-changes.outputs.demo }}" == "true" ]; then
+          #   FILTERS="$FILTERS --filter=i18nexus-demo"
+          # fi
           if [ -n "$FILTERS" ]; then
             npx turbo run lint $FILTERS
           else
@@ -94,9 +95,10 @@ jobs:
           if [ "${{ needs.detect-changes.outputs.tools }}" == "true" ]; then
             FILTERS="$FILTERS --filter=i18nexus-tools"
           fi
-          if [ "${{ needs.detect-changes.outputs.demo }}" == "true" ]; then
-            FILTERS="$FILTERS --filter=i18nexus-demo"
-          fi
+          # demo는 CI에서 제외 (Vercel에서 자동 빌드)
+          # if [ "${{ needs.detect-changes.outputs.demo }}" == "true" ]; then
+          #   FILTERS="$FILTERS --filter=i18nexus-demo"
+          # fi
           if [ -n "$FILTERS" ]; then
             npx turbo run build $FILTERS
           else
@@ -116,9 +118,10 @@ jobs:
           if [ "${{ needs.detect-changes.outputs.tools }}" == "true" ]; then
             FILTERS="$FILTERS --filter=i18nexus-tools"
           fi
-          if [ "${{ needs.detect-changes.outputs.demo }}" == "true" ]; then
-            FILTERS="$FILTERS --filter=i18nexus-demo"
-          fi
+          # demo는 CI에서 제외 (Vercel에서 자동 빌드)
+          # if [ "${{ needs.detect-changes.outputs.demo }}" == "true" ]; then
+          #   FILTERS="$FILTERS --filter=i18nexus-demo"
+          # fi
           if [ -n "$FILTERS" ]; then
             npx turbo run test $FILTERS
           else
