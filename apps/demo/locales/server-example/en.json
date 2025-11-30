@@ -29,5 +29,6 @@
   "현재 언어": "현재 언어",
   "홈으로 돌아가기": "홈으로 돌아가기",
   "createServerTranslation() 사용": "createServerTranslation() 사용",
-  "useTranslation() 훅 사용": "useTranslation() 훅 사용"
+  "useTranslation() 훅 사용": "useTranslation() 훅 사용",
+  "getServerTranslation() 사용": ""
 }

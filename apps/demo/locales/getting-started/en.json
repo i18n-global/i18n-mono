@@ -45,5 +45,10 @@
   "Next.js App Router를 사용하는 경우, -p 플래그를 사용하여 올바른 디렉토리를 지정하세요": "Next.js App Router를 사용하는 경우, -p 플래그를 사용하여 올바른 디렉토리를 지정하세요",
   "Next.js App Router의 경우": "Next.js App Router의 경우",
   "React 컴포넌트와 CLI 도구를 모두 설치합니다": "React 컴포넌트와 CLI 도구를 모두 설치합니다",
-  "root layout.tsx에 추가하세요": "root layout.tsx에 추가하세요"
+  "root layout.tsx에 추가하세요": "root layout.tsx에 추가하세요",
+  "에러를 확인하고 use client를 추가할지 getServerTranslation()을 사용할지 결정하세요": "",
+  "i18n 설정": "",
+  "locales/index.ts 파일 생성": "",
+  "Provider 없이 간단하게": "",
+  "Root Layout": ""
 }

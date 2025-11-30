@@ -1,14 +1,13 @@
 "use client";
 
-import { useLanguageSwitcher } from "i18nexus";
-
 import { i18n } from "@/locales";
 import { CodeBlock } from "@/shared/ui";
 
 export default function ProviderPage() {
   const { t } = i18n.useTranslation("provider");
-  const { currentLanguage, changeLanguage, availableLanguages } =
-    useLanguageSwitcher();
+  const currentLanguage = i18n.getCurrentLanguage();
+  const changeLanguage = i18n.changeLanguage;
+  const availableLanguages = i18n.getAvailableLanguages();
 
   return (
     <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">

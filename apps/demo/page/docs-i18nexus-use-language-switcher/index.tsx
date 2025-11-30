@@ -1,14 +1,14 @@
 "use client";
 
-import { useLanguageSwitcher } from "i18nexus";
 import Link from "next/link";
 
 import { i18n } from "@/locales";
 
 export default function UseLanguageSwitcherPage() {
   const { t } = i18n.useTranslation();
-  const { currentLanguage, changeLanguage, availableLanguages } =
-    useLanguageSwitcher();
+  const currentLanguage = i18n.getCurrentLanguage();
+  const changeLanguage = i18n.changeLanguage;
+  const availableLanguages = i18n.getAvailableLanguages();
 
   return (
     <main className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
@@ -128,8 +128,12 @@ export default function UseLanguageSwitcherPage() {
                 {t("현재 활성화된 언어 코드입니다.")}
               </p>
               <pre className="bg-slate-950 rounded-lg p-3 overflow-x-auto">
-                <code className="text-sm text-slate-400">{`const { currentLanguage } = useLanguageSwitcher();
-console.log(currentLanguage); // "ko" or "en"`}</code>
+                <code className="text-sm text-slate-400">{`// ✅ 새로운 방식 (권장)
+const currentLanguage = i18n.getCurrentLanguage();
+console.log(currentLanguage); // "ko" or "en"
+
+// ❌ 레거시 방식 (deprecated)
+const { currentLanguage } = useLanguageSwitcher();`}</code>
               </pre>
             </div>
 
@@ -145,11 +149,12 @@ console.log(currentLanguage); // "ko" or "en"`}</code>
                 )}
               </p>
               <pre className="bg-slate-950 rounded-lg p-3 overflow-x-auto">
-                <code className="text-sm text-slate-400">{`const { changeLanguage } = useLanguageSwitcher();
+                <code className="text-sm text-slate-400">{`// ✅ 새로운 방식 (권장)
+i18n.changeLanguage("en");
+i18n.changeLanguage("ko");
 
-// 언어 변경
-changeLanguage("en");
-changeLanguage("ko");`}</code>
+// ❌ 레거시 방식 (deprecated)
+const { changeLanguage } = useLanguageSwitcher();`}</code>
               </pre>
             </div>
 
@@ -163,16 +168,20 @@ changeLanguage("ko");`}</code>
                 {t("사용 가능한 언어 목록입니다.")}
               </p>
               <pre className="bg-slate-950 rounded-lg p-3 overflow-x-auto">
-                <code className="text-sm text-slate-400">{`const { availableLanguages } = useLanguageSwitcher();
+                <code className="text-sm text-slate-400">{`// ✅ 새로운 방식 (권장)
+const availableLanguages = i18n.getAvailableLanguages();
 
 // Language 타입:
 // { code: string, name: string, flag?: string }
 
 availableLanguages.map(lang => (
-  <button onClick={() => changeLanguage(lang.code)}>
+  <button onClick={() => i18n.changeLanguage(lang.code)}>
     {lang.flag} {lang.name}
   </button>
-))`}</code>
+))
+
+// ❌ 레거시 방식 (deprecated)
+const { availableLanguages } = useLanguageSwitcher();`}</code>
               </pre>
             </div>
           </div>
@@ -191,11 +200,11 @@ availableLanguages.map(lang => (
           <pre className="bg-slate-950 rounded-lg p-6 overflow-x-auto border border-slate-800">
             <code className="text-sm text-slate-300">{`"use client";
 
-import { useLanguageSwitcher } from "i18nexus";
+import { i18n } from "@/locales";
 
 export default function LanguageSelector() {
-  const { currentLanguage, changeLanguage, availableLanguages } =
-    useLanguageSwitcher();
+  const currentLanguage = i18n.getCurrentLanguage();
+  const availableLanguages = i18n.getAvailableLanguages();
 
   return (
     <div>
@@ -204,7 +213,7 @@ export default function LanguageSelector() {
       {availableLanguages.map((lang) => (
         <button
           key={lang.code}
-          onClick={() => changeLanguage(lang.code)}
+          onClick={() => i18n.changeLanguage(lang.code)}
         >
           {lang.name}
         </button>
@@ -223,16 +232,16 @@ export default function LanguageSelector() {
           <pre className="bg-slate-950 rounded-lg p-6 overflow-x-auto border border-slate-800">
             <code className="text-sm text-slate-300">{`"use client";
 
-import { useLanguageSwitcher } from "i18nexus";
+import { i18n } from "@/locales";
 
 export default function LanguageDropdown() {
-  const { currentLanguage, changeLanguage, availableLanguages } =
-    useLanguageSwitcher();
+  const currentLanguage = i18n.getCurrentLanguage();
+  const availableLanguages = i18n.getAvailableLanguages();
 
   return (
     <select
       value={currentLanguage}
-      onChange={(e) => changeLanguage(e.target.value)}
+      onChange={(e) => i18n.changeLanguage(e.target.value)}
       className="px-4 py-2 rounded-lg bg-slate-800 text-white"
     >
       {availableLanguages.map((lang) => (
@@ -255,18 +264,18 @@ export default function LanguageDropdown() {
             <code className="text-sm text-slate-300">
               {`"use client";
 
-import { useLanguageSwitcher } from "i18nexus";
+import { i18n } from "@/locales";
 
 export default function FancyLanguageSwitcher() {
-  const { currentLanguage, changeLanguage, availableLanguages } =
-    useLanguageSwitcher();
+  const currentLanguage = i18n.getCurrentLanguage();
+  const availableLanguages = i18n.getAvailableLanguages();
 
   return (
     <div className="flex gap-2">
       {availableLanguages.map((lang) => (
         <button
           key={lang.code}
-          onClick={() => changeLanguage(lang.code)}
+          onClick={() => i18n.changeLanguage(lang.code)}
           className={\`px-4 py-2 rounded-lg transition-all \${
             currentLanguage === lang.code
               ? "bg-blue-600 text-white scale-105"
@@ -326,13 +335,19 @@ export default function FancyLanguageSwitcher() {
             <pre className="bg-slate-950 rounded-lg p-3 overflow-x-auto">
               <code className="text-sm text-slate-400">{`// ❌ 서버 컴포넌트에서 사용 불가
 export default async function Page() {
-  const { changeLanguage } = useLanguageSwitcher(); // 에러!
+  i18n.changeLanguage("en"); // 에러! (클라이언트 전용)
 }
 
 // ✅ 클라이언트 컴포넌트에서 사용
 "use client";
 export default function Page() {
-  const { changeLanguage } = useLanguageSwitcher(); // 정상!
+  i18n.changeLanguage("en"); // 정상!
+}
+
+// ✅ 서버 컴포넌트에서는 getServerTranslation 사용
+export default async function Page() {
+  const { t } = await i18n.getServerTranslation("common");
+  // 언어는 헤더에서 자동 감지됨
 }`}</code>
             </pre>
           </div>
