@@ -528,7 +528,10 @@ export function createI18n<
     getServerTranslation,
 
     /** 언어 변경 */
-    changeLanguage: async (lang: string): Promise<void> => {
+    changeLanguage: async (
+      lang: string,
+      options?: { reload?: boolean },
+    ): Promise<void> => {
       if (typeof window === "undefined") {
         console.warn("changeLanguage()는 클라이언트에서만 사용 가능합니다");
         return;
@@ -537,6 +540,11 @@ export function createI18n<
       const success = languageManager.setLanguage(lang);
       if (success) {
         currentLanguage = lang;
+
+        // 새로고침 옵션이 활성화된 경우 페이지 새로고침
+        if (options?.reload) {
+          window.location.reload();
+        }
       }
     },
 
