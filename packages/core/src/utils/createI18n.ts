@@ -69,7 +69,7 @@ export interface UseTranslationReturn<K extends string = string> {
   t: (
     key: K,
     variables?: Record<string, string | number>,
-    styles?: Record<string, React.CSSProperties>,
+    styles?: Record<string, React.CSSProperties>
   ) => string | React.ReactElement;
   currentLanguage: string;
   isReady: boolean;
@@ -118,7 +118,7 @@ export type ExtractNamespaceWithFallback<
  */
 export type NamespaceLoader = (
   namespace: string,
-  language: string,
+  language: string
 ) => Promise<Record<string, string>>;
 
 /**
@@ -185,7 +185,7 @@ export interface CreateI18nOptions<
  * } as const;
  *
  * // Create i18n with language manager
- * export const i18n = createI18n(translations, { 
+ * export const i18n = createI18n(translations, {
  *   fallbackNamespace: "common",
  *   languageManager: {
  *     defaultLanguage: 'ko',
@@ -213,7 +213,7 @@ export function createI18n<
   Fallback extends keyof TTranslations = keyof TTranslations,
 >(
   translations: TTranslations,
-  options?: CreateI18nOptions<TTranslations, Fallback>,
+  options?: CreateI18nOptions<TTranslations, Fallback>
 ) {
   const fallbackNamespace = options?.fallbackNamespace;
   const enableFallback = options?.enableFallback !== false;
@@ -224,7 +224,7 @@ export function createI18n<
   // Validate lazy mode configuration
   if (lazy && !loadNamespace) {
     throw new Error(
-      "createI18n: loadNamespace function is required when lazy mode is enabled",
+      "createI18n: loadNamespace function is required when lazy mode is enabled"
     );
   }
 
@@ -274,7 +274,7 @@ export function createI18n<
   // Helper functions for string interpolation
   function interpolate(
     text: string,
-    variables?: Record<string, string | number>,
+    variables?: Record<string, string | number>
   ): string {
     if (!variables) {
       return text;
@@ -289,7 +289,7 @@ export function createI18n<
   function interpolateWithStyles(
     text: string,
     variables: Record<string, string | number>,
-    styles: Record<string, React.CSSProperties>,
+    styles: Record<string, React.CSSProperties>
   ): React.ReactElement {
     const parts: (string | React.ReactElement)[] = [];
     let lastIndex = 0;
@@ -314,8 +314,8 @@ export function createI18n<
             React.createElement(
               "span",
               { key: `var-${key++}`, style: style },
-              String(value),
-            ),
+              String(value)
+            )
           );
         } else {
           // Just add the value as string
@@ -340,7 +340,7 @@ export function createI18n<
   // Flatten translations for current language
   function getFlattenedTranslations(language: string): Record<string, string> {
     const flattened: Record<string, string> = {};
-    
+
     if (lazy) {
       // Lazy mode: only use loaded namespaces
       loadedNamespaces.forEach((nsData) => {
@@ -357,7 +357,7 @@ export function createI18n<
         }
       });
     }
-    
+
     return flattened;
   }
 
@@ -387,7 +387,7 @@ export function createI18n<
   function useTranslation<
     NS extends ExtractNamespaces<TTranslations> | undefined = undefined,
   >(
-    namespace?: NS,
+    namespace?: NS
   ): UseTranslationReturn<
     NS extends undefined
       ? ExtractAllKeys<TTranslations>
@@ -396,7 +396,7 @@ export function createI18n<
         : ExtractNamespaceKeys<TTranslations, NonNullable<NS>>
   > {
     // Client-side only - subscribe to language changes
-    const [language, setLanguage] = React.useState<string>(() => 
+    const [language, setLanguage] = React.useState<string>(() =>
       getCurrentLanguage()
     );
 
@@ -437,7 +437,7 @@ export function createI18n<
       (
         key: any,
         variables?: Record<string, string | number>,
-        styles?: Record<string, React.CSSProperties>,
+        styles?: Record<string, React.CSSProperties>
       ): any => {
         const text = flattenedTranslations[key] || key;
 
@@ -561,7 +561,7 @@ export function createI18n<
               Fallback
             >
           : ExtractNamespaceKeys<TTranslations, NonNullable<NS>>,
-      variables?: Record<string, string | number>,
+      variables?: Record<string, string | number>
     ): string {
       const text = flattenedTranslations[key as string] || (key as string);
 
@@ -599,7 +599,7 @@ export function createI18n<
      * Change current language
      * @param lang - Language code to switch to
      * @returns Promise that resolves when language is changed
-     * 
+     *
      * @example
      * ```typescript
      * <button onClick={() => i18n.changeLanguage('en')}>
@@ -612,7 +612,7 @@ export function createI18n<
         console.warn("changeLanguage() is only available on client-side");
         return;
       }
-      
+
       const success = languageManager.setLanguage(lang);
       if (success) {
         currentLanguage = lang;
@@ -653,8 +653,14 @@ export function createI18n<
 
     /**
      * Reset language to default
+     * Server-side: no-op (language is read from headers)
+     * Client-side: resets to default and clears cookie/localStorage
      */
     resetLanguage: (): void => {
+      if (typeof window === "undefined") {
+        // Server-side: no-op
+        return;
+      }
       languageManager.reset();
       currentLanguage = null;
     },
