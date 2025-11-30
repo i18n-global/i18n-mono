@@ -1,6 +1,6 @@
 {
   " is a React hook that provides access to the translation function (t) and current language state. It can only be used in Client Components.": " is a React hook that provides access to the translation function (t) and current language state. It can only be used in Client Components.",
-  "\"use client\";\n\nimport { useTranslation } from \"i18nexus\";\n\nexport default function StatusMessage({ status }) {\n  const { t } = useTranslation();\n  \n  // Dynamically construct translation keys\n  const message = t(\\`status.\\${status}\\`);\n  \n  return <div>{message}</div>;\n}\n\n// Translations:\n// \"status.success\": \"작업이 성공했습니다\"\n// \"status.error\": \"오류가 발생했습니다\"\n// \"status.pending\": \"처리 중입니다\"": "\"use client\";\n\nimport { useTranslation } from \"i18nexus\";\n\nexport default function StatusMessage({ status }) {\n  const { t } = useTranslation();\n  \n  // Dynamically construct translation keys\n  const message = t(\\`status.\\${status}\\`);\n  \n  return <div>{message}</div>;\n}\n\n// Translations:\n// \"status.success\": \"작업이 성공했습니다\"\n// \"status.error\": \"오류가 발생했습니다\"\n// \"status.pending\": \"처리 중입니다\"",
+  "\"use client\";\n\nimport { useTranslation } from \"i18nexus\";\n\nexport default function StatusMessage({ status }) {\n  const { t } = useTranslation();\n  \n  // Dynamically construct translation keys\n  const message = t(\\`status.\\${status}\\`);\n  \n  return <div>{message}</div>;\n}\n\n// Translations:\n// \"status.success\": \"작업이 성공했습니다\"\n// \"status.error\": \"오류가 발생했습니다\"\n// \"status.pending\": \"처리 중입니다\"": "\"use client\";\n\nimport { useTranslation } from \"i18nexus\";\n\nexport default function StatusMessage({ status }) {\n  const { t } = useTranslation();\n  \n  // Dynamically construct translation keys\n  const message = t(\\`status.\\${status}\\`);\n  \n  return <div>{message}</div>;\n}\n\n// Translations:\n// \"status.success\": \"Task completed successfully\"\n// \"status.error\": \"An error occurred\"\n// \"status.pending\": \"Processing\"",
   "개요": "Overview",
   "결과": "Result",
   "번역 키": "Translation Key",
@@ -13,7 +13,7 @@
   "Automatic re-rendering on language change": "Automatic re-rendering on language change",
   "Basic Usage": "Basic Usage",
   "Best Practices": "Best Practices",
-  "const { t } = useTranslation();\nconst welcomeText = t(\"Welcome\"); // \"환영합니다\" or \"Welcome\"": "const { t } = useTranslation();\nconst welcomeText = t(\"Welcome\"); // \"환영합니다\" or \"Welcome\"",
+  "const { t } = useTranslation();\nconst welcomeText = t(\"Welcome\"); // \"환영합니다\" or \"Welcome\"": "const { t } = useTranslation();\nconst welcomeText = t(\"Welcome\"); // \"Welcome\" or \"환영합니다\"",
   "Displaying Current Language": "Displaying Current Language",
   "Do: Handle missing translations gracefully": "Do: Handle missing translations gracefully",
   "Do: Use descriptive keys": "Do: Use descriptive keys",

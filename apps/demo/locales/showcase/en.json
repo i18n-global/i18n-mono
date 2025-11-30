@@ -1,10 +1,10 @@
 {
-  "내 프로젝트 등록하기": "",
-  "아직 등록된 프로젝트가 없습니다": "",
-  "첫 번째 프로젝트 등록하기": "",
-  "첫 번째 프로젝트를 등록하고 커뮤니티에 공유해보세요!": "",
-  "프로젝트 등록": "",
-  "프로젝트 등록하기": "",
-  "i18nexus 쇼케이스": "",
-  "i18nexus와 i18nexus-tools를 사용하는 실제 프로젝트들": ""
+  "내 프로젝트 등록하기": "Register My Project",
+  "아직 등록된 프로젝트가 없습니다": "No projects registered yet",
+  "첫 번째 프로젝트 등록하기": "Register First Project",
+  "첫 번째 프로젝트를 등록하고 커뮤니티에 공유해보세요!": "Register your first project and share it with the community!",
+  "프로젝트 등록": "Project Registration",
+  "프로젝트 등록하기": "Register Project",
+  "i18nexus 쇼케이스": "i18nexus Showcase",
+  "i18nexus와 i18nexus-tools를 사용하는 실제 프로젝트들": "Real projects using i18nexus and i18nexus-tools"
 }
