@@ -48,11 +48,11 @@ export const translations = {
     en: {} as typeof enAdminDashboard,
     ko: {} as typeof koAdminDashboard,
   },
-  "cli": {
+  cli: {
     en: {} as typeof enCli,
     ko: {} as typeof koCli,
   },
-  "common": {
+  common: {
     en: {} as typeof enCommon,
     ko: {} as typeof koCommon,
   },
@@ -108,11 +108,11 @@ export const translations = {
     en: {} as typeof enGettingStarted,
     ko: {} as typeof koGettingStarted,
   },
-  "home": {
+  home: {
     en: {} as typeof enHome,
     ko: {} as typeof koHome,
   },
-  "provider": {
+  provider: {
     en: {} as typeof enProvider,
     ko: {} as typeof koProvider,
   },
@@ -120,7 +120,7 @@ export const translations = {
     en: {} as typeof enServerExample,
     ko: {} as typeof koServerExample,
   },
-  "showcase": {
+  showcase: {
     en: {} as typeof enShowcase,
     ko: {} as typeof koShowcase,
   },
@@ -138,4 +138,14 @@ export const i18n = createI18n(translations, {
   lazy: true,
   loadNamespace,
   preloadNamespaces: ["common"], // fallback namespace는 미리 로드
+  languageManager: {
+    defaultLanguage: "ko",
+    availableLanguages: [
+      { code: "ko", name: "한국어", flag: "🇰🇷" },
+      { code: "en", name: "English", flag: "🇺🇸" },
+    ],
+    cookieName: "i18n-language",
+    enableAutoDetection: true,
+    enableLocalStorage: true,
+  },
 });
