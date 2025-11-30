@@ -6,7 +6,7 @@ import localFont from "next/font/local";
 import Script from "next/script";
 
 import { Analytics, FirebaseStatus, GlobalErrorProvider } from "@/shared/ui";
-import { Header } from "@/widgets/navigation";
+import Navigation from "@/widgets/Navigation";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -60,7 +60,7 @@ export default async function RootLayout({
         ) : null}
 
         <GlobalErrorProvider>
-          <Header />
+          <Navigation />
           {children}
           {/* Client-side analytics tracker */}
           <Analytics />

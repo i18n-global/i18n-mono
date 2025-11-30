@@ -13,16 +13,6 @@ export default function Navigation() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [cliExpanded, setCliExpanded] = useState(false);
   const [docsExpanded, setDocsExpanded] = useState(false);
-  const [mounted, setMounted] = useState(false);
-
-  // Hydration 에러 방지를 위해 클라이언트 마운트 후에만 렌더링
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  if (!mounted) {
-    return null; // 서버 렌더링 시 아무것도 렌더링하지 않음
-  }
 
   // 현재 선택된 섹션 확인
   const isCliSelected =
@@ -34,7 +24,6 @@ export default function Navigation() {
   // 페이지 이동 시 확장 상태 유지
   useEffect(() => {
     if (isCliSelected && !cliExpanded) {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
       setCliExpanded(true);
     }
     if (isDocsSelected && !docsExpanded) {

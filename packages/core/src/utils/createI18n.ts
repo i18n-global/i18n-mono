@@ -113,7 +113,22 @@ export function createI18n<
 
   function getCurrentLanguage(): string {
     if (typeof window === "undefined") {
-      return languageManager.getDefaultLanguage();
+      // 서버에서도 쿠키를 읽어서 언어 결정 (Hydration 에러 방지)
+      try {
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        const { headers } = require("next/headers");
+        const headersList = headers();
+        const { getServerLanguage } = require("./server");
+        return getServerLanguage(headersList, {
+          cookieName: languageManager.getCookieName(),
+          defaultLanguage: languageManager.getDefaultLanguage(),
+          availableLanguages: languageManager.getAvailableLanguageCodes(),
+        });
+      } catch {
+        // next/headers를 사용할 수 없는 경우 기본 언어 반환
+        return languageManager.getDefaultLanguage();
+      }
     }
     if (currentLanguage === null) {
       currentLanguage = languageManager.getCurrentLanguage();
