@@ -14,8 +14,6 @@ export const useI18nContext = () => {
 export function I18nProvider({ children, languageManagerOptions, translations, onLanguageChange, initialLanguage, }) {
     const defaultTranslations = translations || {};
     const [languageManager] = React.useState(() => new LanguageManager(languageManagerOptions));
-    // Use initialLanguage (from server) if provided, otherwise use default
-    // This prevents hydration mismatch
     const getInitialLanguage = () => {
         if (initialLanguage) {
             return initialLanguage;
@@ -31,14 +29,11 @@ export function I18nProvider({ children, languageManagerOptions, translations, o
         }
         setIsLoading(true);
         try {
-            // LanguageManager를 통해 언어 설정
             const success = languageManager.setLanguage(lang);
             if (!success) {
                 throw new Error(`Failed to set language to ${lang}`);
             }
-            // i18nexus 자체 언어 관리
             setCurrentLanguage(lang);
-            // 콜백 호출
             onLanguageChange?.(lang);
         }
         catch (error) {
@@ -49,11 +44,8 @@ export function I18nProvider({ children, languageManagerOptions, translations, o
             setIsLoading(false);
         }
     };
-    // 클라이언트에서 hydration 완료 후 실제 언어 설정 로드
     React.useEffect(() => {
         setIsHydrated(true);
-        // initialLanguage가 제공되지 않은 경우에만 쿠키에서 읽기
-        // initialLanguage가 제공된 경우 이미 서버-클라이언트 동기화되어 있음
         if (!initialLanguage) {
             const actualLanguage = languageManager.getCurrentLanguage();
             if (actualLanguage !== currentLanguage) {
@@ -65,7 +57,6 @@ export function I18nProvider({ children, languageManagerOptions, translations, o
     React.useEffect(() => {
         if (!isHydrated)
             return;
-        // 언어 변경 리스너 등록
         const removeListener = languageManager.addLanguageChangeListener((lang) => {
             if (lang !== currentLanguage) {
                 setCurrentLanguage(lang);

@@ -7,7 +7,6 @@ export function I18NexusDevtools({ initialIsOpen = false, position = "bottom-lef
     const [isOpen, setIsOpen] = React.useState(initialIsOpen);
     const [isDragging, setIsDragging] = React.useState(false);
     const browserLanguage = languageManager.detectBrowserLanguage();
-    // ESC key to close
     React.useEffect(() => {
         const handleEscape = (e) => {
             if (e.key === "Escape" && isOpen) {
@@ -17,7 +16,6 @@ export function I18NexusDevtools({ initialIsOpen = false, position = "bottom-lef
         window.addEventListener("keydown", handleEscape);
         return () => window.removeEventListener("keydown", handleEscape);
     }, [isOpen]);
-    // Only render in development mode
     if (process.env.NODE_ENV === "production") {
         return null;
     }

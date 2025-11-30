@@ -1,148 +1,52 @@
 import React from "react";
 import type { LanguageConfig } from "../utils/languageManager";
-/**
- * Variables for string interpolation
- */
+/** 문자열 보간 변수 */
 export type TranslationVariables = Record<string, string | number>;
-/**
- * Style configuration for a variable
- */
+/** 변수 스타일 설정 */
 export type VariableStyle = React.CSSProperties;
-/**
- * Styles for variables in translation
- */
+/** 번역 변수 스타일 */
 export type TranslationStyles = Record<string, VariableStyle>;
-/**
- * Translation function overloads for type safety
- */
+/** 타입 안전한 번역 함수 오버로드 */
 export interface TranslationFunction<K extends string = string> {
-    /**
-     * Translation with styles - returns React element
-     * @param key - Translation key to look up
-     * @param variables - Object with variables for string interpolation
-     * @param styles - Object with styles for variables
-     * @returns React element with styled variables
-     * @example
-     * t("개수 : {{count}} 입니다", { count: 5 }, { count: { color: 'red', fontWeight: 'bold' } })
-     * // Returns: <>개수 : <span style={{...}}>5</span> 입니다</>
-     */
+    /** 스타일 포함 번역 (React 요소 반환) */
     (key: K, variables: TranslationVariables, styles: TranslationStyles): React.ReactElement;
-    /**
-     * Translation without styles - returns string
-     * @param key - Translation key to look up
-     * @param variables - Optional object with variables for string interpolation
-     * @returns Translated string with interpolated variables
-     * @example
-     * t("Hello {{name}}", { name: "World" })
-     * // Returns: "Hello World"
-     */
+    /** 스타일 없는 번역 (문자열 반환) */
     (key: K, variables?: TranslationVariables): string;
 }
-/**
- * Return type for useTranslation hook
- */
+/** useTranslation 훅 반환 타입 */
 export interface UseTranslationReturn<K extends string = string> {
-    /**
-     * Translation function with type guards
-     * - Returns React.ReactElement when styles are provided
-     * - Returns string when styles are not provided
-     *
-     * When K is specified, only those keys are allowed:
-     * ```typescript
-     * const { t } = useTranslation<"greeting" | "farewell">();
-     * t("greeting");   // ✅ OK
-     * t("invalid");    // ❌ TypeScript Error
-     * ```
-     */
+    /** 타입 가드가 있는 번역 함수 (스타일 제공 시 React 요소, 없으면 문자열) */
     t: TranslationFunction<K>;
-    /**
-     * Current language code (e.g., 'en', 'ko')
-     */
+    /** 현재 언어 코드 */
     currentLanguage: string;
-    /**
-     * Whether translations are ready to use
-     */
+    /** 번역 준비 여부 */
     isReady: boolean;
 }
-/**
- * Hook to access translation function and current language
- *
- * Usage 1: Auto-detect keys from I18nProvider translations (Recommended!)
- * ```typescript
- * <I18nProvider translations={{ en: { greeting: "Hello" } }}>
- *   const { t } = useTranslation();  // t automatically typed!
- *   t("greeting");   // ✅ OK
- *   t("invalid");    // ❌ Compile error
- * </I18nProvider>
- * ```
- *
- * Usage 2: Explicit key specification
- * ```typescript
- * const { t } = useTranslation<"greeting" | "farewell">();
- * t("greeting");   // ✅ OK
- * t("invalid");    // ❌ TypeScript Error
- * ```
- *
- * Usage 3: No type safety (backward compatible)
- * ```typescript
- * const { t } = useTranslation();
- * t("any-key");    // ✅ No type checking
- * ```
- */
+/** 번역 함수 및 현재 언어 접근 훅 */
 export declare function useTranslation<K extends string = string>(): UseTranslationReturn<K>;
-/**
- * Return type for useLanguageSwitcher hook
- */
+/** useLanguageSwitcher 훅 반환 타입 */
 export interface UseLanguageSwitcherReturn {
-    /**
-     * Current language code (e.g., 'en', 'ko')
-     */
+    /** 현재 언어 코드 */
     currentLanguage: string;
-    /**
-     * List of available language configurations
-     */
+    /** 사용 가능한 언어 설정 목록 */
     availableLanguages: LanguageConfig[];
-    /**
-     * Change the current language
-     * @param lang - Language code to switch to
-     * @returns Promise that resolves when language is changed
-     */
+    /** 언어 변경 */
     changeLanguage: (lang: string) => Promise<void>;
-    /**
-     * Alias for changeLanguage - Switch to a specific language
-     * @param lang - Language code to switch to
-     * @returns Promise that resolves when language is changed
-     */
+    /** changeLanguage 별칭 */
     switchLng: (lang: string) => Promise<void>;
-    /**
-     * Switch to the next available language in the list
-     */
+    /** 다음 언어로 전환 */
     switchToNextLanguage: () => Promise<void>;
-    /**
-     * Switch to the previous language in the list
-     */
+    /** 이전 언어로 전환 */
     switchToPreviousLanguage: () => Promise<void>;
-    /**
-     * Get language configuration for a specific language code
-     * @param code - Language code (defaults to current language)
-     */
+    /** 언어 설정 조회 */
     getLanguageConfig: (code?: string) => LanguageConfig | undefined;
-    /**
-     * Detect the user's browser language
-     * @returns Browser language code or null if not detected
-     */
+    /** 브라우저 언어 감지 */
     detectBrowserLanguage: () => string | null;
-    /**
-     * Reset language to default
-     */
+    /** 기본 언어로 리셋 */
     resetLanguage: () => void;
-    /**
-     * Whether language is currently being changed
-     */
+    /** 언어 변경 중 여부 */
     isLoading: boolean;
 }
-/**
- * Hook to access language switching functionality
- */
+/** 언어 전환 기능 접근 훅 */
 export declare const useLanguageSwitcher: () => UseLanguageSwitcherReturn;
 //# sourceMappingURL=useTranslation.d.ts.map

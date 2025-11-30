@@ -1,21 +1,12 @@
 import React from "react";
 export interface I18NexusDevtoolsProps {
-    /**
-     * Set this true if you want the dev tools to default to being open
-     */
+    /** 개발 도구 기본 열림 상태 */
     initialIsOpen?: boolean;
-    /**
-     * The position of the devtools panel
-     * @default 'bottom-left'
-     */
+    /** 개발 도구 패널 위치 (기본: 'bottom-left') */
     position?: "top-left" | "top-right" | "bottom-left" | "bottom-right";
-    /**
-     * Custom styles for the panel
-     */
+    /** 패널 커스텀 스타일 */
     panelStyles?: React.CSSProperties;
-    /**
-     * Custom styles for the button
-     */
+    /** 버튼 커스텀 스타일 */
     buttonStyles?: React.CSSProperties;
 }
 export declare function I18NexusDevtools({ initialIsOpen, position, panelStyles, buttonStyles, }: I18NexusDevtoolsProps): import("react/jsx-runtime").JSX.Element | null;
