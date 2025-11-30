@@ -1,37 +1,5 @@
 /**
- * Type-safe i18n creator with automatic namespace key inference
- *
- * This utility creates a fully typed i18n system where translation keys
- * are automatically inferred from your translation files.
- *
- * @example
- * ```typescript
- * // 1. Define your translations
- * const translations = {
- *   common: {
- *     en: { welcome: "Welcome", goodbye: "Goodbye" },
- *     ko: { welcome: "환영합니다", goodbye: "안녕" }
- *   },
- *   menu: {
- *     en: { home: "Home", about: "About" },
- *     ko: { home: "홈", about: "소개" }
- *   }
- * } as const;
- *
- * // 2. Create typed i18n system - no Provider needed!
- * const i18n = createI18n(translations, { fallbackNamespace: "common" });
- *
- * // 3. Use in components - FULLY TYPED!
- * function MyComponent() {
- *   const { t, language } = i18n.useTranslation("common");
- *   return (
- *     <div>
- *       <h1>{t("welcome")}</h1>
- *       <button onClick={() => i18n.changeLanguage('en')}>English</button>
- *     </div>
- *   );
- * }
- * ```
+ * 타입 안전한 i18n 생성 (자동 키 추론)
  */
 
 import React from "react";
@@ -41,179 +9,91 @@ import {
   LanguageConfig,
 } from "./languageManager";
 
-/**
- * Extract translation keys from a translations object
- * @example
- * type Keys = ExtractI18nKeys<typeof translations>;
- * // "greeting" | "farewell" | "welcome"
- */
+/** 번역 키 추출 */
 export type ExtractI18nKeys<T extends Record<string, Record<string, string>>> =
   keyof T[keyof T] & string;
 
-/**
- * Namespace translations structure
- * Record<namespace, Record<language, Record<key, value>>>
- */
+/** 네임스페이스별 번역 구조 */
 export type NamespaceTranslations = Record<
-  string, // namespace
-  Record<
-    string, // language
-    Record<string, string> // key: value
-  >
+  string,
+  Record<string, Record<string, string>>
 >;
 
-/**
- * Translation function return type
- */
+/** useTranslation 반환 타입 */
 export interface UseTranslationReturn<K extends string = string> {
   t: (
     key: K,
     variables?: Record<string, string | number>,
-    styles?: Record<string, React.CSSProperties>
+    styles?: Record<string, React.CSSProperties>,
   ) => string | React.ReactElement;
   currentLanguage: string;
   isReady: boolean;
 }
 
-/**
- * Extract namespace names from translations object
- */
+/** 네임스페이스 목록 추출 */
 export type ExtractNamespaces<T extends NamespaceTranslations> = keyof T &
   string;
 
-/**
- * Extract keys from a specific namespace
- */
+/** 특정 네임스페이스의 키 추출 */
 export type ExtractNamespaceKeys<
   T extends NamespaceTranslations,
   NS extends keyof T,
 > = ExtractI18nKeys<T[NS]>;
 
-/**
- * Extract all keys from all namespaces (Union type)
- */
+/** 모든 네임스페이스의 키 추출 (Union) */
 export type ExtractAllKeys<T extends NamespaceTranslations> = {
   [K in keyof T]: ExtractNamespaceKeys<T, K>;
 }[keyof T];
 
-/**
- * Extract keys from fallback namespace
- */
+/** Fallback 네임스페이스 키 추출 */
 export type ExtractFallbackKeys<
   T extends NamespaceTranslations,
   Fallback extends keyof T,
 > = ExtractNamespaceKeys<T, Fallback>;
 
-/**
- * Extract keys from specific namespace + fallback namespace
- */
+/** 네임스페이스 + Fallback 키 추출 */
 export type ExtractNamespaceWithFallback<
   T extends NamespaceTranslations,
   NS extends keyof T,
   Fallback extends keyof T,
 > = ExtractNamespaceKeys<T, NS> | ExtractFallbackKeys<T, Fallback>;
 
-/**
- * Namespace loader function type for lazy loading
- */
+/** Lazy loading용 네임스페이스 로더 타입 */
 export type NamespaceLoader = (
   namespace: string,
-  language: string
+  language: string,
 ) => Promise<Record<string, string>>;
 
-/**
- * Options for createI18n
- */
+/** createI18n 옵션 */
 export interface CreateI18nOptions<
   TTranslations extends NamespaceTranslations,
   Fallback extends keyof TTranslations = keyof TTranslations,
 > {
-  /**
-   * Fallback namespace to use when namespace is not specified
-   * @default undefined (no fallback)
-   */
+  /** 네임스페이스 미지정 시 사용할 fallback */
   fallbackNamespace?: Fallback;
-
-  /**
-   * Enable fallback behavior
-   * @default true
-   */
+  /** Fallback 활성화 (기본: true) */
   enableFallback?: boolean;
-
-  /**
-   * Enable lazy loading of namespaces
-   * When true, namespaces are loaded on-demand instead of all at once
-   * @default false
-   */
+  /** Lazy loading 활성화 (기본: false) */
   lazy?: boolean;
-
-  /**
-   * Namespace loader function for lazy loading
-   * Required when lazy: true
-   * @param namespace - The namespace to load
-   * @param language - The language to load
-   * @returns Promise resolving to translations for that namespace+language
-   */
+  /** Lazy loading용 네임스페이스 로더 (lazy: true일 때 필수) */
   loadNamespace?: NamespaceLoader;
-
-  /**
-   * Preload specific namespaces on initialization
-   * Only used when lazy: true
-   * @default []
-   */
+  /** 초기화 시 미리 로드할 네임스페이스 (lazy 모드만) */
   preloadNamespaces?: Array<keyof TTranslations>;
-
-  /**
-   * Language manager configuration
-   * Handles cookie/localStorage sync, language detection, etc.
-   */
+  /** 언어 관리자 설정 */
   languageManager?: LanguageManagerOptions;
 }
 
 /**
- * Create a type-safe i18n system with automatic key inference
- *
- * @param translations - Your translation object with namespaces
- * @param options - Optional configuration for fallback namespace and language manager
- * @returns Fully typed i18n object with hooks and utilities
- *
- * @example
- * ```typescript
- * const translations = {
- *   common: { en: { ... }, ko: { ... } },
- *   menu: { en: { ... }, ko: { ... } }
- * } as const;
- *
- * // Create i18n with language manager
- * export const i18n = createI18n(translations, {
- *   fallbackNamespace: "common",
- *   languageManager: {
- *     defaultLanguage: 'ko',
- *     availableLanguages: [
- *       { code: 'ko', name: '한국어' },
- *       { code: 'en', name: 'English' }
- *     ]
- *   }
- * });
- *
- * // Use directly without Provider
- * function MyComponent() {
- *   const { t, language } = i18n.useTranslation("common");
- *   return (
- *     <div>
- *       <h1>{t("welcome")}</h1>
- *       <button onClick={() => i18n.changeLanguage('en')}>English</button>
- *     </div>
- *   );
- * }
- * ```
+ * 타입 안전한 i18n 시스템 생성
+ * @param translations - 네임스페이스별 번역 객체
+ * @param options - Fallback 네임스페이스 및 언어 관리자 설정
  */
 export function createI18n<
   TTranslations extends NamespaceTranslations,
   Fallback extends keyof TTranslations = keyof TTranslations,
 >(
   translations: TTranslations,
-  options?: CreateI18nOptions<TTranslations, Fallback>
+  options?: CreateI18nOptions<TTranslations, Fallback>,
 ) {
   const fallbackNamespace = options?.fallbackNamespace;
   const enableFallback = options?.enableFallback !== false;
@@ -221,45 +101,36 @@ export function createI18n<
   const loadNamespace = options?.loadNamespace;
   const preloadNamespaces = options?.preloadNamespaces ?? [];
 
-  // Validate lazy mode configuration
   if (lazy && !loadNamespace) {
     throw new Error(
-      "createI18n: loadNamespace function is required when lazy mode is enabled"
+      "createI18n: lazy 모드에서는 loadNamespace 함수가 필요합니다",
     );
   }
 
-  // Create global language manager instance
   const languageManager = new LanguageManager(options?.languageManager);
-
-  // Global state for language (client-side only)
   let currentLanguage: string | null = null;
   const languageListeners = new Set<(language: string) => void>();
 
-  // Get current language (lazy initialization)
   function getCurrentLanguage(): string {
     if (typeof window === "undefined") {
-      // Server-side: return default language
-      // Note: For server-side language detection, use getServerTranslation() instead
-      // This function should primarily be used on the client side
       return languageManager.getDefaultLanguage();
     }
-    // Client-side: use language manager
     if (currentLanguage === null) {
       currentLanguage = languageManager.getCurrentLanguage();
     }
     return currentLanguage;
   }
 
-  // Loaded namespaces cache (for lazy mode)
+  // Lazy 모드용 네임스페이스 캐시
   const loadedNamespaces = new Map<
     string,
     Record<string, Record<string, string>>
   >();
 
-  // Helper functions for string interpolation
+  // 문자열 보간 함수
   function interpolate(
     text: string,
-    variables?: Record<string, string | number>
+    variables?: Record<string, string | number>,
   ): string {
     if (!variables) {
       return text;
@@ -274,7 +145,7 @@ export function createI18n<
   function interpolateWithStyles(
     text: string,
     variables: Record<string, string | number>,
-    styles: Record<string, React.CSSProperties>
+    styles: Record<string, React.CSSProperties>,
   ): React.ReactElement {
     const parts: (string | React.ReactElement)[] = [];
     let lastIndex = 0;
@@ -283,7 +154,6 @@ export function createI18n<
     let key = 0;
 
     while ((match = regex.exec(text)) !== null) {
-      // Add text before the variable
       if (match.index > lastIndex) {
         parts.push(text.substring(lastIndex, match.index));
       }
@@ -294,27 +164,23 @@ export function createI18n<
 
       if (value !== undefined) {
         if (style) {
-          // Wrap with span if style is provided
           parts.push(
             React.createElement(
               "span",
               { key: `var-${key++}`, style: style },
-              String(value)
-            )
+              String(value),
+            ),
           );
         } else {
-          // Just add the value as string
           parts.push(String(value));
         }
       } else {
-        // Keep placeholder if value not found
         parts.push(match[0]);
       }
 
       lastIndex = regex.lastIndex;
     }
 
-    // Add remaining text
     if (lastIndex < text.length) {
       parts.push(text.substring(lastIndex));
     }
@@ -322,19 +188,17 @@ export function createI18n<
     return React.createElement(React.Fragment, null, ...parts);
   }
 
-  // Flatten translations for current language
+  // 현재 언어의 번역을 평탄화
   function getFlattenedTranslations(language: string): Record<string, string> {
     const flattened: Record<string, string> = {};
 
     if (lazy) {
-      // Lazy mode: only use loaded namespaces
       loadedNamespaces.forEach((nsData) => {
         if (nsData[language]) {
           Object.assign(flattened, nsData[language]);
         }
       });
     } else {
-      // Eager mode: flatten all namespaces
       Object.keys(translations).forEach((ns) => {
         const nsData = translations[ns];
         if (nsData && nsData[language]) {
@@ -347,32 +211,14 @@ export function createI18n<
   }
 
   /**
-   * Typed useTranslation hook - no Provider needed!
-   * Automatically subscribes to language changes and provides translation function
-   *
-   * @param namespace - Optional namespace to use (e.g., "common", "menu")
-   *                   If not provided, returns all keys from all namespaces
-   * @returns Translation function with auto-completed keys
-   *
-   * @example
-   * ```typescript
-   * // Without namespace - access all keys
-   * function MyComponent() {
-   *   const { t, language } = i18n.useTranslation();
-   *   return <div>{t("welcome")}</div>;
-   * }
-   *
-   * // With namespace - access specific namespace + fallback keys
-   * function MenuComponent() {
-   *   const { t } = i18n.useTranslation("menu");
-   *   return <nav>{t("home")}</nav>;
-   * }
-   * ```
+   * 타입 안전한 useTranslation 훅 (Provider 불필요)
+   * 언어 변경을 자동으로 구독하고 번역 함수 제공
+   * @param namespace - 네임스페이스 (미지정 시 모든 키 접근)
    */
   function useTranslation<
     NS extends ExtractNamespaces<TTranslations> | undefined = undefined,
   >(
-    namespace?: NS
+    namespace?: NS,
   ): UseTranslationReturn<
     NS extends undefined
       ? ExtractAllKeys<TTranslations>
@@ -380,24 +226,20 @@ export function createI18n<
         ? ExtractNamespaceWithFallback<TTranslations, NonNullable<NS>, Fallback>
         : ExtractNamespaceKeys<TTranslations, NonNullable<NS>>
   > {
-    // Client-side only - subscribe to language changes
     const [language, setLanguage] = React.useState<string>(() =>
-      getCurrentLanguage()
+      getCurrentLanguage(),
     );
 
     React.useEffect(() => {
-      // Update if language changed externally
       const current = getCurrentLanguage();
       if (current !== language) {
         setLanguage(current);
       }
 
-      // Subscribe to language changes
       const unsubscribe = languageManager.addLanguageChangeListener(
         (newLang) => {
           currentLanguage = newLang;
           setLanguage(newLang);
-          // Notify all other listeners
           languageListeners.forEach((listener) => {
             try {
               listener(newLang);
@@ -405,36 +247,32 @@ export function createI18n<
               console.error("Error in language listener:", error);
             }
           });
-        }
+        },
       );
 
       return unsubscribe;
     }, []);
 
-    // Get translations for current language
     const flattenedTranslations = React.useMemo(
       () => getFlattenedTranslations(language),
-      [language]
+      [language],
     );
 
-    // Create translation function
     const translate = React.useCallback(
       (
         key: any,
         variables?: Record<string, string | number>,
-        styles?: Record<string, React.CSSProperties>
+        styles?: Record<string, React.CSSProperties>,
       ): any => {
         const text = flattenedTranslations[key] || key;
 
-        // If styles are provided, return React elements
         if (styles && variables) {
           return interpolateWithStyles(text, variables, styles);
         }
 
-        // Otherwise return string
         return interpolate(text, variables);
       },
-      [flattenedTranslations]
+      [flattenedTranslations],
     );
 
     return {
@@ -445,52 +283,30 @@ export function createI18n<
   }
 
   /**
-   * Server-side translation function for Next.js Server Components
-   * Automatically detects language from headers and returns typed translation function
-   *
-   * @param namespace - Optional namespace to use (e.g., "common", "menu")
-   * @returns Promise with translation function and language info
-   *
-   * @example Basic usage (auto-detects language from headers)
-   * ```tsx
-   * import { headers } from 'next/headers';
-   * import { i18n } from '@/locales';
-   *
-   * export default async function ServerPage() {
-   *   const { t } = await i18n.getServerTranslation("common");
-   *   return <h1>{t("welcome")}</h1>;
-   * }
-   * ```
-   *
-   * @example Without namespace (uses all keys)
-   * ```tsx
-   * const { t, language } = await i18n.getServerTranslation();
-   * ```
+   * 서버 컴포넌트용 번역 함수 (Next.js)
+   * 헤더에서 언어를 자동 감지하여 타입 안전한 번역 함수 반환
+   * @param namespace - 네임스페이스 (미지정 시 모든 키 사용)
    */
   async function getServerTranslation<
     NS extends ExtractNamespaces<TTranslations> | undefined = undefined,
   >(namespace?: NS) {
-    // Try to import Next.js headers dynamically
     let headersList: Headers;
     try {
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore - next/headers is an optional peer dependency
+      // @ts-ignore
       const { headers } = await import("next/headers");
       headersList = await headers();
     } catch {
-      // Not in Next.js environment, use empty Headers
       headersList = new Headers();
     }
 
-    // Get language from headers (using server utility)
     let language = "en";
     try {
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore - import server utils
+      // @ts-ignore
       const { getServerLanguage } = await import("./server");
       language = getServerLanguage(headersList);
     } catch {
-      // Fallback to simple cookie parsing
       const cookieHeader = headersList.get("cookie");
       if (cookieHeader) {
         const cookies = cookieHeader.split(";");
@@ -504,11 +320,9 @@ export function createI18n<
       }
     }
 
-    // Flatten translations for the detected language
     const flattenedTranslations: Record<string, string> = {};
 
     if (namespace) {
-      // Load specific namespace + fallback
       const nsData = translations[namespace];
       const fallbackData = fallbackNamespace
         ? translations[fallbackNamespace]
@@ -526,7 +340,6 @@ export function createI18n<
         Object.assign(flattenedTranslations, fallbackData[language]);
       }
     } else {
-      // Load all namespaces
       Object.keys(translations).forEach((ns) => {
         const nsData = translations[ns];
         if (nsData && nsData[language]) {
@@ -535,7 +348,6 @@ export function createI18n<
       });
     }
 
-    // Create translation function
     function t(
       key: NS extends undefined
         ? ExtractAllKeys<TTranslations>
@@ -546,11 +358,10 @@ export function createI18n<
               Fallback
             >
           : ExtractNamespaceKeys<TTranslations, NonNullable<NS>>,
-      variables?: Record<string, string | number>
+      variables?: Record<string, string | number>,
     ): string {
       const text = flattenedTranslations[key as string] || (key as string);
 
-      // Simple variable interpolation
       if (!variables) {
         return text;
       }
@@ -569,32 +380,13 @@ export function createI18n<
   }
 
   return {
-    /**
-     * Typed useTranslation - auto-infers keys from namespace
-     * No Provider needed!
-     */
     useTranslation,
-
-    /**
-     * Server-side translation with auto language detection
-     */
     getServerTranslation,
 
-    /**
-     * Change current language
-     * @param lang - Language code to switch to
-     * @returns Promise that resolves when language is changed
-     *
-     * @example
-     * ```typescript
-     * <button onClick={() => i18n.changeLanguage('en')}>
-     *   Switch to English
-     * </button>
-     * ```
-     */
+    /** 언어 변경 */
     changeLanguage: async (lang: string): Promise<void> => {
       if (typeof window === "undefined") {
-        console.warn("changeLanguage() is only available on client-side");
+        console.warn("changeLanguage()는 클라이언트에서만 사용 가능합니다");
         return;
       }
 
@@ -604,60 +396,32 @@ export function createI18n<
       }
     },
 
-    /**
-     * Get current language
-     */
     getCurrentLanguage,
-
-    /**
-     * Get available languages
-     */
     getAvailableLanguages: (): LanguageConfig[] => {
       return languageManager.getAvailableLanguages();
     },
-
-    /**
-     * Get language configuration for a specific language
-     */
     getLanguageConfig: (code: string): LanguageConfig | undefined => {
       return languageManager.getLanguageConfig(code);
     },
 
-    /**
-     * Detect browser's preferred language
-     * Server-side: returns null (browser detection not available)
-     * Client-side: detects from navigator.languages
-     */
+    /** 브라우저 언어 감지 (서버에서는 null) */
     detectBrowserLanguage: (): string | null => {
       if (typeof window === "undefined") {
-        // Server-side: browser detection not available
         return null;
       }
       return languageManager.detectBrowserLanguage();
     },
 
-    /**
-     * Reset language to default
-     * Server-side: no-op (language is read from headers)
-     * Client-side: resets to default and clears cookie/localStorage
-     */
+    /** 언어를 기본값으로 리셋 (서버에서는 no-op) */
     resetLanguage: (): void => {
       if (typeof window === "undefined") {
-        // Server-side: no-op
         return;
       }
       languageManager.reset();
       currentLanguage = null;
     },
 
-    /**
-     * Original translations object (for reference)
-     */
     translations,
-
-    /**
-     * Configuration options
-     */
     options: {
       fallbackNamespace,
       enableFallback,
@@ -665,26 +429,20 @@ export function createI18n<
       preloadNamespaces,
     },
 
-    /**
-     * Load a namespace dynamically (lazy mode only)
-     * @param namespace - The namespace to load
-     * @returns Promise that resolves when namespace is loaded
-     */
+    /** 네임스페이스 동적 로드 (lazy 모드만) */
     loadNamespace: async (namespace: keyof TTranslations) => {
       if (!lazy) {
-        console.warn("loadNamespace() is only available in lazy mode");
+        console.warn("loadNamespace()는 lazy 모드에서만 사용 가능합니다");
         return;
       }
       if (!loadNamespace) {
-        throw new Error("loadNamespace function not configured");
+        throw new Error("loadNamespace 함수가 설정되지 않았습니다");
       }
 
-      // Already loaded
       if (loadedNamespaces.has(namespace as string)) {
         return;
       }
 
-      // Load for all languages
       const languages = Object.keys(translations[namespace] || {});
       const promises = languages.map(async (lang) => {
         const data = await loadNamespace(namespace as string, lang);
@@ -702,16 +460,7 @@ export function createI18n<
   };
 }
 
-/**
- * Helper type to infer the return type of createI18n
- * Useful for exporting types from your i18n setup file
- *
- * @example
- * ```typescript
- * const i18n = createI18n(translations);
- * export type I18n = CreateI18nReturn<typeof translations>;
- * ```
- */
+/** createI18n 반환 타입 추론 헬퍼 */
 export type CreateI18nReturn<T extends NamespaceTranslations> = ReturnType<
   typeof createI18n<T>
 >;

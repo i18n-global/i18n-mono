@@ -1,74 +1,31 @@
-/**
- * Load i18nexus.config.json configuration file
- * This is a standalone implementation that doesn't depend on i18nexus-tools
- */
+/** i18nexus.config.json 설정 파일 로드 */
 
 import * as fs from "fs";
 import * as pathLib from "path";
 
 export interface I18nexusConfig {
-  /**
-   * Supported languages
-   */
+  /** 지원 언어 목록 */
   languages?: string[];
-
-  /**
-   * Default language code
-   */
+  /** 기본 언어 코드 */
   defaultLanguage?: string;
-
-  /**
-   * Directory for translation files
-   */
+  /** 번역 파일 디렉토리 */
   localesDir?: string;
-
-  /**
-   * Source pattern for file matching
-   */
+  /** 파일 매칭 소스 패턴 */
   sourcePattern?: string;
-
-  /**
-   * Translation import source
-   */
+  /** 번역 import 소스 */
   translationImportSource?: string;
-
-  /**
-   * Fallback namespace setting
-   * Used as default namespace when no namespace is specified in createI18n
-   * @example "common"
-   */
+  /** Fallback 네임스페이스 (기본: "common") */
   fallbackNamespace?: string;
-
-  /**
-   * Enable fallback behavior
-   * @default true
-   */
+  /** Fallback 활성화 (기본: true) */
   enableFallback?: boolean;
 }
 
-/**
- * Load i18nexus.config.json configuration file
- *
- * @param configPath - Path to config file (default: "i18nexus.config.json")
- * @param options - Options for loading config
- * @returns Configuration object or null if not found
- *
- * @example
- * ```typescript
- * const config = loadI18nexusConfig();
- * if (config?.fallbackNamespace) {
- *   const i18n = createI18n(translations, {
- *     fallbackNamespace: config.fallbackNamespace
- *   });
- * }
- * ```
- */
+/** i18nexus.config.json 설정 파일 로드 */
 export function loadI18nexusConfig(
   configPath: string = "i18nexus.config.json",
   options?: { silent?: boolean },
 ): I18nexusConfig | null {
   try {
-    // Try to resolve from current working directory
     const absolutePath = pathLib.resolve(process.cwd(), configPath);
 
     if (!fs.existsSync(absolutePath)) {
@@ -80,7 +37,6 @@ export function loadI18nexusConfig(
       return null;
     }
 
-    // Read and parse JSON file
     const fileContent = fs.readFileSync(absolutePath, "utf-8");
     const config = JSON.parse(fileContent) as I18nexusConfig;
 
@@ -104,12 +60,7 @@ export function loadI18nexusConfig(
   }
 }
 
-/**
- * Load i18nexus.config.json configuration file silently (no console output)
- *
- * @param configPath - Path to config file (default: "i18nexus.config.json")
- * @returns Configuration object or null if not found
- */
+/** i18nexus.config.json 설정 파일 조용히 로드 (콘솔 출력 없음) */
 export function loadI18nexusConfigSilently(
   configPath: string = "i18nexus.config.json",
 ): I18nexusConfig | null {

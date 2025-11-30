@@ -1,11 +1,6 @@
-/**
- * Type utilities for i18nexus
- */
+/** i18nexus 타입 유틸리티 */
 
-/**
- * Minimal I18nexus config type used by the library's helpers.
- * Keep this minimal to avoid coupling to external loader implementations.
- */
+/** 최소 I18nexus 설정 타입 (외부 로더 구현과의 결합 방지) */
 export interface I18nexusConfig<
   TLanguages extends readonly string[] = readonly string[],
 > {
@@ -16,44 +11,11 @@ export interface I18nexusConfig<
   translationImportSource?: string;
 }
 
-/**
- * Extract language union type from config
- * @example
- * ```typescript
- * // i18nexus.config.ts
- * export const config = {
- *   languages: ["en", "ko", "ja"] as const,
- *   defaultLanguage: "en",
- *   // ... other config
- * } as const;
- *
- * // In your app
- * import { config } from "./i18nexus.config";
- * import type { ExtractLanguages } from "i18nexus";
- *
- * type AppLanguages = ExtractLanguages<typeof config>; // "en" | "ko" | "ja"
- * ```
- */
+/** 설정에서 언어 Union 타입 추출 */
 export type ExtractLanguages<T extends I18nexusConfig<readonly string[]>> =
   T["languages"][number];
 
-/**
- * Helper to create a strictly typed i18nexus config
- * @example
- * ```typescript
- * import { defineConfig } from "i18nexus";
- *
- * export const config = defineConfig({
- *   languages: ["en", "ko", "ja"] as const,
- *   defaultLanguage: "en",
- *   localesDir: "./locales",
- *   sourcePattern: "src/**\/*.{ts,tsx}",
- *   translationImportSource: "i18nexus",
- * });
- *
- * export type AppLanguages = ExtractLanguages<typeof config>;
- * ```
- */
+/** 엄격한 타입의 i18nexus 설정 생성 헬퍼 */
 export function defineConfig<TLanguages extends readonly string[]>(
   config: I18nexusConfig<TLanguages>,
 ): I18nexusConfig<TLanguages> {

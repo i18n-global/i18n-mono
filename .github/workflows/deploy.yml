@@ -4,15 +4,15 @@ on:
   push:
     branches: [main]
     paths:
-      - 'packages/**'
-      - 'apps/**'
-      - '.github/workflows/deploy.yml'
-      - 'turbo.json'
-      - 'package.json'
+      - "packages/**"
+      - "apps/**"
+      - ".github/workflows/deploy.yml"
+      - "turbo.json"
+      - "package.json"
   workflow_dispatch:
     inputs:
       package:
-        description: 'Package to deploy (all, core, tools, demo)'
+        description: "Package to deploy (all, core, tools, demo)"
         required: false
         type: choice
         options:
@@ -33,7 +33,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      
+
       - uses: dorny/paths-filter@v2
         id: filter
         with:
@@ -76,9 +76,7 @@ jobs:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Install dependencies
-        run: |
-          npm ci --include=optional
-          npm rebuild lightningcss || true
+        run: npm ci
 
       - name: Build with Turbo
         run: npx turbo run build --filter=i18nexus
@@ -150,9 +148,7 @@ jobs:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Install dependencies
-        run: |
-          npm ci --include=optional
-          npm rebuild lightningcss || true
+        run: npm ci
 
       - name: Build with Turbo
         run: npx turbo run build --filter=i18nexus-tools
@@ -208,7 +204,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -219,9 +215,7 @@ jobs:
           node-version: "20"
 
       - name: Install dependencies
-        run: |
-          npm ci --include=optional
-          npm rebuild lightningcss || true
+        run: npm ci
 
       - name: Build with Turbo
         run: npx turbo run build --filter=i18nexus-demo

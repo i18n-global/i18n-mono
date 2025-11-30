@@ -1,78 +1,17 @@
 import React from "react";
 
-/**
- * Type-safe translation utilities with compile-time key validation
- *
- * @example
- * ```typescript
- * // 1. Define translations with const assertion
- * const translations = {
- *   en: {
- *     welcome: "Welcome",
- *     greeting: "Hello {{name}}",
- *   },
- *   ko: {
- *     welcome: "환영합니다",
- *     greeting: "안녕하세요 {{name}}",
- *   },
- * } as const;
- *
- * // 2. Extract type for valid keys
- * type AppTranslationKeys = ExtractTranslationKeys<typeof translations>;
- * // Result: "welcome" | "greeting"
- *
- * // 3. Create typed translation function
- * const t = createTypedTranslation(translations["en"]);
- *
- * // 4. Use with full type safety
- * t("welcome");           // ✅ OK
- * t("greeting", { name: "John" }); // ✅ OK
- * t("invalid");           // ❌ Compile error: '"invalid"' is not assignable
- * ```
- */
+/** 타입 안전한 번역 유틸리티 (컴파일 타임 키 검증) */
 
-/**
- * Extract all translation keys from a translation object
- * Works with any language's translation dict
- *
- * @example
- * ```typescript
- * type Keys = ExtractTranslationKeys<typeof translations>;
- * // "welcome" | "greeting" | ...
- * ```
- */
+/** 번역 객체에서 모든 키 추출 */
 export type ExtractTranslationKeys<
   T extends Record<string, Record<string, string>>,
 > = keyof T[keyof T] & string;
 
-/**
- * Extract valid keys from a single language dictionary
- *
- * @example
- * ```typescript
- * const en = { welcome: "Welcome", greeting: "Hello" };
- * type Keys = ExtractLanguageKeys<typeof en>;
- * // "welcome" | "greeting"
- * ```
- */
+/** 단일 언어 딕셔너리에서 유효한 키 추출 */
 export type ExtractLanguageKeys<T extends Record<string, string>> = keyof T &
   string;
 
-/**
- * Create a type-safe translation function that validates keys at compile time
- *
- * @param translations - Translation dictionary for a specific language
- * @returns Type-safe translation function
- *
- * @example
- * ```typescript
- * const en = { greeting: "Hello {{name}}" };
- * const t = createTypedTranslation(en);
- *
- * t("greeting", { name: "World" }); // ✅ OK - key is valid
- * t("invalid");                      // ❌ Error - key not in type
- * ```
- */
+/** 타입 안전한 번역 함수 생성 (컴파일 타임 키 검증) */
 export function createTypedTranslation<T extends Record<string, string>>(
   translations: T,
 ) {
@@ -93,31 +32,7 @@ export function createTypedTranslation<T extends Record<string, string>>(
   };
 }
 
-/**
- * Create a type-safe multi-language translation function
- *
- * @param translationDict - Dictionary with language codes as keys
- * @returns Function that returns type-safe t() for a specific language
- *
- * @example
- * ```typescript
- * const translations = {
- *   en: { greeting: "Hello {{name}}" },
- *   ko: { greeting: "안녕하세요 {{name}}" },
- * } as const;
- *
- * const getTypedT = createMultiLangTypedTranslation(translations);
- *
- * // Get typed translator for English
- * const tEn = getTypedT("en");
- * tEn("greeting", { name: "World" }); // ✅ OK
- * tEn("invalid");                      // ❌ Error
- *
- * // Get typed translator for Korean
- * const tKo = getTypedT("ko");
- * tKo("greeting", { name: "철수" });   // ✅ OK
- * ```
- */
+/** 타입 안전한 다국어 번역 함수 생성 */
 export function createMultiLangTypedTranslation<
   T extends Record<string, Record<string, string>>,
 >(translationDict: T) {
@@ -127,18 +42,7 @@ export function createMultiLangTypedTranslation<
   };
 }
 
-/**
- * Type-safe translation function with variable interpolation and styles
- *
- * @example
- * ```typescript
- * const en = { count: "Count: {{count}}" };
- * const t = createTypedTranslationWithStyles(en);
- *
- * const result = t("count", { count: 5 }, { count: { color: "red" } });
- * // Returns: <>Count: <span style={{color: "red"}}>5</span></>
- * ```
- */
+/** 변수 보간 및 스타일 지원 타입 안전 번역 함수 */
 export function createTypedTranslationWithStyles<
   T extends Record<string, string>,
 >(translations: T) {
@@ -154,7 +58,6 @@ export function createTypedTranslationWithStyles<
       return text;
     }
 
-    // If styles provided, return JSX with styled spans
     if (styles) {
       const parts: (string | React.ReactElement)[] = [];
       let lastIndex = 0;
@@ -197,7 +100,6 @@ export function createTypedTranslationWithStyles<
       return React.createElement(React.Fragment, null, ...parts);
     }
 
-    // Without styles, return plain string with interpolation
     return text.replace(/\{\{(\w+)\}\}/g, (match, variableName) => {
       const value = variables[variableName];
       return value !== undefined ? String(value) : match;
@@ -207,26 +109,7 @@ export function createTypedTranslationWithStyles<
   return translateWithStyles;
 }
 
-/**
- * Validate that all translation keys match across all languages
- * Use this to catch mismatches at runtime (e.g., in tests)
- *
- * @example
- * ```typescript
- * const translations = {
- *   en: { greeting: "Hello", farewell: "Goodbye" },
- *   ko: { greeting: "안녕", farewell: "안녕히" },
- * };
- *
- * validateTranslationKeys(translations); // ✅ All keys match
- *
- * const broken = {
- *   en: { greeting: "Hello" },
- *   ko: { greeting: "안녕", extra: "추가" }, // Missing in en
- * };
- * validateTranslationKeys(broken); // ❌ Throws error
- * ```
- */
+/** 모든 언어의 번역 키 일치 여부 검증 (테스트용) */
 export function validateTranslationKeys(
   translations: Record<string, Record<string, string>>,
 ): void {
@@ -242,7 +125,6 @@ export function validateTranslationKeys(
   for (const lang of languages.slice(1)) {
     const currentKeys = new Set(Object.keys(translations[lang]));
 
-    // Check for missing keys
     for (const key of baseKeys) {
       if (!currentKeys.has(key)) {
         throw new Error(
@@ -252,7 +134,6 @@ export function validateTranslationKeys(
       }
     }
 
-    // Check for extra keys
     for (const key of currentKeys) {
       if (!baseKeys.has(key)) {
         throw new Error(
@@ -264,21 +145,7 @@ export function validateTranslationKeys(
   }
 }
 
-/**
- * Get all possible translation keys with autocomplete support
- *
- * @example
- * ```typescript
- * const en = { greeting: "Hello", farewell: "Goodbye" };
- * const keys = getTranslationKeyList(en);
- * // ["greeting", "farewell"]
- *
- * // Use for runtime key validation
- * if (keys.includes(userKey)) {
- *   t(userKey as any); // Safe after validation
- * }
- * ```
- */
+/** 자동완성 지원 번역 키 목록 반환 */
 export function getTranslationKeyList<T extends Record<string, string>>(
   translations: T,
 ): Array<ExtractLanguageKeys<T>> {

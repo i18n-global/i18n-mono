@@ -1,24 +1,6 @@
 /**
- * Create i18n instance with automatic configuration from i18nexus.config.json
- *
- * This utility automatically reads fallback namespace from i18nexus.config.json
- * and applies it to createI18n, making it easier to use fallback namespace
- * without manually specifying it.
- *
- * @example
- * ```typescript
- * import { createI18nWithConfig } from 'i18nexus/config';
- * import { translations } from './locales';
- *
- * // Automatically reads fallbackNamespace from i18nexus.config.json
- * const i18n = createI18nWithConfig(translations);
- *
- * // Now you can use without namespace
- * const { t } = i18n.useTranslation();
- * t("welcome"); // ✅ Works if fallbackNamespace is set in config
- * ```
+ * i18nexus.config.json에서 설정을 자동으로 읽어 i18n 인스턴스 생성
  */
-
 import { createI18n, CreateI18nOptions } from "./createI18n";
 import type { NamespaceTranslations } from "../components/I18nProvider";
 import {
@@ -27,26 +9,10 @@ import {
 } from "./config-loader";
 
 /**
- * Create i18n instance with automatic configuration from i18nexus.config.json
- *
- * @param translations - Your translation object with namespaces
- * @param options - Optional configuration (overrides config file)
- * @param configPath - Path to i18nexus.config.json (default: "i18nexus.config.json")
- * @returns Fully typed Provider and hooks
- *
- * @example
- * ```typescript
- * import { createI18nWithConfig } from 'i18nexus/config';
- * import { translations } from './locales';
- *
- * // Automatically reads fallbackNamespace from i18nexus.config.json
- * const i18n = createI18nWithConfig(translations);
- *
- * // With override
- * const i18n = createI18nWithConfig(translations, {
- *   fallbackNamespace: "custom" // Overrides config file
- * });
- * ```
+ * i18nexus.config.json에서 fallbackNamespace를 자동으로 읽어 적용
+ * @param translations - 번역 객체
+ * @param options - 옵션 (config 파일보다 우선)
+ * @param configPath - 설정 파일 경로 (기본: "i18nexus.config.json")
  */
 export function createI18nWithConfig<
   TTranslations extends NamespaceTranslations,
@@ -55,11 +21,9 @@ export function createI18nWithConfig<
   options?: CreateI18nOptions<TTranslations>,
   configPath: string = "i18nexus.config.json",
 ) {
-  // Load config from i18nexus.config.json (silently)
   const config = loadI18nexusConfigSilently(configPath);
 
-  // Merge config file settings with provided options
-  // Options take precedence over config file
+  // 옵션이 config 파일보다 우선
   const mergedOptions: CreateI18nOptions<TTranslations> = {
     fallbackNamespace:
       (options?.fallbackNamespace ?? (config?.fallbackNamespace as any)) ||
@@ -71,13 +35,7 @@ export function createI18nWithConfig<
 }
 
 /**
- * Create i18n instance with automatic configuration (synchronous)
- * For client-side usage where config is already loaded
- *
- * @param translations - Your translation object with namespaces
- * @param config - Pre-loaded configuration object
- * @param options - Optional configuration (overrides config)
- * @returns Fully typed Provider and hooks
+ * 동기 방식으로 i18n 인스턴스 생성 (이미 로드된 config 사용)
  */
 export function createI18nWithConfigSync<
   TTranslations extends NamespaceTranslations,
@@ -96,7 +54,6 @@ export function createI18nWithConfigSync<
   return createI18n(translations, mergedOptions);
 }
 
-// Re-export for convenience
 export {
   loadI18nexusConfig,
   loadI18nexusConfigSilently,

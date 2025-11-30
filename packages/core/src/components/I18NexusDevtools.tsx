@@ -4,22 +4,13 @@ import React from "react";
 import { useI18nContext } from "./I18nProvider";
 
 export interface I18NexusDevtoolsProps {
-  /**
-   * Set this true if you want the dev tools to default to being open
-   */
+  /** 개발 도구 기본 열림 상태 */
   initialIsOpen?: boolean;
-  /**
-   * The position of the devtools panel
-   * @default 'bottom-left'
-   */
+  /** 개발 도구 패널 위치 (기본: 'bottom-left') */
   position?: "top-left" | "top-right" | "bottom-left" | "bottom-right";
-  /**
-   * Custom styles for the panel
-   */
+  /** 패널 커스텀 스타일 */
   panelStyles?: React.CSSProperties;
-  /**
-   * Custom styles for the button
-   */
+  /** 버튼 커스텀 스타일 */
   buttonStyles?: React.CSSProperties;
 }
 
@@ -42,7 +33,6 @@ export function I18NexusDevtools({
   const [isDragging, setIsDragging] = React.useState(false);
   const browserLanguage = languageManager.detectBrowserLanguage();
 
-  // ESC key to close
   React.useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
       if (e.key === "Escape" && isOpen) {
@@ -54,7 +44,6 @@ export function I18NexusDevtools({
     return () => window.removeEventListener("keydown", handleEscape);
   }, [isOpen]);
 
-  // Only render in development mode
   if (process.env.NODE_ENV === "production") {
     return null;
   }
@@ -103,7 +92,6 @@ export function I18NexusDevtools({
 
   return (
     <div style={getPositionStyles()}>
-      {/* Toggle Button */}
       {!isOpen && (
         <button
           onClick={toggleOpen}
@@ -139,7 +127,6 @@ export function I18NexusDevtools({
         </button>
       )}
 
-      {/* Devtools Panel */}
       {isOpen && (
         <div
           style={{
@@ -156,7 +143,6 @@ export function I18NexusDevtools({
             ...panelStyles,
           }}
         >
-          {/* Header */}
           <div
             style={{
               background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
@@ -203,7 +189,6 @@ export function I18NexusDevtools({
             </button>
           </div>
 
-          {/* Content */}
           <div
             style={{
               padding: "16px",
@@ -211,7 +196,6 @@ export function I18NexusDevtools({
               flex: 1,
             }}
           >
-            {/* Current Language Section */}
             <div style={{ marginBottom: "20px" }}>
               <h4
                 style={{
@@ -257,7 +241,6 @@ export function I18NexusDevtools({
               </div>
             </div>
 
-            {/* Browser Language Section */}
             <div style={{ marginBottom: "20px" }}>
               <h4
                 style={{
@@ -309,7 +292,6 @@ export function I18NexusDevtools({
               </div>
             </div>
 
-            {/* Available Languages */}
             <div style={{ marginBottom: "20px" }}>
               <h4
                 style={{
@@ -393,7 +375,6 @@ export function I18NexusDevtools({
               </div>
             </div>
 
-            {/* Translation Stats */}
             <div style={{ marginBottom: "20px" }}>
               <h4
                 style={{
@@ -442,7 +423,6 @@ export function I18NexusDevtools({
               </div>
             </div>
 
-            {/* Actions */}
             <div>
               <h4
                 style={{
@@ -488,7 +468,6 @@ export function I18NexusDevtools({
             </div>
           </div>
 
-          {/* Footer */}
           <div
             style={{
               backgroundColor: "#f9fafb",
@@ -504,7 +483,6 @@ export function I18NexusDevtools({
         </div>
       )}
 
-      {/* CSS Animation */}
       <style>
         {`
           @keyframes spin {

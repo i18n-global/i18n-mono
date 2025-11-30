@@ -1,18 +1,4 @@
-/**
- * Configuration utilities for i18nexus
- *
- * This module provides utilities to load configuration from i18nexus.config.json
- * and create i18n instances with automatic configuration.
- *
- * @example
- * ```typescript
- * import { createI18nWithConfig } from 'i18nexus/config';
- * import { translations } from './locales';
- *
- * // Automatically reads fallbackNamespace from i18nexus.config.json
- * const i18n = createI18nWithConfig(translations);
- * ```
- */
+/** i18nexus 설정 유틸리티 (i18nexus.config.json 자동 로드) */
 
 export {
   createI18nWithConfig,
