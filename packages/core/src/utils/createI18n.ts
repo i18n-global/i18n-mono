@@ -69,7 +69,7 @@ export interface UseTranslationReturn<K extends string = string> {
   t: (
     key: K,
     variables?: Record<string, string | number>,
-    styles?: Record<string, React.CSSProperties>
+    styles?: Record<string, React.CSSProperties>,
   ) => string | React.ReactElement;
   currentLanguage: string;
   isReady: boolean;
@@ -118,7 +118,7 @@ export type ExtractNamespaceWithFallback<
  */
 export type NamespaceLoader = (
   namespace: string,
-  language: string
+  language: string,
 ) => Promise<Record<string, string>>;
 
 /**
@@ -213,7 +213,7 @@ export function createI18n<
   Fallback extends keyof TTranslations = keyof TTranslations,
 >(
   translations: TTranslations,
-  options?: CreateI18nOptions<TTranslations, Fallback>
+  options?: CreateI18nOptions<TTranslations, Fallback>,
 ) {
   const fallbackNamespace = options?.fallbackNamespace;
   const enableFallback = options?.enableFallback !== false;
@@ -224,7 +224,7 @@ export function createI18n<
   // Validate lazy mode configuration
   if (lazy && !loadNamespace) {
     throw new Error(
-      "createI18n: loadNamespace function is required when lazy mode is enabled"
+      "createI18n: loadNamespace function is required when lazy mode is enabled",
     );
   }
 
@@ -259,7 +259,7 @@ export function createI18n<
   // Helper functions for string interpolation
   function interpolate(
     text: string,
-    variables?: Record<string, string | number>
+    variables?: Record<string, string | number>,
   ): string {
     if (!variables) {
       return text;
@@ -274,7 +274,7 @@ export function createI18n<
   function interpolateWithStyles(
     text: string,
     variables: Record<string, string | number>,
-    styles: Record<string, React.CSSProperties>
+    styles: Record<string, React.CSSProperties>,
   ): React.ReactElement {
     const parts: (string | React.ReactElement)[] = [];
     let lastIndex = 0;
@@ -299,8 +299,8 @@ export function createI18n<
             React.createElement(
               "span",
               { key: `var-${key++}`, style: style },
-              String(value)
-            )
+              String(value),
+            ),
           );
         } else {
           // Just add the value as string
@@ -372,7 +372,7 @@ export function createI18n<
   function useTranslation<
     NS extends ExtractNamespaces<TTranslations> | undefined = undefined,
   >(
-    namespace?: NS
+    namespace?: NS,
   ): UseTranslationReturn<
     NS extends undefined
       ? ExtractAllKeys<TTranslations>
@@ -382,7 +382,7 @@ export function createI18n<
   > {
     // Client-side only - subscribe to language changes
     const [language, setLanguage] = React.useState<string>(() =>
-      getCurrentLanguage()
+      getCurrentLanguage(),
     );
 
     React.useEffect(() => {
@@ -405,7 +405,7 @@ export function createI18n<
               console.error("Error in language listener:", error);
             }
           });
-        }
+        },
       );
 
       return unsubscribe;
@@ -414,7 +414,7 @@ export function createI18n<
     // Get translations for current language
     const flattenedTranslations = React.useMemo(
       () => getFlattenedTranslations(language),
-      [language]
+      [language],
     );
 
     // Create translation function
@@ -422,7 +422,7 @@ export function createI18n<
       (
         key: any,
         variables?: Record<string, string | number>,
-        styles?: Record<string, React.CSSProperties>
+        styles?: Record<string, React.CSSProperties>,
       ): any => {
         const text = flattenedTranslations[key] || key;
 
@@ -434,7 +434,7 @@ export function createI18n<
         // Otherwise return string
         return interpolate(text, variables);
       },
-      [flattenedTranslations]
+      [flattenedTranslations],
     );
 
     return {
@@ -546,7 +546,7 @@ export function createI18n<
               Fallback
             >
           : ExtractNamespaceKeys<TTranslations, NonNullable<NS>>,
-      variables?: Record<string, string | number>
+      variables?: Record<string, string | number>,
     ): string {
       const text = flattenedTranslations[key as string] || (key as string);
 
