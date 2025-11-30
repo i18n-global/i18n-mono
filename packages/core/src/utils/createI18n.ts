@@ -264,19 +264,25 @@ export function createI18n<
         ? ExtractNamespaceWithFallback<TTranslations, NonNullable<NS>, Fallback>
         : ExtractNamespaceKeys<TTranslations, NonNullable<NS>>
   > {
-    const [language, setLanguage] = React.useState<string>(() =>
-      getCurrentLanguage(),
-    );
+    // 서버와 클라이언트에서 동일한 초기값 사용 (Hydration 에러 방지)
+    const [language, setLanguage] = React.useState<string>(() => {
+      // 서버에서는 기본 언어, 클라이언트에서는 실제 언어
+      if (typeof window === "undefined") {
+        return languageManager.getDefaultLanguage();
+      }
+      return languageManager.getCurrentLanguage();
+    });
     const [isReady, setIsReady] = React.useState<boolean>(false);
 
     // Namespace 로드
     React.useEffect(() => {
       if (lazy && namespace && loadNamespace) {
-        if (!loadedNamespaces.has(namespace as string)) {
+        const nsKey = namespace as string;
+        if (!loadedNamespaces.has(nsKey)) {
           const languages = Object.keys(translations[namespace] || {});
           Promise.all(
             languages.map(async (lang) => {
-              const data = await loadNamespace(String(namespace), lang);
+              const data = await loadNamespace(nsKey, lang);
               return { lang, data };
             }),
           ).then((results) => {
@@ -284,7 +290,7 @@ export function createI18n<
             results.forEach(({ lang, data }) => {
               nsData[lang] = data;
             });
-            loadedNamespaces.set(String(namespace), nsData);
+            loadedNamespaces.set(nsKey, nsData);
             setIsReady(true);
           });
         } else {
@@ -293,18 +299,37 @@ export function createI18n<
       } else {
         setIsReady(true);
       }
-    }, [namespace]);
+    }, [namespace, lazy, loadNamespace]);
 
+    // 언어 변경 감지 및 리스너 등록
     React.useEffect(() => {
-      const current = getCurrentLanguage();
-      if (current !== language) {
-        setLanguage(current);
+      // 클라이언트에서만 실제 언어 읽기
+      if (typeof window !== "undefined") {
+        const current = languageManager.getCurrentLanguage();
+        if (current !== language) {
+          setLanguage(current);
+        }
       }
 
       const unsubscribe = languageManager.addLanguageChangeListener(
         (newLang) => {
           currentLanguage = newLang;
           setLanguage(newLang);
+          // 언어 변경 시 namespace 다시 로드 필요할 수 있음
+          if (lazy && namespace && loadNamespace) {
+            const nsKey = namespace as string;
+            // 이미 로드된 namespace는 유지하되, 언어만 업데이트
+            if (loadedNamespaces.has(nsKey)) {
+              const nsData = loadedNamespaces.get(nsKey)!;
+              if (!nsData[newLang]) {
+                // 새 언어의 namespace 로드
+                loadNamespace(nsKey, newLang).then((data) => {
+                  nsData[newLang] = data;
+                  loadedNamespaces.set(nsKey, nsData);
+                });
+              }
+            }
+          }
           languageListeners.forEach((listener) => {
             try {
               listener(newLang);
@@ -316,7 +341,7 @@ export function createI18n<
       );
 
       return unsubscribe;
-    }, []);
+    }, [language, namespace, lazy, loadNamespace]);
 
     const flattenedTranslations = React.useMemo(
       () => getFlattenedTranslations(language),
