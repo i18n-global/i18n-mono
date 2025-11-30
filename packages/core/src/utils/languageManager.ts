@@ -43,8 +43,29 @@ export class LanguageManager {
 
   /**
    * 현재 언어 코드를 가져옵니다
+   * 서버와 클라이언트 모두에서 동작 (Hydration 에러 방지)
    */
   getCurrentLanguage(): string {
+    // 서버 환경에서 쿠키 읽기
+    if (typeof window === "undefined") {
+      try {
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        const { headers } = require("next/headers");
+        const headersList = headers();
+        const { getServerLanguage } = require("./server");
+        return getServerLanguage(headersList, {
+          cookieName: this.options.cookieName,
+          defaultLanguage: this.options.defaultLanguage,
+          availableLanguages: this.getAvailableLanguageCodes(),
+        });
+      } catch {
+        // next/headers를 사용할 수 없는 경우 기본 언어 반환
+        return this.options.defaultLanguage;
+      }
+    }
+
+    // 클라이언트 환경
     // 1. 쿠키에서 확인
     const cookieLanguage = getCookie(this.options.cookieName);
     if (cookieLanguage && this.isValidLanguage(cookieLanguage)) {

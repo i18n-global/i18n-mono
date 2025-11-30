@@ -265,11 +265,8 @@ export function createI18n<
         : ExtractNamespaceKeys<TTranslations, NonNullable<NS>>
   > {
     // 서버와 클라이언트에서 동일한 초기값 사용 (Hydration 에러 방지)
+    // getCurrentLanguage()가 서버에서도 쿠키를 읽도록 수정되어 있음
     const [language, setLanguage] = React.useState<string>(() => {
-      // 서버에서는 기본 언어, 클라이언트에서는 실제 언어
-      if (typeof window === "undefined") {
-        return languageManager.getDefaultLanguage();
-      }
       return languageManager.getCurrentLanguage();
     });
     const [isReady, setIsReady] = React.useState<boolean>(false);
