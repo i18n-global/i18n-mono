@@ -19,6 +19,16 @@ const nextConfig: NextConfig = {
     ignoreBuildErrors: true,
   },
   webpack: (config, { isServer }) => {
+    // 동적 import 경고 억제 (server.ts의 런타임 경로 결정)
+    config.ignoreWarnings = [
+      ...(config.ignoreWarnings || []),
+      {
+        module: /packages\/core\/dist\/utils\/server\.js/,
+        message:
+          /Critical dependency: the request of a dependency is an expression/,
+      },
+    ];
+
     if (!isServer) {
       // Ignore Node.js modules when building for the browser
       config.resolve.fallback = {
