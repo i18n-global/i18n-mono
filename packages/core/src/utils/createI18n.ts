@@ -374,20 +374,29 @@ export function createI18n<
       headersList = new Headers();
     }
 
-    let language = "en";
+    let language = languageManager.getDefaultLanguage();
     try {
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
       const { getServerLanguage } = await import("./server");
-      language = getServerLanguage(headersList);
+      language = getServerLanguage(headersList, {
+        cookieName: languageManager.getCookieName(),
+        defaultLanguage: languageManager.getDefaultLanguage(),
+        availableLanguages: languageManager.getAvailableLanguageCodes(),
+      });
     } catch {
       const cookieHeader = headersList.get("cookie");
       if (cookieHeader) {
         const cookies = cookieHeader.split(";");
         for (const cookie of cookies) {
           const [name, value] = cookie.trim().split("=");
-          if (decodeURIComponent(name) === "i18n-language") {
-            language = decodeURIComponent(value);
+          if (decodeURIComponent(name) === languageManager.getCookieName()) {
+            const detectedLang = decodeURIComponent(value);
+            if (
+              languageManager.getAvailableLanguageCodes().includes(detectedLang)
+            ) {
+              language = detectedLang;
+            }
             break;
           }
         }
@@ -396,11 +405,62 @@ export function createI18n<
 
     const flattenedTranslations: Record<string, string> = {};
 
+    // Lazy 모드에서 namespace 로드
+    if (lazy && namespace && loadNamespace) {
+      const nsKey = namespace as string;
+      if (!loadedNamespaces.has(nsKey)) {
+        const languages = Object.keys(translations[namespace] || {});
+        const results = await Promise.all(
+          languages.map(async (lang) => {
+            const data = await loadNamespace(nsKey, lang);
+            return { lang, data };
+          }),
+        );
+        const nsData: Record<string, Record<string, string>> = {};
+        results.forEach(({ lang, data }) => {
+          nsData[lang] = data;
+        });
+        loadedNamespaces.set(nsKey, nsData);
+      }
+    }
+
+    // Fallback namespace도 로드 (lazy 모드에서)
+    if (lazy && enableFallback && fallbackNamespace && loadNamespace) {
+      const fallbackKey = fallbackNamespace as string;
+      if (!loadedNamespaces.has(fallbackKey)) {
+        const languages = Object.keys(translations[fallbackNamespace] || {});
+        const results = await Promise.all(
+          languages.map(async (lang) => {
+            const data = await loadNamespace(fallbackKey, lang);
+            return { lang, data };
+          }),
+        );
+        const nsData: Record<string, Record<string, string>> = {};
+        results.forEach(({ lang, data }) => {
+          nsData[lang] = data;
+        });
+        loadedNamespaces.set(fallbackKey, nsData);
+      }
+    }
+
     if (namespace) {
-      const nsData = translations[namespace];
-      const fallbackData = fallbackNamespace
-        ? translations[fallbackNamespace]
-        : null;
+      let nsData: Record<string, Record<string, string>> | undefined;
+
+      if (lazy && loadNamespace) {
+        nsData = loadedNamespaces.get(namespace as string);
+      } else {
+        nsData = translations[namespace];
+      }
+
+      let fallbackData: Record<string, Record<string, string>> | null = null;
+      if (enableFallback && fallbackNamespace) {
+        if (lazy && loadNamespace) {
+          fallbackData =
+            loadedNamespaces.get(fallbackNamespace as string) || null;
+        } else {
+          fallbackData = translations[fallbackNamespace] || null;
+        }
+      }
 
       if (nsData && nsData[language]) {
         Object.assign(flattenedTranslations, nsData[language]);
@@ -414,12 +474,22 @@ export function createI18n<
         Object.assign(flattenedTranslations, fallbackData[language]);
       }
     } else {
-      Object.keys(translations).forEach((ns) => {
-        const nsData = translations[ns];
-        if (nsData && nsData[language]) {
-          Object.assign(flattenedTranslations, nsData[language]);
-        }
-      });
+      if (lazy && loadNamespace) {
+        // Lazy 모드: 로드된 namespace만 사용
+        loadedNamespaces.forEach((nsData) => {
+          if (nsData[language]) {
+            Object.assign(flattenedTranslations, nsData[language]);
+          }
+        });
+      } else {
+        // Eager 모드: 모든 namespace 사용
+        Object.keys(translations).forEach((ns) => {
+          const nsData = translations[ns];
+          if (nsData && nsData[language]) {
+            Object.assign(flattenedTranslations, nsData[language]);
+          }
+        });
+      }
     }
 
     function t(
