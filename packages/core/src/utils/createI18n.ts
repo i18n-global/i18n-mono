@@ -112,23 +112,9 @@ export function createI18n<
   const languageListeners = new Set<(language: string) => void>();
 
   function getCurrentLanguage(): string {
+    // 서버에서는 항상 기본 언어 반환 (클라이언트 컴포넌트는 서버에서 기본 언어로 렌더링)
     if (typeof window === "undefined") {
-      // 서버에서도 쿠키를 읽어서 언어 결정 (Hydration 에러 방지)
-      try {
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
-        const { headers } = require("next/headers");
-        const headersList = headers();
-        const { getServerLanguage } = require("./server");
-        return getServerLanguage(headersList, {
-          cookieName: languageManager.getCookieName(),
-          defaultLanguage: languageManager.getDefaultLanguage(),
-          availableLanguages: languageManager.getAvailableLanguageCodes(),
-        });
-      } catch {
-        // next/headers를 사용할 수 없는 경우 기본 언어 반환
-        return languageManager.getDefaultLanguage();
-      }
+      return languageManager.getDefaultLanguage();
     }
     if (currentLanguage === null) {
       currentLanguage = languageManager.getCurrentLanguage();
@@ -265,9 +251,11 @@ export function createI18n<
         : ExtractNamespaceKeys<TTranslations, NonNullable<NS>>
   > {
     // 서버와 클라이언트에서 동일한 초기값 사용 (Hydration 에러 방지)
-    // getCurrentLanguage()가 서버에서도 쿠키를 읽도록 수정되어 있음
+    // 서버에서는 기본 언어, 클라이언트에서도 초기 렌더링 시 기본 언어 사용
+    // 이후 useEffect에서 실제 언어로 업데이트
     const [language, setLanguage] = React.useState<string>(() => {
-      return languageManager.getCurrentLanguage();
+      // 서버와 클라이언트 모두 초기 렌더링 시 기본 언어 사용
+      return languageManager.getDefaultLanguage();
     });
     const [isReady, setIsReady] = React.useState<boolean>(false);
 
@@ -300,12 +288,11 @@ export function createI18n<
 
     // 언어 변경 감지 및 리스너 등록
     React.useEffect(() => {
-      // 클라이언트에서만 실제 언어 읽기
+      // 클라이언트에서만 실제 언어 읽기 (하이드레이션 후)
       if (typeof window !== "undefined") {
         const current = languageManager.getCurrentLanguage();
-        if (current !== language) {
-          setLanguage(current);
-        }
+        // 하이드레이션 후 실제 언어로 업데이트
+        setLanguage(current);
       }
 
       const unsubscribe = languageManager.addLanguageChangeListener(
