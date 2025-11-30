@@ -23,7 +23,8 @@ jobs:
       - name: Get commit message
         id: commit
         run: |
-          COMMIT_MSG=$(git log -1 --pretty=%B)
+          # 첫 줄만 가져오기 (제목만) - 여러 줄 메시지의 YAML 파싱 오류 방지
+          COMMIT_MSG=$(git log -1 --pretty=%s)
           echo "message=$COMMIT_MSG" >> $GITHUB_OUTPUT
           echo "Commit message: $COMMIT_MSG"
       
