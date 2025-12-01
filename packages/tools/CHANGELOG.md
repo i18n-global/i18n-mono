@@ -2,6 +2,47 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.0.1] - 2025-12-01
+
+### 🐛 Bug Fixes
+- **Namespace Inference Fix**: Fixed issue where `i18n-wrapper` was wrapping all files with `common` namespace even when `namespaceLocation` was set
+  - Now correctly detects `namespaceLocation` and enables namespacing automatically
+  - Properly infers namespace from the first folder after `basePath` (e.g., `page/home/index.tsx` → `home`)
+  - Falls back to creating `namespacing` config from `namespaceLocation` if not explicitly set
+
+---
+
+## [2.0.0] - 2025-12-01
+
+### ✨ Features
+- **v3.2 Compliance**: Updated to match i18nexus core v3.2 zero-config philosophy
+  - `i18n-sheets init` now generates ultra-simplified `locales/index.ts` (only `loadNamespace` function)
+  - Removed complex `translations` object and `createI18n` from generated index
+  - Added comprehensive JSDoc with usage examples
+  - Reduced generated code from 148 lines to 18 lines (88% reduction)
+
+### 🔧 Internal Improvements
+- **generateNamespaceIndexFile**: Complete rewrite for v3.2 compliance
+  - No longer generates `createI18n` calls
+  - No longer generates `translations` object
+  - Only exports `loadNamespace` function
+  - Added helpful documentation and usage examples
+- **Config updates**: 
+  - Marked `lazy` option as deprecated (auto-enabled in v3.2+)
+  - Updated documentation to reflect new patterns
+
+### 📖 Documentation
+- Updated init command output messages
+- Added v3.2 zero-config terminology
+- Clarified that lazy loading is automatic when `loadNamespace` is provided
+
+### 💡 Developer Experience
+- Drastically simplified `locales/index.ts` for easier understanding
+- New developers can understand the entire file in seconds
+- Clear separation between user code and generated types
+
+---
+
 ## [1.9.0] - 2025-12-01
 
 ### ✨ Features

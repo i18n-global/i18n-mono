@@ -46,16 +46,32 @@ export function applyTranslationsToAST(
 
   // i18nexus.config.json 로드 (네임스페이스 설정 확인)
   const i18nexusConfig = loadConfig("i18nexus.config.json", { silent: true });
-  const namespacingEnabled = i18nexusConfig.namespacing?.enabled ?? false;
+  
+  // namespaceLocation이 있으면 자동으로 enabled로 간주
+  const namespacingEnabled = 
+    i18nexusConfig.namespacing?.enabled ?? 
+    !!i18nexusConfig.namespaceLocation;
 
   // 네임스페이스 추론 (파일 전체에 대해)
   let correctNamespace: string | undefined;
-  if (namespacingEnabled && filePath && sourceCode && i18nexusConfig.namespacing) {
-    correctNamespace = inferNamespaceFromFile(
-      filePath,
-      sourceCode,
-      i18nexusConfig.namespacing
-    );
+  if (namespacingEnabled && filePath && sourceCode) {
+    // namespacing 설정이 없으면 namespaceLocation으로부터 생성
+    const namespacingConfig = i18nexusConfig.namespacing || 
+      (i18nexusConfig.namespaceLocation ? {
+        enabled: true,
+        basePath: i18nexusConfig.namespaceLocation,
+        defaultNamespace: i18nexusConfig.fallbackNamespace || "common",
+        framework: i18nexusConfig.namespacing?.framework || "nextjs-app",
+        strategy: i18nexusConfig.namespacing?.strategy || "first-folder",
+      } : undefined);
+    
+    if (namespacingConfig) {
+      correctNamespace = inferNamespaceFromFile(
+        filePath,
+        sourceCode,
+        namespacingConfig
+      );
+    }
   }
 
   // 1단계: 기존 useTranslation() 호출이 있으면 네임스페이스 추가/수정
