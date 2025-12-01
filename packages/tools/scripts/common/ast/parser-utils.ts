@@ -78,6 +78,10 @@ export function generateWithBabel(
     comments: options.comments !== false,
     // Enable TypeScript support for type parameters
     decoratorsBeforeExport: true,
+    // Prevent Unicode escape sequences for non-ASCII characters (e.g., Korean)
+    jsescOption: {
+      minimal: true,
+    },
   } as any);
 }
 

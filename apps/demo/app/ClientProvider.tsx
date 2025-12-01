@@ -23,7 +23,7 @@ export function ClientProvider({
       loadNamespace={loadNamespace}
       initialLanguage={language}
       fallbackNamespace="common"
-      preloadNamespaces={["home"]}
+      preloadNamespaces={["common", "home"]}
       languageManagerOptions={{
         defaultLanguage: "ko",
         availableLanguages: [

@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.0.2] - 2025-12-01
+
+### 🐛 Bug Fixes
+- **Unicode Escape Prevention**: Fixed issue where Korean text was being escaped to Unicode sequences (e.g., `\uC0AC\uC6A9\uC790`)
+  - Added `jsescOption: { minimal: true }` to `@babel/generator` to preserve non-ASCII characters
+  - Now Korean text in `t()` calls remains as readable Korean instead of Unicode escapes
+  - Example: `t("사용자")` instead of `t("\uC0AC\uC6A9\uC790")`
+
+---
+
 ## [2.0.1] - 2025-12-01
 
 ### 🐛 Bug Fixes

@@ -1,4 +1,5 @@
 import { Metadata } from "next";
+
 import CliPage from "@/page/cli";
 
 export const metadata: Metadata = {
