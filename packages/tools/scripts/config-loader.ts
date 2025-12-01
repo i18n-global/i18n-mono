@@ -82,6 +82,28 @@ export interface I18nexusConfig {
    * @default false
    */
   lazy?: boolean;
+  /**
+   * i18nexus 라이브러리 사용 여부
+   * true: i18nexus 라이브러리를 사용 (index.ts 생성)
+   * false: 다른 라이브러리를 사용 (도구만 사용, index.ts 생성 안 함)
+   * @default true
+   */
+  useI18nexusLibrary?: boolean;
+  /**
+   * 네임스페이스 구조 사용 여부
+   * true: 네임스페이스별 폴더 구조 (locales/common/en.json, locales/home/en.json)
+   * false: 플랫 구조 (locales/en.json, locales/ko.json)
+   * @default true (useI18nexusLibrary가 true일 때), false (useI18nexusLibrary가 false일 때)
+   */
+  useNamespaceStructure?: boolean;
+  /**
+   * 네임스페이스 전략
+   * - "full": 완전히 분리된 네임스페이스 (페이지별 + 기능별)
+   * - "page-based": 페이지 기반으로만 분리, 나머지는 common에 통합
+   * - "single": 모든 번역을 하나의 파일(common)에 통합
+   * @default "full"
+   */
+  namespaceStrategy?: "full" | "page-based" | "single";
 }
 
 const DEFAULT_CONFIG: I18nexusConfig = {
@@ -97,6 +119,9 @@ const DEFAULT_CONFIG: I18nexusConfig = {
     credentialsPath: GOOGLE_SHEETS_DEFAULTS.credentialsPath,
     sheetName: GOOGLE_SHEETS_DEFAULTS.sheetName,
   },
+  useI18nexusLibrary: true,
+  useNamespaceStructure: true,
+  namespaceStrategy: "full",
 };
 
 /**
