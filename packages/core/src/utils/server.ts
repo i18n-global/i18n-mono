@@ -209,7 +209,7 @@ export async function loadTranslations(
 /** 서버 번역 컨텍스트 생성 (설정 자동 로드, 헤더 자동 감지) */
 /**
  * Get server-side translation function with namespace support
- * 
+ *
  * @example
  * ```tsx
  * // Server Component
@@ -226,7 +226,7 @@ export async function getTranslation<NS extends string = string>(
     cookieName?: string;
     defaultLanguage?: string;
     availableLanguages?: string[];
-  }
+  },
 ) {
   let config;
   try {
@@ -261,7 +261,9 @@ export async function getTranslation<NS extends string = string>(
   let translations: Record<string, Record<string, string>>;
   if (namespace) {
     try {
-      const nsTranslations = await import(`${localesDir}/${namespace}/${language}.json`);
+      const nsTranslations = await import(
+        `${localesDir}/${namespace}/${language}.json`
+      );
       translations = { [namespace]: nsTranslations.default };
     } catch {
       // Fallback to loading all translations

@@ -1,6 +1,6 @@
 {
   "name": "i18nexus-tools",
-  "version": "1.8.0",
+  "version": "1.9.0",
   "description": "CLI tools for i18nexus - automate i18n workflows with type-safe configuration and Google Sheets integration",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
