@@ -50,6 +50,8 @@ export interface ExtractorConfig {
   namespacing?: NamespacingConfig; // 네임스페이스 자동화 설정
   skipValidation?: boolean; // 검증 스킵 (마이그레이션 시 사용)
   lazy?: boolean; // lazy loading 활성화 여부
+  useI18nexusLibrary?: boolean; // i18nexus 라이브러리 사용 여부
+  namespaceStrategy?: "full" | "page-based" | "single"; // 네임스페이스 전략
 }
 
 const DEFAULT_CONFIG: Required<ExtractorConfig> = {
@@ -65,6 +67,8 @@ const DEFAULT_CONFIG: Required<ExtractorConfig> = {
   languages: [...COMMON_DEFAULTS.languages], // 기본 언어
   force: false, // 기본값: 기존 번역 유지
   lazy: false, // 기본값: eager loading
+  useI18nexusLibrary: true, // 기본값: i18nexus 라이브러리 사용
+  namespaceStrategy: "full", // 기본값: full
   namespacing: {
     enabled: false, // 기본값: false (레거시 모드)
     basePath: "src/app",
@@ -87,7 +91,8 @@ export class TranslationExtractor {
     // 프로젝트 config에서 namespacing 및 lazy 설정 로드
     const projectConfig = loadConfig();
     const namespacingConfig = config.namespacing || projectConfig.namespacing;
-    const lazyConfig = config.lazy !== undefined ? config.lazy : projectConfig.lazy;
+    const lazyConfig =
+      config.lazy !== undefined ? config.lazy : projectConfig.lazy;
 
     this.config = {
       ...DEFAULT_CONFIG,
@@ -161,11 +166,31 @@ export class TranslationExtractor {
       return;
     }
 
-    // 네임스페이스별로 키 저장 (정책 3: 키 중복 허용)
-    if (!this.namespaceKeys.has(namespace)) {
-      this.namespaceKeys.set(namespace, new Map());
+    // namespaceStrategy에 따른 처리
+    const strategy = this.config.namespaceStrategy || "full";
+    const defaultNamespace = this.config.namespacing.defaultNamespace;
+
+    let targetNamespace = namespace;
+
+    if (strategy === "single") {
+      // single: 모든 키를 common 네임스페이스에 통합
+      targetNamespace = defaultNamespace;
+    } else if (strategy === "page-based") {
+      // page-based: 페이지 네임스페이스만 유지, 나머지는 common으로
+      // basePath 기반인지 확인
+      const isPageBased = namespace !== defaultNamespace;
+      if (!isPageBased) {
+        targetNamespace = defaultNamespace;
+      }
+      // 페이지 네임스페이스인 경우 그대로 유지
     }
-    const namespaceMap = this.namespaceKeys.get(namespace)!;
+    // strategy === "full": 그대로 사용
+
+    // 네임스페이스별로 키 저장 (정책 3: 키 중복 허용)
+    if (!this.namespaceKeys.has(targetNamespace)) {
+      this.namespaceKeys.set(targetNamespace, new Map());
+    }
+    const namespaceMap = this.namespaceKeys.get(targetNamespace)!;
     namespaceMap.set(key, extractedKey);
   }
 
@@ -249,6 +274,7 @@ export class TranslationExtractor {
           this.config.namespacing.defaultNamespace,
           this.config.dryRun,
           this.config.lazy, // lazy loading 옵션 전달
+          this.config.useI18nexusLibrary ?? true, // useI18nexusLibrary 옵션 전달
         );
       } else {
         // 레거시 모드: 기존 방식 유지

@@ -9,6 +9,7 @@ import { loadConfig } from "../scripts/config-loader";
 import { generateNamespaceIndexFile } from "../scripts/extractor/output-generator";
 import * as fs from "fs";
 import * as path from "path";
+import * as readline from "readline";
 
 const program = new Command();
 
@@ -36,22 +37,22 @@ const addCommonOptions = (cmd: Command) => {
     .option(
       "-c, --credentials <path>",
       "Path to Google service account credentials JSON file",
-      projectConfig?.googleSheets?.credentialsPath || "./credentials.json"
+      projectConfig?.googleSheets?.credentialsPath || "./credentials.json",
     )
     .option(
       "-s, --spreadsheet <id>",
       "Google Spreadsheet ID",
-      projectConfig?.googleSheets?.spreadsheetId
+      projectConfig?.googleSheets?.spreadsheetId,
     )
     .option(
       "-w, --worksheet <name>",
       "Worksheet name",
-      projectConfig?.googleSheets?.sheetName || "Translations"
+      projectConfig?.googleSheets?.sheetName || "Translations",
     )
     .option(
       "-l, --locales <dir>",
       "Locales directory",
-      projectConfig?.localesDir || "./locales"
+      projectConfig?.localesDir || "./locales",
     );
 };
 
@@ -66,7 +67,7 @@ const checkConfig = (options: any): GoogleSheetsConfig => {
 
   if (!spreadsheetId) {
     console.error(
-      "❌ Spreadsheet ID is required. Use -s option, set in i18nexus.config.js, or set GOOGLE_SPREADSHEET_ID environment variable."
+      "❌ Spreadsheet ID is required. Use -s option, set in i18nexus.config.js, or set GOOGLE_SPREADSHEET_ID environment variable.",
     );
     process.exit(1);
   }
@@ -74,7 +75,7 @@ const checkConfig = (options: any): GoogleSheetsConfig => {
   if (!fs.existsSync(credentialsPath)) {
     console.error(`❌ Credentials file not found: ${credentialsPath}`);
     console.error(
-      "Please download your Google Service Account key file and specify its path with -c option or in i18nexus.config.js."
+      "Please download your Google Service Account key file and specify its path with -c option or in i18nexus.config.js.",
     );
     process.exit(1);
   }
@@ -91,7 +92,7 @@ addCommonOptions(
   program
     .command("upload")
     .description("Upload local translation files to Google Sheets")
-    .option("-f, --force", "Force upload even if keys already exist")
+    .option("-f, --force", "Force upload even if keys already exist"),
 ).action(async (options) => {
   try {
     console.log("📤 Starting upload to Google Sheets...");
@@ -118,8 +119,8 @@ addCommonOptions(
     .option(
       "--languages <langs>",
       "Comma-separated list of languages",
-      projectConfig?.languages.join(",") || "en,ko"
-    )
+      projectConfig?.languages.join(",") || "en,ko",
+    ),
 ).action(async (options) => {
   try {
     console.log("📥 Starting download from Google Sheets...");
@@ -159,7 +160,7 @@ ${exportObj}
 addCommonOptions(
   program
     .command("sync")
-    .description("Bidirectional sync between local files and Google Sheets")
+    .description("Bidirectional sync between local files and Google Sheets"),
 ).action(async (options) => {
   try {
     console.log("🔄 Starting bidirectional sync...");
@@ -182,7 +183,7 @@ addCommonOptions(
 addCommonOptions(
   program
     .command("status")
-    .description("Show Google Sheets status and statistics")
+    .description("Show Google Sheets status and statistics"),
 ).action(async (options) => {
   try {
     console.log("📊 Checking Google Sheets status...");
@@ -203,7 +204,7 @@ addCommonOptions(
       const languages = fs
         .readdirSync(options.locales)
         .filter((item) =>
-          fs.statSync(path.join(options.locales, item)).isDirectory()
+          fs.statSync(path.join(options.locales, item)).isDirectory(),
         );
 
       console.log(`\n📁 Local Files Status:`);
@@ -219,7 +220,7 @@ addCommonOptions(
 
         files.forEach((file) => {
           const content = JSON.parse(
-            fs.readFileSync(path.join(langDir, file), "utf-8")
+            fs.readFileSync(path.join(langDir, file), "utf-8"),
           );
           totalKeys += Object.keys(content).length;
         });
@@ -244,31 +245,92 @@ program
   .option(
     "-c, --credentials <path>",
     "Path to credentials file",
-    "./credentials.json"
+    "./credentials.json",
   )
   .option("-l, --locales <dir>", "Locales directory", "./locales")
   .option("--languages <langs>", "Comma-separated list of languages", "en,ko")
   .option(
     "--typescript, --ts",
-    "Generate TypeScript config file (.ts) instead of JSON"
+    "Generate TypeScript config file (.ts) instead of JSON",
   )
   .option(
     "--namespace-location <path>",
     "Namespace location path (e.g., 'page', 'src/pages')",
-    "page"
+    "page",
   )
-  .option(
-    "--fallback-namespace <name>",
-    "Fallback namespace name",
-    "common"
-  )
-  .option(
-    "--no-lazy",
-    "Disable lazy loading (use eager loading instead)"
-  )
+  .option("--fallback-namespace <name>", "Fallback namespace name", "common")
+  .option("--no-lazy", "Disable lazy loading (use eager loading instead)")
+  .option("--non-interactive", "Skip interactive prompts and use defaults")
   .action(async (options) => {
     try {
-      console.log("🚀 Initializing i18nexus project...");
+      console.log("🚀 Initializing i18nexus project...\n");
+
+      // Interactive prompts (unless --non-interactive is set)
+      let useI18nexusLibrary = true;
+      let useNamespaceStructure = true;
+      let namespaceStrategy: "full" | "page-based" | "single" = "full";
+
+      if (!options.nonInteractive) {
+        const rl = readline.createInterface({
+          input: process.stdin,
+          output: process.stdout,
+        });
+
+        const question = (query: string): Promise<string> =>
+          new Promise((resolve) => rl.question(query, resolve));
+
+        // 1. i18nexus 라이브러리 사용 여부
+        console.log("📦 Are you using the i18nexus library?");
+        console.log("   (This affects whether index.ts will be generated)");
+        const useLibAnswer = await question("   Use i18nexus library? (Y/n): ");
+        useI18nexusLibrary =
+          !useLibAnswer.trim() || useLibAnswer.toLowerCase() !== "n";
+
+        // 2. 네임스페이스 구조 사용 여부
+        console.log("\n📁 Do you want to use namespace structure?");
+        console.log("   Yes: locales/common/en.json, locales/home/en.json");
+        console.log(
+          "   No:  locales/en.json, locales/ko.json (flat structure)",
+        );
+        const useNsAnswer = await question(
+          "   Use namespace structure? (Y/n): ",
+        );
+        useNamespaceStructure =
+          !useNsAnswer.trim() || useNsAnswer.toLowerCase() !== "n";
+
+        // 3. 네임스페이스 전략 (네임스페이스 구조를 사용하는 경우만)
+        if (useNamespaceStructure) {
+          console.log("\n📂 Choose your namespace strategy:");
+          console.log("   1. Full separation (recommended for large projects)");
+          console.log("      - Separate namespaces for pages and features");
+          console.log("      - Example: home, about, dashboard, auth, etc.");
+          console.log("   2. Page-based only");
+          console.log("      - Page-based namespaces, rest in 'common'");
+          console.log(
+            "      - Example: home, about (pages), common (features)",
+          );
+          console.log("   3. Single namespace");
+          console.log("      - All translations in one 'common' namespace");
+
+          const strategyAnswer = await question(
+            "   Enter choice (1/2/3) [1]: ",
+          );
+
+          const choice = strategyAnswer.trim() || "1";
+          if (choice === "1") {
+            namespaceStrategy = "full";
+          } else if (choice === "2") {
+            namespaceStrategy = "page-based";
+          } else if (choice === "3") {
+            namespaceStrategy = "single";
+          } else {
+            namespaceStrategy = "full";
+          }
+        }
+
+        rl.close();
+        console.log("");
+      }
 
       const languages = options.languages
         .split(",")
@@ -290,7 +352,10 @@ export const config = defineConfig({
   translationImportSource: "i18nexus",
   fallbackNamespace: "${options.fallbackNamespace || "common"}",
   namespaceLocation: "${options.namespaceLocation || "page"}",
-  lazy: ${options.lazy !== false ? "true" : "false"},${
+  lazy: ${options.lazy !== false ? "true" : "false"},
+  useI18nexusLibrary: ${useI18nexusLibrary},
+  useNamespaceStructure: ${useNamespaceStructure},
+  namespaceStrategy: "${namespaceStrategy}",${
     options.spreadsheet
       ? `
   googleSheets: {
@@ -307,15 +372,17 @@ export type AppLanguages = typeof config.languages[number];
 `;
         fs.writeFileSync("i18nexus.config.ts", tsContent);
         console.log("✅ Created i18nexus.config.ts");
-        console.log(
-          "💡 Use AppLanguages type for type-safe language switching:"
-        );
-        console.log(
-          "   const { changeLanguage } = useLanguageSwitcher<AppLanguages>();"
-        );
+        if (useI18nexusLibrary) {
+          console.log(
+            "💡 Use AppLanguages type for type-safe language switching:",
+          );
+          console.log(
+            "   const { changeLanguage } = useLanguageSwitcher<AppLanguages>();",
+          );
+        }
       } else {
         // JSON config 파일 생성
-        const configData = {
+        const configData: any = {
           languages: languages,
           defaultLanguage: languages[0],
           localesDir: options.locales,
@@ -324,6 +391,9 @@ export type AppLanguages = typeof config.languages[number];
           fallbackNamespace: options.fallbackNamespace || "common",
           namespaceLocation: options.namespaceLocation || "page",
           lazy: options.lazy !== false,
+          useI18nexusLibrary,
+          useNamespaceStructure,
+          namespaceStrategy,
           googleSheets: {
             spreadsheetId: options.spreadsheet || "",
             credentialsPath: options.credentials,
@@ -333,7 +403,7 @@ export type AppLanguages = typeof config.languages[number];
 
         fs.writeFileSync(
           "i18nexus.config.json",
-          JSON.stringify(configData, null, 2)
+          JSON.stringify(configData, null, 2),
         );
         console.log("✅ Created i18nexus.config.json");
       }
@@ -344,51 +414,74 @@ export type AppLanguages = typeof config.languages[number];
         console.log(`✅ Created ${options.locales} directory`);
       }
 
-      // 3. 네임스페이스 모드: 기본 네임스페이스(common) 생성
       const fallbackNamespace = options.fallbackNamespace || "common";
-      const namespaceDir = path.join(options.locales, fallbackNamespace);
-      if (!fs.existsSync(namespaceDir)) {
-        fs.mkdirSync(namespaceDir, { recursive: true });
-        console.log(`✅ Created namespace directory: ${namespaceDir}`);
-      }
 
-      // 4. 각 언어별 번역 파일 생성 (네임스페이스 구조)
-      languages.forEach((lang: string) => {
-        const langFile = path.join(namespaceDir, `${lang}.json`);
-        if (!fs.existsSync(langFile)) {
-          fs.writeFileSync(langFile, JSON.stringify({}, null, 2));
-          console.log(`✅ Created ${langFile}`);
-        } else {
-          console.log(`⚠️  ${langFile} already exists, skipping...`);
+      // 3. 번역 파일 생성
+      if (useNamespaceStructure) {
+        // 네임스페이스 구조: locales/[namespace]/[lang].json
+        const namespaceDir = path.join(options.locales, fallbackNamespace);
+        if (!fs.existsSync(namespaceDir)) {
+          fs.mkdirSync(namespaceDir, { recursive: true });
+          console.log(`✅ Created namespace directory: ${namespaceDir}`);
         }
-      });
 
-      // 5. index.ts 파일 생성 (네임스페이스 모드 + lazy loading)
-      const indexPath = path.join(options.locales, "index.ts");
-      if (!fs.existsSync(indexPath)) {
-        const useLazy = options.lazy !== false;
-        generateNamespaceIndexFile(
-          [fallbackNamespace],
-          languages,
-          options.locales,
-          fallbackNamespace,
-          false, // dryRun
-          useLazy
-        );
-        console.log(
-          `✅ Created ${indexPath} with namespace mode${useLazy ? " + lazy loading" : ""}`
-        );
+        // 4. 각 언어별 번역 파일 생성 (네임스페이스 구조)
+        languages.forEach((lang: string) => {
+          const langFile = path.join(namespaceDir, `${lang}.json`);
+          if (!fs.existsSync(langFile)) {
+            fs.writeFileSync(langFile, JSON.stringify({}, null, 2));
+            console.log(`✅ Created ${langFile}`);
+          } else {
+            console.log(`⚠️  ${langFile} already exists, skipping...`);
+          }
+        });
+
+        // 5. index.ts 파일 생성 (i18nexus 라이브러리 사용 시만)
+        if (useI18nexusLibrary) {
+          const indexPath = path.join(options.locales, "index.ts");
+          if (!fs.existsSync(indexPath)) {
+            const useLazy = options.lazy !== false;
+            generateNamespaceIndexFile(
+              [fallbackNamespace],
+              languages,
+              options.locales,
+              fallbackNamespace,
+              false, // dryRun
+              useLazy,
+              useI18nexusLibrary,
+            );
+            console.log(
+              `✅ Created ${indexPath} with namespace mode${useLazy ? " + lazy loading" : ""}`,
+            );
+          } else {
+            console.log(`⚠️  ${indexPath} already exists, skipping...`);
+          }
+        }
       } else {
-        console.log(`⚠️  ${indexPath} already exists, skipping...`);
+        // 플랫 구조: locales/[lang].json
+        languages.forEach((lang: string) => {
+          const langFile = path.join(options.locales, `${lang}.json`);
+          if (!fs.existsSync(langFile)) {
+            fs.writeFileSync(langFile, JSON.stringify({}, null, 2));
+            console.log(`✅ Created ${langFile}`);
+          } else {
+            console.log(`⚠️  ${langFile} already exists, skipping...`);
+          }
+        });
+
+        console.log("\n💡 Flat structure created (no namespaces)");
+        console.log(
+          "   Use this with libraries like react-i18next, next-intl, etc.",
+        );
       }
 
-      // 5. Google Sheets 연동 설정 (옵션)
+      // 6. Google Sheets 연동 설정 (옵션)
       if (options.spreadsheet) {
         // credentials.json 파일 확인
         if (!fs.existsSync(options.credentials)) {
           console.log("\n📝 Google Service Account Setup:");
           console.log(
-            "1. Go to Google Cloud Console (https://console.cloud.google.com/)"
+            "1. Go to Google Cloud Console (https://console.cloud.google.com/)",
           );
           console.log("2. Create a new project or select existing one");
           console.log("3. Enable Google Sheets API");
@@ -401,7 +494,7 @@ export type AppLanguages = typeof config.languages[number];
           console.log("3. Copy the spreadsheet ID from the URL");
 
           console.log(
-            "\n⚠️  Please add the credentials file and try again for Google Sheets integration."
+            "\n⚠️  Please add the credentials file and try again for Google Sheets integration.",
           );
         } else {
           // 설정 테스트
@@ -419,7 +512,7 @@ export type AppLanguages = typeof config.languages[number];
             console.error("❌ Cannot access the spreadsheet. Please check:");
             console.error("   1. Spreadsheet ID is correct");
             console.error(
-              "   2. Service account has access to the spreadsheet"
+              "   2. Service account has access to the spreadsheet",
             );
           } else {
             await manager.ensureWorksheet();
@@ -438,21 +531,44 @@ GOOGLE_CREDENTIALS_PATH=${options.credentials}
       }
 
       console.log("\n✅ i18nexus project initialized successfully!");
-      console.log("\n📝 Project structure:");
-      console.log(`   ${options.locales}/`);
-      console.log(`   ├── ${fallbackNamespace}/`);
-      languages.forEach((lang) => {
-        console.log(`   │   ├── ${lang}.json`);
-      });
-      console.log(`   └── index.ts (namespace mode${options.lazy !== false ? " + lazy loading" : ""})`);
+
+      if (useNamespaceStructure) {
+        console.log("\n📝 Project structure:");
+        console.log(`   ${options.locales}/`);
+        console.log(`   ├── ${fallbackNamespace}/`);
+        languages.forEach((lang) => {
+          console.log(`   │   ├── ${lang}.json`);
+        });
+        if (useI18nexusLibrary) {
+          console.log(
+            `   └── index.ts (namespace mode${options.lazy !== false ? " + lazy loading" : ""})`,
+          );
+        }
+      } else {
+        console.log("\n📝 Project structure:");
+        console.log(`   ${options.locales}/`);
+        languages.forEach((lang) => {
+          console.log(`   ├── ${lang}.json`);
+        });
+      }
+
       console.log("\n📝 Next steps:");
       console.log("1. Update i18nexus.config.json with your project settings");
-      console.log("2. Run 'i18n-wrapper' to wrap hardcoded strings");
-      console.log(
-        "3. Run 'i18n-extractor' to extract translation keys (automatically creates new namespaces)"
-      );
+      if (useI18nexusLibrary) {
+        console.log("2. Run 'i18n-wrapper' to wrap hardcoded strings");
+        console.log(
+          "3. Run 'i18n-extractor' to extract translation keys (automatically creates new namespaces)",
+        );
+      } else {
+        console.log(
+          "2. Integrate with your i18n library (react-i18next, next-intl, etc.)",
+        );
+        console.log("3. Use 'i18n-extractor' to extract translation keys");
+      }
       if (options.spreadsheet) {
-        console.log("4. Run 'i18n-sheets upload' to sync with Google Sheets");
+        console.log(
+          `${useI18nexusLibrary ? "4" : "4"}. Run 'i18n-sheets upload' to sync with Google Sheets`,
+        );
       }
     } catch (error) {
       console.error("❌ Initialization failed:", error);
@@ -465,22 +581,22 @@ program.on("--help", () => {
   console.log("");
   console.log("Examples:");
   console.log(
-    "  $ i18n-sheets init                                          # Initialize project without Google Sheets"
+    "  $ i18n-sheets init                                          # Initialize project without Google Sheets",
   );
   console.log(
-    "  $ i18n-sheets init -s 1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms  # Initialize with Google Sheets"
+    "  $ i18n-sheets init -s 1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms  # Initialize with Google Sheets",
   );
   console.log(
-    "  $ i18n-sheets upload -s 1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms"
+    "  $ i18n-sheets upload -s 1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms",
   );
   console.log(
-    "  $ i18n-sheets download -s 1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms"
+    "  $ i18n-sheets download -s 1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms",
   );
   console.log(
-    "  $ i18n-sheets sync -s 1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms"
+    "  $ i18n-sheets sync -s 1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms",
   );
   console.log(
-    "  $ i18n-sheets status -s 1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms"
+    "  $ i18n-sheets status -s 1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms",
   );
   console.log("");
   console.log("Environment Variables:");
@@ -508,7 +624,7 @@ program
       await manager.convertCSVToLocalTranslations(
         options.csvFile,
         options.locales,
-        languages
+        languages,
       );
 
       console.log("✅ CSV to JSON conversion completed successfully");

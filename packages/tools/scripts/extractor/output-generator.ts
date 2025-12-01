@@ -115,7 +115,18 @@ export function generateNamespaceIndexFile(
   fallbackNamespace: string,
   dryRun: boolean,
   lazy: boolean = false,
+  useI18nexusLibrary: boolean = true,
 ): void {
+  // useI18nexusLibrary가 false이면 index.ts를 생성하지 않음
+  if (!useI18nexusLibrary) {
+    if (!dryRun) {
+      console.log(
+        `ℹ️  Skipping index.ts generation (useI18nexusLibrary: false)`,
+      );
+    }
+    return;
+  }
+
   const indexPath = pathLib.join(outputDir, "index.ts");
 
   // 네임스페이스를 알파벳 순으로 정렬
