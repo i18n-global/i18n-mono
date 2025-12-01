@@ -1,4 +1,5 @@
 import { Metadata } from "next";
+
 import ServerExamplePage from "@/page/server-example";
 
 export const metadata: Metadata = {

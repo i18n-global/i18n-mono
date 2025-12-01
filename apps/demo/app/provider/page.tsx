@@ -1,4 +1,5 @@
 import { Metadata } from "next";
+
 import ProviderPage from "@/page/provider";
 
 export const metadata: Metadata = {
