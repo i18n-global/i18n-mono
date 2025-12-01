@@ -2,10 +2,10 @@
 
 import Link from "next/link";
 
-import { i18n } from "@/locales";
+import { useTranslation, useLanguageSwitcher } from "i18nexus";
 
 export default function I18nDownloadPage() {
-  const { t } = i18n.useTranslation();
+  const { t } = useTranslation<"docs-i18nexus-tools-download">("docs-i18nexus-tools-download");
 
   return (
     <main className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
@@ -17,8 +17,8 @@ export default function I18nDownloadPage() {
         <span className="text-slate-500 mx-2">/</span>
         <Link
           href="/docs/i18nexus-tools"
-          className="text-blue-400 hover:text-blue-300"
-        >
+          className="text-blue-400 hover:text-blue-300">
+
           {t("i18nexus-tools")}
         </Link>
         <span className="text-slate-500 mx-2">/</span>
@@ -47,7 +47,7 @@ export default function I18nDownloadPage() {
               i18n-download
             </code>
             {t(
-              "는 Google Sheets의 번역을 로컬 JSON 파일로 다운로드하는 CLI 도구입니다. 증분 업데이트 방식으로 기존 번역을 보존하며 안전하게 병합합니다.",
+              "는 Google Sheets의 번역을 로컬 JSON 파일로 다운로드하는 CLI 도구입니다. 증분 업데이트 방식으로 기존 번역을 보존하며 안전하게 병합합니다."
             )}
           </p>
           <div className="space-y-2">
@@ -177,7 +177,7 @@ export default function I18nDownloadPage() {
               </h3>
               <p className="text-slate-400 text-sm">
                 {t(
-                  "병합된 결과를 로컬 파일에 저장하고 변경 내역을 표시합니다.",
+                  "병합된 결과를 로컬 파일에 저장하고 변경 내역을 표시합니다."
                 )}
               </p>
             </div>
@@ -300,7 +300,7 @@ export default function I18nDownloadPage() {
                 <strong>{t("백업 권장")}</strong>
                 <p className="text-sm text-slate-400 mt-1">
                   {t(
-                    "Git 등의 버전 관리를 사용하면 언제든 이전 상태로 복구할 수 있습니다.",
+                    "Git 등의 버전 관리를 사용하면 언제든 이전 상태로 복구할 수 있습니다."
                   )}
                 </p>
               </div>
@@ -388,7 +388,7 @@ export default function I18nDownloadPage() {
             </h4>
             <p className="text-slate-300">
               {t(
-                "번역가가 작업을 완료하면 정기적으로 다운로드하여 번역을 최신 상태로 유지하세요.",
+                "번역가가 작업을 완료하면 정기적으로 다운로드하여 번역을 최신 상태로 유지하세요."
               )}
             </p>
           </div>
@@ -410,7 +410,7 @@ export default function I18nDownloadPage() {
             </h4>
             <p className="text-slate-300">
               {t(
-                "다운로드 후 출력되는 변경 내역을 확인하여 예상치 못한 변경이 없는지 검토하세요.",
+                "다운로드 후 출력되는 변경 내역을 확인하여 예상치 못한 변경이 없는지 검토하세요."
               )}
             </p>
           </div>
@@ -423,8 +423,8 @@ export default function I18nDownloadPage() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <Link
             href="/docs/i18nexus-tools/download-force"
-            className="bg-slate-900 border border-slate-700 rounded-lg p-6 hover:border-red-500 transition-colors"
-          >
+            className="bg-slate-900 border border-slate-700 rounded-lg p-6 hover:border-red-500 transition-colors">
+
             <h4 className="text-lg font-semibold text-white mb-2 flex items-center">
               <span className="mr-2">🔄</span>
               i18n-download-force →
@@ -435,8 +435,8 @@ export default function I18nDownloadPage() {
           </Link>
           <Link
             href="/docs/i18nexus-tools/upload"
-            className="bg-slate-900 border border-slate-700 rounded-lg p-6 hover:border-yellow-500 transition-colors"
-          >
+            className="bg-slate-900 border border-slate-700 rounded-lg p-6 hover:border-yellow-500 transition-colors">
+
             <h4 className="text-lg font-semibold text-white mb-2 flex items-center">
               <span className="mr-2">📤</span>
               i18n-upload →
@@ -447,6 +447,6 @@ export default function I18nDownloadPage() {
           </Link>
         </div>
       </section>
-    </main>
-  );
+    </main>);
+
 }

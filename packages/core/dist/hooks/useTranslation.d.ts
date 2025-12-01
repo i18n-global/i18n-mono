@@ -1,4 +1,5 @@
 import React from "react";
+import { NamespaceTranslations, ExtractNamespaceKeys, ExtractKeysWithFallback } from "../components/I18nProvider";
 import type { LanguageConfig } from "../utils/languageManager";
 /** 문자열 보간 변수 */
 export type TranslationVariables = Record<string, string | number>;
@@ -22,8 +23,11 @@ export interface UseTranslationReturn<K extends string = string> {
     /** 번역 준비 여부 */
     isReady: boolean;
 }
-/** 번역 함수 및 현재 언어 접근 훅 */
-export declare function useTranslation<K extends string = string>(): UseTranslationReturn<K>;
+/** 번역 함수 및 현재 언어 접근 훅 (오버로드) */
+export declare function useTranslation<K extends string = string>(namespace?: string): UseTranslationReturn<K>;
+export declare function useTranslation<TTranslations extends NamespaceTranslations, NS extends keyof TTranslations & string, Fallback extends keyof TTranslations & string = never>(namespace: NS): UseTranslationReturn<[
+    Fallback
+] extends [never] ? ExtractNamespaceKeys<TTranslations, NS> : ExtractKeysWithFallback<TTranslations, NS, Fallback>>;
 /** useLanguageSwitcher 훅 반환 타입 */
 export interface UseLanguageSwitcherReturn {
     /** 현재 언어 코드 */

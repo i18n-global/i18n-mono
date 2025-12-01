@@ -29,5 +29,6 @@
   "현재 언어": "현재 언어",
   "홈으로 돌아가기": "홈으로 돌아가기",
   "getServerTranslation() 사용": "getServerTranslation() 사용",
-  "useTranslation() 훅 사용": "useTranslation() 훅 사용"
+  "useTranslation() 훅 사용": "useTranslation() 훅 사용",
+  "import { useTranslation, useLanguageSwitcher } from \"i18nexus\";\n\n// ✅ Server Component (기본값)\nexport default async function Page() {\n  // 자동으로 언어 감지 및 번역 함수 생성\n  const { t, language } = await i18n.getServerTranslation(\"common\");\n  \n  // 사용!\n  return <h1>{t(\"환영합니다\")}</h1>;\n}\n": "import { useTranslation, useLanguageSwitcher } from \"i18nexus\";\n\n// ✅ Server Component (기본값)\nexport default async function Page() {\n  // 자동으로 언어 감지 및 번역 함수 생성\n  const { t, language } = await i18n.getServerTranslation(\"common\");\n  \n  // 사용!\n  return <h1>{t(\"환영합니다\")}</h1>;\n}\n"
 }

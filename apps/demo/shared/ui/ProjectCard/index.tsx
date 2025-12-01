@@ -1,3 +1,4 @@
+"use client";
 interface ProjectCardProps {
   url: string;
   projectName?: string;

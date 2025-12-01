@@ -43,22 +43,45 @@ const interpolateWithStyles = (text, variables, styles) => {
     }
     return React.createElement(React.Fragment, null, ...parts);
 };
-/** 번역 함수 및 현재 언어 접근 훅 */
-export function useTranslation() {
+// 실제 구현
+export function useTranslation(namespace) {
     const context = useI18nContext();
-    const { currentLanguage, isLoading, translations } = context;
+    const { currentLanguage, isLoading, loadedNamespaces, fallbackNamespace, } = context;
+    // 번역 데이터 가져오기 (I18nProvider에서 로드된 데이터만 사용)
+    const getCurrentTranslations = () => {
+        let result = {};
+        // Fallback namespace 먼저 로드
+        if (fallbackNamespace) {
+            const fallbackNs = loadedNamespaces.get(String(fallbackNamespace))?.[currentLanguage];
+            if (fallbackNs) {
+                result = { ...fallbackNs };
+            }
+        }
+        // 요청된 namespace 로드 (fallback 덮어쓰기)
+        if (namespace) {
+            const requestedNs = loadedNamespaces.get(namespace)?.[currentLanguage];
+            if (requestedNs) {
+                result = { ...result, ...requestedNs };
+            }
+        }
+        return result;
+    };
+    const currentTranslations = getCurrentTranslations();
     const translate = ((key, variables, styles) => {
-        const currentTranslations = translations[currentLanguage] || {};
         const translatedText = currentTranslations[key] || key;
         if (styles && variables) {
             return interpolateWithStyles(translatedText, variables, styles);
         }
         return interpolate(translatedText, variables);
     });
+    // 네임스페이스가 로드되었는지 확인
+    const isNamespaceReady = namespace
+        ? loadedNamespaces.has(namespace)
+        : true;
     return {
         t: translate,
         currentLanguage,
-        isReady: !isLoading,
+        isReady: !isLoading && isNamespaceReady,
     };
 }
 /** 언어 전환 기능 접근 훅 */

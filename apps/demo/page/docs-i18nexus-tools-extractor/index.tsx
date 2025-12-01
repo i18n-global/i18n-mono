@@ -2,10 +2,10 @@
 
 import Link from "next/link";
 
-import { i18n } from "@/locales";
+import { useTranslation, useLanguageSwitcher } from "i18nexus";
 
 export default function I18nExtractorPage() {
-  const { t } = i18n.useTranslation();
+  const { t } = useTranslation<"docs-i18nexus-tools-extractor">("docs-i18nexus-tools-extractor");
 
   return (
     <main className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
@@ -17,8 +17,8 @@ export default function I18nExtractorPage() {
         <span className="text-slate-500 mx-2">/</span>
         <Link
           href="/docs/i18nexus-tools"
-          className="text-blue-400 hover:text-blue-300"
-        >
+          className="text-blue-400 hover:text-blue-300">
+
           {t("i18nexus-tools")}
         </Link>
         <span className="text-slate-500 mx-2">/</span>
@@ -47,7 +47,7 @@ export default function I18nExtractorPage() {
               i18n-extractor
             </code>
             {t(
-              "는 코드에서 t() 함수로 래핑된 모든 번역 키를 추출하여 언어별 JSON 파일을 생성하고, 기존 번역과 지능적으로 병합하는 CLI 도구입니다.",
+              "는 코드에서 t() 함수로 래핑된 모든 번역 키를 추출하여 언어별 JSON 파일을 생성하고, 기존 번역과 지능적으로 병합하는 CLI 도구입니다."
             )}
           </p>
           <div className="space-y-2">
@@ -123,7 +123,7 @@ export default function I18nExtractorPage() {
             </pre>
             <p className="text-slate-400 text-sm mt-2">
               {t(
-                "app 디렉토리의 모든 .tsx 파일에서 번역 키를 추출하고 locales 폴더에 저장합니다.",
+                "app 디렉토리의 모든 .tsx 파일에서 번역 키를 추출하고 locales 폴더에 저장합니다."
               )}
             </p>
           </div>
@@ -177,13 +177,13 @@ export default function I18nExtractorPage() {
                 </h3>
                 <p className="text-slate-300 text-sm">
                   {t(
-                    "지정된 패턴의 모든 파일을 스캔하여 t() 함수 호출을 찾습니다.",
+                    "지정된 패턴의 모든 파일을 스캔하여 t() 함수 호출을 찾습니다."
                   )}
                 </p>
                 <pre className="bg-slate-950 rounded p-2 text-xs mt-2 border border-slate-800">
                   <code className="text-slate-400">
                     {t(
-                      '// \uC774\uB7F0 \uCF54\uB4DC\uB97C \uCC3E\uC2B5\uB2C8\uB2E4:\nt("\uD658\uC601\uD569\uB2C8\uB2E4")\nt("\uC2DC\uC791\uD558\uAE30")\nt(\\`\uC548\uB155\uD558\uC138\uC694 \\${name}\uB2D8\\`)',
+                      '// \uC774\uB7F0 \uCF54\uB4DC\uB97C \uCC3E\uC2B5\uB2C8\uB2E4:\nt("\uD658\uC601\uD569\uB2C8\uB2E4")\nt("\uC2DC\uC791\uD558\uAE30")\nt(\\`\uC548\uB155\uD558\uC138\uC694 \\${name}\uB2D8\\`)'
                     )}
                   </code>
                 </pre>
@@ -207,7 +207,7 @@ export default function I18nExtractorPage() {
                 <pre className="bg-slate-950 rounded p-2 text-xs mt-2 border border-slate-800">
                   <code className="text-slate-400">
                     {t(
-                      '// \uCD94\uCD9C\uB41C \uD0A4:\n"\uD658\uC601\uD569\uB2C8\uB2E4"\n"\uC2DC\uC791\uD558\uAE30"\n"\uC548\uB155\uD558\uC138\uC694 \\${name}\uB2D8"',
+                      '// \uCD94\uCD9C\uB41C \uD0A4:\n"\uD658\uC601\uD569\uB2C8\uB2E4"\n"\uC2DC\uC791\uD558\uAE30"\n"\uC548\uB155\uD558\uC138\uC694 \\${name}\uB2D8"'
                     )}
                   </code>
                 </pre>
@@ -227,7 +227,7 @@ export default function I18nExtractorPage() {
                 </h3>
                 <p className="text-slate-300 text-sm mb-2">
                   {t(
-                    "기존 번역 파일을 읽고, 새로운 키만 추가하며 기존 번역은 모두 보존합니다.",
+                    "기존 번역 파일을 읽고, 새로운 키만 추가하며 기존 번역은 모두 보존합니다."
                   )}
                 </p>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mt-3">
@@ -238,7 +238,7 @@ export default function I18nExtractorPage() {
                     <pre className="bg-slate-950 rounded p-2 text-xs border border-slate-800">
                       <code className="text-slate-400">
                         {t(
-                          '{\n  "\uC548\uB155": "Hello",\n  "\uD658\uC601\uD569\uB2C8\uB2E4": "Welcome"\n}',
+                          '{\n  "\uC548\uB155": "Hello",\n  "\uD658\uC601\uD569\uB2C8\uB2E4": "Welcome"\n}'
                         )}
                       </code>
                     </pre>
@@ -250,7 +250,7 @@ export default function I18nExtractorPage() {
                     <pre className="bg-slate-950 rounded p-2 text-xs border border-slate-800">
                       <code className="text-slate-400">
                         {t(
-                          '{\n  "\uC548\uB155": "Hello",\n  "\uC2DC\uC791\uD558\uAE30": "\uC2DC\uC791\uD558\uAE30",\n  "\uD658\uC601\uD569\uB2C8\uB2E4": "Welcome"\n}',
+                          '{\n  "\uC548\uB155": "Hello",\n  "\uC2DC\uC791\uD558\uAE30": "\uC2DC\uC791\uD558\uAE30",\n  "\uD658\uC601\uD569\uB2C8\uB2E4": "Welcome"\n}'
                         )}
                       </code>
                     </pre>
@@ -272,13 +272,13 @@ export default function I18nExtractorPage() {
                 </h3>
                 <p className="text-slate-300 text-sm">
                   {t(
-                    "정렬된 키로 각 언어의 JSON 파일을 저장하고 통계를 표시합니다.",
+                    "정렬된 키로 각 언어의 JSON 파일을 저장하고 통계를 표시합니다."
                   )}
                 </p>
                 <pre className="bg-slate-950 rounded p-2 text-xs mt-2 border border-slate-800">
                   <code className="text-green-400">
                     {t(
-                      "\u2713 \uCD94\uCD9C \uC644\uB8CC\n  - \uC0C8 \uD0A4: 5\uAC1C\n  - \uAE30\uC874 \uD0A4: 120\uAC1C\n  - \uCD1D \uD0A4: 125\uAC1C\n  - \uD30C\uC77C: locales/ko.json, locales/en.json",
+                      "\u2713 \uCD94\uCD9C \uC644\uB8CC\n  - \uC0C8 \uD0A4: 5\uAC1C\n  - \uAE30\uC874 \uD0A4: 120\uAC1C\n  - \uCD1D \uD0A4: 125\uAC1C\n  - \uD30C\uC77C: locales/ko.json, locales/en.json"
                     )}
                   </code>
                 </pre>
@@ -329,7 +329,7 @@ export default function I18nExtractorPage() {
             </div>
             <p className="text-slate-300 mb-2">
               {t(
-                "생성할 언어 파일을 쉼표로 구분하여 지정합니다. 기본값: en,ko",
+                "생성할 언어 파일을 쉼표로 구분하여 지정합니다. 기본값: en,ko"
               )}
             </p>
             <pre className="bg-slate-950 rounded-lg p-3 text-sm">
@@ -436,7 +436,7 @@ export default function I18nExtractorPage() {
                 <strong>{t("기존 번역 100% 보존")}</strong>
                 <p className="text-sm text-slate-400 mt-1">
                   {t(
-                    "이미 번역된 키는 절대 덮어쓰지 않습니다. 수동으로 작성한 번역이 안전하게 유지됩니다.",
+                    "이미 번역된 키는 절대 덮어쓰지 않습니다. 수동으로 작성한 번역이 안전하게 유지됩니다."
                   )}
                 </p>
               </div>
@@ -456,7 +456,7 @@ export default function I18nExtractorPage() {
                 <strong>{t("알파벳 순 정렬")}</strong>
                 <p className="text-sm text-slate-400 mt-1">
                   {t(
-                    "모든 키가 알파벳 순으로 정렬되어 찾기 쉽고 git diff가 깔끔합니다.",
+                    "모든 키가 알파벳 순으로 정렬되어 찾기 쉽고 git diff가 깔끔합니다."
                   )}
                 </p>
               </div>
@@ -467,7 +467,7 @@ export default function I18nExtractorPage() {
                 <strong>{t("언어별 독립 관리")}</strong>
                 <p className="text-sm text-slate-400 mt-1">
                   {t(
-                    "각 언어 파일은 독립적으로 관리되며, 한 언어의 변경이 다른 언어에 영향을 주지 않습니다.",
+                    "각 언어 파일은 독립적으로 관리되며, 한 언어의 변경이 다른 언어에 영향을 주지 않습니다."
                   )}
                 </p>
               </div>
@@ -487,7 +487,7 @@ export default function I18nExtractorPage() {
             </h4>
             <p className="text-slate-300">
               {t(
-                "새 기능을 추가할 때마다 extractor를 실행하여 번역 파일을 최신 상태로 유지하세요.",
+                "새 기능을 추가할 때마다 extractor를 실행하여 번역 파일을 최신 상태로 유지하세요."
               )}
             </p>
           </div>
@@ -499,7 +499,7 @@ export default function I18nExtractorPage() {
             </h4>
             <p className="text-slate-300 mb-2">
               {t(
-                "빌드 프로세스에 --dry-run을 추가하여 누락된 키가 있는지 확인하세요.",
+                "빌드 프로세스에 --dry-run을 추가하여 누락된 키가 있는지 확인하세요."
               )}
             </p>
             <pre className="bg-slate-950 rounded p-2 text-xs mt-2">
@@ -529,7 +529,7 @@ export default function I18nExtractorPage() {
             </h4>
             <p className="text-slate-300">
               {t(
-                "extractor 실행 후 en.json 파일을 열어 새로 추가된 키에 영어 번역을 추가하세요.",
+                "extractor 실행 후 en.json 파일을 열어 새로 추가된 키에 영어 번역을 추가하세요."
               )}
             </p>
           </div>
@@ -542,8 +542,8 @@ export default function I18nExtractorPage() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <Link
             href="/docs/i18nexus-tools/wrapper"
-            className="bg-slate-900 border border-slate-700 rounded-lg p-6 hover:border-purple-500 transition-colors"
-          >
+            className="bg-slate-900 border border-slate-700 rounded-lg p-6 hover:border-purple-500 transition-colors">
+
             <h4 className="text-lg font-semibold text-white mb-2 flex items-center">
               <span className="mr-2">🔧</span>
               i18n-wrapper →
@@ -554,8 +554,8 @@ export default function I18nExtractorPage() {
           </Link>
           <Link
             href="/docs/i18nexus-tools/google-sheets"
-            className="bg-slate-900 border border-slate-700 rounded-lg p-6 hover:border-yellow-500 transition-colors"
-          >
+            className="bg-slate-900 border border-slate-700 rounded-lg p-6 hover:border-yellow-500 transition-colors">
+
             <h4 className="text-lg font-semibold text-white mb-2 flex items-center">
               <span className="mr-2">📊</span>
               Google Sheets {t("연동")} →
@@ -566,6 +566,6 @@ export default function I18nExtractorPage() {
           </Link>
         </div>
       </section>
-    </main>
-  );
+    </main>);
+
 }

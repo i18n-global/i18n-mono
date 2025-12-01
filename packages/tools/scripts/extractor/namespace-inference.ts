@@ -14,6 +14,16 @@ export interface NamespacingConfig {
   defaultNamespace: string;
   framework?: "nextjs-app" | "nextjs-pages" | "tanstack-file" | "tanstack-folder" | "react-router" | "remix" | "other";
   ignorePatterns?: string[];
+  /**
+   * 네임스페이스 추론 전략
+   * - "first-folder": 첫 번째 폴더명만 사용 (기본값)
+   *   예: gallery/folder/page.tsx → "gallery"
+   * - "full-path": 전체 경로를 kebab-case로 변환
+   *   예: gallery/folder/page.tsx → "gallery-folder"
+   * - "last-folder": 마지막 폴더명 사용
+   *   예: gallery/folder/page.tsx → "folder"
+   */
+  strategy?: "first-folder" | "full-path" | "last-folder";
 }
 
 /**
@@ -88,9 +98,9 @@ function removeFrameworkPatterns(
 }
 
 /**
- * 파일 경로에서 네임스페이스 추론
+ * 파일 경로에서 네임스페이스 추론 (경로 기반만)
  */
-export function inferNamespace(
+export function inferNamespaceFromPath(
   filePath: string,
   config: NamespacingConfig
 ): string {
@@ -122,21 +132,89 @@ export function inferNamespace(
     .filter((part) => part.length > 0)
     .join(pathLib.sep);
 
-  // 첫 번째 폴더명 추출
+  // 경로에서 네임스페이스 결정
   const parts = normalizedPath.split(pathLib.sep);
   if (parts.length === 0) {
     return config.defaultNamespace;
   }
 
-  const firstPart = parts[0];
+  // 파일명 제거 (마지막 part가 파일인 경우)
+  const lastPart = parts[parts.length - 1];
+  const isFile = lastPart.includes(".") || ["page", "layout", "template", "index"].includes(lastPart.toLowerCase());
+  const pathWithoutFile = isFile ? parts.slice(0, -1) : parts;
+  
+  // 빈 경로면 defaultNamespace
+  if (pathWithoutFile.length === 0) {
+    return config.defaultNamespace;
+  }
 
-  // 특수 파일명인 경우 defaultNamespace 사용
+  // 특수 파일명인 경우 체크
+  const firstPart = pathWithoutFile[0];
   const specialNames = ["index", "page", "layout", "template"];
   if (specialNames.includes(firstPart.toLowerCase())) {
     return config.defaultNamespace;
   }
 
-  return firstPart;
+  // 네임스페이스 전략에 따라 다르게 처리
+  const strategy = config.strategy || "first-folder";
+
+  switch (strategy) {
+    case "first-folder":
+      // 첫 번째 폴더만 사용 (기본값)
+      return pathWithoutFile[0];
+
+    case "full-path":
+      // 전체 경로를 kebab-case로 변환
+      // gallery/folder → gallery-folder
+      return pathWithoutFile.join("-");
+
+    case "last-folder":
+      // 마지막 폴더명 사용
+      return pathWithoutFile[pathWithoutFile.length - 1];
+
+    default:
+      return pathWithoutFile[0];
+  }
+}
+
+/**
+ * 파일에서 네임스페이스 추론 (우선순위 기반)
+ * 1순위: useTranslation()에 명시된 네임스페이스
+ * 2순위: 파일 경로 기반 추론
+ */
+export function inferNamespaceFromFile(
+  filePath: string,
+  code: string,
+  config: NamespacingConfig,
+): string {
+  if (!config.enabled) {
+    return config.defaultNamespace;
+  }
+
+  // 1순위: useTranslation()에 명시된 네임스페이스
+  const useTranslationCalls = findUseTranslationCalls(filePath, code);
+  if (useTranslationCalls.length > 0) {
+    const firstCall = useTranslationCalls[0];
+    if (firstCall.namespace) {
+      // 명시적 네임스페이스가 있으면 우선 사용
+      return firstCall.namespace;
+    }
+  }
+
+  // 2순위: 파일 경로 기반 추론
+  return inferNamespaceFromPath(filePath, config);
+}
+
+/**
+ * 기존 inferNamespace 함수 (하위 호환성)
+ * @deprecated Use inferNamespaceFromFile or inferNamespaceFromPath instead
+ */
+export function inferNamespace(
+  filePath: string,
+  config: NamespacingConfig
+): string {
+  // 하위 호환성: 코드 없이 경로만으로 추론
+  return inferNamespaceFromPath(filePath, config);
 }
 
 /**

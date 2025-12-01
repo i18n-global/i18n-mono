@@ -3,15 +3,10 @@ import "./globals.css";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono, Noto_Sans_KR } from "next/font/google";
 import localFont from "next/font/local";
+import { cookies } from "next/headers";
 import Script from "next/script";
 
-import {
-  Analytics,
-  FirebaseStatus,
-  GlobalErrorProvider,
-  ScrollRestorer,
-} from "@/shared/ui";
-import Navigation from "@/widgets/Navigation";
+import { ClientProvider } from "./ClientProvider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -45,20 +40,22 @@ export const metadata: Metadata = {
       { url: "/icon.png", sizes: "192x192", type: "image/png" },
       { url: "/icon.png", sizes: "32x32", type: "image/png" },
     ],
+
     apple: [{ url: "/icon.png", sizes: "180x180", type: "image/png" }],
   },
 };
 
 export default async function RootLayout({
   children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+}: Readonly<{ children: React.ReactNode }>) {
+  // 서버에서 쿠키 읽기
+  const cookieStore = await cookies();
+  const language = cookieStore.get("i18n-language")?.value || "ko";
+
   return (
-    <html lang="ko">
+    <html lang={language}>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} ${notoSansKR.variable} ${bmHannaPro.variable} antialiased`}
-      >
+        className={`${geistSans.variable} ${geistMono.variable} ${notoSansKR.variable} ${bmHannaPro.variable} antialiased`}>
         {/* Google Analytics: gtag.js (GA4) - uses NEXT_PUBLIC_GA_ID */}
         {process.env.NEXT_PUBLIC_GA_ID ? (
           <>
@@ -66,6 +63,7 @@ export default async function RootLayout({
               src={`https://www.googletagmanager.com/gtag/js?id=${process.env.NEXT_PUBLIC_GA_ID}`}
               strategy="afterInteractive"
             />
+
             <Script
               id="gtag-init"
               strategy="afterInteractive"
@@ -76,15 +74,8 @@ export default async function RootLayout({
           </>
         ) : null}
 
-        <GlobalErrorProvider>
-          <ScrollRestorer />
-          <Navigation />
-          {children}
-          {/* Client-side analytics tracker */}
-          <Analytics />
-          {/* Firebase connection status indicator - dev only */}
-          {process.env.NODE_ENV === "development" && <FirebaseStatus />}
-        </GlobalErrorProvider>
+        {/* v3.1: I18nProvider로 마이그레이션 */}
+        <ClientProvider language={language}>{children}</ClientProvider>
       </body>
     </html>
   );

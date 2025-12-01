@@ -3,10 +3,10 @@
 import Link from "next/link";
 import { useState } from "react";
 
-import { i18n } from "@/locales";
+import { useTranslation, useLanguageSwitcher } from "i18nexus";
 
 export default function UseTranslationPage() {
-  const { t } = i18n.useTranslation();
+  const { t } = useTranslation<"docs-i18nexus-use-translation">("docs-i18nexus-use-translation");
   const [demoKey, setDemoKey] = useState("Welcome");
 
   return (
@@ -19,8 +19,8 @@ export default function UseTranslationPage() {
         <span className="text-slate-500 mx-2">/</span>
         <Link
           href="/docs/i18nexus"
-          className="text-blue-400 hover:text-blue-300"
-        >
+          className="text-blue-400 hover:text-blue-300">
+
           {t("i18nexus")}
         </Link>
         <span className="text-slate-500 mx-2">/</span>
@@ -54,9 +54,9 @@ export default function UseTranslationPage() {
               onChange={(e) => setDemoKey(e.target.value)}
               className="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-2 text-white focus:border-blue-500 focus:outline-none"
               placeholder={t(
-                "\uBC88\uC5ED \uD0A4\uB97C \uC785\uB825\uD558\uC138\uC694",
-              )}
-            />
+                "\uBC88\uC5ED \uD0A4\uB97C \uC785\uB825\uD558\uC138\uC694"
+              )} />
+
           </div>
           <div className="bg-slate-950 rounded-lg p-6 border border-slate-700">
             <div className="text-sm text-slate-500 mb-2">{t("결과")}:</div>
@@ -81,7 +81,7 @@ export default function UseTranslationPage() {
               useTranslation
             </code>
             {t(
-              " is a React hook that provides access to the translation function (t) and current language state. It can only be used in Client Components.",
+              " is a React hook that provides access to the translation function (t) and current language state. It can only be used in Client Components."
             )}
           </p>
           <div className="space-y-2">
@@ -132,13 +132,13 @@ export default function UseTranslationPage() {
               </div>
               <p className="text-slate-300 mb-2">
                 {t(
-                  "Translation function that returns the translated string for the given key.",
+                  "Translation function that returns the translated string for the given key."
                 )}
               </p>
               <pre className="bg-slate-950 rounded-lg p-3 overflow-x-auto">
                 <code className="text-sm text-slate-400">
                   {t(
-                    'const { t } = useTranslation();\nconst welcomeText = t("Welcome"); // "\uD658\uC601\uD569\uB2C8\uB2E4" or "Welcome"',
+                    'const { t } = useTranslation();\nconst welcomeText = t("Welcome"); // "\uD658\uC601\uD569\uB2C8\uB2E4" or "Welcome"'
                   )}
                 </code>
               </pre>
@@ -199,7 +199,7 @@ export default function Welcome() {
           <pre className="bg-slate-950 rounded-lg p-6 overflow-x-auto border border-slate-800">
             <code className="text-sm text-slate-300">
               {t(
-                '"use client";\n\nimport { useTranslation } from "i18nexus";\n\nexport default function StatusMessage({ status }) {\n  const { t } = useTranslation();\n  \n  // Dynamically construct translation keys\n  const message = t(\\`status.\\${status}\\`);\n  \n  return <div>{message}</div>;\n}\n\n// Translations:\n// "status.success": "\uC791\uC5C5\uC774 \uC131\uACF5\uD588\uC2B5\uB2C8\uB2E4"\n// "status.error": "\uC624\uB958\uAC00 \uBC1C\uC0DD\uD588\uC2B5\uB2C8\uB2E4"\n// "status.pending": "\uCC98\uB9AC \uC911\uC785\uB2C8\uB2E4"',
+                '"use client";\n\nimport { useTranslation } from "i18nexus";\n\nexport default function StatusMessage({ status }) {\n  const { t } = useTranslation();\n  \n  // Dynamically construct translation keys\n  const message = t(\\`status.\\${status}\\`);\n  \n  return <div>{message}</div>;\n}\n\n// Translations:\n// "status.success": "\uC791\uC5C5\uC774 \uC131\uACF5\uD588\uC2B5\uB2C8\uB2E4"\n// "status.error": "\uC624\uB958\uAC00 \uBC1C\uC0DD\uD588\uC2B5\uB2C8\uB2E4"\n// "status.pending": "\uCC98\uB9AC \uC911\uC785\uB2C8\uB2E4"'
               )}
             </code>
           </pre>
@@ -278,7 +278,7 @@ export default function ProductCard({ product }: { product: Product }) {
             </h4>
             <p className="text-slate-300 mb-2">
               {t(
-                "Use clear, descriptive translation keys that indicate the content.",
+                "Use clear, descriptive translation keys that indicate the content."
               )}
             </p>
             <pre className="bg-slate-950 rounded-lg p-3 overflow-x-auto">
@@ -299,7 +299,7 @@ t("msg")`}</code>
             </h4>
             <p className="text-slate-300">
               {t(
-                "i18nexus automatically returns the key if translation is missing, making debugging easier.",
+                "i18nexus automatically returns the key if translation is missing, making debugging easier."
               )}
             </p>
           </div>
@@ -311,7 +311,7 @@ t("msg")`}</code>
             </h4>
             <p className="text-slate-300 mb-2">
               {t(
-                "useTranslation is a client-side hook. For Server Components, use createServerTranslation().",
+                "useTranslation is a client-side hook. For Server Components, use createServerTranslation()."
               )}
             </p>
             <pre className="bg-slate-950 rounded-lg p-3 overflow-x-auto">
@@ -346,8 +346,8 @@ export default function Page() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <Link
             href="/docs/i18nexus/provider"
-            className="bg-slate-900 border border-slate-700 rounded-lg p-4 hover:border-blue-500 transition-colors"
-          >
+            className="bg-slate-900 border border-slate-700 rounded-lg p-4 hover:border-blue-500 transition-colors">
+
             <h4 className="text-lg font-semibold text-white mb-2">
               I18nProvider →
             </h4>
@@ -357,8 +357,8 @@ export default function Page() {
           </Link>
           <Link
             href="/docs/i18nexus/server-components"
-            className="bg-slate-900 border border-slate-700 rounded-lg p-4 hover:border-blue-500 transition-colors"
-          >
+            className="bg-slate-900 border border-slate-700 rounded-lg p-4 hover:border-blue-500 transition-colors">
+
             <h4 className="text-lg font-semibold text-white mb-2">
               Server Components →
             </h4>
@@ -368,6 +368,6 @@ export default function Page() {
           </Link>
         </div>
       </section>
-    </main>
-  );
+    </main>);
+
 }

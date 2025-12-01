@@ -26,7 +26,7 @@ export function I18NexusDevtools({
     availableLanguages,
     languageManager,
     isLoading,
-    translations,
+    namespaceTranslations,
   } = useI18nContext();
 
   const [isOpen, setIsOpen] = React.useState(initialIsOpen);
@@ -87,7 +87,19 @@ export function I18NexusDevtools({
     }
   };
 
-  const currentTranslations = translations[currentLanguage] || {};
+  // 모든 네임스페이스의 번역 키 합산
+  const getAllTranslations = () => {
+    const allTranslations: Record<string, string> = {};
+    Object.keys(namespaceTranslations).forEach((ns) => {
+      const nsTranslations = namespaceTranslations[ns]?.[currentLanguage];
+      if (nsTranslations) {
+        Object.assign(allTranslations, nsTranslations);
+      }
+    });
+    return allTranslations;
+  };
+
+  const currentTranslations = getAllTranslations();
   const translationCount = Object.keys(currentTranslations).length;
 
   return (
@@ -417,7 +429,7 @@ export function I18NexusDevtools({
                     Languages:
                   </span>
                   <span style={{ fontSize: "14px", fontWeight: "600" }}>
-                    {Object.keys(translations).length}
+                    {Object.keys(namespaceTranslations).length}
                   </span>
                 </div>
               </div>

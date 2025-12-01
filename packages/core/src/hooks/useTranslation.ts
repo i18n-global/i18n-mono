@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { useI18nContext } from "../components/I18nProvider";
+import { useI18nContext, NamespaceTranslations, ExtractNamespaceKeys, ExtractKeysWithFallback } from "../components/I18nProvider";
 import type { LanguageConfig } from "../utils/languageManager";
 
 /** 문자열 보간 변수 */
@@ -98,32 +98,83 @@ const interpolateWithStyles = (
   return React.createElement(React.Fragment, null, ...parts);
 };
 
-/** 번역 함수 및 현재 언어 접근 훅 */
+/** 번역 함수 및 현재 언어 접근 훅 (오버로드) */
+// 오버로드 1: 타입 명시 없이 사용 (기본 동작, 하위 호환성)
+export function useTranslation<K extends string = string>(
+  namespace?: string,
+): UseTranslationReturn<K>;
+
+// 오버로드 2: Context에서 타입 자동 추론 (v3.1 신기능)
 export function useTranslation<
-  K extends string = string,
->(): UseTranslationReturn<K> {
-  const context = useI18nContext<string, K>();
-  const { currentLanguage, isLoading, translations } = context;
+  TTranslations extends NamespaceTranslations,
+  NS extends keyof TTranslations & string,
+  Fallback extends keyof TTranslations & string = never,
+>(
+  namespace: NS,
+): UseTranslationReturn<
+  [Fallback] extends [never]
+    ? ExtractNamespaceKeys<TTranslations, NS>
+    : ExtractKeysWithFallback<TTranslations, NS, Fallback>
+>;
+
+// 실제 구현
+export function useTranslation(namespace?: string): UseTranslationReturn<any> {
+  const context = useI18nContext();
+  const {
+    currentLanguage,
+    isLoading,
+    loadedNamespaces,
+    fallbackNamespace,
+  } = context;
+
+  // 번역 데이터 가져오기 (I18nProvider에서 로드된 데이터만 사용)
+  const getCurrentTranslations = (): Record<string, string> => {
+    let result: Record<string, string> = {};
+
+    // Fallback namespace 먼저 로드
+    if (fallbackNamespace) {
+      const fallbackNs = loadedNamespaces.get(String(fallbackNamespace))?.[currentLanguage];
+      if (fallbackNs) {
+        result = { ...fallbackNs };
+      }
+    }
+
+    // 요청된 namespace 로드 (fallback 덮어쓰기)
+    if (namespace) {
+      const requestedNs = loadedNamespaces.get(namespace)?.[currentLanguage];
+      if (requestedNs) {
+        result = { ...result, ...requestedNs };
+      }
+    }
+
+    return result;
+  };
+
+  const currentTranslations = getCurrentTranslations();
 
   const translate = ((
-    key: K,
+    key: any,
     variables?: TranslationVariables,
     styles?: TranslationStyles,
   ): string | React.ReactElement => {
-    const currentTranslations = translations[currentLanguage] || {};
-    const translatedText = currentTranslations[key as unknown as string] || key;
+    const translatedText = currentTranslations[key] || key;
 
     if (styles && variables) {
       return interpolateWithStyles(translatedText, variables, styles);
     }
 
     return interpolate(translatedText, variables);
-  }) as TranslationFunction<K>;
+  }) as TranslationFunction<any>;
+
+  // 네임스페이스가 로드되었는지 확인
+  const isNamespaceReady = namespace 
+    ? loadedNamespaces.has(namespace) 
+    : true;
 
   return {
     t: translate,
     currentLanguage,
-    isReady: !isLoading,
+    isReady: !isLoading && isNamespaceReady,
   };
 }
 

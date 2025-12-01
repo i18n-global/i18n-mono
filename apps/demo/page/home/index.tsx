@@ -3,10 +3,10 @@
 import Link from "next/link";
 
 import { DownloadStats } from "@/entities/download";
-import { i18n } from "@/locales";
+import { useTranslation, useLanguageSwitcher } from "i18nexus";
 
 export default function HomePage() {
-  const { t } = i18n.useTranslation("home");
+  const { t } = useTranslation<"home">("home");
 
   return (
     <main className="overflow-x-hidden">

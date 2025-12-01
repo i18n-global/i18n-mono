@@ -1,9 +1,9 @@
 "use client";
 
-import { i18n } from "@/locales";
+import { useTranslation, useLanguageSwitcher } from "i18nexus";
 
 export default function CLIPage() {
-  const { t } = i18n.useTranslation("cli");
+  const { t } = useTranslation<"cli">("cli");
 
   return (
     <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">

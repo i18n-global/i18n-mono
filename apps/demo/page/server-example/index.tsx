@@ -1,10 +1,10 @@
 import Link from "next/link";
 
-import { i18n } from "@/locales";
+import { getTranslation } from "i18nexus/server";
 
 export default async function ServerExamplePage() {
   // 서버에서 자동으로 언어 감지 및 번역 함수 생성
-  const { t, language } = await i18n.getServerTranslation("server-example");
+  const { t, language } = await getTranslation<"server-example">("server-example");
 
   // Fallback namespace (common) 테스트
   const commonKey = t("홈으로 돌아가기"); // common namespace에 있는 키
@@ -15,8 +15,8 @@ export default async function ServerExamplePage() {
       <div className="mb-8 sm:mb-12">
         <Link
           href="/"
-          className="inline-flex items-center text-blue-400 hover:text-blue-300 mb-4 sm:mb-6 text-sm sm:text-base"
-        >
+          className="inline-flex items-center text-blue-400 hover:text-blue-300 mb-4 sm:mb-6 text-sm sm:text-base">
+
           <span className="mr-2">←</span>
           {commonKey} {/* fallback 테스트 */}
         </Link>
@@ -25,7 +25,7 @@ export default async function ServerExamplePage() {
         </h1>
         <p className="text-base sm:text-lg text-slate-300">
           {t(
-            "이 페이지는 서버 컴포넌트입니다 - 'use client' 지시문이 필요 없습니다!",
+            "이 페이지는 서버 컴포넌트입니다 - 'use client' 지시문이 필요 없습니다!"
           )}
         </p>
       </div>
@@ -87,17 +87,17 @@ export default async function ServerExamplePage() {
         </h2>
         <div className="bg-slate-950 rounded-lg sm:rounded-xl p-4 sm:p-6 mb-4 border border-slate-800">
           <pre className="text-slate-300 text-xs sm:text-sm font-mono overflow-x-auto">
-            <code>{`import { i18n } from "@/locales";
+            <code>{t("import { useTranslation, useLanguageSwitcher } from \"i18nexus\";\n\n// \u2705 Server Component (\uAE30\uBCF8\uAC12)\nexport default async function Page() {\n  // \uC790\uB3D9\uC73C\uB85C \uC5B8\uC5B4 \uAC10\uC9C0 \uBC0F \uBC88\uC5ED \uD568\uC218 \uC0DD\uC131\n  const { t, language } = await i18n.getServerTranslation(\"common\");\n  \n  // \uC0AC\uC6A9!\n  return <h1>{t(\"\uD658\uC601\uD569\uB2C8\uB2E4\")}</h1>;\n}\n")
 
-// ✅ Server Component (기본값)
-export default async function Page() {
-  // 자동으로 언어 감지 및 번역 함수 생성
-  const { t, language } = await i18n.getServerTranslation("common");
-  
-  // 사용!
-  return <h1>{t("환영합니다")}</h1>;
-}
-`}</code>
+
+
+
+
+
+
+
+
+              }</code>
           </pre>
         </div>
       </section>
@@ -194,10 +194,10 @@ export default async function Page() {
         </h3>
         <p className="text-slate-300 text-xs sm:text-sm">
           {t(
-            "이 페이지에서 언어를 변경하려면 헤더의 언어 전환기(클라이언트 컴포넌트)를 사용하세요. 쿠키에서 새 언어로 페이지가 다시 로드됩니다.",
+            "이 페이지에서 언어를 변경하려면 헤더의 언어 전환기(클라이언트 컴포넌트)를 사용하세요. 쿠키에서 새 언어로 페이지가 다시 로드됩니다."
           )}
         </p>
       </div>
-    </main>
-  );
+    </main>);
+
 }

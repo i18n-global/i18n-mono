@@ -51,5 +51,6 @@
   "i18nexus-tools": "i18nexus-tools",
   "i18nexus-tools 문서": "i18nexus-tools 문서",
   "TypeScript 지원": "TypeScript 지원",
-  "Upload local translations to Google Sheets": "Upload local translations to Google Sheets"
+  "Upload local translations to Google Sheets": "Upload local translations to Google Sheets",
+  "// locales/en.json\n{\n  \"환영합니다\": \"Welcome\",\n  \"시작하기\": \"Get Started\"\n}": "// locales/en.json\n{\n  \"환영합니다\": \"Welcome\",\n  \"시작하기\": \"Get Started\"\n}"
 }

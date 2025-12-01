@@ -1,9 +1,8 @@
 "use client";
 
+import { useTranslation } from "i18nexus";
 import Link from "next/link";
 import { useEffect } from "react";
-
-import { i18n } from "@/locales";
 
 export default function Error({
   error,
@@ -12,7 +11,7 @@ export default function Error({
   error: Error & { digest?: string };
   reset: () => void;
 }) {
-  const { t } = i18n.useTranslation();
+  const { t } = useTranslation<"common">("common");
 
   useEffect(() => {
     // 에러 로깅 (선택사항)
@@ -58,15 +57,13 @@ export default function Error({
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <button
               onClick={reset}
-              className="px-6 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-semibold rounded-lg shadow-lg shadow-blue-500/30 hover:shadow-blue-500/50 transition-all hover:scale-105"
-            >
+              className="px-6 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-semibold rounded-lg shadow-lg shadow-blue-500/30 hover:shadow-blue-500/50 transition-all hover:scale-105">
               <span className="mr-2">🔄</span>
               {t("다시 시도")}
             </button>
             <Link
               href="/"
-              className="px-6 py-3 bg-slate-800 hover:bg-slate-700 text-white font-semibold rounded-lg border border-slate-700 transition-all hover:scale-105 text-center"
-            >
+              className="px-6 py-3 bg-slate-800 hover:bg-slate-700 text-white font-semibold rounded-lg border border-slate-700 transition-all hover:scale-105 text-center">
               <span className="mr-2">🏠</span>
               {t("홈으로 돌아가기")}
             </Link>
@@ -80,8 +77,7 @@ export default function Error({
                 href="https://github.com/your-repo/issues"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-blue-400 hover:text-blue-300 underline"
-              >
+                className="text-blue-400 hover:text-blue-300 underline">
                 {t("이슈를 제보")}
               </Link>
               {t("해주세요.")}

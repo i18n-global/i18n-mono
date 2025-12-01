@@ -34,6 +34,11 @@ import {
   validateNamespace,
   NamespacingConfig,
 } from "./namespace-inference";
+import {
+  generateTypeDefinitions,
+  readExtractedTranslations,
+  type ExtractedTranslations,
+} from "./type-generator";
 
 export interface ExtractorConfig {
   sourcePattern?: string;
@@ -107,22 +112,36 @@ export class TranslationExtractor {
     try {
       const code = fs.readFileSync(filePath, "utf-8");
 
-      // 네임스페이스 추론
+      // 네임스페이스 추론 (우선순위 기반)
       let namespace: string;
       if (this.config.namespacing.enabled) {
-        namespace = inferNamespace(filePath, this.config.namespacing);
+        // 개선: useTranslation() 우선, 파일 경로는 대체
+        const { inferNamespaceFromFile } = require("./namespace-inference");
+        namespace = inferNamespaceFromFile(
+          filePath,
+          code,
+          this.config.namespacing
+        );
 
         // 네임스페이스 검증 (skipValidation이 false일 때만)
         if (!this.config.skipValidation) {
-          const validation = validateNamespace(
-            filePath,
-            code,
-            namespace,
-            this.config.namespacing,
-          );
-          if (!validation.valid) {
-            console.error(validation.error);
-            throw new Error(validation.error);
+          // useTranslation()이 있는 경우 검증 스킵 (이미 올바른 네임스페이스)
+          const { findUseTranslationCalls } = require("./namespace-inference");
+          const useTranslationCalls = findUseTranslationCalls(filePath, code);
+          const hasExplicitNamespace = useTranslationCalls.length > 0 && useTranslationCalls[0].namespace;
+
+          if (!hasExplicitNamespace) {
+            // useTranslation()이 없거나 네임스페이스가 명시되지 않은 경우만 검증
+            const validation = validateNamespace(
+              filePath,
+              code,
+              namespace,
+              this.config.namespacing,
+            );
+            if (!validation.valid) {
+              console.error(validation.error);
+              throw new Error(validation.error);
+            }
           }
         }
       } else {
@@ -276,6 +295,11 @@ export class TranslationExtractor {
           this.config.lazy, // lazy loading 옵션 전달
           this.config.useI18nexusLibrary ?? true, // useI18nexusLibrary 옵션 전달
         );
+
+        // TypeScript 타입 정의 파일 생성
+        if (!this.config.dryRun) {
+          this.generateTypeDefinitions();
+        }
       } else {
         // 레거시 모드: 기존 방식 유지
         const keys = Array.from(this.extractedKeys.values());
@@ -302,6 +326,37 @@ export class TranslationExtractor {
     } catch (error) {
       console.error(CONSOLE_MESSAGES.EXTRACTION_FAILED, error);
       throw error;
+    }
+  }
+
+  /**
+   * Generate TypeScript type definitions for type-safe translations
+   */
+  private generateTypeDefinitions(): void {
+    try {
+      // Read extracted translations from locale files
+      const translations = readExtractedTranslations(this.config.outputDir);
+
+      if (Object.keys(translations).length === 0) {
+        console.warn("⚠️  No translations found. Skipping type generation.");
+        return;
+      }
+
+      // Generate type definition file in locales/types
+      const typeOutputPath = pathLib.join(
+        this.config.outputDir,
+        "types",
+        "i18nexus.d.ts",
+      );
+
+      generateTypeDefinitions(translations, {
+        outputPath: typeOutputPath,
+        includeJsDocs: true,
+        fallbackNamespace: this.config.namespacing.defaultNamespace,
+      });
+    } catch (error) {
+      console.error("❌ Failed to generate type definitions:", error);
+      // Don't throw - type generation failure shouldn't block extraction
     }
   }
 }

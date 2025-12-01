@@ -1,13 +1,11 @@
 "use client";
 
-import { i18n } from "@/locales";
+import { useTranslation, useLanguageSwitcher } from "i18nexus";
 import { CodeBlock } from "@/shared/ui";
 
 export default function ProviderPage() {
-  const { t } = i18n.useTranslation("provider");
-  const currentLanguage = i18n.getCurrentLanguage();
-  const changeLanguage = i18n.changeLanguage;
-  const availableLanguages = i18n.getAvailableLanguages();
+  const { t, currentLanguage } = useTranslation<"provider">("provider");
+  const { changeLanguage, availableLanguages } = useLanguageSwitcher();
 
   return (
     <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -20,9 +18,9 @@ export default function ProviderPage() {
           I18nProvider (Deprecated)
         </h1>
         <div className="bg-yellow-950/30 border border-yellow-800/50 rounded-lg p-4 mb-4">
-          <p className="text-yellow-300 text-sm">
-            ⚠️ I18nProvider는 더 이상 필요하지 않습니다. createI18n()을 사용하면
-            Provider 없이도 i18n을 사용할 수 있습니다.
+          <p className="text-yellow-300 text-sm">{t("\u26A0\uFE0F I18nProvider\uB294 \uB354 \uC774\uC0C1 \uD544\uC694\uD558\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4. createI18n()\uC744 \uC0AC\uC6A9\uD558\uBA74\n            Provider \uC5C6\uC774\uB3C4 i18n\uC744 \uC0AC\uC6A9\uD560 \uC218 \uC788\uC2B5\uB2C8\uB2E4.")}
+
+
           </p>
         </div>
         <p className="text-xl text-slate-300">
@@ -101,48 +99,48 @@ export default function ProviderPage() {
             </div>
             <div className="p-6">
               <CodeBlock language="tsx">
-                {`// ❌ 옛날 방식 (Provider 필요)
-import { I18nProvider } from "i18nexus";
-import { cookies } from "next/headers";
+                {t("// \u274C \uC61B\uB0A0 \uBC29\uC2DD (Provider \uD544\uC694)\nimport { I18nProvider } from \"i18nexus\";\nimport { cookies } from \"next/headers\";\n\nexport default function RootLayout({ children }) {\n  const language = cookies().get(\"i18n-language\")?.value || \"ko\";\n\n  return (\n    <html lang={language}>\n      <body>\n        <I18nProvider\n          initialLanguage={language}\n          languageManagerOptions={{\n            defaultLanguage: \"ko\",\n            availableLanguages: [\n              { code: \"ko\", name: \"\uD55C\uAD6D\uC5B4\", flag: \"\uD83C\uDDF0\uD83C\uDDF7\" },\n              { code: \"en\", name: \"English\", flag: \"\uD83C\uDDFA\uD83C\uDDF8\" },\n            ],\n          }}\n          translations={{\n            ko: { \"\uD658\uC601\uD569\uB2C8\uB2E4\": \"\uD658\uC601\uD569\uB2C8\uB2E4\" },\n            en: { \"\uD658\uC601\uD569\uB2C8\uB2E4\": \"Welcome\" },\n          }}\n        >\n          {children}\n        </I18nProvider>\n      </body>\n    </html>\n  );\n}\n\n// \u2705 \uC0C8\uB85C\uC6B4 \uBC29\uC2DD (Provider \uBD88\uD544\uC694)\n// locales/index.ts\uC5D0\uC11C createI18n\uC73C\uB85C \uC124\uC815\nimport { useTranslation, useLanguageSwitcher } from \"i18nexus\";\n\nexport default function RootLayout({ children }) {\n  return (\n    <html lang=\"ko\">\n      <body>{children}</body>\n    </html>\n  );\n}")
 
-export default function RootLayout({ children }) {
-  const language = cookies().get("i18n-language")?.value || "ko";
 
-  return (
-    <html lang={language}>
-      <body>
-        <I18nProvider
-          initialLanguage={language}
-          languageManagerOptions={{
-            defaultLanguage: "ko",
-            availableLanguages: [
-              { code: "ko", name: "한국어", flag: "🇰🇷" },
-              { code: "en", name: "English", flag: "🇺🇸" },
-            ],
-          }}
-          translations={{
-            ko: { "환영합니다": "환영합니다" },
-            en: { "환영합니다": "Welcome" },
-          }}
-        >
-          {children}
-        </I18nProvider>
-      </body>
-    </html>
-  );
-}
 
-// ✅ 새로운 방식 (Provider 불필요)
-// locales/index.ts에서 createI18n으로 설정
-import { i18n } from "@/locales";
 
-export default function RootLayout({ children }) {
-  return (
-    <html lang="ko">
-      <body>{children}</body>
-    </html>
-  );
-}`}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                }
               </CodeBlock>
             </div>
           </div>
@@ -159,22 +157,22 @@ export default function RootLayout({ children }) {
             </div>
             <div className="p-6">
               <CodeBlock language="tsx">
-                {`"use client";
+                {t("\"use client\";\n\nimport { useTranslation, useLanguageSwitcher } from \"i18nexus\";\n\nexport default function HomePage() {\n  const { t } = useTranslation(\"provider\");\n\n  return (\n    <div>\n      <h1>{t(\"\uD658\uC601\uD569\uB2C8\uB2E4\")}</h1>\n      <button onClick={() => changeLanguage(\"en\")}>\n        English\n      </button>\n    </div>\n  );\n}")
 
-import { i18n } from "@/locales";
 
-export default function HomePage() {
-  const { t } = i18n.useTranslation("provider");
 
-  return (
-    <div>
-      <h1>{t("환영합니다")}</h1>
-      <button onClick={() => i18n.changeLanguage("en")}>
-        English
-      </button>
-    </div>
-  );
-}`}
+
+
+
+
+
+
+
+
+
+
+
+                }
               </CodeBlock>
             </div>
           </div>
@@ -200,8 +198,8 @@ export default function HomePage() {
                 </div>
                 <p className="text-slate-300 text-lg">
                   {
-                    availableLanguages.find((l) => l.code === currentLanguage)
-                      ?.name
+                  availableLanguages.find((l) => l.code === currentLanguage)?.
+                  name
                   }
                 </p>
               </div>
@@ -213,20 +211,20 @@ export default function HomePage() {
                 {t("언어 전환")}
               </h3>
               <div className="flex gap-4">
-                {availableLanguages.map((lang) => (
-                  <button
-                    key={lang.code}
-                    onClick={() => changeLanguage(lang.code)}
-                    className={`flex-1 px-6 py-4 rounded-xl font-semibold transition-all duration-300 ${
-                      currentLanguage === lang.code
-                        ? "bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-lg shadow-blue-500/30 scale-105"
-                        : "bg-slate-800 text-slate-300 hover:bg-slate-700 border border-slate-700"
-                    }`}
-                  >
+                {availableLanguages.map((lang) =>
+                <button
+                  key={lang.code}
+                  onClick={() => changeLanguage(lang.code)}
+                  className={`flex-1 px-6 py-4 rounded-xl font-semibold transition-all duration-300 ${
+                  currentLanguage === lang.code ?
+                  "bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-lg shadow-blue-500/30 scale-105" :
+                  "bg-slate-800 text-slate-300 hover:bg-slate-700 border border-slate-700"}`
+                  }>
+
                     <div className="text-2xl mb-1">{lang.flag}</div>
                     <div className="text-sm">{lang.name}</div>
                   </button>
-                ))}
+                )}
               </div>
               <p className="text-sm text-slate-400 text-center mt-4">
                 💡 {t("전환해보세요 - 쿠키에 저장됩니다!")}
@@ -241,21 +239,21 @@ export default function HomePage() {
             </h3>
             <div className="grid gap-3">
               {[
-                t("환영합니다"),
-                t("빠른 시작"),
-                t("왜 i18nexus인가?"),
-                t("쿠키 영속성"),
-              ].map((text, i) => (
-                <div
-                  key={i}
-                  className="flex items-center justify-between p-4 bg-slate-950 rounded-lg border border-slate-800"
-                >
+              t("환영합니다"),
+              t("빠른 시작"),
+              t("왜 i18nexus인가?"),
+              t("쿠키 영속성")].
+              map((text, i) =>
+              <div
+                key={i}
+                className="flex items-center justify-between p-4 bg-slate-950 rounded-lg border border-slate-800">
+
                   <span className="text-slate-500 text-sm font-mono">
                     {`t("${[t("환영합니다"), t("빠른 시작"), t("왜 i18nexus인가?"), t("쿠키 영속성")][i]}")`}
                   </span>
                   <span className="text-white font-medium">{text}</span>
                 </div>
-              ))}
+              )}
             </div>
           </div>
         </div>
@@ -273,11 +271,11 @@ export default function HomePage() {
               useTranslation()
             </h3>
             <CodeBlock language="typescript">
-              {`const { t } = i18n.useTranslation("provider");
+              {t("const { t } = useTranslation(\"provider\");\n\n// Simple usage\nt(\"key\")\nt(\"\uD55C\uAD6D\uC5B4 \uD14D\uC2A4\uD2B8\")")
 
-// Simple usage
-t("key")
-t("한국어 텍스트")`}
+
+
+              }
             </CodeBlock>
             <p className="text-slate-400 text-sm">
               {t("클라이언트 컴포넌트에서 번역 함수에 접근하기 위한 훅")}
@@ -286,17 +284,17 @@ t("한국어 텍스트")`}
 
           <div className="bg-slate-900 rounded-xl border border-slate-800 p-6">
             <h3 className="text-xl font-semibold text-indigo-300 mb-4">
-              i18n.changeLanguage()
+              changeLanguage()
             </h3>
             <CodeBlock language="typescript">
-              {`// 어디서나 직접 호출 가능
-i18n.changeLanguage("en");
+              {t("// \uC5B4\uB514\uC11C\uB098 \uC9C1\uC811 \uD638\uCD9C \uAC00\uB2A5\nchangeLanguage(\"en\");\n\n// \uAC00\uB2A5\uD55C \uC5B8\uC5B4 \uBAA9\uB85D\nconst languages = getAvailableLanguages();\n\n// \uD604\uC7AC \uC5B8\uC5B4\nconst current = getCurrentLanguage();")
 
-// 가능한 언어 목록
-const languages = i18n.getAvailableLanguages();
 
-// 현재 언어
-const current = i18n.getCurrentLanguage();`}
+
+
+
+
+              }
             </CodeBlock>
             <p className="text-slate-400 text-sm">
               {t("언어 전환 및 상태 관리를 위한 메서드")}
@@ -304,6 +302,6 @@ const current = i18n.getCurrentLanguage();`}
           </div>
         </div>
       </section>
-    </main>
-  );
+    </main>);
+
 }

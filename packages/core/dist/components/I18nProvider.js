@@ -11,8 +11,10 @@ export const useI18nContext = () => {
     }
     return context;
 };
-export function I18nProvider({ children, languageManagerOptions, translations, onLanguageChange, initialLanguage, }) {
-    const defaultTranslations = translations || {};
+export function I18nProvider({ children, languageManagerOptions, translations = {}, onLanguageChange, initialLanguage, loadNamespace, fallbackNamespace, preloadNamespaces = [], }) {
+    // Lazy mode is automatically enabled if loadNamespace is provided
+    const lazy = !!loadNamespace;
+    const defaultTranslations = translations;
     const [languageManager] = React.useState(() => new LanguageManager(languageManagerOptions));
     const getInitialLanguage = () => {
         if (initialLanguage) {
@@ -23,6 +25,53 @@ export function I18nProvider({ children, languageManagerOptions, translations, o
     const [currentLanguage, setCurrentLanguage] = React.useState(getInitialLanguage());
     const [isLoading, setIsLoading] = React.useState(false);
     const [isHydrated, setIsHydrated] = React.useState(false);
+    // Lazy loading을 위한 로드된 네임스페이스 추적 (state로 변경하여 리렌더링 트리거)
+    const [loadedNamespaces, setLoadedNamespaces] = React.useState(() => new Map());
+    // Preload namespaces (fallback + additional preload namespaces)
+    React.useEffect(() => {
+        if (!lazy || !loadNamespace)
+            return;
+        const languages = languageManager.getAvailableLanguageCodes();
+        const namespacesToPreload = new Set();
+        // Always preload fallback namespace
+        if (fallbackNamespace) {
+            namespacesToPreload.add(String(fallbackNamespace));
+        }
+        // Add additional preload namespaces
+        preloadNamespaces.forEach((ns) => namespacesToPreload.add(String(ns)));
+        // Preload all namespaces
+        namespacesToPreload.forEach((nsKey) => {
+            // Check if already loaded to avoid duplicate loads
+            if (loadedNamespaces.has(nsKey)) {
+                return;
+            }
+            Promise.all(languages.map(async (lang) => {
+                try {
+                    const data = await loadNamespace(nsKey, lang);
+                    return { lang, data };
+                }
+                catch (error) {
+                    console.warn(`Failed to preload namespace "${nsKey}" for language "${lang}":`, error);
+                    return { lang, data: {} };
+                }
+            })).then((results) => {
+                const nsData = {};
+                results.forEach(({ lang, data }) => {
+                    nsData[lang] = data;
+                });
+                setLoadedNamespaces((prev) => {
+                    // Double-check before setting to avoid race conditions
+                    if (prev.has(nsKey)) {
+                        return prev;
+                    }
+                    const newMap = new Map(prev);
+                    newMap.set(nsKey, nsData);
+                    console.log(`✓ Preloaded namespace "${nsKey}" for languages: [${languages.join(", ")}]`);
+                    return newMap;
+                });
+            });
+        });
+    }, [lazy, loadNamespace, fallbackNamespace, preloadNamespaces, languageManager]);
     const changeLanguage = async (lang) => {
         if (lang === currentLanguage) {
             return;
@@ -71,7 +120,11 @@ export function I18nProvider({ children, languageManagerOptions, translations, o
         availableLanguages: languageManager.getAvailableLanguages(),
         languageManager,
         isLoading,
-        translations: defaultTranslations,
+        namespaceTranslations: defaultTranslations,
+        loadedNamespaces,
+        lazy,
+        loadNamespace,
+        fallbackNamespace,
     };
     return (_jsx(I18nContext.Provider, { value: contextValue, children: children }));
 }

@@ -5,12 +5,12 @@ export const revalidate = false;
 import Link from "next/link";
 
 import { getProjects } from "@/entities/project/api/getProjects";
-import { i18n } from "@/locales";
+import { getTranslation } from "i18nexus/server";
 import { ProjectCard } from "@/shared/ui";
 
 export default async function ShowcasePage() {
   // 서버에서 자동으로 언어 감지 및 번역 함수 생성
-  const { t } = await i18n.getServerTranslation();
+  const { t } = await getTranslation<"showcase">("showcase");
 
   // Get only approved projects
   const projects = await getProjects(true);

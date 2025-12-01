@@ -125,5 +125,13 @@
   "프리로드 설명": "Preload Description",
   "프리로드 제목": "Preload Title",
   "eager loading 설명": "eager loading Description",
-  "eager loading 제목": "eager loading Title"
+  "eager loading 제목": "eager loading Title",
+  "\"use client\";\n\nimport { useTranslation, useLanguageSwitcher } from \"i18nexus\";\n\nexport function ProductCard() {\n  // product namespace가 처음 사용 시 자동으로 로드됩니다\n  const { t } = useTranslation(\"product\");\n\n  return (\n    <div>\n      <h2>{t(\"제품명\")}</h2>\n      <p>{t(\"가격\")}</p>\n    </div>\n  );\n}": "",
+  "\"use client\";\n\nimport { useTranslation, useLanguageSwitcher } from \"i18nexus\";\nimport { useEffect } from \"react\";\n\nexport function ProductPage() {\n  useEffect(() => {\n    // 필요한 namespace를 미리 로드\n    i18n.loadNamespace(\"product\");\n  }, []);\n\n  const { t } = useTranslation(\"product\");\n\n  return (\n    <div>\n      <h1>{t(\"제품 목록\")}</h1>\n    </div>\n  );\n}": "",
+  "→ i18n-extractor 사용법": "",
+  "→ i18nexus 소개": "",
+  "관련 문서": "",
+  "한국어": "",
+  "import { createI18n } from \"i18nexus\";\n\n// 타입 안전성을 위해 모든 translations를 import (타입 정보만 사용)\nimport type common_en from \"./common/en.json\";\nimport type common_ko from \"./common/ko.json\";\nimport type home_en from \"./home/en.json\";\nimport type home_ko from \"./home/ko.json\";\n\n// 타입 안전성을 위한 전체 translations 구조 (런타임에는 빈 객체, 타입만 제공)\nexport const translations = {\n  common: {\n    en: {} as typeof common_en,\n    ko: {} as typeof common_ko,\n  },\n  home: {\n    en: {} as typeof home_en,\n    ko: {} as typeof home_ko,\n  },\n} as const;\n\n// 동적 namespace 로더 - 실제로 필요할 때만 로드\nasync function loadNamespace(namespace: string, lang: string) {\n  const module = await import(\\`./\\${namespace}/\\${lang}.json\\`);\n  return module.default;\n}\n\n// createI18n with lazy loading + 타입 안전성\nexport const i18n = createI18n(translations, {\n  fallbackNamespace: \"common\",\n  lazy: true,\n  loadNamespace,\n  preloadNamespaces: [\"common\"], // fallback namespace는 미리 로드\n});": "",
+  "import { useTranslation, useLanguageSwitcher } from \"i18nexus\";\n\nexport default async function HomePage() {\n  // home namespace가 자동으로 로드됩니다\n  const { t } = await i18n.getServerTranslation(\"home\");\n\n  return (\n    <div>\n      <h1>{t(\"환영합니다\")}</h1>\n      <p>{t(\"설명\")}</p>\n    </div>\n  );\n}": ""
 }

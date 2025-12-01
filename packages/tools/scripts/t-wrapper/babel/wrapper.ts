@@ -12,6 +12,9 @@ import {
   applyTranslationsToAST,
   writeASTToFile,
 } from "../common/applier/translation-applier";
+import { updateExistingUseTranslation } from "../common/ast/namespace-updater";
+import { inferNamespaceFromFile } from "../../extractor/namespace-inference";
+import { loadConfig } from "../../config-loader";
 
 export async function wrapTranslations(
   config: Partial<ScriptConfig> = {},
@@ -39,6 +42,23 @@ export async function wrapTranslations(
         decorators: true,
       });
 
+      // i18nexus.config.json 로드 (네임스페이스 설정 확인)
+      const i18nexusConfig = loadConfig("i18nexus.config.json", { silent: true });
+      const namespacingEnabled = i18nexusConfig.namespacing?.enabled ?? false;
+
+      // 네임스페이스 업데이트 시도
+      let namespaceUpdated = false;
+      if (namespacingEnabled && i18nexusConfig.namespacing) {
+        const correctNamespace = inferNamespaceFromFile(
+          filePath,
+          code,
+          i18nexusConfig.namespacing
+        );
+        if (correctNamespace) {
+          namespaceUpdated = updateExistingUseTranslation(ast, correctNamespace, code);
+        }
+      }
+
       const modifiedComponentPaths: NodePath<t.Function>[] = [];
 
       traverse(ast, {
@@ -59,8 +79,17 @@ export async function wrapTranslations(
         },
       });
 
-      if (isFileModified) {
-        applyTranslationsToAST(ast, modifiedComponentPaths, fullConfig);
+      // 파일이 수정되었거나 네임스페이스가 업데이트된 경우
+      if (isFileModified || namespaceUpdated) {
+        if (isFileModified) {
+          applyTranslationsToAST(
+            ast,
+            modifiedComponentPaths,
+            fullConfig,
+            filePath,
+            code,
+          );
+        }
         writeASTToFile(ast, filePath, fullConfig);
         processedFiles.push(filePath);
       }
