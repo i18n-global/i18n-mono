@@ -56,6 +56,7 @@ export function generateTypeDefinitions(
 
   // Step 1: Extract all namespace keys
   const namespaceKeys = extractNamespaceKeys(extractedData);
+  const namespaceKeysWithInfo = extractNamespaceKeysWithInfo(extractedData);
 
   if (Object.keys(namespaceKeys).length === 0) {
     console.warn("⚠️  No translation keys found. Skipping type generation.");
@@ -63,7 +64,7 @@ export function generateTypeDefinitions(
   }
 
   // Step 2: Generate type definition content
-  const typeContent = generateTypeContent(namespaceKeys, config);
+  const typeContent = generateTypeContent(namespaceKeys, namespaceKeysWithInfo, config);
 
   // Step 3: Ensure output directory exists
   const outputDir = path.dirname(config.outputPath);
@@ -79,6 +80,38 @@ export function generateTypeDefinitions(
   console.log(
     `   - ${Object.values(namespaceKeys).reduce((sum, keys) => sum + keys.length, 0)} total keys`,
   );
+  
+  // Count keys with interpolation
+  const keysWithVars = Object.values(namespaceKeysWithInfo)
+    .flat()
+    .filter(info => info.variables.length > 0).length;
+  if (keysWithVars > 0) {
+    console.log(`   - ${keysWithVars} keys with interpolation variables`);
+  }
+}
+
+/**
+ * Extract interpolation variables from a translation key
+ * @example "{{totalDays}}일 남음" -> ["totalDays"]
+ */
+function extractInterpolationVariables(key: string): string[] {
+  const regex = /\{\{(\w+)\}\}/g;
+  const vars: string[] = [];
+  let match;
+  
+  while ((match = regex.exec(key)) !== null) {
+    vars.push(match[1]);
+  }
+  
+  return [...new Set(vars)]; // Remove duplicates
+}
+
+/**
+ * Key info with interpolation variables
+ */
+interface KeyInfo {
+  key: string;
+  variables: string[];
 }
 
 /**
@@ -107,10 +140,36 @@ function extractNamespaceKeys(
 }
 
 /**
+ * Extract keys with their interpolation variables for each namespace
+ */
+function extractNamespaceKeysWithInfo(
+  extractedData: ExtractedTranslations,
+): Record<string, KeyInfo[]> {
+  const result: Record<string, KeyInfo[]> = {};
+
+  for (const [namespace, languages] of Object.entries(extractedData)) {
+    // Get keys from the first available language
+    const firstLanguage = languages["ko"] || languages["en"] || Object.values(languages)[0];
+
+    if (!firstLanguage) {
+      continue;
+    }
+
+    result[namespace] = Object.keys(firstLanguage).sort().map(key => ({
+      key,
+      variables: extractInterpolationVariables(key),
+    }));
+  }
+
+  return result;
+}
+
+/**
  * Generate the actual TypeScript type definition content
  */
 function generateTypeContent(
   namespaceKeys: Record<string, string[]>,
+  namespaceKeysWithInfo: Record<string, KeyInfo[]>,
   config: TypeGeneratorConfig,
 ): string {
   const includeJsDocs = config.includeJsDocs ?? true;
@@ -148,6 +207,7 @@ function generateTypeContent(
   // TranslationKeys for each namespace (global)
   for (const namespace of sortedNamespaces) {
     const keys = namespaceKeys[namespace];
+    const keyInfoList = namespaceKeysWithInfo[namespace] || [];
     const typeName = `${capitalize(toCamelCase(namespace))}Keys`;
 
     if (keys.length === 0) {
@@ -161,6 +221,20 @@ function generateTypeContent(
       content += `/** Translation keys for "${namespace}" namespace */\n`;
     }
     content += `declare type ${typeName} = ${keyUnion};\n\n`;
+    
+    // Generate interpolation variable types for keys with variables
+    const keysWithVars = keyInfoList.filter(info => info.variables.length > 0);
+    if (keysWithVars.length > 0) {
+      const varsTypeName = `${capitalize(toCamelCase(namespace))}KeyVariables`;
+      content += `/** Interpolation variables for "${namespace}" namespace keys */\n`;
+      content += `declare type ${varsTypeName} = {\n`;
+      for (const info of keysWithVars) {
+        const escapedKey = escapeString(info.key);
+        const varsUnion = info.variables.map(v => `"${v}"`).join(" | ");
+        content += `  "${escapedKey}": ${varsUnion};\n`;
+      }
+      content += `};\n\n`;
+    }
   }
 
   // TranslationKeys mapping type (global)
@@ -199,10 +273,38 @@ function generateTypeContent(
     content += `   * \`\`\`\n`;
     content += `   */\n`;
   }
+  // Generate helper types for interpolation variable validation
+  content += `  // Helper type to extract variable names from keys\n`;
+  content += `  type ExtractVariables<K> = \n`;
+  
+  // Build union of all KeyVariables types
+  const varsTypeNames = sortedNamespaces
+    .map(ns => `${capitalize(toCamelCase(ns))}KeyVariables`)
+    .filter(name => {
+      const ns = sortedNamespaces.find(n => 
+        `${capitalize(toCamelCase(n))}KeyVariables` === name
+      );
+      const keyInfoList = namespaceKeysWithInfo[ns!] || [];
+      return keyInfoList.some(info => info.variables.length > 0);
+    });
+  
+  if (varsTypeNames.length > 0) {
+    content += `    K extends keyof (${varsTypeNames.join(" & ")}) ? \n`;
+    content += `      (${varsTypeNames.join(" & ")})[K] : \n`;
+    content += `      never;\n\n`;
+  } else {
+    content += `    never;\n\n`;
+  }
+  
   content += `  export function useTranslation<NS extends TranslationNamespace>(\n`;
   content += `    namespace: NS\n`;
   content += `  ): {\n`;
-  content += `    t: (key: TranslationKeys[NS]) => string;\n`;
+  content += `    t: <K extends TranslationKeys[NS]>(\n`;
+  content += `      key: K,\n`;
+  content += `      ...args: ExtractVariables<K> extends never\n`;
+  content += `        ? [variables?: Record<string, string | number>, styles?: Record<string, React.CSSProperties>]\n`;
+  content += `        : [variables: Record<ExtractVariables<K>, string | number>, styles?: Record<string, React.CSSProperties>]\n`;
+  content += `    ) => ExtractVariables<K> extends never ? string : (typeof args extends [any, any] ? React.ReactElement : string);\n`;
   content += `    currentLanguage: string;\n`;
   content += `    isReady: boolean;\n`;
   content += `  };\n`;

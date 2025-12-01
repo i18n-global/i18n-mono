@@ -2,6 +2,25 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.1.0] - 2025-12-01
+
+### ✨ Features
+- **Interpolation Variable Type Checking**: Added advanced type checking for translation keys with interpolation variables
+  - Automatically detects `{{variableName}}` patterns in translation keys
+  - Generates `[Namespace]KeyVariables` types for keys with variables
+  - `useTranslation().t()` now validates variable names at compile time
+  - Example:
+    - ✅ `t("{{errorMessage}} 발생", { errorMessage: "Error" })` - Correct variable name
+    - ❌ `t("{{errorMessage}} 발생", { errorMessag: "Error" })` - Type error! (typo)
+    - ❌ `t("{{errorMessage}} 발생")` - Type error! (missing variables)
+  - Uses TypeScript conditional types and template literal types for precise validation
+  - Supports multiple variables per key (e.g., `{{userName}} 님, {{totalDays}}일 남음`)
+
+### 🐛 Bug Fixes
+- Improved type generation with better handling of interpolation variable extraction
+
+---
+
 ## [2.0.2] - 2025-12-01
 
 ### 🐛 Bug Fixes
