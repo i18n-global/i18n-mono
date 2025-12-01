@@ -2,136 +2,93 @@
 
 All notable changes to this project will be documented in this file.
 
-The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
-and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+## [3.2.0] - 2025-12-01
 
-## [2.10.0] - 2025-11-08
+### ✨ Features
+- **Lazy Loading Redesign**: Complete overhaul of lazy loading system for better abstraction
+  - `translations` prop is now optional for lazy loading mode
+  - `lazy` flag is automatically enabled when `loadNamespace` is provided
+  - Fallback namespace is now automatically preloaded
+  - Centralized namespace loading in `I18nProvider` for better control
 
-### Added
+### 🔧 Internal Improvements
+- **I18nProvider**: Refactored to use state-based `loadedNamespaces` for better reactivity
+- **useTranslation**: Simplified to read-only mode, removing redundant loading logic
+- **Race Condition Prevention**: Added double-check mechanism to prevent duplicate namespace loads
+- **Debug Logging**: Added helpful console logs for namespace preloading (`✓ Preloaded namespace "X"`)
 
-- **Automatic Type Extraction from I18nProvider**: Revolutionary improvement for developer experience
-  - `useTranslation()` now automatically infers translation keys from `I18nProvider`'s translations
-  - No more manual generic parameter specification needed
-  - `ExtractI18nKeys<T>`: Type utility to extract keys from translations object
-  - `I18nContextType<TLanguage, TKeys>`: Enhanced context type with key type support
-  - IDE auto-completion works immediately without type declarations
-- **AutoTypeExtractionExample.tsx**: Real-world examples showing:
-  - Dynamic variable handling solutions (3 different approaches)
-  - Automatic type inference in action
-  - Conditional rendering with type safety
-  - Complex championship creation UI example
-- **AUTO_TYPE_EXTRACTION.md**: Complete guide (300+ lines) covering:
-  - Problem and solution overview
-  - Dynamic variable handling strategies
-  - Auto-extraction usage patterns
-  - Real-world code examples
-  - Migration guide from v2.9.0
-  - Performance characteristics
-  - Troubleshooting tips
+### 📖 Documentation
+- Added `I18NEXUS_V3.2_LAZY_LOADING_SUCCESS.md` with detailed before/after comparisons
+- Updated `I18NEXUS_LAZY_LOADING_REDESIGN.md` with comprehensive redesign rationale
 
-### Changed
+### 💡 Developer Experience
+- Reduced `locales/index.ts` from 148 lines to 18 lines (88% reduction)
+- Simplified `I18nProvider` configuration
+- Clearer separation of concerns (Provider loads, hooks read)
 
-- `I18nProviderProps` now supports generic translation type: `I18nProviderProps<TLanguage, TTranslations>`
-- `I18nContextType` now stores translation key type: `I18nContextType<TLanguage, TKeys>`
-- Enhanced `useTranslation` hook to leverage automatic type extraction
+---
 
-### Fixed
+## [3.1.0] - 2025-11-30
 
-- Improved type inference for translation keys
-- Better developer experience with no manual type declarations
+### ✨ Features
+- **Automatic Type Inference**: `useTranslation` now automatically infers translation keys without explicit generics
+- **Enhanced I18nProvider**: Now accepts `TTranslations` generic for full type propagation
+- **Namespace-aware Context**: Added `namespaceTranslations` to `I18nContextType` for type inference
+- **Overloaded useTranslation**: Multiple overloads for flexible usage with automatic type safety
 
-## [2.9.0] - 2025-11-08
+### 🗑️ Deprecations
+- **`createI18n`**: Marked as deprecated in favor of `I18nProvider` + `useTranslation`
+  - Global singleton pattern replaced with React Context for better testability and SSR support
+  - See `MIGRATION_V3.md` for migration guide
 
-### Added
+### 📖 Documentation
+- Added `V3.1_PROPOSAL.md` with detailed design for automatic type inference
+- Added `MIGRATION_V3.md` for users migrating from v2.x to v3.x
+- Updated JSDoc comments for all public APIs
 
-- **Type-Safe useTranslation Hook**: Generic parameter support for compile-time key validation
-  - `useTranslation<"key1" | "key2">()`: Specify valid translation keys as generic parameter
-  - TypeScript will error if you use a key that doesn't exist
-  - IDE auto-completion for all valid keys
-  - Fully backward compatible with existing code
-- **UseTranslationTypeSafeExample.tsx**: Comprehensive examples showing:
-  - Type-safe hook usage with generic parameters
-  - Comparison with non-type-safe usage
-  - Real-world component examples
-  - Migration guide
-- **USETRANSLATION_TYPE_SAFE.md**: Complete documentation (300+ lines) covering:
-  - Core feature and benefits
-  - Usage methods and patterns
-  - Real-world examples with multiple scenarios
-  - Migration guide from existing code
-  - Troubleshooting and best practices
-  - API reference
-  - Comparison table: Type-safe vs existing
+### 💡 Developer Experience
+- No more explicit generic types needed: `useTranslation("home")` instead of `useTranslation<HomeKeys>("home")`
+- Better IDE autocomplete for translation keys
+- Clearer error messages
 
-### Changed
+---
 
-- Enhanced `TranslationFunction` interface to support generic key validation
-- Enhanced `UseTranslationReturn` interface to support generic key validation
+## [3.0.0] - 2025-11-29
 
-### Fixed
+### 🚨 Breaking Changes
+- **Global singleton deprecated**: `createI18n` is now deprecated in favor of `I18nProvider`
+- **New Context-based architecture**: All i18n functionality now accessed via React hooks
+- **SSR-first design**: Better support for Next.js App Router and server components
 
-- Improved type safety for `useTranslation` hook through generic parameters
+### ✨ Features
+- **I18nProvider**: New React Context Provider for i18n
+  - Cookie-based language management
+  - SSR support with `initialLanguage` prop
+  - Zero hydration mismatches
+- **useTranslation**: New hook for accessing translations in client components
+- **useLanguageSwitcher**: New hook for language management
+- **getTranslation**: Server-side translation utility for Next.js App Router
+- **Lazy Loading**: Optional namespace-based code splitting
+- **Type Safety**: Full TypeScript support with automatic type inference
 
-## [2.8.0] - 2025-11-08
+### 🔧 Internal Improvements
+- Complete refactor of internal architecture
+- Better test coverage
+- Improved error handling
+- Enhanced performance
 
-### Added
+### 📖 Documentation
+- Added `I18NEXUS_V2_ARCHITECTURE_PROPOSAL.md` with detailed Context-based architecture
+- Updated README with new usage examples
+- Added examples for Next.js App Router
 
-- **Type-Safe Translation Keys System**: Comprehensive compile-time validation for translation keys
-  - `createTypedTranslation()`: Create type-safe translators for single language with compile-time key validation
-  - `createMultiLangTypedTranslation()`: Factory function to create typed translators for multiple languages
-  - `createTypedTranslationWithStyles()`: Enhanced translator with JSX support for styled variables
-  - `validateTranslationKeys()`: Runtime validation to ensure all languages have matching keys
-  - `getTranslationKeyList()`: Extract all valid translation keys as an array
-  - `ExtractTranslationKeys<T>`: Type utility to extract union of all valid keys from multi-language translations
-  - `ExtractLanguageKeys<T>`: Type utility to extract keys from single language dictionary
-- **TYPE_SAFE_KEYS.md**: Comprehensive documentation (400+ lines) covering:
-  - Problem definition and solutions
-  - API reference for all 7 new functions
-  - 5 best practices for type-safe translations
-  - Real-world examples and patterns
-  - Common error messages and troubleshooting
-  - Comparison with runtime-only approaches
-- **Examples**: `TypeSafeTranslationExample.tsx` with 6 practical examples showing:
-  - Const assertion patterns
-  - Runtime validation
-  - I18nProvider integration
-  - useTranslation hook integration
-  - Individual typed translators
-  - Multi-language factory pattern
-- **Comprehensive Test Suite**: 20 test cases covering:
-  - Basic translation with variables
-  - Multiple languages support
-  - Key validation across all languages
-  - Edge cases and error handling
-  - Type extraction utilities
+---
 
-### Changed
+## [2.x] - Legacy
 
-- Enhanced type safety throughout the codebase
-- Improved documentation with advanced patterns
+Legacy versions using global singleton pattern (`createI18n`).
+See git history for changes prior to v3.0.0.
 
-### Fixed
+---
 
-- Prevented runtime translation key mapping errors through compile-time validation
-
-## [2.7.0] - 2025-11-08
-
-### Added
-
-- I18NexusDevtools component for React Query-style development tools
-- Devtools documentation and visual guides
-
-### Fixed
-
-- Build system fixes for deleted scripts references
-
-## [2.5.2] - 2025-10-20
-
-### Added
-
-- Initial type-guard implementation for useTranslation hook
-- Improved function overloading for translation functions
-
-### Changed
-
-- Cleaned up unnecessary scripts and sample directories
+**Note**: This project follows [Semantic Versioning](https://semver.org/).

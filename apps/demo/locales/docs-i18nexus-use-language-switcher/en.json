@@ -29,5 +29,10 @@
   "i18nexus는 자동으로 모든 컴포넌트를 업데이트합니다. 수동으로 페이지를 리로드할 필요가 없습니다.": "i18nexus automatically updates all components. No need to manually reload the page.",
   "Provider 설정 방법 알아보기": "Learn how to set up Provider",
   "Return Value": "Return Value",
-  "useLanguageSwitcher는 클라이언트 훅입니다. 서버 컴포넌트에서는 사용할 수 없습니다.": "useLanguageSwitcher is a client hook. It cannot be used in server components."
+  "useLanguageSwitcher는 클라이언트 훅입니다. 서버 컴포넌트에서는 사용할 수 없습니다.": "useLanguageSwitcher is a client hook. It cannot be used in server components.",
+  "\"use client\";\n\nimport { useTranslation, useLanguageSwitcher } from \"i18nexus\";\n\nexport default function LanguageSelector() {\n  const currentLanguage = getCurrentLanguage();\n  const availableLanguages = getAvailableLanguages();\n\n  return (\n    <div>\n      <p>현재 언어: {currentLanguage}</p>\n\n      {availableLanguages.map((lang) => (\n        <button\n          key={lang.code}\n          onClick={() => changeLanguage(lang.code)}\n        >\n          {lang.name}\n        </button>\n      ))}\n    </div>\n  );\n}": "",
+  "// ✅ 새로운 방식 (권장)\nchangeLanguage(\"en\");\nchangeLanguage(\"ko\");\n\n// ❌ 레거시 방식 (deprecated)\nconst { changeLanguage } = useLanguageSwitcher();": "",
+  "// ✅ 새로운 방식 (권장)\nconst availableLanguages = getAvailableLanguages();\n\n// Language 타입:\n// { code: string, name: string, flag?: string }\n\navailableLanguages.map(lang => (\n  <button onClick={() => changeLanguage(lang.code)}>\n    {lang.flag} {lang.name}\n  </button>\n))\n\n// ❌ 레거시 방식 (deprecated)\nconst { availableLanguages } = useLanguageSwitcher();": "",
+  "// ✅ 새로운 방식 (권장)\nconst currentLanguage = getCurrentLanguage();\nconsole.log(currentLanguage); // \"ko\" or \"en\"\n\n// ❌ 레거시 방식 (deprecated)\nconst { currentLanguage } = useLanguageSwitcher();": "",
+  "// ❌ 서버 컴포넌트에서 사용 불가\nexport default async function Page() {\n  changeLanguage(\"en\"); // 에러! (클라이언트 전용)\n}\n\n// ✅ 클라이언트 컴포넌트에서 사용\n\"use client\";\nexport default function Page() {\n  changeLanguage(\"en\"); // 정상!\n}\n\n// ✅ 서버 컴포넌트에서는 getServerTranslation 사용\nexport default async function Page() {\n  const { t } = await i18n.getServerTranslation(\"common\");\n  // 언어는 헤더에서 자동 감지됨\n}": ""
 }

@@ -59,6 +59,16 @@ export interface I18nexusConfig {
       | "remix"
       | "other";
     ignorePatterns?: string[]; // 사용자 정의 무시 패턴 (정규식)
+    /**
+     * 네임스페이스 추론 전략
+     * - "first-folder": 첫 번째 폴더명만 사용 (기본값)
+     *   예: gallery/folder/page.tsx → "gallery"
+     * - "full-path": 전체 경로를 kebab-case로 변환
+     *   예: gallery/folder/page.tsx → "gallery-folder"
+     * - "last-folder": 마지막 폴더명 사용
+     *   예: gallery/folder/page.tsx → "folder"
+     */
+    strategy?: "first-folder" | "full-path" | "last-folder";
   };
   /**
    * 네임스페이스 위치 설정 (간편 설정)
@@ -79,7 +89,12 @@ export interface I18nexusConfig {
    * Lazy loading 활성화 여부
    * true: 런타임에 필요한 namespace만 동적으로 로드
    * false: 빌드 타임에 모든 namespace를 사전 로드
-   * @default false
+   * 
+   * ⚠️ v3.2+: Lazy loading is automatically enabled when loadNamespace is provided to I18nProvider.
+   * This option is kept for backward compatibility but is no longer used in code generation.
+   * 
+   * @default true (when useI18nexusLibrary is true)
+   * @deprecated Use I18nProvider with loadNamespace prop instead
    */
   lazy?: boolean;
   /**

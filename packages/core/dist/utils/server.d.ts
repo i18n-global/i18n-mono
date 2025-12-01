@@ -18,6 +18,32 @@ export declare function getServerTranslations<T extends Record<string, Record<st
 /** 디렉토리에서 번역 파일 동적 로드 */
 export declare function loadTranslations(localesDir: string): Promise<Record<string, Record<string, string>>>;
 /** 서버 번역 컨텍스트 생성 (설정 자동 로드, 헤더 자동 감지) */
+/**
+ * Get server-side translation function with namespace support
+ *
+ * @example
+ * ```tsx
+ * // Server Component
+ * export default async function Page() {
+ *   const { t } = await getTranslation<"home">("home");
+ *   return <h1>{t("title")}</h1>;
+ * }
+ * ```
+ */
+export declare function getTranslation<NS extends string = string>(namespace?: NS, options?: {
+    localesDir?: string;
+    cookieName?: string;
+    defaultLanguage?: string;
+    availableLanguages?: string[];
+}): Promise<{
+    t: (key: string, variables?: ServerTranslationVariables | string, fallback?: string) => string;
+    language: string;
+    translations: Record<string, Record<string, string>>;
+    dict: Record<string, string>;
+}>;
+/**
+ * @deprecated Use getTranslation() instead
+ */
 export declare function createServerI18n(options?: {
     localesDir?: string;
     cookieName?: string;

@@ -2,10 +2,10 @@
 
 import Link from "next/link";
 
-import { i18n } from "@/locales";
+import { useTranslation, useLanguageSwitcher } from "i18nexus";
 
 export default function I18nexusDocsPage() {
-  const { t } = i18n.useTranslation("docs-i18nexus");
+  const { t } = useTranslation<"docs-i18nexus">("docs-i18nexus");
 
   const features = [
     {
@@ -185,11 +185,11 @@ export default function RootLayout({ children }) {
             </h3>
             <pre className="bg-slate-950 rounded-lg p-3 sm:p-4 overflow-x-auto">
               <code className="text-xs sm:text-sm text-slate-300">{`"use client";
-import { i18n } from "@/locales";
+import { useTranslation, useLanguageSwitcher } from "i18nexus";
 import { useLanguageSwitcher } from "i18nexus";
 
 export default function MyComponent() {
-  const { t } = i18n.useTranslation("docs-i18nexus");
+  const { t } = useTranslation<"docs-i18nexus">("docs-i18nexus");
   const { currentLanguage, changeLanguage } = useLanguageSwitcher();
   
   return (

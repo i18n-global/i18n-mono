@@ -46,5 +46,11 @@
   "Next.js의 서버 컴포넌트에서는 useTranslation 훅을 사용할 수 없습니다. 대신 서버 전용 함수를 사용해야 합니다.": "In Next.js server components, you cannot use the useTranslation hook. Instead, you must use server-only functions.",
   "React 훅 사용 가능": "React hooks available",
   "React 훅이 필요한 경우": "When React hooks are needed",
-  "SEO가 중요한 페이지": "Pages where SEO is important"
+  "SEO가 중요한 페이지": "Pages where SEO is important",
+  "// app/page.tsx (서버 컴포넌트)\nimport { headers } from \"next/headers\";\nimport { getServerLanguage, createServerTranslation } from \"i18nexus/server\";\nimport { translations } from \"@/locales\";\nimport LanguageSwitcher from \"./LanguageSwitcher\"; // 클라이언트 컴포넌트\n\nexport default async function HomePage() {\n  const headersList = await headers();\n  const language = getServerLanguage(headersList);\n  const t = createServerTranslation(language, translations);\n\n  return (\n    <div>\n      {/* 클라이언트 컴포넌트: 언어 전환 */}\n      <LanguageSwitcher />\n\n      {/* 서버 컴포넌트: 정적 콘텐츠 */}\n      <h1>{t(\"Welcome\")}</h1>\n      <p>{t(\"This content is rendered on the server\")}</p>\n    </div>\n  );\n}\n\n// app/LanguageSwitcher.tsx (클라이언트 컴포넌트)\n\"use client\";\n\nimport { useLanguageSwitcher } from \"i18nexus\";\n\nexport default function LanguageSwitcher() {\n  const { currentLanguage, changeLanguage, availableLanguages } =\n    useLanguageSwitcher();\n\n  return (\n    <div>\n      {availableLanguages.map((lang) => (\n        <button\n          key={lang.code}\n          onClick={() => changeLanguage(lang.code)}\n        >\n          {lang.name}\n        </button>\n      ))}\n    </div>\n  );\n}": "",
+  "// layout.tsx에서\nconst headersList = await headers();\nconst language = getServerLanguage(headersList);\n\n<I18nProvider initialLanguage={language}>": "",
+  "완전한 예제 압": "",
+  "존재하지_않는_키": "",
+  "import { headers } from \"next/headers\";\nimport { getServerLanguage, createServerTranslation } from \"i18nexus/server\";\nimport { translations } from \"@/locales\";\n\n// ✅ 서버 컴포넌트 (기본값)\nexport default async function ServerPage() {\n  // 1. 쿠키에서 언어 가져오기\n  const headersList = await headers();\n  const language = getServerLanguage(headersList);\n\n  // 2. 번역 함수 생성\n  const t = createServerTranslation(language, translations);\n\n  // 3. 번역 사용\n  return (\n    <div>\n      <h1>{t(\"Welcome\")}</h1>\n      <p>{t(\"This is a server component\")}</p>\n      <p>Current language: {language}</p>\n    </div>\n  );\n}": "",
+  "typo_key": ""
 }

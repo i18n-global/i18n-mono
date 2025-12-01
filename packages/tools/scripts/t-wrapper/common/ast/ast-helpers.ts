@@ -141,12 +141,17 @@ export function hasTranslationFunctionCall(
 
 /**
  * 번역 함수 바인딩 생성 (공통 함수)
- * client 모드: const { t } = useTranslation()
- * server 모드: const { t } = await getServerTranslation()
+ * client 모드: const { t } = useTranslation<"namespace">("namespace")
+ * server 모드: const { t } = await getServerTranslation("namespace")
+ * 
+ * @param mode - "client" 또는 "server"
+ * @param serverFnName - 서버 번역 함수명 (server 모드일 때만)
+ * @param namespace - 네임스페이스 (옵션)
  */
 export function createTranslationBinding(
   mode: "client" | "server",
   serverFnName?: string,
+  namespace?: string,
 ): t.VariableDeclaration {
   const pattern = t.objectPattern([
     t.objectProperty(
@@ -158,21 +163,61 @@ export function createTranslationBinding(
   ]);
 
   let callExpression: t.Expression;
+  const args: t.Expression[] = namespace ? [t.stringLiteral(namespace)] : [];
+  
   if (mode === "server") {
-    // 서버 모드: await getServerTranslation()
+    // 서버 모드: await getServerTranslation("namespace")
     const fnName = serverFnName || STRING_CONSTANTS.GET_SERVER_TRANSLATION;
     callExpression = t.awaitExpression(
-      t.callExpression(t.identifier(fnName), []),
+      t.callExpression(t.identifier(fnName), args),
     );
   } else {
-    // 클라이언트 모드: useTranslation()
-    callExpression = t.callExpression(
-      t.identifier(STRING_CONSTANTS.USE_TRANSLATION),
-      [],
-    );
+    // 클라이언트 모드: useTranslation<"namespace">("namespace")
+    const callee = t.identifier(STRING_CONSTANTS.USE_TRANSLATION);
+    
+    // Add TypeScript generic type parameter if namespace exists
+    if (namespace) {
+      // Create: useTranslation<"namespace">
+      const typeParameter = t.tsTypeParameterInstantiation([
+        t.tsLiteralType(t.stringLiteral(namespace)),
+      ]);
+      (callee as any).typeParameters = typeParameter;
+    }
+    
+    callExpression = t.callExpression(callee, args);
   }
 
   return t.variableDeclaration(STRING_CONSTANTS.VARIABLE_KIND, [
     t.variableDeclarator(pattern, callExpression),
   ]);
+}
+
+/**
+ * 기존 useTranslation 호출에서 네임스페이스 추출
+ * @returns 네임스페이스 문자열 또는 undefined
+ */
+export function extractNamespaceFromUseTranslation(
+  body: NodePath<t.BlockStatement | t.Expression>,
+): string | undefined {
+  if (!body.isBlockStatement()) {
+    return undefined;
+  }
+
+  let namespace: string | undefined;
+  body.traverse({
+    CallExpression: (p) => {
+      if (
+        t.isIdentifier(p.node.callee, { name: STRING_CONSTANTS.USE_TRANSLATION })
+      ) {
+        // useTranslation("namespace") 형태에서 namespace 추출
+        const firstArg = p.node.arguments[0];
+        if (t.isStringLiteral(firstArg)) {
+          namespace = firstArg.value;
+          p.stop(); // 첫 번째 발견 시 종료
+        }
+      }
+    },
+  });
+
+  return namespace;
 }

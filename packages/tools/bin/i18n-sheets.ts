@@ -269,6 +269,7 @@ program
       let useI18nexusLibrary = true;
       let useNamespaceStructure = true;
       let namespaceStrategy: "full" | "page-based" | "single" = "full";
+      let useLazy = options.lazy !== false; // 기본값
 
       if (!options.nonInteractive) {
         const rl = readline.createInterface({
@@ -285,6 +286,12 @@ program
         const useLibAnswer = await question("   Use i18nexus library? (Y/n): ");
         useI18nexusLibrary =
           !useLibAnswer.trim() || useLibAnswer.toLowerCase() !== "n";
+
+        // i18nexus를 사용하지 않으면 관련 설정 모두 false
+        if (!useI18nexusLibrary) {
+          useLazy = false;
+          console.log("   ℹ️  i18nexus features disabled (lazy loading, etc.)");
+        }
 
         // 2. 네임스페이스 구조 사용 여부
         console.log("\n📁 Do you want to use namespace structure?");
@@ -440,18 +447,17 @@ export type AppLanguages = typeof config.languages[number];
         if (useI18nexusLibrary) {
           const indexPath = path.join(options.locales, "index.ts");
           if (!fs.existsSync(indexPath)) {
-            const useLazy = options.lazy !== false;
             generateNamespaceIndexFile(
               [fallbackNamespace],
               languages,
               options.locales,
               fallbackNamespace,
               false, // dryRun
-              useLazy,
+              true, // lazy (v3.2에서는 항상 true, loadNamespace만 export)
               useI18nexusLibrary,
             );
             console.log(
-              `✅ Created ${indexPath} with namespace mode${useLazy ? " + lazy loading" : ""}`,
+              `✅ Created ${indexPath} (v3.2 zero-config style)`,
             );
           } else {
             console.log(`⚠️  ${indexPath} already exists, skipping...`);
@@ -541,7 +547,7 @@ GOOGLE_CREDENTIALS_PATH=${options.credentials}
         });
         if (useI18nexusLibrary) {
           console.log(
-            `   └── index.ts (namespace mode${options.lazy !== false ? " + lazy loading" : ""})`,
+            `   └── index.ts (v3.2 zero-config: loadNamespace only)`,
           );
         }
       } else {

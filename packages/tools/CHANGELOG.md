@@ -2,55 +2,115 @@
 
 All notable changes to this project will be documented in this file.
 
-The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
-and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+## [1.9.0] - 2025-12-01
 
-## [1.7.0] - 2025-01-XX
+### ✨ Features
+- **v3.2 Compliance**: Updated to match i18nexus core v3.2 zero-config philosophy
+  - `i18n-sheets init` now generates ultra-simplified `locales/index.ts` (only `loadNamespace` function)
+  - Removed complex `translations` object and `createI18n` from generated index
+  - Added comprehensive JSDoc with usage examples
+  - Reduced generated code from 148 lines to 18 lines (88% reduction)
 
-### Added
+### 🔧 Internal Improvements
+- **generateNamespaceIndexFile**: Complete rewrite for v3.2 compliance
+  - No longer generates `createI18n` calls
+  - No longer generates `translations` object
+  - Only exports `loadNamespace` function
+  - Added helpful documentation and usage examples
+- **Config updates**: 
+  - Marked `lazy` option as deprecated (auto-enabled in v3.2+)
+  - Updated documentation to reflect new patterns
 
-- ✨ **Detailed Performance Logging**: Translation wrapper now displays comprehensive timing breakdown
-  - Overall statistics (total time, files processed, avg per file)
-  - Time breakdown by operation (file discovery, reading, parsing, traversal, code generation)
-  - Performance info showing parser type and parsing speed
-  - Slowest files identification (top 3)
-  - See `PERFORMANCE_LOGGING.md` for detailed documentation
+### 📖 Documentation
+- Updated init command output messages
+- Added v3.2 zero-config terminology
+- Clarified that lazy loading is automatic when `loadNamespace` is provided
 
-### Changed
+### 💡 Developer Experience
+- Drastically simplified `locales/index.ts` for easier understanding
+- New developers can understand the entire file in seconds
+- Clear separation between user code and generated types
 
-- ⚡ **20x Faster AST Parsing**: Replaced `@babel/parser` with `@swc/core`
-  - Parsing speed improved from ~22.5s to ~1.1s for 1,000 files
-  - Overall performance improved by 3.3x (30.2s → 9.0s)
-  - Retained `@babel/traverse` and `@babel/generator` for compatibility
-  - Added `scripts/swc-utils.ts` for swc integration
+---
 
-### Performance
+## [1.8.0] - 2025-11-30
 
-- 📊 Expected improvements on 1,000 file project:
-  - AST Parsing: 22,500ms → 1,100ms (20x faster)
-  - Total Time: 30,200ms → 9,000ms (3.3x faster)
+### ✨ Features
+- **Namespace Strategy Support**: Added flexible namespace organization strategies
+  - `first-folder`: Use first folder as namespace (default)
+  - `full-path`: Use full path as namespace
+  - `last-folder`: Use last folder as namespace
+- **Interactive Init**: Added interactive prompts to `i18n-sheets init` command
+  - Ask about i18nexus library usage
+  - Ask about namespace structure preference
+  - Ask about namespace strategy
+- **Compatibility Mode**: Support for non-i18nexus libraries
+  - `useI18nexusLibrary: false` skips index.ts generation
+  - Flat vs namespace structure options
 
-### Documentation
+### 🐛 Bug Fixes
+- **Subfolder Handling**: Fixed namespace inference for nested folders
+  - `src/app/gallery/folder/page.tsx` now correctly infers as "gallery"
+- **Extractor Validation**: Improved namespace validation logic
+  - Priority: explicit `useTranslation()` > path inference > default
+- **Wrapper Namespace**: Fixed automatic namespace injection in `i18n-wrapper`
+  - Now correctly adds namespace to `useTranslation()` calls
 
-- 📚 Added comprehensive migration guides in `docs/migration/`:
-  - `BABEL_TO_SWC_MIGRATION.md` - Babel to swc migration guide
-  - `HYBRID_RUST_GUIDE.md` - Hybrid Rust integration guide (napi-rs)
-  - `RUST_MIGRATION_PLAN.md` - Full Rust migration plan
-  - `SENTRY_PERFORMANCE_GUIDE.md` - Sentry performance monitoring guide
-- 📝 Added `PERFORMANCE_LOGGING.md` - Detailed performance logging documentation
+### 🔧 Internal Improvements
+- Refactored `namespace-inference.ts` with clearer separation of concerns
+- Added comprehensive unit tests for namespace strategies
+- Improved error messages and warnings
 
-### Internal
+---
 
-- 🔧 Added `.npmignore` to exclude migration docs from npm package
-- 🔧 Updated `.gitignore` to ignore migration docs
+## [1.7.0] - 2025-11-25
 
-## [1.6.3] - 2025-01-XX
+### ✨ Features
+- **Type Generation**: Auto-generate TypeScript type definitions
+  - Creates `types/i18nexus.d.ts` with all translation keys
+  - Module augmentation for `i18nexus` package
+  - Full TypeScript autocomplete support
+- **Generic Types in Wrapper**: `i18n-wrapper` now adds generic types to `useTranslation`
+  - Example: `useTranslation<"namespace">("namespace")`
+  - Enables compile-time type checking for translation keys
 
-### Initial Release
+### 🐛 Bug Fixes
+- Fixed type generation for empty namespaces
+- Fixed wrapper to preserve existing generics
 
-- 🎉 Initial public release of i18nexus-tools
-- ✨ Translation wrapper with AST-based code transformation
-- ✨ Google Sheets integration
-- ✨ Sentry performance monitoring
-- ✨ Support for React Server Components
-- ✨ TypeScript support with full type safety
+---
+
+## [1.6.0] - 2025-11-20
+
+### ✨ Features
+- **Google Sheets Integration**: Complete Google Sheets sync support
+  - `i18n-sheets upload`: Upload local translations to Google Sheets
+  - `i18n-sheets download`: Download translations from Google Sheets
+  - `i18n-sheets download-force`: Force overwrite local translations
+- **Init Command**: Added project initialization command
+  - Creates `i18nexus.config.json`
+  - Creates initial namespace structure
+  - Generates `locales/index.ts`
+
+---
+
+## [1.5.0] - 2025-11-15
+
+### ✨ Features
+- **Namespace Support**: Full namespace-aware extraction and wrapping
+- **Framework Detection**: Automatic framework detection (Next.js, React, etc.)
+- **Server Components**: Support for Next.js Server Components
+
+---
+
+## [1.0.0] - 2025-11-01
+
+### ✨ Features
+- **Initial Release**: Core extraction and wrapping functionality
+- **i18n-extractor**: Extract translation keys from source code
+- **i18n-wrapper**: Wrap hardcoded strings with `t()` function
+- **Basic Config**: Support for `i18nexus.config.json`
+
+---
+
+**Note**: This project follows [Semantic Versioning](https://semver.org/).

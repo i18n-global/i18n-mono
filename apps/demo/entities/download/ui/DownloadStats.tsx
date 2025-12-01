@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 
-import { i18n } from "@/locales";
+import { useTranslation, useLanguageSwitcher } from "i18nexus";
 import type { DownloadStats as DownloadStatsType } from "@/shared/lib";
 
 interface DownloadStatsProps {
@@ -16,28 +16,28 @@ const colorClasses = {
     bg: "from-blue-500 to-blue-600",
     border: "border-blue-500/30",
     text: "text-blue-400",
-    shadow: "shadow-blue-500/20",
+    shadow: "shadow-blue-500/20"
   },
   indigo: {
     bg: "from-indigo-500 to-indigo-600",
     border: "border-indigo-500/30",
     text: "text-indigo-400",
-    shadow: "shadow-indigo-500/20",
+    shadow: "shadow-indigo-500/20"
   },
   purple: {
     bg: "from-purple-500 to-purple-600",
     border: "border-purple-500/30",
     text: "text-purple-400",
-    shadow: "shadow-purple-500/20",
-  },
+    shadow: "shadow-purple-500/20"
+  }
 };
 
 export default function DownloadStats({
   packageName,
   displayName,
-  color,
+  color
 }: DownloadStatsProps) {
-  const { t } = i18n.useTranslation();
+  const { t } = useTranslation<"common">("common");
   const [stats, setStats] = useState<DownloadStatsType | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -72,14 +72,14 @@ export default function DownloadStats({
             <div className="h-8 w-24 bg-slate-800 rounded animate-pulse mt-2" />
           </div>
           <div
-            className={`w-12 h-12 bg-gradient-to-br ${colors.bg} rounded-lg flex items-center justify-center opacity-50`}
-          >
+            className={`w-12 h-12 bg-gradient-to-br ${colors.bg} rounded-lg flex items-center justify-center opacity-50`}>
+
             <span className="text-white font-bold text-xl">📦</span>
           </div>
         </div>
         <p className="text-xs text-slate-500 mt-3">{t("Loading...")}</p>
-      </div>
-    );
+      </div>);
+
   }
 
   if (error) {
@@ -95,8 +95,8 @@ export default function DownloadStats({
           </div>
         </div>
         <p className="text-xs text-red-400 mt-3">{t("Failed to load")}</p>
-      </div>
-    );
+      </div>);
+
   }
 
   const formatNumber = (num: number) => {
@@ -105,8 +105,8 @@ export default function DownloadStats({
 
   return (
     <div
-      className={`bg-slate-900 rounded-xl border ${colors.border} p-6 hover:border-${color}-500/50 transition-colors ${colors.shadow} hover:shadow-lg`}
-    >
+      className={`bg-slate-900 rounded-xl border ${colors.border} p-6 hover:border-${color}-500/50 transition-colors ${colors.shadow} hover:shadow-lg`}>
+
       <div className="flex items-center justify-between">
         <div>
           <p className={`text-sm font-medium ${colors.text}`}>{displayName}</p>
@@ -115,12 +115,12 @@ export default function DownloadStats({
           </p>
         </div>
         <div
-          className={`w-12 h-12 bg-gradient-to-br ${colors.bg} rounded-lg flex items-center justify-center shadow-lg`}
-        >
+          className={`w-12 h-12 bg-gradient-to-br ${colors.bg} rounded-lg flex items-center justify-center shadow-lg`}>
+
           <span className="text-white font-bold text-xl">📦</span>
         </div>
       </div>
       <p className="text-xs text-slate-500 mt-3">{t("Total downloads")}</p>
-    </div>
-  );
+    </div>);
+
 }

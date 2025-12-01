@@ -76,7 +76,9 @@ export function generateWithBabel(
   return generate(ast, {
     retainLines: options.retainLines !== false,
     comments: options.comments !== false,
-  });
+    // Enable TypeScript support for type parameters
+    decoratorsBeforeExport: true,
+  } as any);
 }
 
 /**

@@ -3,7 +3,7 @@ import { jsx as _jsx, jsxs as _jsxs } from "react/jsx-runtime";
 import React from "react";
 import { useI18nContext } from "./I18nProvider";
 export function I18NexusDevtools({ initialIsOpen = false, position = "bottom-left", panelStyles = {}, buttonStyles = {}, }) {
-    const { currentLanguage, changeLanguage, availableLanguages, languageManager, isLoading, translations, } = useI18nContext();
+    const { currentLanguage, changeLanguage, availableLanguages, languageManager, isLoading, namespaceTranslations, } = useI18nContext();
     const [isOpen, setIsOpen] = React.useState(initialIsOpen);
     const [isDragging, setIsDragging] = React.useState(false);
     const browserLanguage = languageManager.detectBrowserLanguage();
@@ -53,7 +53,18 @@ export function I18NexusDevtools({ initialIsOpen = false, position = "bottom-lef
             handleLanguageChange(browserLanguage);
         }
     };
-    const currentTranslations = translations[currentLanguage] || {};
+    // 모든 네임스페이스의 번역 키 합산
+    const getAllTranslations = () => {
+        const allTranslations = {};
+        Object.keys(namespaceTranslations).forEach((ns) => {
+            const nsTranslations = namespaceTranslations[ns]?.[currentLanguage];
+            if (nsTranslations) {
+                Object.assign(allTranslations, nsTranslations);
+            }
+        });
+        return allTranslations;
+    };
+    const currentTranslations = getAllTranslations();
     const translationCount = Object.keys(currentTranslations).length;
     return (_jsxs("div", { style: getPositionStyles(), children: [!isOpen && (_jsxs("button", { onClick: toggleOpen, style: {
                     backgroundColor: "#6366f1",
@@ -222,7 +233,7 @@ export function I18NexusDevtools({ initialIsOpen = false, position = "bottom-lef
                                                 }, children: [_jsx("span", { style: { fontSize: "14px", color: "#6b7280" }, children: "Keys Loaded:" }), _jsx("span", { style: { fontSize: "14px", fontWeight: "600" }, children: translationCount })] }), _jsxs("div", { style: {
                                                     display: "flex",
                                                     justifyContent: "space-between",
-                                                }, children: [_jsx("span", { style: { fontSize: "14px", color: "#6b7280" }, children: "Languages:" }), _jsx("span", { style: { fontSize: "14px", fontWeight: "600" }, children: Object.keys(translations).length })] })] })] }), _jsxs("div", { children: [_jsx("h4", { style: {
+                                                }, children: [_jsx("span", { style: { fontSize: "14px", color: "#6b7280" }, children: "Languages:" }), _jsx("span", { style: { fontSize: "14px", fontWeight: "600" }, children: Object.keys(namespaceTranslations).length })] })] })] }), _jsxs("div", { children: [_jsx("h4", { style: {
                                             margin: "0 0 12px 0",
                                             fontSize: "14px",
                                             fontWeight: "600",

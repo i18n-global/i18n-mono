@@ -87,6 +87,54 @@ export interface CreateI18nOptions<
  * 타입 안전한 i18n 시스템 생성
  * @param translations - 네임스페이스별 번역 객체
  * @param options - Fallback 네임스페이스 및 언어 관리자 설정
+ * 
+ * @deprecated v3.1부터 I18nProvider를 사용하세요.
+ * I18nProvider는 동일한 타입 안전성을 제공하며 Context 기반으로 더 안전합니다.
+ * 
+ * **이 함수는 글로벌 싱글톤 패턴을 사용하여 다음 문제가 있습니다:**
+ * - 테스트 격리 불가
+ * - SSR 환경에서 상태 공유 위험
+ * - React 렌더링 사이클 우회
+ * 
+ * **Migration to I18nProvider:**
+ * ```tsx
+ * // Before (v3.0)
+ * const i18n = createI18n(translations, { 
+ *   fallbackNamespace: "common",
+ *   lazy: true,
+ *   loadNamespace,
+ * });
+ * 
+ * function MyComponent() {
+ *   const { t } = i18n.useTranslation("home");
+ *   return <div>{t("title")}</div>;
+ * }
+ * 
+ * // After (v3.1)
+ * // app/layout.tsx
+ * <I18nProvider
+ *   translations={translations}
+ *   fallbackNamespace="common"
+ *   lazy={true}
+ *   loadNamespace={loadNamespace}
+ * >
+ *   {children}
+ * </I18nProvider>
+ * 
+ * // page/home/page.tsx
+ * function MyComponent() {
+ *   const { t } = useTranslation("home"); // 자동 타입 추론!
+ *   return <div>{t("title")}</div>;
+ * }
+ * ```
+ * 
+ * **v3.1의 장점:**
+ * - ✅ 동일한 타입 안전성 (자동 추론)
+ * - ✅ Context 기반 격리
+ * - ✅ 테스트 용이성
+ * - ✅ SSR 완벽 지원
+ * 
+ * **제거 예정:** v4.0 (2026년 예정)
  */
 export function createI18n<
   TTranslations extends NamespaceTranslations,

@@ -142,7 +142,19 @@ export async function loadTranslations(localesDir) {
     }
 }
 /** 서버 번역 컨텍스트 생성 (설정 자동 로드, 헤더 자동 감지) */
-export async function createServerI18n(options) {
+/**
+ * Get server-side translation function with namespace support
+ *
+ * @example
+ * ```tsx
+ * // Server Component
+ * export default async function Page() {
+ *   const { t } = await getTranslation<"home">("home");
+ *   return <h1>{t("title")}</h1>;
+ * }
+ * ```
+ */
+export async function getTranslation(namespace, options) {
     let config;
     try {
         config = await loadConfigSilently();
@@ -169,7 +181,21 @@ export async function createServerI18n(options) {
         defaultLanguage,
         availableLanguages,
     });
-    const translations = options?.translations || (await loadTranslations(localesDir));
+    // Load translations for the specific namespace
+    let translations;
+    if (namespace) {
+        try {
+            const nsTranslations = await import(`${localesDir}/${namespace}/${language}.json`);
+            translations = { [namespace]: nsTranslations.default };
+        }
+        catch {
+            // Fallback to loading all translations
+            translations = await loadTranslations(localesDir);
+        }
+    }
+    else {
+        translations = await loadTranslations(localesDir);
+    }
     const t = createServerTranslation(language, translations);
     const dict = getServerTranslations(language, translations);
     return {
@@ -178,6 +204,12 @@ export async function createServerI18n(options) {
         translations,
         dict,
     };
+}
+/**
+ * @deprecated Use getTranslation() instead
+ */
+export async function createServerI18n(options) {
+    return getTranslation(undefined, options);
 }
 /** 미리 로드된 번역으로 서버 i18n 컨텍스트 생성 */
 export function createServerI18nWithTranslations(headers, translations, options) {
