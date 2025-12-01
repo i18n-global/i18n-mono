@@ -71,7 +71,13 @@ export function I18nProvider({ children, languageManagerOptions, translations = 
                 });
             });
         });
-    }, [lazy, loadNamespace, fallbackNamespace, preloadNamespaces, languageManager]);
+    }, [
+        lazy,
+        loadNamespace,
+        fallbackNamespace,
+        preloadNamespaces,
+        languageManager,
+    ]);
     const changeLanguage = async (lang) => {
         if (lang === currentLanguage) {
             return;

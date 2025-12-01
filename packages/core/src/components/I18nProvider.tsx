@@ -30,18 +30,21 @@ export type NamespaceLoader = (
 export type ExtractNamespaceKeys<
   TTranslations extends NamespaceTranslations,
   NS extends keyof TTranslations,
-> = TTranslations[NS] extends Record<string, infer Translations>
-  ? Translations extends Record<string, string>
-    ? keyof Translations & string
-    : never
-  : never;
+> =
+  TTranslations[NS] extends Record<string, infer Translations>
+    ? Translations extends Record<string, string>
+      ? keyof Translations & string
+      : never
+    : never;
 
 /** Fallback 네임스페이스 포함 키 추출 */
 export type ExtractKeysWithFallback<
   TTranslations extends NamespaceTranslations,
   NS extends keyof TTranslations,
   Fallback extends keyof TTranslations,
-> = ExtractNamespaceKeys<TTranslations, NS> | ExtractNamespaceKeys<TTranslations, Fallback>;
+> =
+  | ExtractNamespaceKeys<TTranslations, NS>
+  | ExtractNamespaceKeys<TTranslations, Fallback>;
 
 export interface I18nContextType<
   TTranslations extends NamespaceTranslations = NamespaceTranslations,
@@ -66,7 +69,9 @@ export interface I18nContextType<
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const I18nContext = React.createContext<I18nContextType<any> | null>(null);
+export const I18nContext = React.createContext<I18nContextType<any> | null>(
+  null,
+);
 
 export const useI18nContext = <
   TTranslations extends NamespaceTranslations = NamespaceTranslations,
@@ -122,9 +127,8 @@ export function I18nProvider<
     return languageManagerOptions?.defaultLanguage || "en";
   };
 
-  const [currentLanguage, setCurrentLanguage] = React.useState<string>(
-    getInitialLanguage(),
-  );
+  const [currentLanguage, setCurrentLanguage] =
+    React.useState<string>(getInitialLanguage());
   const [isLoading, setIsLoading] = React.useState(false);
   const [isHydrated, setIsHydrated] = React.useState(false);
 
@@ -161,16 +165,19 @@ export function I18nProvider<
             const data = await loadNamespace(nsKey, lang);
             return { lang, data };
           } catch (error) {
-            console.warn(`Failed to preload namespace "${nsKey}" for language "${lang}":`, error);
+            console.warn(
+              `Failed to preload namespace "${nsKey}" for language "${lang}":`,
+              error,
+            );
             return { lang, data: {} };
           }
-        })
+        }),
       ).then((results) => {
         const nsData: Record<string, Record<string, string>> = {};
         results.forEach(({ lang, data }) => {
           nsData[lang] = data;
         });
-        
+
         setLoadedNamespaces((prev) => {
           // Double-check before setting to avoid race conditions
           if (prev.has(nsKey)) {
@@ -178,12 +185,20 @@ export function I18nProvider<
           }
           const newMap = new Map(prev);
           newMap.set(nsKey, nsData);
-          console.log(`✓ Preloaded namespace "${nsKey}" for languages: [${languages.join(", ")}]`);
+          console.log(
+            `✓ Preloaded namespace "${nsKey}" for languages: [${languages.join(", ")}]`,
+          );
           return newMap;
         });
       });
     });
-  }, [lazy, loadNamespace, fallbackNamespace, preloadNamespaces, languageManager]);
+  }, [
+    lazy,
+    loadNamespace,
+    fallbackNamespace,
+    preloadNamespaces,
+    languageManager,
+  ]);
 
   const changeLanguage = async (lang: string): Promise<void> => {
     if (lang === currentLanguage) {
@@ -246,9 +261,7 @@ export function I18nProvider<
   };
 
   return (
-    <I18nContext.Provider
-      value={contextValue as I18nContextType<any>}
-    >
+    <I18nContext.Provider value={contextValue as I18nContextType<any>}>
       {children}
     </I18nContext.Provider>
   );

@@ -1,7 +1,12 @@
 "use client";
 
 import React from "react";
-import { useI18nContext, NamespaceTranslations, ExtractNamespaceKeys, ExtractKeysWithFallback } from "../components/I18nProvider";
+import {
+  useI18nContext,
+  NamespaceTranslations,
+  ExtractNamespaceKeys,
+  ExtractKeysWithFallback,
+} from "../components/I18nProvider";
 import type { LanguageConfig } from "../utils/languageManager";
 
 /** 문자열 보간 변수 */
@@ -120,12 +125,8 @@ export function useTranslation<
 // 실제 구현
 export function useTranslation(namespace?: string): UseTranslationReturn<any> {
   const context = useI18nContext();
-  const {
-    currentLanguage,
-    isLoading,
-    loadedNamespaces,
-    fallbackNamespace,
-  } = context;
+  const { currentLanguage, isLoading, loadedNamespaces, fallbackNamespace } =
+    context;
 
   // 번역 데이터 가져오기 (I18nProvider에서 로드된 데이터만 사용)
   const getCurrentTranslations = (): Record<string, string> => {
@@ -133,7 +134,9 @@ export function useTranslation(namespace?: string): UseTranslationReturn<any> {
 
     // Fallback namespace 먼저 로드
     if (fallbackNamespace) {
-      const fallbackNs = loadedNamespaces.get(String(fallbackNamespace))?.[currentLanguage];
+      const fallbackNs = loadedNamespaces.get(String(fallbackNamespace))?.[
+        currentLanguage
+      ];
       if (fallbackNs) {
         result = { ...fallbackNs };
       }
@@ -167,9 +170,7 @@ export function useTranslation(namespace?: string): UseTranslationReturn<any> {
   }) as TranslationFunction<any>;
 
   // 네임스페이스가 로드되었는지 확인
-  const isNamespaceReady = namespace 
-    ? loadedNamespaces.has(namespace) 
-    : true;
+  const isNamespaceReady = namespace ? loadedNamespaces.has(namespace) : true;
 
   return {
     t: translate,

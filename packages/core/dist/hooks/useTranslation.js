@@ -1,6 +1,6 @@
 "use client";
 import React from "react";
-import { useI18nContext } from "../components/I18nProvider";
+import { useI18nContext, } from "../components/I18nProvider";
 /** 번역 문자열의 변수 치환 */
 const interpolate = (text, variables) => {
     if (!variables) {
@@ -46,7 +46,7 @@ const interpolateWithStyles = (text, variables, styles) => {
 // 실제 구현
 export function useTranslation(namespace) {
     const context = useI18nContext();
-    const { currentLanguage, isLoading, loadedNamespaces, fallbackNamespace, } = context;
+    const { currentLanguage, isLoading, loadedNamespaces, fallbackNamespace } = context;
     // 번역 데이터 가져오기 (I18nProvider에서 로드된 데이터만 사용)
     const getCurrentTranslations = () => {
         let result = {};
@@ -75,9 +75,7 @@ export function useTranslation(namespace) {
         return interpolate(translatedText, variables);
     });
     // 네임스페이스가 로드되었는지 확인
-    const isNamespaceReady = namespace
-        ? loadedNamespaces.has(namespace)
-        : true;
+    const isNamespaceReady = namespace ? loadedNamespaces.has(namespace) : true;
     return {
         t: translate,
         currentLanguage,
