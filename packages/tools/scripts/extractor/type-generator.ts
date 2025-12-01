@@ -30,6 +30,8 @@ export interface TypeGeneratorConfig {
   includeJsDocs?: boolean;
   /** Fallback namespace for keys without explicit namespace */
   fallbackNamespace?: string;
+  /** Translation import source (e.g., "i18nexus", "react-i18next") */
+  translationImportSource?: string;
 }
 
 /**
@@ -250,11 +252,13 @@ function generateTypeContent(
   }
   content += `};\n\n`;
 
-  // Module augmentation for i18nexus
+  // Module augmentation
+  const importSource = config.translationImportSource || "i18nexus";
+  
   content += `// ============================================\n`;
   content += `// Module Augmentation\n`;
   content += `// ============================================\n\n`;
-  content += `declare module "i18nexus" {\n`;
+  content += `declare module "${importSource}" {\n`;
 
   // useTranslation overload
   if (includeJsDocs) {

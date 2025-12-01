@@ -45,6 +45,7 @@ export interface ExtractorConfig {
   outputFile?: string;
   outputDir?: string;
   namespace?: string; // 레거시: 직접 지정 (namespacing.enabled=false일 때만 사용)
+  translationImportSource?: string; // e.g., "i18nexus", "react-i18next"
   includeLineNumbers?: boolean;
   includeFilePaths?: boolean;
   sortKeys?: boolean;
@@ -70,6 +71,7 @@ const DEFAULT_CONFIG: Required<ExtractorConfig> = {
   dryRun: false,
   outputFormat: OUTPUT_FORMATS.JSON,
   languages: [...COMMON_DEFAULTS.languages], // 기본 언어
+  translationImportSource: COMMON_DEFAULTS.translationImportSource,
   force: false, // 기본값: 기존 번역 유지
   lazy: false, // 기본값: eager loading
   useI18nexusLibrary: true, // 기본값: i18nexus 라이브러리 사용
@@ -353,6 +355,7 @@ export class TranslationExtractor {
         outputPath: typeOutputPath,
         includeJsDocs: true,
         fallbackNamespace: this.config.namespacing.defaultNamespace,
+        translationImportSource: this.config.translationImportSource,
       });
     } catch (error) {
       console.error("❌ Failed to generate type definitions:", error);

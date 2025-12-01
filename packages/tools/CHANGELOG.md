@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.1.1] - 2025-12-01
+
+### ✨ Features
+- **Dynamic Module Augmentation**: Type generator now uses `translationImportSource` from config
+  - `declare module "i18nexus"` → `declare module "${translationImportSource}"`
+  - Supports any i18n library (e.g., "react-i18next", "next-intl", etc.)
+  - Server types also use the configured import source: `"${translationImportSource}/server"`
+  - Makes i18nexus-tools compatible with any React i18n library
+
+### 🔧 Internal Improvements
+- Added `translationImportSource` to `ExtractorConfig` interface
+- Added `translationImportSource` to `TypeGeneratorConfig` interface
+- Updated `DEFAULT_CONFIG` to include `translationImportSource` from `COMMON_DEFAULTS`
+
+---
+
 ## [2.1.0] - 2025-12-01
 
 ### ✨ Features
