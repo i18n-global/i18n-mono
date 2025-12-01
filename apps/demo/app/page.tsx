@@ -1,4 +1,5 @@
 import { Metadata } from "next";
+
 import HomePage from "@/page/home";
 
 export const metadata: Metadata = {

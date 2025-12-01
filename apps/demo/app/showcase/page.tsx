@@ -1,4 +1,5 @@
 import { Metadata } from "next";
+
 import ShowcasePage from "@/page/showcase";
 
 export const metadata: Metadata = {

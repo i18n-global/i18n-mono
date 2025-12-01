@@ -1,4 +1,5 @@
 import { Metadata } from "next";
+
 import GettingStartedPage from "@/page/getting-started";
 
 export const metadata: Metadata = {
