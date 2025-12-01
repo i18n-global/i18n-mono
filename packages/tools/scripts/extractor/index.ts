@@ -100,6 +100,8 @@ export class TranslationExtractor {
     const namespacingConfig = config.namespacing || projectConfig.namespacing;
     const lazyConfig =
       config.lazy !== undefined ? config.lazy : projectConfig.lazy;
+    const translationImportSource =
+      config.translationImportSource || projectConfig.translationImportSource;
 
     this.config = {
       ...DEFAULT_CONFIG,
@@ -107,6 +109,8 @@ export class TranslationExtractor {
       namespacing: namespacingConfig || DEFAULT_CONFIG.namespacing,
       skipValidation: config.skipValidation || false,
       lazy: lazyConfig !== undefined ? lazyConfig : false, // 기본값 false
+      translationImportSource:
+        translationImportSource || DEFAULT_CONFIG.translationImportSource,
     };
   }
 

@@ -2,6 +2,33 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.1.2] - 2025-12-01
+
+### 🐛 Bug Fixes
+- **Server Module Import Source**: Fixed server module to also use `translationImportSource`
+  - Before: `declare module "i18nexus/server"` (hardcoded)
+  - After: `declare module "${translationImportSource}/server"` (dynamic)
+  - Now both client and server modules respect the configured import source
+- **Config Loading**: Fixed `translationImportSource` not being loaded from `i18nexus.config.json`
+  - Added proper loading in extractor constructor
+  - Ensures project config overrides default config
+
+### 📝 Examples
+```json
+// i18nexus.config.json
+{
+  "translationImportSource": "@/lib/i18n"
+}
+```
+
+Generates:
+```typescript
+declare module "@/lib/i18n" { ... }
+declare module "@/lib/i18n/server" { ... }
+```
+
+---
+
 ## [2.1.1] - 2025-12-01
 
 ### ✨ Features

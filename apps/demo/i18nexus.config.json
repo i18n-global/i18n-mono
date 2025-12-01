@@ -3,7 +3,7 @@
   "defaultLanguage": "en",
   "localesDir": "./locales",
   "sourcePattern": "{app,page,widgets,features,entities,shared}/**/*.{js,jsx,ts,tsx}",
-  "translationImportSource": "i18nexus",
+  "translationImportSource": "@/lib/i18n",
   "fallbackNamespace": "common",
   "namespaceLocation": "page",
   "lazy": true,

@@ -109,7 +109,7 @@ declare type TranslationKeys = {
 // Module Augmentation
 // ============================================
 
-declare module "i18nexus" {
+declare module "@/lib/i18n" {
   /**
    * Type-safe translation hook (Client Component)
    * 
@@ -144,7 +144,7 @@ declare module "i18nexus" {
   };
 }
 
-declare module "i18nexus/server" {
+declare module "@/lib/i18n/server" {
   /**
    * Type-safe translation function (Server Component)
    * 

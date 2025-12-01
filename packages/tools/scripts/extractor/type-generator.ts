@@ -315,8 +315,8 @@ function generateTypeContent(
 
   content += `}\n\n`;
 
-  // Module augmentation for i18nexus/server
-  content += `declare module "i18nexus/server" {\n`;
+  // Server module augmentation
+  content += `declare module "${importSource}/server" {\n`;
 
   // getTranslation overload
   if (includeJsDocs) {
