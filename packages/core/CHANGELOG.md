@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file.
 
+## [3.2.1] - 2025-12-01
+
+### ✨ Features
+- **react-i18next Compatibility**: Added `lng` alias for `currentLanguage` in `useTranslation` return type
+  - `const { lng } = useTranslation("home");` now supported
+  - Improves compatibility with react-i18next migration
+  - `lng` is an alias, both `lng` and `currentLanguage` point to the same value
+
+---
+
 ## [3.2.0] - 2025-12-01
 
 ### ✨ Features

@@ -109,7 +109,7 @@ declare type TranslationKeys = {
 // Module Augmentation
 // ============================================
 
-declare module "@/lib/i18n" {
+declare module "i18nexus" {
   /**
    * Type-safe translation hook (Client Component)
    * 
@@ -140,11 +140,12 @@ declare module "@/lib/i18n" {
         : [variables: Record<ExtractVariables<K>, string | number>, styles?: Record<string, React.CSSProperties>]
     ) => ExtractVariables<K> extends never ? string : (typeof args extends [any, any] ? React.ReactElement : string);
     currentLanguage: string;
+    lng: string;  // Alias for currentLanguage (react-i18next compatibility)
     isReady: boolean;
   };
 }
 
-declare module "@/lib/i18n/server" {
+declare module "i18nexus/server" {
   /**
    * Type-safe translation function (Server Component)
    * 

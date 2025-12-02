@@ -310,6 +310,7 @@ function generateTypeContent(
   content += `        : [variables: Record<ExtractVariables<K>, string | number>, styles?: Record<string, React.CSSProperties>]\n`;
   content += `    ) => ExtractVariables<K> extends never ? string : (typeof args extends [any, any] ? React.ReactElement : string);\n`;
   content += `    currentLanguage: string;\n`;
+  content += `    lng: string;  // Alias for currentLanguage (react-i18next compatibility)\n`;
   content += `    isReady: boolean;\n`;
   content += `  };\n`;
 

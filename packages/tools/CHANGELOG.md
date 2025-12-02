@@ -2,21 +2,35 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.1.4] - 2025-12-01
+
+### ✨ Features
+
+- **react-i18next compatibility**: Added `lng` field to `useTranslation` return type
+  - `lng` is an alias for `currentLanguage` (react-i18next compatibility)
+  - Now fully compatible with react-i18next's API
+  - Example: `const { lng } = useTranslation('home');`
+
+---
+
 ## [2.1.3] - 2025-12-01
 
 ### 🔧 Refactoring
+
 - **Removed `lazy` parameter**: `lazy` is now always enabled (tools are library-agnostic)
   - Removed `lazy` parameter from `generateNamespaceIndexFile()`
   - `i18nexus.config.json` no longer needs `lazy` field (it's library-specific)
   - Tools now focus purely on tooling concerns, not library configuration
 
 ### ✨ UX Improvements
+
 - **Simplified `i18n-sheets init` prompts**: Reduced from 3 questions to 1
   - Before: "Are you using i18nexus?", "Do you want namespace structure?", "Choose strategy"
   - After: "네임스페이스별로 나눌래? vs 하나로 합칠래?" (single question)
   - More intuitive and faster setup experience
 
 ### 📝 Configuration
+
 - `i18nexus.config.json` is now purely for tooling configuration
 - Library-specific settings (like `lazy`) should be configured in the library itself
 
@@ -25,6 +39,7 @@ All notable changes to this project will be documented in this file.
 ## [2.1.2] - 2025-12-01
 
 ### 🐛 Bug Fixes
+
 - **Server Module Import Source**: Fixed server module to also use `translationImportSource`
   - Before: `declare module "i18nexus/server"` (hardcoded)
   - After: `declare module "${translationImportSource}/server"` (dynamic)
@@ -34,6 +49,7 @@ All notable changes to this project will be documented in this file.
   - Ensures project config overrides default config
 
 ### 📝 Examples
+
 ```json
 // i18nexus.config.json
 {
@@ -42,6 +58,7 @@ All notable changes to this project will be documented in this file.
 ```
 
 Generates:
+
 ```typescript
 declare module "@/lib/i18n" { ... }
 declare module "@/lib/i18n/server" { ... }
@@ -52,6 +69,7 @@ declare module "@/lib/i18n/server" { ... }
 ## [2.1.1] - 2025-12-01
 
 ### ✨ Features
+
 - **Dynamic Module Augmentation**: Type generator now uses `translationImportSource` from config
   - `declare module "i18nexus"` → `declare module "${translationImportSource}"`
   - Supports any i18n library (e.g., "react-i18next", "next-intl", etc.)
@@ -59,6 +77,7 @@ declare module "@/lib/i18n/server" { ... }
   - Makes i18nexus-tools compatible with any React i18n library
 
 ### 🔧 Internal Improvements
+
 - Added `translationImportSource` to `ExtractorConfig` interface
 - Added `translationImportSource` to `TypeGeneratorConfig` interface
 - Updated `DEFAULT_CONFIG` to include `translationImportSource` from `COMMON_DEFAULTS`
@@ -68,6 +87,7 @@ declare module "@/lib/i18n/server" { ... }
 ## [2.1.0] - 2025-12-01
 
 ### ✨ Features
+
 - **Interpolation Variable Type Checking**: Added advanced type checking for translation keys with interpolation variables
   - Automatically detects `{{variableName}}` patterns in translation keys
   - Generates `[Namespace]KeyVariables` types for keys with variables
@@ -80,6 +100,7 @@ declare module "@/lib/i18n/server" { ... }
   - Supports multiple variables per key (e.g., `{{userName}} 님, {{totalDays}}일 남음`)
 
 ### 🐛 Bug Fixes
+
 - Improved type generation with better handling of interpolation variable extraction
 
 ---
@@ -87,6 +108,7 @@ declare module "@/lib/i18n/server" { ... }
 ## [2.0.2] - 2025-12-01
 
 ### 🐛 Bug Fixes
+
 - **Unicode Escape Prevention**: Fixed issue where Korean text was being escaped to Unicode sequences (e.g., `\uC0AC\uC6A9\uC790`)
   - Added `jsescOption: { minimal: true }` to `@babel/generator` to preserve non-ASCII characters
   - Now Korean text in `t()` calls remains as readable Korean instead of Unicode escapes
@@ -97,6 +119,7 @@ declare module "@/lib/i18n/server" { ... }
 ## [2.0.1] - 2025-12-01
 
 ### 🐛 Bug Fixes
+
 - **Namespace Inference Fix**: Fixed issue where `i18n-wrapper` was wrapping all files with `common` namespace even when `namespaceLocation` was set
   - Now correctly detects `namespaceLocation` and enables namespacing automatically
   - Properly infers namespace from the first folder after `basePath` (e.g., `page/home/index.tsx` → `home`)
@@ -107,6 +130,7 @@ declare module "@/lib/i18n/server" { ... }
 ## [2.0.0] - 2025-12-01
 
 ### ✨ Features
+
 - **v3.2 Compliance**: Updated to match i18nexus core v3.2 zero-config philosophy
   - `i18n-sheets init` now generates ultra-simplified `locales/index.ts` (only `loadNamespace` function)
   - Removed complex `translations` object and `createI18n` from generated index
@@ -114,21 +138,24 @@ declare module "@/lib/i18n/server" { ... }
   - Reduced generated code from 148 lines to 18 lines (88% reduction)
 
 ### 🔧 Internal Improvements
+
 - **generateNamespaceIndexFile**: Complete rewrite for v3.2 compliance
   - No longer generates `createI18n` calls
   - No longer generates `translations` object
   - Only exports `loadNamespace` function
   - Added helpful documentation and usage examples
-- **Config updates**: 
+- **Config updates**:
   - Marked `lazy` option as deprecated (auto-enabled in v3.2+)
   - Updated documentation to reflect new patterns
 
 ### 📖 Documentation
+
 - Updated init command output messages
 - Added v3.2 zero-config terminology
 - Clarified that lazy loading is automatic when `loadNamespace` is provided
 
 ### 💡 Developer Experience
+
 - Drastically simplified `locales/index.ts` for easier understanding
 - New developers can understand the entire file in seconds
 - Clear separation between user code and generated types
@@ -138,6 +165,7 @@ declare module "@/lib/i18n/server" { ... }
 ## [1.9.0] - 2025-12-01
 
 ### ✨ Features
+
 - **v3.2 Compliance**: Updated to match i18nexus core v3.2 zero-config philosophy
   - `i18n-sheets init` now generates ultra-simplified `locales/index.ts` (only `loadNamespace` function)
   - Removed complex `translations` object and `createI18n` from generated index
@@ -145,21 +173,24 @@ declare module "@/lib/i18n/server" { ... }
   - Reduced generated code from 148 lines to 18 lines (88% reduction)
 
 ### 🔧 Internal Improvements
+
 - **generateNamespaceIndexFile**: Complete rewrite for v3.2 compliance
   - No longer generates `createI18n` calls
   - No longer generates `translations` object
   - Only exports `loadNamespace` function
   - Added helpful documentation and usage examples
-- **Config updates**: 
+- **Config updates**:
   - Marked `lazy` option as deprecated (auto-enabled in v3.2+)
   - Updated documentation to reflect new patterns
 
 ### 📖 Documentation
+
 - Updated init command output messages
 - Added v3.2 zero-config terminology
 - Clarified that lazy loading is automatic when `loadNamespace` is provided
 
 ### 💡 Developer Experience
+
 - Drastically simplified `locales/index.ts` for easier understanding
 - New developers can understand the entire file in seconds
 - Clear separation between user code and generated types
@@ -169,6 +200,7 @@ declare module "@/lib/i18n/server" { ... }
 ## [1.8.0] - 2025-11-30
 
 ### ✨ Features
+
 - **Namespace Strategy Support**: Added flexible namespace organization strategies
   - `first-folder`: Use first folder as namespace (default)
   - `full-path`: Use full path as namespace
@@ -182,6 +214,7 @@ declare module "@/lib/i18n/server" { ... }
   - Flat vs namespace structure options
 
 ### 🐛 Bug Fixes
+
 - **Subfolder Handling**: Fixed namespace inference for nested folders
   - `src/app/gallery/folder/page.tsx` now correctly infers as "gallery"
 - **Extractor Validation**: Improved namespace validation logic
@@ -190,6 +223,7 @@ declare module "@/lib/i18n/server" { ... }
   - Now correctly adds namespace to `useTranslation()` calls
 
 ### 🔧 Internal Improvements
+
 - Refactored `namespace-inference.ts` with clearer separation of concerns
 - Added comprehensive unit tests for namespace strategies
 - Improved error messages and warnings
@@ -199,6 +233,7 @@ declare module "@/lib/i18n/server" { ... }
 ## [1.7.0] - 2025-11-25
 
 ### ✨ Features
+
 - **Type Generation**: Auto-generate TypeScript type definitions
   - Creates `types/i18nexus.d.ts` with all translation keys
   - Module augmentation for `i18nexus` package
@@ -208,6 +243,7 @@ declare module "@/lib/i18n/server" { ... }
   - Enables compile-time type checking for translation keys
 
 ### 🐛 Bug Fixes
+
 - Fixed type generation for empty namespaces
 - Fixed wrapper to preserve existing generics
 
@@ -216,6 +252,7 @@ declare module "@/lib/i18n/server" { ... }
 ## [1.6.0] - 2025-11-20
 
 ### ✨ Features
+
 - **Google Sheets Integration**: Complete Google Sheets sync support
   - `i18n-sheets upload`: Upload local translations to Google Sheets
   - `i18n-sheets download`: Download translations from Google Sheets
@@ -230,6 +267,7 @@ declare module "@/lib/i18n/server" { ... }
 ## [1.5.0] - 2025-11-15
 
 ### ✨ Features
+
 - **Namespace Support**: Full namespace-aware extraction and wrapping
 - **Framework Detection**: Automatic framework detection (Next.js, React, etc.)
 - **Server Components**: Support for Next.js Server Components
@@ -239,6 +277,7 @@ declare module "@/lib/i18n/server" { ... }
 ## [1.0.0] - 2025-11-01
 
 ### ✨ Features
+
 - **Initial Release**: Core extraction and wrapping functionality
 - **i18n-extractor**: Extract translation keys from source code
 - **i18n-wrapper**: Wrap hardcoded strings with `t()` function

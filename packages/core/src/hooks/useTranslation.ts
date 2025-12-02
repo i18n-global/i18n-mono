@@ -37,6 +37,8 @@ export interface UseTranslationReturn<K extends string = string> {
   t: TranslationFunction<K>;
   /** 현재 언어 코드 */
   currentLanguage: string;
+  /** 현재 언어 코드 (react-i18next 호환성을 위한 별칭) */
+  lng: string;
   /** 번역 준비 여부 */
   isReady: boolean;
 }
@@ -175,6 +177,7 @@ export function useTranslation(namespace?: string): UseTranslationReturn<any> {
   return {
     t: translate,
     currentLanguage,
+    lng: currentLanguage, // Alias for react-i18next compatibility
     isReady: !isLoading && isNamespaceReady,
   };
 }

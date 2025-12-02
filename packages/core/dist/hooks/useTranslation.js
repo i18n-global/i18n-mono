@@ -79,6 +79,7 @@ export function useTranslation(namespace) {
     return {
         t: translate,
         currentLanguage,
+        lng: currentLanguage, // Alias for react-i18next compatibility
         isReady: !isLoading && isNamespaceReady,
     };
 }
