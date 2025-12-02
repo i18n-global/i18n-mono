@@ -12,6 +12,7 @@ export const COMMON_DEFAULTS = {
   languages: ["en", "ko"] as const,
   defaultLanguage: "ko" as const,
   localesDir: "./locales",
+  fallbackNamespace: "common",
 } as const;
 
 /**

@@ -50,13 +50,12 @@ export interface ExtractorConfig {
   includeFilePaths?: boolean;
   sortKeys?: boolean;
   dryRun?: boolean;
+  fallbackNamespace?: string;
   outputFormat?: "json" | "csv";
   languages?: string[]; // 언어 목록 추가
   force?: boolean; // force 모드: 기존 값을 덮어씀
   namespacing?: NamespacingConfig; // 네임스페이스 자동화 설정
   skipValidation?: boolean; // 검증 스킵 (마이그레이션 시 사용)
-  lazy?: boolean; // lazy loading 활성화 여부
-  useI18nexusLibrary?: boolean; // i18nexus 라이브러리 사용 여부
   namespaceStrategy?: "full" | "page-based" | "single"; // 네임스페이스 전략
 }
 
@@ -71,10 +70,9 @@ const DEFAULT_CONFIG: Required<ExtractorConfig> = {
   dryRun: false,
   outputFormat: OUTPUT_FORMATS.JSON,
   languages: [...COMMON_DEFAULTS.languages], // 기본 언어
+  fallbackNamespace: COMMON_DEFAULTS.fallbackNamespace,
   translationImportSource: COMMON_DEFAULTS.translationImportSource,
   force: false, // 기본값: 기존 번역 유지
-  lazy: false, // 기본값: eager loading
-  useI18nexusLibrary: true, // 기본값: i18nexus 라이브러리 사용
   namespaceStrategy: "full", // 기본값: full
   namespacing: {
     enabled: false, // 기본값: false (레거시 모드)
@@ -95,11 +93,9 @@ export class TranslationExtractor {
   private namespaceKeys: Map<string, Map<string, ExtractedKey>> = new Map(); // namespace -> key -> ExtractedKey
 
   constructor(config: Partial<ExtractorConfig> = {}) {
-    // 프로젝트 config에서 namespacing 및 lazy 설정 로드
+    // 프로젝트 config에서 namespacing 설정 로드
     const projectConfig = loadConfig();
     const namespacingConfig = config.namespacing || projectConfig.namespacing;
-    const lazyConfig =
-      config.lazy !== undefined ? config.lazy : projectConfig.lazy;
     const translationImportSource =
       config.translationImportSource || projectConfig.translationImportSource;
 
@@ -108,7 +104,6 @@ export class TranslationExtractor {
       ...config,
       namespacing: namespacingConfig || DEFAULT_CONFIG.namespacing,
       skipValidation: config.skipValidation || false,
-      lazy: lazyConfig !== undefined ? lazyConfig : false, // 기본값 false
       translationImportSource:
         translationImportSource || DEFAULT_CONFIG.translationImportSource,
     };
@@ -134,7 +129,8 @@ export class TranslationExtractor {
           // useTranslation()이 있는 경우 검증 스킵 (이미 올바른 네임스페이스)
           const { findUseTranslationCalls } = require("./namespace-inference");
           const useTranslationCalls = findUseTranslationCalls(filePath, code);
-          const hasExplicitNamespace = useTranslationCalls.length > 0 && useTranslationCalls[0].namespace;
+          const hasExplicitNamespace =
+            useTranslationCalls.length > 0 && useTranslationCalls[0].namespace;
 
           if (!hasExplicitNamespace) {
             // useTranslation()이 없거나 네임스페이스가 명시되지 않은 경우만 검증
@@ -142,7 +138,7 @@ export class TranslationExtractor {
               filePath,
               code,
               namespace,
-              this.config.namespacing,
+              this.config.namespacing
             );
             if (!validation.valid) {
               console.error(validation.error);
@@ -255,7 +251,7 @@ export class TranslationExtractor {
 
       if (files.length === 0) {
         console.warn(
-          CONSOLE_MESSAGES.NO_FILES_FOUND(this.config.sourcePattern),
+          CONSOLE_MESSAGES.NO_FILES_FOUND(this.config.sourcePattern)
         );
         return;
       }
@@ -298,8 +294,7 @@ export class TranslationExtractor {
           this.config.outputDir,
           this.config.namespacing.defaultNamespace,
           this.config.dryRun,
-          this.config.lazy, // lazy loading 옵션 전달
-          this.config.useI18nexusLibrary ?? true, // useI18nexusLibrary 옵션 전달
+          true // useI18nexusLibrary (always true for namespace structure)
         );
 
         // TypeScript 타입 정의 파일 생성
@@ -352,7 +347,7 @@ export class TranslationExtractor {
       const typeOutputPath = pathLib.join(
         this.config.outputDir,
         "types",
-        "i18nexus.d.ts",
+        "i18nexus.d.ts"
       );
 
       generateTypeDefinitions(translations, {
@@ -369,7 +364,7 @@ export class TranslationExtractor {
 }
 
 export async function runTranslationExtractor(
-  config: Partial<ExtractorConfig> = {},
+  config: Partial<ExtractorConfig> = {}
 ): Promise<void> {
   const extractor = new TranslationExtractor(config);
   await extractor.extract();

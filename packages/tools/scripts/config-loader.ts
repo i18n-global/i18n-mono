@@ -86,25 +86,6 @@ export interface I18nexusConfig {
    */
   fallbackNamespace?: string;
   /**
-   * Lazy loading 활성화 여부
-   * true: 런타임에 필요한 namespace만 동적으로 로드
-   * false: 빌드 타임에 모든 namespace를 사전 로드
-   * 
-   * ⚠️ v3.2+: Lazy loading is automatically enabled when loadNamespace is provided to I18nProvider.
-   * This option is kept for backward compatibility but is no longer used in code generation.
-   * 
-   * @default true (when useI18nexusLibrary is true)
-   * @deprecated Use I18nProvider with loadNamespace prop instead
-   */
-  lazy?: boolean;
-  /**
-   * i18nexus 라이브러리 사용 여부
-   * true: i18nexus 라이브러리를 사용 (index.ts 생성)
-   * false: 다른 라이브러리를 사용 (도구만 사용, index.ts 생성 안 함)
-   * @default true
-   */
-  useI18nexusLibrary?: boolean;
-  /**
    * 네임스페이스 구조 사용 여부
    * true: 네임스페이스별 폴더 구조 (locales/common/en.json, locales/home/en.json)
    * false: 플랫 구조 (locales/en.json, locales/ko.json)
@@ -134,9 +115,7 @@ const DEFAULT_CONFIG: I18nexusConfig = {
     credentialsPath: GOOGLE_SHEETS_DEFAULTS.credentialsPath,
     sheetName: GOOGLE_SHEETS_DEFAULTS.sheetName,
   },
-  useI18nexusLibrary: true,
   useNamespaceStructure: true,
-  namespaceStrategy: "full",
 };
 
 /**
@@ -145,14 +124,14 @@ const DEFAULT_CONFIG: I18nexusConfig = {
  */
 export function loadConfig(
   configPath: string = "i18nexus.config.json",
-  options?: { silent?: boolean },
+  options?: { silent?: boolean }
 ): I18nexusConfig {
   const absolutePath = pathLib.resolve(process.cwd(), configPath);
 
   if (!fs.existsSync(absolutePath)) {
     if (!options?.silent) {
       console.log(
-        "⚠️  i18nexus.config.json not found, using default configuration",
+        "⚠️  i18nexus.config.json not found, using default configuration"
       );
       console.log("💡 Run 'i18n-sheets init' to create a config file");
     }
@@ -190,7 +169,7 @@ export function loadConfig(
     if (!options?.silent) {
       console.warn(
         `⚠️  Failed to load ${configPath}, using default configuration:`,
-        error,
+        error
       );
     }
     return DEFAULT_CONFIG;
@@ -202,7 +181,7 @@ export function loadConfig(
  * 서버 환경에서 사용하기 적합합니다.
  */
 export function loadConfigSilently(
-  configPath: string = "i18nexus.config.json",
+  configPath: string = "i18nexus.config.json"
 ): I18nexusConfig {
   return loadConfig(configPath, { silent: true });
 }

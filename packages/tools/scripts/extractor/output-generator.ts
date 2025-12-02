@@ -28,7 +28,7 @@ export interface OutputConfig {
  */
 export function generateOutputData(
   keys: ExtractedKey[],
-  config: OutputConfig,
+  config: OutputConfig
 ): any {
   const sortedKeys = config.sortKeys
     ? [...keys].sort((a, b) => a.key.localeCompare(b.key))
@@ -67,7 +67,7 @@ export function generateGoogleSheetsCSV(keys: ExtractedKey[]): string {
     const escapedKorean = escapeCsvValue(koreanValue);
 
     csvLines.push(
-      `${escapedKey}${CSV_CONSTANTS.SEPARATOR}${escapedEnglish}${CSV_CONSTANTS.SEPARATOR}${escapedKorean}`,
+      `${escapedKey}${CSV_CONSTANTS.SEPARATOR}${escapedEnglish}${CSV_CONSTANTS.SEPARATOR}${escapedKorean}`
     );
   });
 
@@ -80,7 +80,7 @@ export function generateGoogleSheetsCSV(keys: ExtractedKey[]): string {
 export function generateIndexFile(
   languages: string[],
   outputDir: string,
-  dryRun: boolean,
+  dryRun: boolean
 ): void {
   const indexPath = pathLib.join(outputDir, STRING_CONSTANTS.INDEX_FILE);
 
@@ -114,14 +114,13 @@ export function generateNamespaceIndexFile(
   outputDir: string,
   fallbackNamespace: string,
   dryRun: boolean,
-  lazy: boolean = false,
-  useI18nexusLibrary: boolean = true,
+  useI18nexusLibrary: boolean = true
 ): void {
   // useI18nexusLibrary가 false이면 index.ts를 생성하지 않음
   if (!useI18nexusLibrary) {
     if (!dryRun) {
       console.log(
-        `ℹ️  Skipping index.ts generation (useI18nexusLibrary: false)`,
+        `ℹ️  Skipping index.ts generation (useI18nexusLibrary: false)`
       );
     }
     return;
@@ -130,7 +129,7 @@ export function generateNamespaceIndexFile(
   const indexPath = pathLib.join(outputDir, "index.ts");
 
   // v3.2: 극도로 단순화된 locales/index.ts
-  // lazy 여부와 관계없이 동일한 구조 사용
+  // 항상 loadNamespace 방식만 사용 (lazy loading)
   const content = `/**
  * Dynamically load a namespace translation file
  * 
@@ -171,9 +170,7 @@ export async function loadNamespace(namespace: string, lang: string) {
 
   if (!dryRun) {
     fs.writeFileSync(indexPath, content, "utf-8");
-    console.log(
-      `✅ Generated simplified index.ts (v3.2 zero-config style)`,
-    );
+    console.log(`✅ Generated simplified index.ts (v3.2 zero-config style)`);
   }
 }
 
@@ -193,7 +190,7 @@ function toPascalCase(str: string): string {
  */
 export function writeOutputFileWithNamespace(
   data: any,
-  config: OutputConfig & { namespace: string },
+  config: OutputConfig & { namespace: string }
 ): void {
   // 디렉토리가 없으면 생성
   if (!fs.existsSync(config.outputDir!)) {
@@ -293,7 +290,7 @@ export function writeOutputFile(data: any, config: OutputConfig): void {
     // CSV 파일로 출력
     const csvFileName = config.outputFile!.replace(
       FILE_EXTENSIONS.JSON,
-      FILE_EXTENSIONS.CSV,
+      FILE_EXTENSIONS.CSV
     );
     const outputPath = pathLib.join(config.outputDir!, csvFileName);
     const content = data; // CSV는 이미 문자열

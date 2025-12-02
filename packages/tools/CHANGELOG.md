@@ -2,6 +2,26 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.1.3] - 2025-12-01
+
+### 🔧 Refactoring
+- **Removed `lazy` parameter**: `lazy` is now always enabled (tools are library-agnostic)
+  - Removed `lazy` parameter from `generateNamespaceIndexFile()`
+  - `i18nexus.config.json` no longer needs `lazy` field (it's library-specific)
+  - Tools now focus purely on tooling concerns, not library configuration
+
+### ✨ UX Improvements
+- **Simplified `i18n-sheets init` prompts**: Reduced from 3 questions to 1
+  - Before: "Are you using i18nexus?", "Do you want namespace structure?", "Choose strategy"
+  - After: "네임스페이스별로 나눌래? vs 하나로 합칠래?" (single question)
+  - More intuitive and faster setup experience
+
+### 📝 Configuration
+- `i18nexus.config.json` is now purely for tooling configuration
+- Library-specific settings (like `lazy`) should be configured in the library itself
+
+---
+
 ## [2.1.2] - 2025-12-01
 
 ### 🐛 Bug Fixes
