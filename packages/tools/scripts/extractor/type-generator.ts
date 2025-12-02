@@ -334,41 +334,6 @@ function generateTypeContent(
   content += `        styles: Record<string, React.CSSProperties>\n`;
   content += `      ): React.ReactElement;\n`;
   
-  // Overload 4: Dynamic key (string) → constant namespace → string
-  // 동적 키는 constant 네임스페이스에서만 찾도록 타입 제한
-  const constantNamespace = sortedNamespaces.find(ns => ns === "constant");
-  if (constantNamespace) {
-    const constantTypeName = `${capitalize(toCamelCase(constantNamespace))}Keys`;
-    content += `      // Dynamic keys (e.g., t(filters.category)) → constant namespace\n`;
-    content += `      (\n`;
-    content += `        key: ${constantTypeName}\n`;
-    content += `      ): string;\n`;
-    content += `      (\n`;
-    content += `        key: ${constantTypeName},\n`;
-    content += `        variables: Record<string, string | number>\n`;
-    content += `      ): string;\n`;
-    content += `      (\n`;
-    content += `        key: ${constantTypeName},\n`;
-    content += `        variables: Record<string, string | number>,\n`;
-    content += `        styles: Record<string, React.CSSProperties>\n`;
-    content += `      ): React.ReactElement;\n`;
-  } else {
-    // constant 네임스페이스가 없으면 일반 string 허용
-    content += `      // Dynamic keys fallback (no constant namespace found)\n`;
-    content += `      (\n`;
-    content += `        key: string\n`;
-    content += `      ): string;\n`;
-    content += `      (\n`;
-    content += `        key: string,\n`;
-    content += `        variables: Record<string, string | number>\n`;
-    content += `      ): string;\n`;
-    content += `      (\n`;
-    content += `        key: string,\n`;
-    content += `        variables: Record<string, string | number>,\n`;
-    content += `        styles: Record<string, React.CSSProperties>\n`;
-    content += `      ): React.ReactElement;\n`;
-  }
-  
   content += `    };\n`;
   content += `    currentLanguage: string;\n`;
   content += `    lng: string;  // Alias for currentLanguage (react-i18next compatibility)\n`;

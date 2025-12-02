@@ -385,28 +385,47 @@ export type AppLanguages = typeof config.languages[number];
       // 3. 번역 파일 생성
       if (useNamespaceStructure) {
         // 네임스페이스 구조: locales/[namespace]/[lang].json
-        const namespaceDir = path.join(options.locales, fallbackNamespace);
-        if (!fs.existsSync(namespaceDir)) {
-          fs.mkdirSync(namespaceDir, { recursive: true });
-          console.log(`✅ Created namespace directory: ${namespaceDir}`);
-        }
-
-        // 4. 각 언어별 번역 파일 생성 (네임스페이스 구조)
-        languages.forEach((lang: string) => {
-          const langFile = path.join(namespaceDir, `${lang}.json`);
-          if (!fs.existsSync(langFile)) {
-            fs.writeFileSync(langFile, JSON.stringify({}, null, 2));
-            console.log(`✅ Created ${langFile}`);
-          } else {
-            console.log(`⚠️  ${langFile} already exists, skipping...`);
+        // common과 constant 두 개의 네임스페이스 생성
+        const namespaces = ["common", "constant"];
+        
+        for (const ns of namespaces) {
+          const namespaceDir = path.join(options.locales, ns);
+          if (!fs.existsSync(namespaceDir)) {
+            fs.mkdirSync(namespaceDir, { recursive: true });
+            console.log(`✅ Created namespace directory: ${namespaceDir}`);
           }
-        });
+
+          // 4. 각 언어별 번역 파일 생성
+          languages.forEach((lang: string) => {
+            const langFile = path.join(namespaceDir, `${lang}.json`);
+            if (!fs.existsSync(langFile)) {
+              // common 네임스페이스용 초기 데이터
+              const commonData = {
+                welcome: lang === "ko" ? "환영합니다" : "Welcome",
+                hello: lang === "ko" ? "안녕하세요" : "Hello",
+              };
+              
+              // constant 네임스페이스용 초기 데이터 (동적 키용)
+              const constantData = {
+                "한국어": lang === "ko" ? "한국어" : "Korean",
+                "English": "English",
+              };
+              
+              const data = ns === "constant" ? constantData : commonData;
+              
+              fs.writeFileSync(langFile, JSON.stringify(data, null, 2));
+              console.log(`✅ Created ${langFile}`);
+            } else {
+              console.log(`⚠️  ${langFile} already exists, skipping...`);
+            }
+          });
+        }
 
         // 5. index.ts 파일 생성 (네임스페이스 구조 사용 시)
         const indexPath = path.join(options.locales, "index.ts");
         if (!fs.existsSync(indexPath)) {
           generateNamespaceIndexFile(
-            [fallbackNamespace],
+            namespaces, // common과 constant 두 개 모두
             languages,
             options.locales,
             fallbackNamespace,

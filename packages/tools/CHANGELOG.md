@@ -2,9 +2,60 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.1.8] - 2025-12-01
+
+### ✨ Features
+
+- **`i18n-sheets init` 개선: common과 constant 두 네임스페이스 자동 생성**
+  - `common` 네임스페이스: 일반 번역 키용 (welcome, hello 등)
+  - `constant` 네임스페이스: 동적 키용 (한국어, English 등)
+  - `ConstantKeys` 타입은 extractor 실행 시 자동 생성됨
+  - 초기 샘플 데이터 포함
+
+### 📁 생성되는 구조
+
+```
+locales/
+├── common/
+│   ├── ko.json  // { "welcome": "환영합니다", "hello": "안녕하세요" }
+│   └── en.json  // { "welcome": "Welcome", "hello": "Hello" }
+├── constant/
+│   ├── ko.json  // { "한국어": "한국어", "English": "English" }
+│   └── en.json  // { "한국어": "Korean", "English": "English" }
+└── index.ts
+```
+
+---
+
+## [2.1.7] - 2025-12-01
+
+### 🐛 Bug Fixes
+
+- **동적 키 오버로드 제거로 타입 체크 강화**
+  - 동적 키 오버로드 제거하여 잘못된 키 입력 시 타입 에러 발생
+  - `t("wrongKey")` → 이제 타입 에러가 정확히 잡힘
+  - 동적 값 사용 시 명시적 타입 캐스팅 필요: `t(variable as ConstantKeys)`
+
+### 💡 사용 방법
+
+```typescript
+// ✅ 정적 키 - 타입 체크 완벽
+const { t } = useTranslation("home");
+t("title"); // ✅ OK
+t("wrongKey"); // ❌ Type Error! (이제 잡힘)
+
+// ✅ 동적 키 - 명시적 캐스팅
+import type { ConstantKeys } from "i18nexus";
+const category: ConstantKeys = filters.category;
+t(category as ConstantKeys);
+```
+
+---
+
 ## [2.1.6] - 2025-12-01
 
 ### ✨ Features
+
 - **타입 정의 개선: 함수 오버로드로 반환 타입 구분**
   - `t("key")` → `string` 반환 (타입 에러 해결)
   - `t("key", variables)` → `string` 반환
@@ -17,6 +68,7 @@ All notable changes to this project will be documented in this file.
   - 상수 정의 시 타입 지정 권장: `const category: ConstantKeys = filters.category`
 
 ### 🐛 Bug Fixes
+
 - **타입 에러 해결**: `Type 'string | ReactElement' is not assignable to type 'string'` 에러 해결
   - 함수 오버로드로 styles 유무에 따라 반환 타입 자동 구분
 
