@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.1.5] - 2025-12-01
+
+### 🐛 Bug Fixes
+- **동적 키 사용 시 타입 에러 해결**: `t(filters.category)` 같은 동적 변수 사용 시 발생하던 타입 에러 수정
+  - 조건부 타입 대신 선택적 파라미터로 변경하여 동적 키 사용 지원
+  - `variables`와 `styles` 파라미터를 선택적으로 변경
+
+### ✨ Features
+- **Props로 전달되는 `t` 함수 자동 감지**: 컴포넌트 props에 `t`가 있으면 자동으로 `common` 네임스페이스 사용
+  - `function MyComponent({ t }) {}` 패턴 감지
+  - `function MyComponent(props) { const { t } = props; }` 패턴 감지
+  - props로 전달되는 `t`는 항상 `common` 네임스페이스로 설정
+
+---
+
 ## [2.1.4] - 2025-12-01
 
 ### ✨ Features

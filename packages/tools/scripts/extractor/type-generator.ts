@@ -310,15 +310,15 @@ function generateTypeContent(
     content += `    never;\n\n`;
   }
 
+  // useTranslation with two overloads for better type inference
   content += `  export function useTranslation<NS extends TranslationNamespace>(\n`;
   content += `    namespace: NS\n`;
   content += `  ): {\n`;
   content += `    t: <K extends TranslationKeys[NS]>(\n`;
   content += `      key: K,\n`;
-  content += `      ...args: ExtractVariables<K> extends never\n`;
-  content += `        ? [variables?: Record<string, string | number>, styles?: Record<string, React.CSSProperties>]\n`;
-  content += `        : [variables: Record<ExtractVariables<K>, string | number>, styles?: Record<string, React.CSSProperties>]\n`;
-  content += `    ) => ExtractVariables<K> extends never ? string : (typeof args extends [any, any] ? React.ReactElement : string);\n`;
+  content += `      variables?: Record<string, string | number>,\n`;
+  content += `      styles?: Record<string, React.CSSProperties>\n`;
+  content += `    ) => string | React.ReactElement;\n`;
   content += `    currentLanguage: string;\n`;
   content += `    lng: string;  // Alias for currentLanguage (react-i18next compatibility)\n`;
   content += `    isReady: boolean;\n`;

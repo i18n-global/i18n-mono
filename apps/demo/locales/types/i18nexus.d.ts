@@ -139,10 +139,9 @@ declare module "i18nexus" {
   ): {
     t: <K extends TranslationKeys[NS]>(
       key: K,
-      ...args: ExtractVariables<K> extends never
-        ? [variables?: Record<string, string | number>, styles?: Record<string, React.CSSProperties>]
-        : [variables: Record<ExtractVariables<K>, string | number>, styles?: Record<string, React.CSSProperties>]
-    ) => ExtractVariables<K> extends never ? string : (typeof args extends [any, any] ? React.ReactElement : string);
+      variables?: Record<string, string | number>,
+      styles?: Record<string, React.CSSProperties>
+    ) => string | React.ReactElement;
     currentLanguage: string;
     lng: string;  // Alias for currentLanguage (react-i18next compatibility)
     isReady: boolean;
