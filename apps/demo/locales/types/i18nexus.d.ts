@@ -137,11 +137,33 @@ declare module "i18nexus" {
   export function useTranslation<NS extends TranslationNamespace>(
     namespace: NS
   ): {
-    t: <K extends TranslationKeys[NS]>(
-      key: K,
-      variables?: Record<string, string | number>,
-      styles?: Record<string, React.CSSProperties>
-    ) => string | React.ReactElement;
+    t: {
+      <K extends TranslationKeys[NS]>(
+        key: K
+      ): string;
+      <K extends TranslationKeys[NS]>(
+        key: K,
+        variables: Record<string, string | number>
+      ): string;
+      <K extends TranslationKeys[NS]>(
+        key: K,
+        variables: Record<string, string | number>,
+        styles: Record<string, React.CSSProperties>
+      ): React.ReactElement;
+      // Dynamic keys (e.g., t(filters.category)) → constant namespace
+      (
+        key: ConstantKeys
+      ): string;
+      (
+        key: ConstantKeys,
+        variables: Record<string, string | number>
+      ): string;
+      (
+        key: ConstantKeys,
+        variables: Record<string, string | number>,
+        styles: Record<string, React.CSSProperties>
+      ): React.ReactElement;
+    };
     currentLanguage: string;
     lng: string;  // Alias for currentLanguage (react-i18next compatibility)
     isReady: boolean;

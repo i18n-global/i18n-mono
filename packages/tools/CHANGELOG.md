@@ -2,14 +2,36 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.1.6] - 2025-12-01
+
+### ✨ Features
+- **타입 정의 개선: 함수 오버로드로 반환 타입 구분**
+  - `t("key")` → `string` 반환 (타입 에러 해결)
+  - `t("key", variables)` → `string` 반환
+  - `t("key", variables, styles)` → `ReactElement` 반환
+  - 이제 `menuButtonText={t("key")}` 같은 사용에서 타입 에러 없음
+
+- **동적 키는 ConstantKeys로 제한**
+  - `t(filters.category)` 같은 동적 키는 `constant` 네임스페이스에서만 찾도록 타입 제한
+  - `t(filters.category as ConstantKeys)` 형태로 사용
+  - 상수 정의 시 타입 지정 권장: `const category: ConstantKeys = filters.category`
+
+### 🐛 Bug Fixes
+- **타입 에러 해결**: `Type 'string | ReactElement' is not assignable to type 'string'` 에러 해결
+  - 함수 오버로드로 styles 유무에 따라 반환 타입 자동 구분
+
+---
+
 ## [2.1.5] - 2025-12-01
 
 ### 🐛 Bug Fixes
+
 - **동적 키 사용 시 타입 에러 해결**: `t(filters.category)` 같은 동적 변수 사용 시 발생하던 타입 에러 수정
   - 조건부 타입 대신 선택적 파라미터로 변경하여 동적 키 사용 지원
   - `variables`와 `styles` 파라미터를 선택적으로 변경
 
 ### ✨ Features
+
 - **Props로 전달되는 `t` 함수 자동 감지**: 컴포넌트 props에 `t`가 있으면 자동으로 `common` 네임스페이스 사용
   - `function MyComponent({ t }) {}` 패턴 감지
   - `function MyComponent(props) { const { t } = props; }` 패턴 감지
