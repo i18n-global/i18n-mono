@@ -25,31 +25,97 @@ const DEFAULT_CONFIG: Required<UploadConfig> = {
 
 export async function uploadTranslations(
   dir: string,
-  config: Required<UploadConfig>
+  config: Required<UploadConfig>,
 ) {
-  console.log("\n� Starting Google Sheets upload process...\n");
+  console.log("\n📤 Starting Google Sheets upload process...\n");
 
   // Validate configuration
   if (!config.spreadsheetId) {
     console.error("❌ Error: Spreadsheet ID is required");
     console.error(
-      "Please provide it via config file or --spreadsheet-id flag\n"
+      "Please provide it via config file or --spreadsheet-id flag\n",
     );
     process.exit(1);
   }
 
-  const sheetsManager = new GoogleSheetsManager({
-    credentialsPath: config.credentialsPath,
-    spreadsheetId: config.spreadsheetId,
-    sheetName: config.sheetName,
-  });
+  // 모든 네임스페이스 자동 감지
+  const namespaces = detectNamespaces(dir);
 
-  await sheetsManager.authenticate();
-  await sheetsManager.uploadTranslations(
-    dir,
-    config.autoTranslate,
-    config.force
-  );
+  if (namespaces.length === 0) {
+    // 네임스페이스 미사용: default 시트로 업로드
+    console.log("📝 No namespaces detected, uploading to 'default' sheet\n");
+    const sheetsManager = new GoogleSheetsManager({
+      credentialsPath: config.credentialsPath,
+      spreadsheetId: config.spreadsheetId,
+      sheetName: "default",
+    });
+
+    await sheetsManager.authenticate();
+    await sheetsManager.uploadTranslations(
+      dir,
+      config.autoTranslate,
+      config.force,
+    );
+  } else {
+    // 각 네임스페이스를 별도 시트로 업로드
+    console.log(
+      `📦 Detected ${namespaces.length} namespace(s): ${namespaces.join(", ")}\n`,
+    );
+
+    for (const namespace of namespaces) {
+      console.log(
+        `📤 Uploading namespace '${namespace}' to sheet '${namespace}'...`,
+      );
+
+      const sheetsManager = new GoogleSheetsManager({
+        credentialsPath: config.credentialsPath,
+        spreadsheetId: config.spreadsheetId,
+        sheetName: namespace,
+        namespace: namespace,
+      });
+
+      await sheetsManager.authenticate();
+      await sheetsManager.ensureWorksheet();
+      await sheetsManager.uploadTranslations(
+        dir,
+        config.autoTranslate,
+        config.force,
+      );
+
+      console.log(`✅ Completed upload for namespace '${namespace}'\n`);
+    }
+  }
+}
+
+/**
+ * locales 디렉토리에서 모든 네임스페이스 감지
+ * 네임스페이스 구조: locales/[namespace]/[lang].json
+ * 레거시 구조: locales/[lang].json (빈 배열 반환)
+ */
+function detectNamespaces(localesDir: string): string[] {
+  if (!fs.existsSync(localesDir)) {
+    return [];
+  }
+
+  const items = fs.readdirSync(localesDir);
+  const namespaces: string[] = [];
+
+  for (const item of items) {
+    const itemPath = path.join(localesDir, item);
+    const stat = fs.statSync(itemPath);
+
+    // 디렉토리이고, 그 안에 JSON 파일이 있으면 네임스페이스로 간주
+    if (stat.isDirectory() && item !== "types") {
+      const files = fs.readdirSync(itemPath);
+      const hasJsonFiles = files.some((file) => file.endsWith(".json"));
+
+      if (hasJsonFiles) {
+        namespaces.push(item);
+      }
+    }
+  }
+
+  return namespaces;
 }
 
 // CLI 실행 부분
@@ -101,7 +167,7 @@ Options:
   -c, --credentials <path>     Path to Google Sheets credentials file (default: "./credentials.json")
   -s, --spreadsheet-id <id>    Google Spreadsheet ID (required)
   -l, --locales-dir <path>     Path to locales directory (default: "./locales")
-  -n, --sheet-name <name>      Sheet name (default: "Translations")
+  -n, --sheet-name <name>      Sheet name (ignored when namespaces are detected)
   -a, --auto-translate         Enable auto-translation mode (English uses GOOGLETRANSLATE formula)
   -f, --force                  Force mode: Clear all existing data and re-upload everything
   -h, --help                   Show this help message

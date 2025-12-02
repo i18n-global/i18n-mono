@@ -121,7 +121,7 @@ export class TranslationExtractor {
         namespace = inferNamespaceFromFile(
           filePath,
           code,
-          this.config.namespacing
+          this.config.namespacing,
         );
 
         // 네임스페이스 검증 (skipValidation이 false일 때만)
@@ -138,7 +138,7 @@ export class TranslationExtractor {
               filePath,
               code,
               namespace,
-              this.config.namespacing
+              this.config.namespacing,
             );
             if (!validation.valid) {
               console.error(validation.error);
@@ -251,7 +251,7 @@ export class TranslationExtractor {
 
       if (files.length === 0) {
         console.warn(
-          CONSOLE_MESSAGES.NO_FILES_FOUND(this.config.sourcePattern)
+          CONSOLE_MESSAGES.NO_FILES_FOUND(this.config.sourcePattern),
         );
         return;
       }
@@ -287,14 +287,18 @@ export class TranslationExtractor {
         }
 
         // 모든 네임스페이스를 통합하는 index.ts 파일 생성
+        // i18nexus 사용시에만 생성 (translationImportSource가 "i18nexus"일 때)
         const namespaces = Array.from(this.namespaceKeys.keys());
+        const useI18nexusLibrary =
+          (this.config.translationImportSource || "i18nexus") === "i18nexus";
+
         generateNamespaceIndexFile(
           namespaces,
           this.config.languages,
           this.config.outputDir,
           this.config.namespacing.defaultNamespace,
           this.config.dryRun,
-          true // useI18nexusLibrary (always true for namespace structure)
+          useI18nexusLibrary,
         );
 
         // TypeScript 타입 정의 파일 생성
@@ -347,7 +351,7 @@ export class TranslationExtractor {
       const typeOutputPath = pathLib.join(
         this.config.outputDir,
         "types",
-        "i18nexus.d.ts"
+        "i18nexus.d.ts",
       );
 
       generateTypeDefinitions(translations, {
@@ -364,7 +368,7 @@ export class TranslationExtractor {
 }
 
 export async function runTranslationExtractor(
-  config: Partial<ExtractorConfig> = {}
+  config: Partial<ExtractorConfig> = {},
 ): Promise<void> {
   const extractor = new TranslationExtractor(config);
   await extractor.extract();
