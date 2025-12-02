@@ -16,7 +16,7 @@
  * 
  * @example "home" | "about" | "common"
  */
-declare type TranslationNamespace = "admin-dashboard" | "cli" | "common" | "docs-i18nexus" | "docs-i18nexus-provider" | "docs-i18nexus-server-components" | "docs-i18nexus-tools" | "docs-i18nexus-tools-download" | "docs-i18nexus-tools-download-force" | "docs-i18nexus-tools-extractor" | "docs-i18nexus-tools-google-sheets" | "docs-i18nexus-tools-upload" | "docs-i18nexus-tools-wrapper" | "docs-i18nexus-use-language-switcher" | "docs-i18nexus-use-translation" | "docs-lazy-loading" | "error.tsx" | "getting-started" | "home" | "provider" | "server-example" | "showcase" | "test-final" | "test-wrapper-namespace";
+declare type TranslationNamespace = "admin-dashboard" | "cli" | "common" | "constant" | "docs-i18nexus" | "docs-i18nexus-provider" | "docs-i18nexus-server-components" | "docs-i18nexus-tools" | "docs-i18nexus-tools-download" | "docs-i18nexus-tools-download-force" | "docs-i18nexus-tools-extractor" | "docs-i18nexus-tools-google-sheets" | "docs-i18nexus-tools-upload" | "docs-i18nexus-tools-wrapper" | "docs-i18nexus-use-language-switcher" | "docs-i18nexus-use-translation" | "docs-lazy-loading" | "error.tsx" | "getting-started" | "home" | "provider" | "server-example" | "showcase" | "test-final" | "test-wrapper-namespace";
 
 declare type AdminDashboardKeys = "Firestore Database가 설정되지 않았습니다. FIREBASE_QUICK_SETUP.md를 참고하세요." | "Firestore 인덱스가 필요합니다. 링크를 클릭하여 생성해주세요: {{\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\ndata_indexUrl}}" | "Showcase 제출 관리" | "⏳ 대기" | "⏳ 로딩 중..." | "⏳ 승인 대기 중" | "✅ 승인됨" | "✓ 승인됨" | "관리자 대시보드" | "대기 중" | "삭제 중 오류가 발생했습니다." | "승인 대기 중인 프로젝트가 없습니다" | "승인 중 오류가 발생했습니다." | "승인된 프로젝트가 없습니다" | "승인됨" | "아직 제출된 프로젝트가 없습니다" | "전체 제출" | "정말 삭제하시겠습니까?" | "제출 목록을 불러오는데 실패했습니다." | "제출된 프로젝트가 없습니다" | "📋 전체" | "🔗 Firestore 인덱스 생성 링크:" | "🚪 로그아웃";
 
@@ -28,6 +28,9 @@ declare type CommonKeys = "\"use client\";\n\nimport { useTranslation, useLangua
 declare type CommonKeyVariables = {
   "미리보기 생성 실패: {{errorMessage}}": "errorMessage";
 };
+
+/** Translation keys for "constant" namespace */
+declare type ConstantKeys = "English" | "한국어";
 
 declare type DocsI18nexusKeys = "I18nProvider 설정" | "i18nexus 라이브러리" | "i18nexus 문서" | "또는 yarn 사용:" | "빠른 시작" | "설치" | "자세히 알아보기" | "컴포넌트에서 사용" | "쿠키 기반 언어 관리 및 SSR 지원을 갖춘 완전한 React i18n 툴킷" | "쿠키 기반 언어 영속성을 갖춘 React Context Provider" | "쿠키 영속성을 통한 언어 변경 훅" | "클라이언트 컴포넌트에서 번역 함수에 접근하기 위한 훅" | "하이드레이션 불일치 제로의 서버 사이드 번역" | "핵심 기능" | "홈";
 
@@ -82,6 +85,7 @@ declare type TranslationKeys = {
   "admin-dashboard": AdminDashboardKeys;
   "cli": CliKeys;
   "common": CommonKeys;
+  "constant": ConstantKeys;
   "docs-i18nexus": DocsI18nexusKeys;
   "docs-i18nexus-provider": DocsI18nexusProviderKeys;
   "docs-i18nexus-server-components": DocsI18nexusServerComponentsKeys;
@@ -143,6 +147,33 @@ declare module "i18nexus" {
     lng: string;  // Alias for currentLanguage (react-i18next compatibility)
     isReady: boolean;
   };
+
+  // Individual namespace key types (for use in constants and type definitions)
+  export type AdminDashboardKeys = TranslationKeys["admin-dashboard"];
+  export type CliKeys = TranslationKeys["cli"];
+  export type CommonKeys = TranslationKeys["common"];
+  export type ConstantKeys = TranslationKeys["constant"];
+  export type DocsI18nexusKeys = TranslationKeys["docs-i18nexus"];
+  export type DocsI18nexusProviderKeys = TranslationKeys["docs-i18nexus-provider"];
+  export type DocsI18nexusServerComponentsKeys = TranslationKeys["docs-i18nexus-server-components"];
+  export type DocsI18nexusToolsKeys = TranslationKeys["docs-i18nexus-tools"];
+  export type DocsI18nexusToolsDownloadKeys = TranslationKeys["docs-i18nexus-tools-download"];
+  export type DocsI18nexusToolsDownloadForceKeys = TranslationKeys["docs-i18nexus-tools-download-force"];
+  export type DocsI18nexusToolsExtractorKeys = TranslationKeys["docs-i18nexus-tools-extractor"];
+  export type DocsI18nexusToolsGoogleSheetsKeys = TranslationKeys["docs-i18nexus-tools-google-sheets"];
+  export type DocsI18nexusToolsUploadKeys = TranslationKeys["docs-i18nexus-tools-upload"];
+  export type DocsI18nexusToolsWrapperKeys = TranslationKeys["docs-i18nexus-tools-wrapper"];
+  export type DocsI18nexusUseLanguageSwitcherKeys = TranslationKeys["docs-i18nexus-use-language-switcher"];
+  export type DocsI18nexusUseTranslationKeys = TranslationKeys["docs-i18nexus-use-translation"];
+  export type DocsLazyLoadingKeys = TranslationKeys["docs-lazy-loading"];
+  export type Error.tsxKeys = TranslationKeys["error.tsx"];
+  export type GettingStartedKeys = TranslationKeys["getting-started"];
+  export type HomeKeys = TranslationKeys["home"];
+  export type ProviderKeys = TranslationKeys["provider"];
+  export type ServerExampleKeys = TranslationKeys["server-example"];
+  export type ShowcaseKeys = TranslationKeys["showcase"];
+  export type TestFinalKeys = TranslationKeys["test-final"];
+  export type TestWrapperNamespaceKeys = TranslationKeys["test-wrapper-namespace"];
 }
 
 declare module "i18nexus/server" {

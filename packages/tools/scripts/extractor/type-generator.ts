@@ -312,7 +312,14 @@ function generateTypeContent(
   content += `    currentLanguage: string;\n`;
   content += `    lng: string;  // Alias for currentLanguage (react-i18next compatibility)\n`;
   content += `    isReady: boolean;\n`;
-  content += `  };\n`;
+  content += `  };\n\n`;
+
+  // Export individual namespace key types for use in constants
+  content += `  // Individual namespace key types (for use in constants and type definitions)\n`;
+  for (const namespace of Object.keys(namespaceKeys)) {
+    const typeName = capitalize(toCamelCase(namespace));
+    content += `  export type ${typeName}Keys = TranslationKeys["${namespace}"];\n`;
+  }
 
   content += `}\n\n`;
 
