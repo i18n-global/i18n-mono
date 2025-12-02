@@ -141,9 +141,9 @@ export function hasTranslationFunctionCall(
 
 /**
  * 번역 함수 바인딩 생성 (공통 함수)
- * client 모드: const { t } = useTranslation<"namespace">("namespace")
+ * client 모드: const { t } = useTranslation("namespace")
  * server 모드: const { t } = await getServerTranslation("namespace")
- * 
+ *
  * @param mode - "client" 또는 "server"
  * @param serverFnName - 서버 번역 함수명 (server 모드일 때만)
  * @param namespace - 네임스페이스 (옵션)
@@ -164,7 +164,7 @@ export function createTranslationBinding(
 
   let callExpression: t.Expression;
   const args: t.Expression[] = namespace ? [t.stringLiteral(namespace)] : [];
-  
+
   if (mode === "server") {
     // 서버 모드: await getServerTranslation("namespace")
     const fnName = serverFnName || STRING_CONSTANTS.GET_SERVER_TRANSLATION;
@@ -172,18 +172,9 @@ export function createTranslationBinding(
       t.callExpression(t.identifier(fnName), args),
     );
   } else {
-    // 클라이언트 모드: useTranslation<"namespace">("namespace")
+    // 클라이언트 모드: useTranslation("namespace")
+    // 제네릭은 생략 - TypeScript가 인자로부터 자동 추론
     const callee = t.identifier(STRING_CONSTANTS.USE_TRANSLATION);
-    
-    // Add TypeScript generic type parameter if namespace exists
-    if (namespace) {
-      // Create: useTranslation<"namespace">
-      const typeParameter = t.tsTypeParameterInstantiation([
-        t.tsLiteralType(t.stringLiteral(namespace)),
-      ]);
-      (callee as any).typeParameters = typeParameter;
-    }
-    
     callExpression = t.callExpression(callee, args);
   }
 
@@ -207,7 +198,9 @@ export function extractNamespaceFromUseTranslation(
   body.traverse({
     CallExpression: (p) => {
       if (
-        t.isIdentifier(p.node.callee, { name: STRING_CONSTANTS.USE_TRANSLATION })
+        t.isIdentifier(p.node.callee, {
+          name: STRING_CONSTANTS.USE_TRANSLATION,
+        })
       ) {
         // useTranslation("namespace") 형태에서 namespace 추출
         const firstArg = p.node.arguments[0];

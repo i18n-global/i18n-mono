@@ -94,7 +94,7 @@ export function applyTranslationsToAST(
   modifiedComponentPaths: NodePath<t.Function>[],
   config: Required<ScriptConfig>,
   filePath?: string,
-  sourceCode?: string
+  sourceCode?: string,
 ): void {
   const isServerMode = config.mode === "server";
   const isClientMode = config.mode === "client";
@@ -133,7 +133,7 @@ export function applyTranslationsToAST(
       correctNamespace = inferNamespaceFromFile(
         filePath,
         sourceCode,
-        namespacingConfig
+        namespacingConfig,
       );
     }
   }
@@ -143,14 +143,14 @@ export function applyTranslationsToAST(
     const updated = updateExistingUseTranslation(
       ast,
       correctNamespace,
-      sourceCode
+      sourceCode,
     );
     if (updated) {
       // useTranslation이 이미 있고 업데이트되었으면 import만 확인
       ensureNamedImport(
         ast,
         config.translationImportSource,
-        STRING_CONSTANTS.USE_TRANSLATION
+        STRING_CONSTANTS.USE_TRANSLATION,
       );
       return; // 이미 useTranslation이 있으므로 새로 추가하지 않음
     }
@@ -200,7 +200,7 @@ export function applyTranslationsToAST(
     const decl = createTranslationBinding(
       isServerMode ? "server" : "client",
       isServerMode ? config.serverTranslationFunction : undefined,
-      namespace // 네임스페이스 전달
+      namespace, // 네임스페이스 전달
     );
 
     // body 최상단에 추가
@@ -233,30 +233,14 @@ export function applyTranslationsToAST(
 export function writeASTToFile(
   ast: t.File,
   filePath: string,
-  config: Required<ScriptConfig>
+  config: Required<ScriptConfig>,
 ): void {
   const output = generateCode(ast, {
     retainLines: true,
     comments: true,
   });
 
-  // Post-process: Add TypeScript generics to useTranslation calls
-  // @babel/generator doesn't preserve TypeScript type parameters, so we add them manually
-  // Pattern: useTranslation("namespace") -> useTranslation<"namespace">("namespace")
-  let code = output.code;
-
-  // Add generics to all useTranslation calls
-  code = code.replace(
-    /useTranslation\(["']([^"']+)["']\)/g,
-    (match, namespace) => {
-      // Skip if already has generic
-      const beforeMatch = code.substring(0, code.indexOf(match));
-      if (beforeMatch.endsWith(`<"${namespace}">`)) {
-        return match;
-      }
-      return `useTranslation<"${namespace}">("${namespace}")`;
-    }
-  );
-
-  writeFile(filePath, code);
+  // 제네릭 타입은 TypeScript가 인자로부터 자동 추론하므로 추가하지 않음
+  // useTranslation("namespace") - 이 형태로 충분
+  writeFile(filePath, output.code);
 }

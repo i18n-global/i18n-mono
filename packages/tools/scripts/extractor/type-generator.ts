@@ -52,7 +52,7 @@ export interface TypeGeneratorConfig {
  */
 export function generateTypeDefinitions(
   extractedData: ExtractedTranslations,
-  config: TypeGeneratorConfig
+  config: TypeGeneratorConfig,
 ): void {
   console.log("📝 Generating TypeScript type definitions...");
 
@@ -69,7 +69,7 @@ export function generateTypeDefinitions(
   const typeContent = generateTypeContent(
     namespaceKeys,
     namespaceKeysWithInfo,
-    config
+    config,
   );
 
   // Step 3: Ensure output directory exists
@@ -84,7 +84,7 @@ export function generateTypeDefinitions(
   console.log(`✅ Generated type definitions at: ${config.outputPath}`);
   console.log(`   - ${Object.keys(namespaceKeys).length} namespaces`);
   console.log(
-    `   - ${Object.values(namespaceKeys).reduce((sum, keys) => sum + keys.length, 0)} total keys`
+    `   - ${Object.values(namespaceKeys).reduce((sum, keys) => sum + keys.length, 0)} total keys`,
   );
 
   // Count keys with interpolation
@@ -124,7 +124,7 @@ interface KeyInfo {
  * Extract keys for each namespace from translations
  */
 function extractNamespaceKeys(
-  extractedData: ExtractedTranslations
+  extractedData: ExtractedTranslations,
 ): Record<string, string[]> {
   const namespaceKeys: Record<string, string[]> = {};
 
@@ -150,7 +150,7 @@ function extractNamespaceKeys(
  * Extract keys with their interpolation variables for each namespace
  */
 function extractNamespaceKeysWithInfo(
-  extractedData: ExtractedTranslations
+  extractedData: ExtractedTranslations,
 ): Record<string, KeyInfo[]> {
   const result: Record<string, KeyInfo[]> = {};
 
@@ -180,7 +180,7 @@ function extractNamespaceKeysWithInfo(
 function generateTypeContent(
   namespaceKeys: Record<string, string[]>,
   namespaceKeysWithInfo: Record<string, KeyInfo[]>,
-  config: TypeGeneratorConfig
+  config: TypeGeneratorConfig,
 ): string {
   const includeJsDocs = config.includeJsDocs ?? true;
 
@@ -234,7 +234,7 @@ function generateTypeContent(
 
     // Generate interpolation variable types for keys with variables
     const keysWithVars = keyInfoList.filter(
-      (info) => info.variables.length > 0
+      (info) => info.variables.length > 0,
     );
     if (keysWithVars.length > 0) {
       const varsTypeName = `${capitalize(toCamelCase(namespace))}KeyVariables`;
@@ -296,7 +296,7 @@ function generateTypeContent(
     .map((ns) => `${capitalize(toCamelCase(ns))}KeyVariables`)
     .filter((name) => {
       const ns = sortedNamespaces.find(
-        (n) => `${capitalize(toCamelCase(n))}KeyVariables` === name
+        (n) => `${capitalize(toCamelCase(n))}KeyVariables` === name,
       );
       const keyInfoList = namespaceKeysWithInfo[ns!] || [];
       return keyInfoList.some((info) => info.variables.length > 0);
@@ -311,29 +311,32 @@ function generateTypeContent(
   }
 
   // useTranslation with function overloads for better type inference
-  content += `  export function useTranslation<NS extends TranslationNamespace>(\n`;
+  // Generic type is automatically inferred from namespace parameter
+  // Usage: useTranslation("Gallery") - no need to specify <"Gallery">
+  // The generic type NS will be inferred from the namespace argument
+  content += `  export function useTranslation<NS extends TranslationNamespace = TranslationNamespace>(\n`;
   content += `    namespace: NS\n`;
   content += `  ): {\n`;
-  
+
   // Overload 1: No variables, no styles → string
   content += `    t: {\n`;
   content += `      <K extends TranslationKeys[NS]>(\n`;
   content += `        key: K\n`;
   content += `      ): string;\n`;
-  
+
   // Overload 2: Variables only → string
   content += `      <K extends TranslationKeys[NS]>(\n`;
   content += `        key: K,\n`;
   content += `        variables: Record<string, string | number>\n`;
   content += `      ): string;\n`;
-  
+
   // Overload 3: Variables + styles → ReactElement
   content += `      <K extends TranslationKeys[NS]>(\n`;
   content += `        key: K,\n`;
   content += `        variables: Record<string, string | number>,\n`;
   content += `        styles: Record<string, React.CSSProperties>\n`;
   content += `      ): React.ReactElement;\n`;
-  
+
   content += `    };\n`;
   content += `    currentLanguage: string;\n`;
   content += `    lng: string;  // Alias for currentLanguage (react-i18next compatibility)\n`;
@@ -424,7 +427,7 @@ function capitalize(str: string): string {
  * This is used when type generation is triggered separately
  */
 export function readExtractedTranslations(
-  localesDir: string
+  localesDir: string,
 ): ExtractedTranslations {
   const translations: ExtractedTranslations = {};
 
