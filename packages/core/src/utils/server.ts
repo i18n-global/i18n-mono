@@ -279,6 +279,7 @@ export async function getTranslation<NS extends string = string>(
   return {
     t,
     language,
+    lng: language, // Alias for react-i18next compatibility
     translations,
     dict,
   };

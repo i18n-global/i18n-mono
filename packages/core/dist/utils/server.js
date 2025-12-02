@@ -201,6 +201,7 @@ export async function getTranslation(namespace, options) {
     return {
         t,
         language,
+        lng: language, // Alias for react-i18next compatibility
         translations,
         dict,
     };

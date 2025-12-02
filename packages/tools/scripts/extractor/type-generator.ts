@@ -1,6 +1,6 @@
 /**
  * TypeScript type definition generator for i18nexus
- * 
+ *
  * This module generates TypeScript declaration files that provide
  * type safety for translation keys in useTranslation hook.
  */
@@ -36,9 +36,9 @@ export interface TypeGeneratorConfig {
 
 /**
  * Generate TypeScript type definitions from extracted translations
- * 
+ *
  * Creates a .d.ts file with Module Augmentation for type-safe translations
- * 
+ *
  * @example
  * ```typescript
  * // Generated types/i18nexus.d.ts
@@ -52,7 +52,7 @@ export interface TypeGeneratorConfig {
  */
 export function generateTypeDefinitions(
   extractedData: ExtractedTranslations,
-  config: TypeGeneratorConfig,
+  config: TypeGeneratorConfig
 ): void {
   console.log("📝 Generating TypeScript type definitions...");
 
@@ -66,7 +66,11 @@ export function generateTypeDefinitions(
   }
 
   // Step 2: Generate type definition content
-  const typeContent = generateTypeContent(namespaceKeys, namespaceKeysWithInfo, config);
+  const typeContent = generateTypeContent(
+    namespaceKeys,
+    namespaceKeysWithInfo,
+    config
+  );
 
   // Step 3: Ensure output directory exists
   const outputDir = path.dirname(config.outputPath);
@@ -80,13 +84,13 @@ export function generateTypeDefinitions(
   console.log(`✅ Generated type definitions at: ${config.outputPath}`);
   console.log(`   - ${Object.keys(namespaceKeys).length} namespaces`);
   console.log(
-    `   - ${Object.values(namespaceKeys).reduce((sum, keys) => sum + keys.length, 0)} total keys`,
+    `   - ${Object.values(namespaceKeys).reduce((sum, keys) => sum + keys.length, 0)} total keys`
   );
-  
+
   // Count keys with interpolation
   const keysWithVars = Object.values(namespaceKeysWithInfo)
     .flat()
-    .filter(info => info.variables.length > 0).length;
+    .filter((info) => info.variables.length > 0).length;
   if (keysWithVars > 0) {
     console.log(`   - ${keysWithVars} keys with interpolation variables`);
   }
@@ -100,11 +104,11 @@ function extractInterpolationVariables(key: string): string[] {
   const regex = /\{\{(\w+)\}\}/g;
   const vars: string[] = [];
   let match;
-  
+
   while ((match = regex.exec(key)) !== null) {
     vars.push(match[1]);
   }
-  
+
   return [...new Set(vars)]; // Remove duplicates
 }
 
@@ -120,13 +124,14 @@ interface KeyInfo {
  * Extract keys for each namespace from translations
  */
 function extractNamespaceKeys(
-  extractedData: ExtractedTranslations,
+  extractedData: ExtractedTranslations
 ): Record<string, string[]> {
   const namespaceKeys: Record<string, string[]> = {};
 
   for (const [namespace, languages] of Object.entries(extractedData)) {
     // Get keys from the first available language
-    const firstLanguage = languages["ko"] || languages["en"] || Object.values(languages)[0];
+    const firstLanguage =
+      languages["ko"] || languages["en"] || Object.values(languages)[0];
 
     if (!firstLanguage) {
       console.warn(`⚠️  No translations found for namespace: ${namespace}`);
@@ -145,22 +150,25 @@ function extractNamespaceKeys(
  * Extract keys with their interpolation variables for each namespace
  */
 function extractNamespaceKeysWithInfo(
-  extractedData: ExtractedTranslations,
+  extractedData: ExtractedTranslations
 ): Record<string, KeyInfo[]> {
   const result: Record<string, KeyInfo[]> = {};
 
   for (const [namespace, languages] of Object.entries(extractedData)) {
     // Get keys from the first available language
-    const firstLanguage = languages["ko"] || languages["en"] || Object.values(languages)[0];
+    const firstLanguage =
+      languages["ko"] || languages["en"] || Object.values(languages)[0];
 
     if (!firstLanguage) {
       continue;
     }
 
-    result[namespace] = Object.keys(firstLanguage).sort().map(key => ({
-      key,
-      variables: extractInterpolationVariables(key),
-    }));
+    result[namespace] = Object.keys(firstLanguage)
+      .sort()
+      .map((key) => ({
+        key,
+        variables: extractInterpolationVariables(key),
+      }));
   }
 
   return result;
@@ -172,7 +180,7 @@ function extractNamespaceKeysWithInfo(
 function generateTypeContent(
   namespaceKeys: Record<string, string[]>,
   namespaceKeysWithInfo: Record<string, KeyInfo[]>,
-  config: TypeGeneratorConfig,
+  config: TypeGeneratorConfig
 ): string {
   const includeJsDocs = config.includeJsDocs ?? true;
 
@@ -195,8 +203,8 @@ function generateTypeContent(
 
   // TranslationNamespace type (global)
   const sortedNamespaces = Object.keys(namespaceKeys).sort();
-  const namespaceUnion = sortedNamespaces.map(ns => `"${ns}"`).join(" | ");
-  
+  const namespaceUnion = sortedNamespaces.map((ns) => `"${ns}"`).join(" | ");
+
   if (includeJsDocs) {
     content += `/**\n`;
     content += ` * All available translation namespaces\n`;
@@ -218,21 +226,23 @@ function generateTypeContent(
     }
 
     const keyUnion = keys.map((key) => `"${escapeString(key)}"`).join(" | ");
-    
+
     if (includeJsDocs && keys.length <= 10) {
       content += `/** Translation keys for "${namespace}" namespace */\n`;
     }
     content += `declare type ${typeName} = ${keyUnion};\n\n`;
-    
+
     // Generate interpolation variable types for keys with variables
-    const keysWithVars = keyInfoList.filter(info => info.variables.length > 0);
+    const keysWithVars = keyInfoList.filter(
+      (info) => info.variables.length > 0
+    );
     if (keysWithVars.length > 0) {
       const varsTypeName = `${capitalize(toCamelCase(namespace))}KeyVariables`;
       content += `/** Interpolation variables for "${namespace}" namespace keys */\n`;
       content += `declare type ${varsTypeName} = {\n`;
       for (const info of keysWithVars) {
         const escapedKey = escapeString(info.key);
-        const varsUnion = info.variables.map(v => `"${v}"`).join(" | ");
+        const varsUnion = info.variables.map((v) => `"${v}"`).join(" | ");
         content += `  "${escapedKey}": ${varsUnion};\n`;
       }
       content += `};\n\n`;
@@ -254,7 +264,7 @@ function generateTypeContent(
 
   // Module augmentation
   const importSource = config.translationImportSource || "i18nexus";
-  
+
   content += `// ============================================\n`;
   content += `// Module Augmentation\n`;
   content += `// ============================================\n\n`;
@@ -280,18 +290,18 @@ function generateTypeContent(
   // Generate helper types for interpolation variable validation
   content += `  // Helper type to extract variable names from keys\n`;
   content += `  type ExtractVariables<K> = \n`;
-  
+
   // Build union of all KeyVariables types
   const varsTypeNames = sortedNamespaces
-    .map(ns => `${capitalize(toCamelCase(ns))}KeyVariables`)
-    .filter(name => {
-      const ns = sortedNamespaces.find(n => 
-        `${capitalize(toCamelCase(n))}KeyVariables` === name
+    .map((ns) => `${capitalize(toCamelCase(ns))}KeyVariables`)
+    .filter((name) => {
+      const ns = sortedNamespaces.find(
+        (n) => `${capitalize(toCamelCase(n))}KeyVariables` === name
       );
       const keyInfoList = namespaceKeysWithInfo[ns!] || [];
-      return keyInfoList.some(info => info.variables.length > 0);
+      return keyInfoList.some((info) => info.variables.length > 0);
     });
-  
+
   if (varsTypeNames.length > 0) {
     content += `    K extends keyof (${varsTypeNames.join(" & ")}) ? \n`;
     content += `      (${varsTypeNames.join(" & ")})[K] : \n`;
@@ -299,7 +309,7 @@ function generateTypeContent(
   } else {
     content += `    never;\n\n`;
   }
-  
+
   content += `  export function useTranslation<NS extends TranslationNamespace>(\n`;
   content += `    namespace: NS\n`;
   content += `  ): {\n`;
@@ -354,6 +364,7 @@ function generateTypeContent(
   content += `  ): Promise<{\n`;
   content += `    t: (key: TranslationKeys[NS]) => string;\n`;
   content += `    language: string;\n`;
+  content += `    lng: string;  // Alias for language (react-i18next compatibility)\n`;
   content += `    translations: Record<string, Record<string, string>>;\n`;
   content += `    dict: Record<string, string>;\n`;
   content += `  }>;\n`;
@@ -393,11 +404,11 @@ function capitalize(str: string): string {
 
 /**
  * Read extracted translations from locale files
- * 
+ *
  * This is used when type generation is triggered separately
  */
 export function readExtractedTranslations(
-  localesDir: string,
+  localesDir: string
 ): ExtractedTranslations {
   const translations: ExtractedTranslations = {};
 
@@ -417,9 +428,9 @@ export function readExtractedTranslations(
     translations[namespace] = {};
 
     // Read all language files in this namespace
-    const files = fs.readdirSync(namespacePath).filter((file) =>
-      file.endsWith(".json")
-    );
+    const files = fs
+      .readdirSync(namespacePath)
+      .filter((file) => file.endsWith(".json"));
 
     for (const file of files) {
       const language = file.replace(".json", "");
@@ -436,4 +447,3 @@ export function readExtractedTranslations(
 
   return translations;
 }
-

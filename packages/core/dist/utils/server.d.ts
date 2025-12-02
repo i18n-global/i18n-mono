@@ -38,6 +38,7 @@ export declare function getTranslation<NS extends string = string>(namespace?: N
 }): Promise<{
     t: (key: string, variables?: ServerTranslationVariables | string, fallback?: string) => string;
     language: string;
+    lng: string;
     translations: Record<string, Record<string, string>>;
     dict: Record<string, string>;
 }>;
@@ -53,6 +54,7 @@ export declare function createServerI18n(options?: {
 }): Promise<{
     t: (key: string, variables?: ServerTranslationVariables | string, fallback?: string) => string;
     language: string;
+    lng: string;
     translations: Record<string, Record<string, string>>;
     dict: Record<string, string>;
 }>;

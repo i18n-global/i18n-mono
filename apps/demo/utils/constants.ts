@@ -7,4 +7,3 @@ export const LANGUAGE_ITEMS: Array<{
   { value: "ko", label: "한국어" },
   { value: "en", label: "English" },
 ] as const;
-

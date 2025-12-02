@@ -202,6 +202,7 @@ declare module "i18nexus/server" {
   ): Promise<{
     t: (key: TranslationKeys[NS]) => string;
     language: string;
+    lng: string;  // Alias for language (react-i18next compatibility)
     translations: Record<string, Record<string, string>>;
     dict: Record<string, string>;
   }>;

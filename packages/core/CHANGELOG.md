@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file.
 
+## [3.2.2] - 2025-12-01
+
+### ✨ Features
+- **getTranslation lng alias**: Added `lng` alias for `language` in `getTranslation` return type
+  - `const { lng } = await getTranslation("home");` now supported
+  - Consistent with `useTranslation` hook
+  - Improves react-i18next migration compatibility
+
+---
+
 ## [3.2.1] - 2025-12-01
 
 ### ✨ Features
