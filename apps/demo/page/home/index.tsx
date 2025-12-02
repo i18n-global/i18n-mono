@@ -6,7 +6,7 @@ import { DownloadStats } from "@/entities/download";
 import { useTranslation, useLanguageSwitcher } from "i18nexus";
 
 export default function HomePage() {
-  const { t } = useTranslation<"home">("home");
+  const { t } = useTranslation("home");
 
   return (
     <main className="overflow-x-hidden">

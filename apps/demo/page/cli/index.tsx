@@ -3,7 +3,7 @@
 import { useTranslation } from "i18nexus";
 
 export default function CLIPage() {
-  const { t } = useTranslation<"cli">("cli");
+  const { t } = useTranslation("cli");
 
   return (
     <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -70,7 +70,7 @@ npx i18n-wrapper --pattern "app/page.tsx"`}</code>
               <pre className="bg-slate-950 text-slate-300 p-4 rounded-lg text-sm border border-slate-800">
                 <code>
                   {t(
-                    "export default function Welcome() {\n  return (\n    <div>\n      <h1>\uD658\uC601\uD569\uB2C8\uB2E4</h1>\n      <p>i18nexus \uC0AC\uC6A9\uBC95</p>\n    </div>\n  );\n}"
+                    "export default function Welcome() {\n  return (\n    <div>\n      <h1>\uD658\uC601\uD569\uB2C8\uB2E4</h1>\n      <p>i18nexus \uC0AC\uC6A9\uBC95</p>\n    </div>\n  );\n}",
                   )}
                 </code>
               </pre>
@@ -297,7 +297,7 @@ npx i18n-extractor --dry-run`}</code>
               <pre className="bg-slate-950 text-slate-300 p-3 rounded-lg text-xs border border-slate-800">
                 <code>
                   {t(
-                    '// lib/translations/en.json\n{\n  "\uD658\uC601\uD569\uB2C8\uB2E4": "Welcome",\n  "\uC2DC\uC791\uD558\uAE30": "Get Started"\n}'
+                    '// lib/translations/en.json\n{\n  "\uD658\uC601\uD569\uB2C8\uB2E4": "Welcome",\n  "\uC2DC\uC791\uD558\uAE30": "Get Started"\n}',
                   )}
                 </code>
               </pre>

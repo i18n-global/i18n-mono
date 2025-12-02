@@ -7,7 +7,7 @@ import { ProjectManageCard } from "@/features/project-manage";
 import { useAdminDashboard } from "./model/useAdminDashboard";
 
 export default function AdminDashboard() {
-  const { t } = useTranslation<"admin-dashboard">("admin-dashboard");
+  const { t } = useTranslation("admin-dashboard");
   const {
     loading,
     submissions,
@@ -42,7 +42,8 @@ export default function AdminDashboard() {
         </div>
         <button
           onClick={handleLogout}
-          className="bg-gradient-to-r from-slate-700 to-slate-600 hover:from-slate-600 hover:to-slate-500 text-white px-5 py-2.5 sm:px-6 sm:py-3 rounded-lg sm:rounded-xl text-sm sm:text-base font-semibold transition-all hover:scale-105 shadow-lg">
+          className="bg-gradient-to-r from-slate-700 to-slate-600 hover:from-slate-600 hover:to-slate-500 text-white px-5 py-2.5 sm:px-6 sm:py-3 rounded-lg sm:rounded-xl text-sm sm:text-base font-semibold transition-all hover:scale-105 shadow-lg"
+        >
           {t("🚪 로그아웃")}
         </button>
       </div>
@@ -55,7 +56,8 @@ export default function AdminDashboard() {
             filter === "pending"
               ? "bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-lg shadow-blue-500/30"
               : "bg-gradient-to-br from-slate-900 to-slate-800 border border-slate-700 text-slate-300 hover:border-blue-500"
-          }`}>
+          }`}
+        >
           <span className="hidden sm:inline">{t("⏳ 승인 대기 중")}</span>
           <span className="sm:hidden">{t("⏳ 대기")}</span>
         </button>
@@ -65,7 +67,8 @@ export default function AdminDashboard() {
             filter === "approved"
               ? "bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-lg shadow-blue-500/30"
               : "bg-gradient-to-br from-slate-900 to-slate-800 border border-slate-700 text-slate-300 hover:border-blue-500"
-          }`}>
+          }`}
+        >
           {t("✅ 승인됨")}
         </button>
         <button
@@ -74,7 +77,8 @@ export default function AdminDashboard() {
             filter === "all"
               ? "bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-lg shadow-blue-500/30"
               : "bg-gradient-to-br from-slate-900 to-slate-800 border border-slate-700 text-slate-300 hover:border-blue-500"
-          }`}>
+          }`}
+        >
           {t("📋 전체")}
         </button>
       </div>

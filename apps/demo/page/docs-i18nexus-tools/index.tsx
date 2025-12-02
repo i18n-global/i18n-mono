@@ -5,54 +5,54 @@ import Link from "next/link";
 import { useTranslation, useLanguageSwitcher } from "i18nexus";
 
 export default function I18nexusToolsPage() {
-  const { t } = useTranslation<"docs-i18nexus-tools">("docs-i18nexus-tools");
+  const { t } = useTranslation("docs-i18nexus-tools");
 
   const tools = [
-  {
-    title: t("i18n-wrapper"),
-    description: t(
-      "Automatically wrap Korean/English text with t() function"
-    ),
-    icon: "🎁",
-    href: "/docs/i18nexus-tools/wrapper",
-    color: "blue"
-  },
-  {
-    title: t("i18n-extractor"),
-    description: t("Extract translation keys from your codebase"),
-    icon: "🔍",
-    href: "/docs/i18nexus-tools/extractor",
-    color: "green"
-  },
-  {
-    title: t("i18n-upload"),
-    description: t("Upload local translations to Google Sheets"),
-    icon: "📤",
-    href: "/docs/i18nexus-tools/upload",
-    color: "purple"
-  },
-  {
-    title: t("i18n-download"),
-    description: t("Download translations from Google Sheets (incremental)"),
-    icon: "📥",
-    href: "/docs/i18nexus-tools/download",
-    color: "orange"
-  },
-  {
-    title: t("i18n-download-force"),
-    description: t("Force overwrite all translations from Google Sheets"),
-    icon: "🔄",
-    href: "/docs/i18nexus-tools/download-force",
-    color: "red"
-  },
-  {
-    title: t("Google Sheets Setup"),
-    description: t("Configure Google Sheets integration"),
-    icon: "📊",
-    href: "/docs/i18nexus-tools/google-sheets",
-    color: "indigo"
-  }];
-
+    {
+      title: t("i18n-wrapper"),
+      description: t(
+        "Automatically wrap Korean/English text with t() function",
+      ),
+      icon: "🎁",
+      href: "/docs/i18nexus-tools/wrapper",
+      color: "blue",
+    },
+    {
+      title: t("i18n-extractor"),
+      description: t("Extract translation keys from your codebase"),
+      icon: "🔍",
+      href: "/docs/i18nexus-tools/extractor",
+      color: "green",
+    },
+    {
+      title: t("i18n-upload"),
+      description: t("Upload local translations to Google Sheets"),
+      icon: "📤",
+      href: "/docs/i18nexus-tools/upload",
+      color: "purple",
+    },
+    {
+      title: t("i18n-download"),
+      description: t("Download translations from Google Sheets (incremental)"),
+      icon: "📥",
+      href: "/docs/i18nexus-tools/download",
+      color: "orange",
+    },
+    {
+      title: t("i18n-download-force"),
+      description: t("Force overwrite all translations from Google Sheets"),
+      icon: "🔄",
+      href: "/docs/i18nexus-tools/download-force",
+      color: "red",
+    },
+    {
+      title: t("Google Sheets Setup"),
+      description: t("Configure Google Sheets integration"),
+      icon: "📊",
+      href: "/docs/i18nexus-tools/google-sheets",
+      color: "indigo",
+    },
+  ];
 
   const colorClasses = {
     blue: {
@@ -60,43 +60,43 @@ export default function I18nexusToolsPage() {
       bg: "bg-blue-500/10",
       hover: "hover:bg-blue-500/20",
       text: "text-blue-400",
-      shadow: "shadow-blue-500/20"
+      shadow: "shadow-blue-500/20",
     },
     green: {
       border: "border-green-500",
       bg: "bg-green-500/10",
       hover: "hover:bg-green-500/20",
       text: "text-green-400",
-      shadow: "shadow-green-500/20"
+      shadow: "shadow-green-500/20",
     },
     purple: {
       border: "border-purple-500",
       bg: "bg-purple-500/10",
       hover: "hover:bg-purple-500/20",
       text: "text-purple-400",
-      shadow: "shadow-purple-500/20"
+      shadow: "shadow-purple-500/20",
     },
     orange: {
       border: "border-orange-500",
       bg: "bg-orange-500/10",
       hover: "hover:bg-orange-500/20",
       text: "text-orange-400",
-      shadow: "shadow-orange-500/20"
+      shadow: "shadow-orange-500/20",
     },
     red: {
       border: "border-red-500",
       bg: "bg-red-500/10",
       hover: "hover:bg-red-500/20",
       text: "text-red-400",
-      shadow: "shadow-red-500/20"
+      shadow: "shadow-red-500/20",
     },
     indigo: {
       border: "border-indigo-500",
       bg: "bg-indigo-500/10",
       hover: "hover:bg-indigo-500/20",
       text: "text-indigo-400",
-      shadow: "shadow-indigo-500/20"
-    }
+      shadow: "shadow-indigo-500/20",
+    },
   };
 
   return (
@@ -120,7 +120,7 @@ export default function I18nexusToolsPage() {
         </h1>
         <p className="text-xl text-slate-400 max-w-2xl mx-auto">
           {t(
-            "코드 변환부터 Google Sheets 통합까지 i18n 워크플로우를 자동화하는 강력한 CLI 도구"
+            "코드 변환부터 Google Sheets 통합까지 i18n 워크플로우를 자동화하는 강력한 CLI 도구",
           )}
         </p>
       </div>
@@ -207,9 +207,9 @@ export default function I18nexusToolsPage() {
               </p>
               <pre className="bg-slate-950 rounded-lg p-3 text-sm border border-slate-800 overflow-x-auto">
                 <code>
-                  {t("// locales/en.json\n{\n  \"\uD658\uC601\uD569\uB2C8\uB2E4\": \"Welcome\",\n  \"\uC2DC\uC791\uD558\uAE30\": \"Get Started\"\n}")
-
-                  }
+                  {t(
+                    '// locales/en.json\n{\n  "\uD658\uC601\uD569\uB2C8\uB2E4": "Welcome",\n  "\uC2DC\uC791\uD558\uAE30": "Get Started"\n}',
+                  )}
                 </code>
               </pre>
             </div>
@@ -247,16 +247,16 @@ export default function I18nexusToolsPage() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {tools.map((tool) => {
             const colors =
-            colorClasses[tool.color as keyof typeof colorClasses];
+              colorClasses[tool.color as keyof typeof colorClasses];
             return (
               <Link
                 key={tool.href}
                 href={tool.href}
-                className={`group bg-slate-900 rounded-xl border ${colors.border} p-6 transition-all hover:shadow-lg ${colors.shadow} hover:-translate-y-1`}>
-
+                className={`group bg-slate-900 rounded-xl border ${colors.border} p-6 transition-all hover:shadow-lg ${colors.shadow} hover:-translate-y-1`}
+              >
                 <div
-                  className={`inline-flex items-center justify-center w-12 h-12 ${colors.bg} ${colors.hover} rounded-lg mb-4 transition-colors`}>
-
+                  className={`inline-flex items-center justify-center w-12 h-12 ${colors.bg} ${colors.hover} rounded-lg mb-4 transition-colors`}
+                >
                   <span className="text-2xl">{tool.icon}</span>
                 </div>
                 <h3 className="text-xl font-bold text-white mb-2">
@@ -266,15 +266,15 @@ export default function I18nexusToolsPage() {
                   {tool.description}
                 </p>
                 <div
-                  className={`inline-flex items-center ${colors.text} font-medium text-sm`}>
-
+                  className={`inline-flex items-center ${colors.text} font-medium text-sm`}
+                >
                   {t("문서 보기")}{" "}
                   <span className="ml-2 group-hover:translate-x-1 transition-transform">
                     →
                   </span>
                 </div>
-              </Link>);
-
+              </Link>
+            );
           })}
         </div>
       </div>
@@ -406,6 +406,6 @@ export default function I18nexusToolsPage() {
           </div>
         </div>
       </section>
-    </main>);
-
+    </main>
+  );
 }

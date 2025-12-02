@@ -6,7 +6,7 @@ import { useTranslation, useLanguageSwitcher } from "i18nexus";
 import { CodeBlock } from "@/shared/ui";
 
 export default function GettingStartedPage() {
-  const { t } = useTranslation<"getting-started">("getting-started");
+  const { t } = useTranslation("getting-started");
 
   return (
     <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-16">
@@ -14,8 +14,8 @@ export default function GettingStartedPage() {
       <div className="mb-8 sm:mb-12">
         <Link
           href="/"
-          className="inline-flex items-center text-blue-400 hover:text-blue-300 mb-4 sm:mb-6 text-sm sm:text-base">
-
+          className="inline-flex items-center text-blue-400 hover:text-blue-300 mb-4 sm:mb-6 text-sm sm:text-base"
+        >
           <span className="mr-2">←</span>
           {t("홈으로 돌아가기")}
         </Link>
@@ -104,29 +104,9 @@ export default function GettingStartedPage() {
               </strong>
             </p>
             <CodeBlock language="typescript">
-              {t("// locales/index.ts\nimport { createI18n } from \"i18nexus\";\n\nexport const translations = {} as const;\n\nasync function loadNamespace(namespace: string, lang: string) {\n  const module = await import(\\`./\\${namespace}/\\${lang}.json\\`);\n  return module.default;\n}\n\nexport const i18n = createI18n(translations, {\n  fallbackNamespace: \"common\",\n  lazy: true,\n  loadNamespace,\n  preloadNamespaces: [\"common\"],\n  languageManager: {\n    defaultLanguage: \"ko\",\n    availableLanguages: [\n      { code: \"ko\", name: \"\uD55C\uAD6D\uC5B4\", flag: \"\uD83C\uDDF0\uD83C\uDDF7\" },\n      { code: \"en\", name: \"English\", flag: \"\uD83C\uDDFA\uD83C\uDDF8\" },\n    ],\n  },\n});")
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-              }
+              {t(
+                '// locales/index.ts\nimport { createI18n } from "i18nexus";\n\nexport const translations = {} as const;\n\nasync function loadNamespace(namespace: string, lang: string) {\n  const module = await import(\\`./\\${namespace}/\\${lang}.json\\`);\n  return module.default;\n}\n\nexport const i18n = createI18n(translations, {\n  fallbackNamespace: "common",\n  lazy: true,\n  loadNamespace,\n  preloadNamespaces: ["common"],\n  languageManager: {\n    defaultLanguage: "ko",\n    availableLanguages: [\n      { code: "ko", name: "\uD55C\uAD6D\uC5B4", flag: "\uD83C\uDDF0\uD83C\uDDF7" },\n      { code: "en", name: "English", flag: "\uD83C\uDDFA\uD83C\uDDF8" },\n    ],\n  },\n});',
+              )}
             </CodeBlock>
           </div>
 
@@ -175,7 +155,7 @@ export default function RootLayout({ children }) {
             <div className="space-y-3">
               <p className="text-sm">
                 {t(
-                  "i18n-wrapper 실행 후 일부 파일에서 에러가 발생할 수 있습니다:"
+                  "i18n-wrapper 실행 후 일부 파일에서 에러가 발생할 수 있습니다:",
                 )}
               </p>
               <ol className="space-y-2 ml-6 text-sm">
@@ -185,7 +165,7 @@ export default function RootLayout({ children }) {
                   </strong>
                   <br />
                   {t(
-                    "파일이 서버 컴포넌트인 경우 (use client가 없는 경우), 훅 대신 서버 유틸리티를 사용해야 합니다"
+                    "파일이 서버 컴포넌트인 경우 (use client가 없는 경우), 훅 대신 서버 유틸리티를 사용해야 합니다",
                   )}
                 </li>
                 <li>
@@ -194,7 +174,7 @@ export default function RootLayout({ children }) {
                   </strong>
                   <br />
                   {t(
-                    "에러를 확인하고 use client를 추가할지 getServerTranslation()을 사용할지 결정하세요"
+                    "에러를 확인하고 use client를 추가할지 getServerTranslation()을 사용할지 결정하세요",
                   )}
                 </li>
               </ol>
@@ -208,13 +188,9 @@ export default function RootLayout({ children }) {
                 {t("클라이언트 컴포넌트의 경우")}
               </h4>
               <CodeBlock language="tsx">
-                {t("\"use client\";\nimport { useTranslation, useLanguageSwitcher } from \"i18nexus\";\n\nexport default function Page() {\n  const { t } = useTranslation(\"getting-started\");\n  return <div>{t(\"\uC548\uB155\uD558\uC138\uC694\")}</div>;\n}")
-
-
-
-
-
-                }
+                {t(
+                  '"use client";\nimport { useTranslation, useLanguageSwitcher } from "i18nexus";\n\nexport default function Page() {\n  const { t } = useTranslation("getting-started");\n  return <div>{t("\uC548\uB155\uD558\uC138\uC694")}</div>;\n}',
+                )}
               </CodeBlock>
             </div>
 
@@ -224,12 +200,9 @@ export default function RootLayout({ children }) {
                 {t("서버 컴포넌트의 경우")}
               </h4>
               <CodeBlock language="tsx">
-                {t("import { useTranslation, useLanguageSwitcher } from \"i18nexus\";\n\nexport default async function Page() {\n  const { t } = await i18n.getServerTranslation();\n  return <div>{t(\"\uC548\uB155\uD558\uC138\uC694\")}</div>;\n}")
-
-
-
-
-                }
+                {t(
+                  'import { useTranslation, useLanguageSwitcher } from "i18nexus";\n\nexport default async function Page() {\n  const { t } = await i18n.getServerTranslation();\n  return <div>{t("\uC548\uB155\uD558\uC138\uC694")}</div>;\n}',
+                )}
               </CodeBlock>
             </div>
           </div>
@@ -259,7 +232,7 @@ export default function RootLayout({ children }) {
             </h3>
             <p className="text-sm">
               {t(
-                "Next.js App Router를 사용하는 경우, -p 플래그를 사용하여 올바른 디렉토리를 지정하세요"
+                "Next.js App Router를 사용하는 경우, -p 플래그를 사용하여 올바른 디렉토리를 지정하세요",
               )}
               :
             </p>
@@ -314,10 +287,9 @@ export default function RootLayout({ children }) {
                 {t("이전 (자동 생성)")}:
               </p>
               <CodeBlock language="json">
-                {t("{\n  \"\uC548\uB155\uD558\uC138\uC694\": \"\uC548\uB155\uD558\uC138\uC694\",\n  \"\uD658\uC601\uD569\uB2C8\uB2E4\": \"\uD658\uC601\uD569\uB2C8\uB2E4\"\n}")
-
-
-                }
+                {t(
+                  '{\n  "\uC548\uB155\uD558\uC138\uC694": "\uC548\uB155\uD558\uC138\uC694",\n  "\uD658\uC601\uD569\uB2C8\uB2E4": "\uD658\uC601\uD569\uB2C8\uB2E4"\n}',
+                )}
               </CodeBlock>
             </div>
 
@@ -326,10 +298,9 @@ export default function RootLayout({ children }) {
                 {t("이후 (번역됨)")}:
               </p>
               <CodeBlock language="json">
-                {t("{\n  \"\uC548\uB155\uD558\uC138\uC694\": \"Hello\",\n  \"\uD658\uC601\uD569\uB2C8\uB2E4\": \"Welcome\"\n}")
-
-
-                }
+                {t(
+                  '{\n  "\uC548\uB155\uD558\uC138\uC694": "Hello",\n  "\uD658\uC601\uD569\uB2C8\uB2E4": "Welcome"\n}',
+                )}
               </CodeBlock>
             </div>
           </div>
@@ -384,19 +355,19 @@ export default function RootLayout({ children }) {
           <div className="flex flex-wrap gap-4 justify-center">
             <Link
               href="/provider"
-              className="px-6 py-3 bg-blue-600 hover:bg-blue-500 text-white rounded-lg font-medium transition-colors">
-
+              className="px-6 py-3 bg-blue-600 hover:bg-blue-500 text-white rounded-lg font-medium transition-colors"
+            >
               {t("I18nProvider 자세히 알아보기")} →
             </Link>
             <Link
               href="/cli"
-              className="px-6 py-3 bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg font-medium transition-colors">
-
+              className="px-6 py-3 bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg font-medium transition-colors"
+            >
               {t("CLI 도구 살펴보기")} →
             </Link>
           </div>
         </div>
       </section>
-    </main>);
-
+    </main>
+  );
 }

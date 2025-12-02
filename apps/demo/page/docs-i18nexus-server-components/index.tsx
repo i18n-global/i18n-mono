@@ -4,9 +4,7 @@ import { useTranslation } from "i18nexus";
 import Link from "next/link";
 
 export default function ServerComponentsPage() {
-  const { t } = useTranslation<"docs-i18nexus-server-components">(
-    "docs-i18nexus-server-components"
-  );
+  const { t } = useTranslation("docs-i18nexus-server-components");
 
   return (
     <main className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
@@ -18,7 +16,8 @@ export default function ServerComponentsPage() {
         <span className="text-slate-500 mx-2">/</span>
         <Link
           href="/docs/i18nexus"
-          className="text-blue-400 hover:text-blue-300">
+          className="text-blue-400 hover:text-blue-300"
+        >
           {t("i18nexus")}
         </Link>
         <span className="text-slate-500 mx-2">/</span>
@@ -41,7 +40,7 @@ export default function ServerComponentsPage() {
         <div className="bg-slate-900 rounded-xl border border-slate-700 p-6">
           <p className="text-slate-300 mb-4">
             {t(
-              "Next.js의 서버 컴포넌트에서는 useTranslation 훅을 사용할 수 없습니다. 대신 서버 전용 함수를 사용해야 합니다."
+              "Next.js의 서버 컴포넌트에서는 useTranslation 훅을 사용할 수 없습니다. 대신 서버 전용 함수를 사용해야 합니다.",
             )}
           </p>
           <div className="space-y-2">
@@ -126,7 +125,7 @@ export default async function Page() {
           <pre className="text-sm text-slate-300">
             <code>
               {t(
-                'import { headers } from "next/headers";\nimport { getServerLanguage, createServerTranslation } from "i18nexus/server";\nimport { translations } from "@/locales";\n\n// \u2705 \uC11C\uBC84 \uCEF4\uD3EC\uB10C\uD2B8 (\uAE30\uBCF8\uAC12)\nexport default async function ServerPage() {\n  // 1. \uCFE0\uD0A4\uC5D0\uC11C \uC5B8\uC5B4 \uAC00\uC838\uC624\uAE30\n  const headersList = await headers();\n  const language = getServerLanguage(headersList);\n\n  // 2. \uBC88\uC5ED \uD568\uC218 \uC0DD\uC131\n  const t = createServerTranslation(language, translations);\n\n  // 3. \uBC88\uC5ED \uC0AC\uC6A9\n  return (\n    <div>\n      <h1>{t("Welcome")}</h1>\n      <p>{t("This is a server component")}</p>\n      <p>Current language: {language}</p>\n    </div>\n  );\n}'
+                'import { headers } from "next/headers";\nimport { getServerLanguage, createServerTranslation } from "i18nexus/server";\nimport { translations } from "@/locales";\n\n// \u2705 \uC11C\uBC84 \uCEF4\uD3EC\uB10C\uD2B8 (\uAE30\uBCF8\uAC12)\nexport default async function ServerPage() {\n  // 1. \uCFE0\uD0A4\uC5D0\uC11C \uC5B8\uC5B4 \uAC00\uC838\uC624\uAE30\n  const headersList = await headers();\n  const language = getServerLanguage(headersList);\n\n  // 2. \uBC88\uC5ED \uD568\uC218 \uC0DD\uC131\n  const t = createServerTranslation(language, translations);\n\n  // 3. \uBC88\uC5ED \uC0AC\uC6A9\n  return (\n    <div>\n      <h1>{t("Welcome")}</h1>\n      <p>{t("This is a server component")}</p>\n      <p>Current language: {language}</p>\n    </div>\n  );\n}',
               )}
             </code>
           </pre>
@@ -262,7 +261,7 @@ export default async function Page() {
         <div className="bg-slate-900 rounded-xl border border-slate-700 p-6 mb-4">
           <p className="text-slate-300 mb-4">
             {t(
-              "서버 컴포넌트와 클라이언트 컴포넌트를 함께 사용하면 최적의 성능을 얻을 수 있습니다."
+              "서버 컴포넌트와 클라이언트 컴포넌트를 함께 사용하면 최적의 성능을 얻을 수 있습니다.",
             )}
           </p>
         </div>
@@ -271,7 +270,7 @@ export default async function Page() {
           <pre className="text-sm text-slate-300">
             <code>
               {t(
-                '// app/page.tsx (\uC11C\uBC84 \uCEF4\uD3EC\uB10C\uD2B8)\nimport { headers } from "next/headers";\nimport { getServerLanguage, createServerTranslation } from "i18nexus/server";\nimport { translations } from "@/locales";\nimport LanguageSwitcher from "./LanguageSwitcher"; // \uD074\uB77C\uC774\uC5B8\uD2B8 \uCEF4\uD3EC\uB10C\uD2B8\n\nexport default async function HomePage() {\n  const headersList = await headers();\n  const language = getServerLanguage(headersList);\n  const t = createServerTranslation(language, translations);\n\n  return (\n    <div>\n      {/* \uD074\uB77C\uC774\uC5B8\uD2B8 \uCEF4\uD3EC\uB10C\uD2B8: \uC5B8\uC5B4 \uC804\uD658 */}\n      <LanguageSwitcher />\n\n      {/* \uC11C\uBC84 \uCEF4\uD3EC\uB10C\uD2B8: \uC815\uC801 \uCF58\uD150\uCE20 */}\n      <h1>{t("Welcome")}</h1>\n      <p>{t("This content is rendered on the server")}</p>\n    </div>\n  );\n}\n\n// app/LanguageSwitcher.tsx (\uD074\uB77C\uC774\uC5B8\uD2B8 \uCEF4\uD3EC\uB10C\uD2B8)\n"use client";\n\nimport { useLanguageSwitcher } from "i18nexus";\n\nexport default function LanguageSwitcher() {\n  const { currentLanguage, changeLanguage, availableLanguages } =\n    useLanguageSwitcher();\n\n  return (\n    <div>\n      {availableLanguages.map((lang) => (\n        <button\n          key={lang.code}\n          onClick={() => changeLanguage(lang.code)}\n        >\n          {lang.name}\n        </button>\n      ))}\n    </div>\n  );\n}'
+                '// app/page.tsx (\uC11C\uBC84 \uCEF4\uD3EC\uB10C\uD2B8)\nimport { headers } from "next/headers";\nimport { getServerLanguage, createServerTranslation } from "i18nexus/server";\nimport { translations } from "@/locales";\nimport LanguageSwitcher from "./LanguageSwitcher"; // \uD074\uB77C\uC774\uC5B8\uD2B8 \uCEF4\uD3EC\uB10C\uD2B8\n\nexport default async function HomePage() {\n  const headersList = await headers();\n  const language = getServerLanguage(headersList);\n  const t = createServerTranslation(language, translations);\n\n  return (\n    <div>\n      {/* \uD074\uB77C\uC774\uC5B8\uD2B8 \uCEF4\uD3EC\uB10C\uD2B8: \uC5B8\uC5B4 \uC804\uD658 */}\n      <LanguageSwitcher />\n\n      {/* \uC11C\uBC84 \uCEF4\uD3EC\uB10C\uD2B8: \uC815\uC801 \uCF58\uD150\uCE20 */}\n      <h1>{t("Welcome")}</h1>\n      <p>{t("This content is rendered on the server")}</p>\n    </div>\n  );\n}\n\n// app/LanguageSwitcher.tsx (\uD074\uB77C\uC774\uC5B8\uD2B8 \uCEF4\uD3EC\uB10C\uD2B8)\n"use client";\n\nimport { useLanguageSwitcher } from "i18nexus";\n\nexport default function LanguageSwitcher() {\n  const { currentLanguage, changeLanguage, availableLanguages } =\n    useLanguageSwitcher();\n\n  return (\n    <div>\n      {availableLanguages.map((lang) => (\n        <button\n          key={lang.code}\n          onClick={() => changeLanguage(lang.code)}\n        >\n          {lang.name}\n        </button>\n      ))}\n    </div>\n  );\n}',
               )}
             </code>
           </pre>
@@ -292,13 +291,13 @@ export default async function Page() {
             </h4>
             <p className="text-slate-300 mb-2">
               {t(
-                "서버와 클라이언트가 같은 언어를 사용하도록 쿠키에서 언어를 읽어야 합니다."
+                "서버와 클라이언트가 같은 언어를 사용하도록 쿠키에서 언어를 읽어야 합니다.",
               )}
             </p>
             <pre className="bg-slate-950 rounded-lg p-3 overflow-x-auto">
               <code className="text-sm text-slate-400">
                 {t(
-                  "// layout.tsx\uC5D0\uC11C\nconst headersList = await headers();\nconst language = getServerLanguage(headersList);\n\n<I18nProvider initialLanguage={language}>"
+                  "// layout.tsx\uC5D0\uC11C\nconst headersList = await headers();\nconst language = getServerLanguage(headersList);\n\n<I18nProvider initialLanguage={language}>",
                 )}
               </code>
             </pre>
@@ -311,7 +310,7 @@ export default async function Page() {
             </h4>
             <p className="text-slate-300">
               {t(
-                "서버 컴포넌트는 언어 변경 시 자동으로 업데이트되지 않습니다. 클라이언트 컴포넌트에서 언어를 변경하면 쿠키가 업데이트되고, 페이지를 새로고침하면 서버 컴포넌트도 새 언어로 렌더링됩니다."
+                "서버 컴포넌트는 언어 변경 시 자동으로 업데이트되지 않습니다. 클라이언트 컴포넌트에서 언어를 변경하면 쿠키가 업데이트되고, 페이지를 새로고침하면 서버 컴포넌트도 새 언어로 렌더링됩니다.",
               )}
             </p>
           </div>
@@ -324,7 +323,8 @@ export default async function Page() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <Link
             href="/docs/i18nexus/use-translation"
-            className="bg-slate-900 border border-slate-700 rounded-lg p-4 hover:border-blue-500 transition-colors">
+            className="bg-slate-900 border border-slate-700 rounded-lg p-4 hover:border-blue-500 transition-colors"
+          >
             <h4 className="text-lg font-semibold text-white mb-2">
               useTranslation →
             </h4>
@@ -334,7 +334,8 @@ export default async function Page() {
           </Link>
           <Link
             href="/server-example"
-            className="bg-slate-900 border border-slate-700 rounded-lg p-4 hover:border-green-500 transition-colors">
+            className="bg-slate-900 border border-slate-700 rounded-lg p-4 hover:border-green-500 transition-colors"
+          >
             <h4 className="text-lg font-semibold text-white mb-2">
               {t("라이브 예제")} →
             </h4>

@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useTranslation, useLanguageSwitcher } from "i18nexus";
 
 export default function I18nWrapperPage() {
-  const { t } = useTranslation<"docs-i18nexus-tools-wrapper">("docs-i18nexus-tools-wrapper");
+  const { t } = useTranslation("docs-i18nexus-tools-wrapper");
 
   return (
     <main className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
@@ -17,8 +17,8 @@ export default function I18nWrapperPage() {
         <span className="text-slate-500 mx-2">/</span>
         <Link
           href="/docs/i18nexus-tools"
-          className="text-blue-400 hover:text-blue-300">
-
+          className="text-blue-400 hover:text-blue-300"
+        >
           {t("i18nexus-tools")}
         </Link>
         <span className="text-slate-500 mx-2">/</span>
@@ -47,7 +47,7 @@ export default function I18nWrapperPage() {
               i18n-wrapper
             </code>
             {t(
-              "는 코드에서 하드코딩된 한국어 텍스트를 자동으로 감지하여 t() 함수로 래핑하고, 필요한 import 문을 추가하는 CLI 도구입니다."
+              "는 코드에서 하드코딩된 한국어 텍스트를 자동으로 감지하여 t() 함수로 래핑하고, 필요한 import 문을 추가하는 CLI 도구입니다.",
             )}
           </p>
           <div className="space-y-2">
@@ -123,7 +123,7 @@ export default function I18nWrapperPage() {
             </pre>
             <p className="text-slate-400 text-sm mt-2">
               {t(
-                "app 디렉토리 내 모든 .tsx 파일에서 한국어 텍스트를 래핑합니다."
+                "app 디렉토리 내 모든 .tsx 파일에서 한국어 텍스트를 래핑합니다.",
               )}
             </p>
           </div>
@@ -138,7 +138,7 @@ export default function I18nWrapperPage() {
             </pre>
             <p className="text-slate-400 text-sm mt-2">
               {t(
-                "파일을 수정하지 않고 어떤 변경사항이 있을지 미리 확인합니다."
+                "파일을 수정하지 않고 어떤 변경사항이 있을지 미리 확인합니다.",
               )}
             </p>
           </div>
@@ -176,7 +176,7 @@ export default function I18nWrapperPage() {
             <pre className="bg-slate-950 rounded-lg p-4 text-sm border border-red-500/30 overflow-x-auto">
               <code className="text-slate-300">
                 {t(
-                  "export default function Welcome() {\n  return (\n    <div>\n      <h1>\uD658\uC601\uD569\uB2C8\uB2E4</h1>\n      <p>i18nexus \uC0AC\uC6A9\uBC95</p>\n      <button>\uC2DC\uC791\uD558\uAE30</button>\n    </div>\n  );\n}"
+                  "export default function Welcome() {\n  return (\n    <div>\n      <h1>\uD658\uC601\uD569\uB2C8\uB2E4</h1>\n      <p>i18nexus \uC0AC\uC6A9\uBC95</p>\n      <button>\uC2DC\uC791\uD558\uAE30</button>\n    </div>\n  );\n}",
                 )}
               </code>
             </pre>
@@ -193,7 +193,7 @@ export default function I18nWrapperPage() {
             <pre className="bg-slate-950 rounded-lg p-4 text-sm border border-green-500/30 overflow-x-auto">
               <code className="text-slate-300">
                 {t(
-                  'import { useTranslation } from "i18nexus";\n\nexport default function Welcome() {\n  const { t } = useTranslation();\n  return (\n    <div>\n      <h1>{t("\uD658\uC601\uD569\uB2C8\uB2E4")}</h1>\n      <p>{t("i18nexus \uC0AC\uC6A9\uBC95")}</p>\n      <button>{t("\uC2DC\uC791\uD558\uAE30")}</button>\n    </div>\n  );\n}'
+                  'import { useTranslation } from "i18nexus";\n\nexport default function Welcome() {\n  const { t } = useTranslation();\n  return (\n    <div>\n      <h1>{t("\uD658\uC601\uD569\uB2C8\uB2E4")}</h1>\n      <p>{t("i18nexus \uC0AC\uC6A9\uBC95")}</p>\n      <button>{t("\uC2DC\uC791\uD558\uAE30")}</button>\n    </div>\n  );\n}',
                 )}
               </code>
             </pre>
@@ -213,7 +213,7 @@ export default function I18nWrapperPage() {
               <pre className="bg-slate-950 rounded-lg p-4 text-sm border border-slate-800 overflow-x-auto">
                 <code className="text-slate-300">
                   {t(
-                    'const title = "\uC81C\uBAA9";\nconst msg = \\`\uC548\uB155\uD558\uC138\uC694 \\${name}\uB2D8\\`;\n\nreturn (\n  <div title="\uD234\uD301 \uD14D\uC2A4\uD2B8">\n    <p>{"\uBB38\uC790\uC5F4"}</p>\n  </div>\n);'
+                    'const title = "\uC81C\uBAA9";\nconst msg = \\`\uC548\uB155\uD558\uC138\uC694 \\${name}\uB2D8\\`;\n\nreturn (\n  <div title="\uD234\uD301 \uD14D\uC2A4\uD2B8">\n    <p>{"\uBB38\uC790\uC5F4"}</p>\n  </div>\n);',
                   )}
                 </code>
               </pre>
@@ -225,7 +225,7 @@ export default function I18nWrapperPage() {
               <pre className="bg-slate-950 rounded-lg p-4 text-sm border border-slate-800 overflow-x-auto">
                 <code className="text-slate-300">
                   {t(
-                    'const { t } = useTranslation();\nconst title = t("\uC81C\uBAA9");\nconst msg = t(\\`\uC548\uB155\uD558\uC138\uC694 \\${name}\uB2D8\\`);\n\nreturn (\n  <div title={t("\uD234\uD301 \uD14D\uC2A4\uD2B8")}>\n    <p>{t("\uBB38\uC790\uC5F4")}</p>\n  </div>\n);'
+                    'const { t } = useTranslation();\nconst title = t("\uC81C\uBAA9");\nconst msg = t(\\`\uC548\uB155\uD558\uC138\uC694 \\${name}\uB2D8\\`);\n\nreturn (\n  <div title={t("\uD234\uD301 \uD14D\uC2A4\uD2B8")}>\n    <p>{t("\uBB38\uC790\uC5F4")}</p>\n  </div>\n);',
                   )}
                 </code>
               </pre>
@@ -292,7 +292,7 @@ export default function I18nWrapperPage() {
                 <pre className="bg-slate-950 rounded p-2 text-xs mt-1 border border-slate-800">
                   <code>
                     {t(
-                      '<div>\uD55C\uAD6D\uC5B4 \uD14D\uC2A4\uD2B8</div> \u2192 <div>{t("\uD55C\uAD6D\uC5B4 \uD14D\uC2A4\uD2B8")}</div>'
+                      '<div>\uD55C\uAD6D\uC5B4 \uD14D\uC2A4\uD2B8</div> \u2192 <div>{t("\uD55C\uAD6D\uC5B4 \uD14D\uC2A4\uD2B8")}</div>',
                     )}
                   </code>
                 </pre>
@@ -305,7 +305,7 @@ export default function I18nWrapperPage() {
                 <pre className="bg-slate-950 rounded p-2 text-xs mt-1 border border-slate-800">
                   <code>
                     {t(
-                      '<div title="\uC81C\uBAA9"> \u2192 <div title={t("\uC81C\uBAA9")}>'
+                      '<div title="\uC81C\uBAA9"> \u2192 <div title={t("\uC81C\uBAA9")}>',
                     )}
                   </code>
                 </pre>
@@ -318,7 +318,7 @@ export default function I18nWrapperPage() {
                 <pre className="bg-slate-950 rounded p-2 text-xs mt-1 border border-slate-800">
                   <code>
                     {t(
-                      'const text = "\uC548\uB155"; \u2192 const text = t("\uC548\uB155");'
+                      'const text = "\uC548\uB155"; \u2192 const text = t("\uC548\uB155");',
                     )}
                   </code>
                 </pre>
@@ -331,7 +331,7 @@ export default function I18nWrapperPage() {
                 <pre className="bg-slate-950 rounded p-2 text-xs mt-1 border border-slate-800">
                   <code>
                     {t(
-                      "const msg = \\`\uC548\uB155 \\${name}\\`; \u2192 const msg = t(\\`\uC548\uB155 \\${name}\\`);"
+                      "const msg = \\`\uC548\uB155 \\${name}\\`; \u2192 const msg = t(\\`\uC548\uB155 \\${name}\\`);",
                     )}
                   </code>
                 </pre>
@@ -374,7 +374,7 @@ export default function I18nWrapperPage() {
             </h4>
             <p className="text-slate-300 mb-2">
               {t(
-                "실제 파일을 수정하기 전에 --dry-run 옵션으로 변경사항을 미리 확인하세요."
+                "실제 파일을 수정하기 전에 --dry-run 옵션으로 변경사항을 미리 확인하세요.",
               )}
             </p>
             <pre className="bg-slate-950 rounded-lg p-3 text-sm">
@@ -389,7 +389,7 @@ export default function I18nWrapperPage() {
             </h4>
             <p className="text-slate-300">
               {t(
-                "Git 등의 버전 관리를 사용하여 변경사항을 되돌릴 수 있도록 준비하세요."
+                "Git 등의 버전 관리를 사용하여 변경사항을 되돌릴 수 있도록 준비하세요.",
               )}
             </p>
           </div>
@@ -401,7 +401,7 @@ export default function I18nWrapperPage() {
             </h4>
             <p className="text-slate-300">
               {t(
-                "처음에는 단일 파일이나 작은 디렉토리부터 시작하여 결과를 확인하세요."
+                "처음에는 단일 파일이나 작은 디렉토리부터 시작하여 결과를 확인하세요.",
               )}
             </p>
           </div>
@@ -413,7 +413,7 @@ export default function I18nWrapperPage() {
             </h4>
             <p className="text-slate-300">
               {t(
-                "자동 변환 후에는 항상 변경된 파일들을 검토하여 의도하지 않은 변경이 없는지 확인하세요."
+                "자동 변환 후에는 항상 변경된 파일들을 검토하여 의도하지 않은 변경이 없는지 확인하세요.",
               )}
             </p>
           </div>
@@ -426,8 +426,8 @@ export default function I18nWrapperPage() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <Link
             href="/docs/i18nexus-tools/extractor"
-            className="bg-slate-900 border border-slate-700 rounded-lg p-6 hover:border-green-500 transition-colors">
-
+            className="bg-slate-900 border border-slate-700 rounded-lg p-6 hover:border-green-500 transition-colors"
+          >
             <h4 className="text-lg font-semibold text-white mb-2 flex items-center">
               <span className="mr-2">🔍</span>
               i18n-extractor →
@@ -438,8 +438,8 @@ export default function I18nWrapperPage() {
           </Link>
           <Link
             href="/cli"
-            className="bg-slate-900 border border-slate-700 rounded-lg p-6 hover:border-blue-500 transition-colors">
-
+            className="bg-slate-900 border border-slate-700 rounded-lg p-6 hover:border-blue-500 transition-colors"
+          >
             <h4 className="text-lg font-semibold text-white mb-2 flex items-center">
               <span className="mr-2">⚡</span>
               {t("전체 워크플로우")} →
@@ -450,6 +450,6 @@ export default function I18nWrapperPage() {
           </Link>
         </div>
       </section>
-    </main>);
-
+    </main>
+  );
 }
