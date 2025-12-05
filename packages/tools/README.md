@@ -56,6 +56,21 @@ npm install --save-dev i18nexus-tools
 
 ### 1. Create Configuration File
 
+You can create `i18nexus.config.json` manually or use the init command:
+
+```bash
+npx i18n-sheets init
+```
+
+This interactive command will:
+
+- Ask if you want namespace separation (separate files vs single file)
+- Create `common` and `constant` namespaces with sample data
+- Generate `i18nexus.config.json` with recommended settings
+- Guide you through Google Sheets credentials setup (optional)
+
+**Manual Configuration:**
+
 Create `i18nexus.config.json` in your project root:
 
 ```json
@@ -345,6 +360,10 @@ This will:
 ```bash
 # Initialize setup
 npx i18n-sheets init
+? Do you want to use namespace separation? (y/N) y
+✅ Created namespace: common
+✅ Created namespace: constant
+✅ Generated i18nexus.config.json
 
 # Create new spreadsheet
 npx i18n-sheets create "My Project Translations"
@@ -383,6 +402,15 @@ npx i18n-sheets share "spreadsheet-id" "user@example.com"
 - `fallbackNamespace` - Default namespaces to load
 - `googleSheets.spreadsheetId` - Google Spreadsheet ID
 - `googleSheets.credentialsPath` - Path to Google credentials JSON
+
+**Note:** The extractor automatically ignores Next.js route conventions:
+
+- `[id]` - Dynamic routes
+- `[...slug]` - Catch-all routes
+- `(group)` - Route groups
+- `_private` - Private folders
+
+Example: `app/(dashboard)/users/[id]/page.tsx` → namespace: `"users"`
 
 ### Support for Any i18n Library
 
