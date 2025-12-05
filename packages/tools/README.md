@@ -1,500 +1,510 @@
 # 🛠️ i18nexus-tools
 
-> **CLI tools for i18nexus - automate i18n workflows with type-safe configuration and Google Sheets integration**
+> Automate your i18n workflow with powerful CLI tools
 
-i18nexus-tools는 i18n 워크플로우를 자동화하는 강력한 CLI 도구 모음입니다. 코드에서 번역 키를 자동으로 추출하고, Google Sheets와 동기화하며, 컴포넌트를 자동으로 변환하는 등 다양한 기능을 제공합니다.
+[English](./README.md) | [한국어](./README.ko.md)
 
 [![NPM Version](https://img.shields.io/npm/v/i18nexus-tools)](https://www.npmjs.com/package/i18nexus-tools)
 [![NPM Downloads](https://img.shields.io/npm/dm/i18nexus-tools)](https://www.npmjs.com/package/i18nexus-tools)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 
-## ✨ 주요 기능
+## ✨ Features
 
-### 🔍 자동 번역 키 추출
+### 🔍 Auto Extract Translation Keys
 
-- 코드베이스에서 번역 키 자동 검색
-- 미사용 키 감지
-- 누락된 번역 찾기
-- 네임스페이스별 분리
+- Automatically detect translation keys in codebase
+- Find unused translation keys
+- Detect missing translations across languages
+- Support for namespace-based organization
 
-### 🔄 Google Sheets 동기화
+### 🔄 Google Sheets Integration
 
-- 번역 파일을 Google Sheets로 업로드
-- Google Sheets에서 번역 다운로드
-- 양방향 동기화
-- 자동 백업
+- Upload translations to Google Sheets
+- Download translations from Google Sheets
+- Bidirectional synchronization
+- Automatic formula escaping for special characters
 
-### 🤖 코드 자동 변환
+### 🤖 Code Transformation
 
-- 하드코딩된 텍스트를 번역 함수로 변환
-- 컴포넌트에 `useTranslation` 자동 추가
-- Babel 및 SWC 지원
-- 타입 안전 변환
+- Auto-wrap hardcoded text with `t()` function
+- Automatically inject `useTranslation` hooks
+- Support for both Babel and SWC
+- Type-safe transformations
 
-### 📊 분석 및 리포트
+### 📊 TypeScript Type Generation
 
-- 번역 완성도 리포트
-- 사용되지 않는 키 리포트
-- 번역 통계
-- 커버리지 분석
+- Generate types from translation files
+- Support for any i18n library via `translationImportSource`
+- Module augmentation for existing libraries
+- Namespace-specific type exports
 
-## 📦 설치
+## 📦 Installation
 
-### 전역 설치 (권장)
+### Global Installation (Recommended)
 
 ```bash
 npm install -g i18nexus-tools
 ```
 
-### 프로젝트별 설치
+### Per-Project Installation
 
 ```bash
 npm install --save-dev i18nexus-tools
 ```
 
-## 🚀 빠른 시작
+## 🚀 Quick Start
 
-### 1. 설정 파일 생성
+### 1. Create Configuration File
 
-프로젝트 루트에 `i18nexus.config.json` 파일을 생성합니다:
+Create `i18nexus.config.json` in your project root:
 
 ```json
 {
-  "defaultLanguage": "ko",
-  "supportedLanguages": ["ko", "en", "ja"],
-  "translationDir": "./locales",
-  "sourceDir": "./app",
+  "sourcePattern": "src/**/*.{ts,tsx}",
+  "translationImportSource": "i18nexus",
+  "languages": ["en", "ko"],
+  "defaultLanguage": "en",
+  "localesDir": "./locales",
+  "fallbackNamespace": ["common", "constant"],
   "googleSheets": {
     "spreadsheetId": "your-spreadsheet-id",
-    "credentialsPath": "./google-credentials.json"
+    "credentialsPath": "./credentials.json"
   }
 }
 ```
 
-### 2. 기본 워크플로우
+### 2. Basic Workflow
 
 ```bash
-# 1. 코드에서 번역 키 추출
-i18n-extractor
+# 1. Auto-wrap hardcoded text
+npx i18n-wrapper -p "src/**/*.tsx"
 
-# 2. Google Sheets에 업로드
-i18n-upload
+# 2. Extract translation keys and generate types
+npx i18n-extractor
 
-# 3. 번역 작업 (Google Sheets에서)
+# 3. Upload to Google Sheets
+npx i18n-upload --spreadsheet-id "your-id"
 
-# 4. 번역 다운로드
-i18n-download
+# 4. Translate in Google Sheets...
+
+# 5. Download translations
+npx i18n-download
 ```
 
-## 📖 CLI 명령어
+## 📋 CLI Commands
 
 ### `i18n-extractor`
 
-코드베이스에서 번역 키를 자동으로 추출합니다.
+Extract translation keys from code and generate TypeScript types.
 
 ```bash
 i18n-extractor [options]
 
 Options:
-  -s, --source <dir>      소스 디렉토리 (기본값: config에서)
-  -o, --output <dir>      출력 디렉토리 (기본값: config에서)
-  -w, --watch             변경 감시 모드
-  -n, --namespace <name>  특정 네임스페이스만 추출
-  --dry-run               실제 파일 변경 없이 미리보기
-  -v, --verbose           상세 로그 출력
+  -p, --pattern <pattern>  Source file pattern
+  -v, --verbose           Show detailed logs
+  -h, --help              Display help
 ```
 
-**예시:**
+**Features:**
+
+- Scans codebase for `t()` function calls
+- Extracts translation keys and variables
+- Generates TypeScript declaration files
+- Creates namespace-specific types (`CommonKeys`, `ConstantKeys`, etc.)
+- Detects unused and missing translations
+
+**Example:**
 
 ```bash
-# 기본 추출
-i18n-extractor
+# Basic extraction
+npx i18n-extractor
 
-# 특정 네임스페이스만 추출
-i18n-extractor -n "page.tsx"
+# With verbose output
+npx i18n-extractor -v
 
-# 감시 모드로 실행
-i18n-extractor --watch
-
-# 미리보기 (실제 변경 없음)
-i18n-extractor --dry-run
+# Custom pattern
+npx i18n-extractor -p "app/**/*.{ts,tsx}"
 ```
 
-**출력 예시:**
+**Output:**
 
 ```
-🔍 Extracting translation keys...
-
-✅ Found 15 keys in app/page.tsx
-✅ Found 8 keys in app/components/Header.tsx
-✅ Found 12 keys in app/components/Footer.tsx
-
-📊 Summary:
-  - Total keys: 35
-  - New keys: 5
-  - Unused keys: 2
-  - Missing translations: 3
-
-⚠️  Unused keys:
-  - old.button.submit (ko.json)
-  - deprecated.message (en.json)
-
-❌ Missing translations:
-  - new.feature.title (en.json, ja.json)
-  - new.feature.description (ja.json)
-
-✨ Done!
+✅ Generated simplified index.ts (v3.2 zero-config style)
+📝 Generating TypeScript type definitions...
+✅ Generated type definitions at: locales/types/i18nexus.d.ts
+   - 21 namespaces
+   - 1039 total keys
+   - 5 keys with interpolation variables
 ```
-
-### `i18n-upload`
-
-번역 파일을 Google Sheets에 업로드합니다.
-
-```bash
-i18n-upload [options]
-
-Options:
-  -s, --source <dir>      번역 파일 디렉토리
-  -i, --spreadsheet <id>  Spreadsheet ID
-  -c, --credentials <path> Google 인증 파일 경로
-  --sheet <name>          특정 시트만 업로드
-  --merge                 기존 데이터와 병합
-  -v, --verbose           상세 로그 출력
-```
-
-**예시:**
-
-```bash
-# 기본 업로드
-i18n-upload
-
-# 특정 스프레드시트에 업로드
-i18n-upload -i "1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms"
-
-# 기존 데이터와 병합
-i18n-upload --merge
-```
-
-### `i18n-download`
-
-Google Sheets에서 번역을 다운로드합니다.
-
-```bash
-i18n-download [options]
-
-Options:
-  -o, --output <dir>      출력 디렉토리
-  -i, --spreadsheet <id>  Spreadsheet ID
-  -c, --credentials <path> Google 인증 파일 경로
-  --sheet <name>          특정 시트만 다운로드
-  --backup                다운로드 전 백업 생성
-  -v, --verbose           상세 로그 출력
-```
-
-**예시:**
-
-```bash
-# 기본 다운로드
-i18n-download
-
-# 백업과 함께 다운로드
-i18n-download --backup
-
-# 특정 시트만 다운로드
-i18n-download --sheet "translations-ko"
-```
-
-### `i18n-download-force`
-
-로컬 변경사항을 무시하고 강제로 다운로드합니다.
-
-```bash
-i18n-download-force [options]
-
-Options:
-  -o, --output <dir>      출력 디렉토리
-  --no-backup             백업 생성 안 함
-  -v, --verbose           상세 로그 출력
-```
-
-**경고:** 이 명령어는 로컬의 모든 변경사항을 덮어씁니다.
 
 ### `i18n-wrapper`
 
-컴포넌트를 자동으로 변환하여 번역 함수를 추가합니다.
+Automatically wrap hardcoded text with translation functions.
 
 ```bash
-i18n-wrapper [options] <files...>
+i18n-wrapper [options]
 
 Options:
-  -e, --engine <engine>   변환 엔진 (babel|swc) (기본값: babel)
-  -n, --namespace <name>  네임스페이스 지정
-  --dry-run               실제 파일 변경 없이 미리보기
-  --backup                변경 전 백업 생성
-  -v, --verbose           상세 로그 출력
+  -p, --pattern <pattern>  Source file pattern (default: "src/**/*.{js,jsx,ts,tsx}")
+  -h, --help              Display help
 ```
 
-**예시:**
+**Features:**
+
+- Detects Korean/English text in JSX
+- Wraps text with `t()` function
+- Automatically adds `useTranslation()` import
+- Preserves existing `t()` calls
+- Infers namespace from file location
+
+**Example:**
 
 ```bash
-# 단일 파일 변환
-i18n-wrapper app/page.tsx
+# Basic wrapping
+npx i18n-wrapper
 
-# 여러 파일 변환
-i18n-wrapper app/**/*.tsx
-
-# SWC 엔진 사용
-i18n-wrapper -e swc app/page.tsx
-
-# 미리보기
-i18n-wrapper --dry-run app/page.tsx
+# Custom pattern
+npx i18n-wrapper -p "app/**/*.tsx"
 ```
 
-**변환 예시:**
-
-**변환 전:**
+**Before:**
 
 ```tsx
 export default function Page() {
   return (
     <div>
-      <h1>환영합니다</h1>
-      <p>안녕하세요, 사용자님</p>
+      <h1>Welcome</h1>
+      <p>Hello, User</p>
     </div>
   );
 }
 ```
 
-**변환 후:**
+**After:**
 
 ```tsx
 "use client";
 import { useTranslation } from "i18nexus";
 
 export default function Page() {
-  const { t } = useTranslation();
+  const { t } = useTranslation("page");
   return (
     <div>
-      <h1>{t("환영합니다")}</h1>
-      <p>{t("안녕하세요, 사용자님")}</p>
+      <h1>{t("Welcome")}</h1>
+      <p>{t("Hello, User")}</p>
     </div>
   );
 }
 ```
 
-### `i18n-wrapper-swc`
+### `i18n-upload`
 
-SWC 엔진을 사용하여 빠르게 변환합니다 (대규모 프로젝트에 적합).
+Upload translation files to Google Sheets.
 
 ```bash
-i18n-wrapper-swc [options] <files...>
+i18n-upload [options]
 
 Options:
-  -w, --workers <num>     워커 수 (기본값: CPU 코어 수)
-  -n, --namespace <name>  네임스페이스 지정
-  --dry-run               실제 파일 변경 없이 미리보기
-  -v, --verbose           상세 로그 출력
+  -c, --credentials <path>     Path to credentials file (default: "./credentials.json")
+  -s, --spreadsheet-id <id>    Google Spreadsheet ID (required)
+  -l, --locales-dir <path>     Path to locales directory (default: "./locales")
+  -n, --sheet-name <name>      Sheet name (auto-detected from namespaces)
+  -a, --auto-translate         Enable auto-translation (GOOGLETRANSLATE formula)
+  -f, --force                  Force mode: Clear and re-upload all
+  -h, --help                   Display help
+```
+
+**Modes:**
+
+1. **Incremental Upload (Default)**: Only uploads new keys
+
+```bash
+npx i18n-upload -s "your-spreadsheet-id"
+```
+
+2. **Force Upload**: Clears existing data and re-uploads everything
+
+```bash
+npx i18n-upload -s "your-spreadsheet-id" --force
+```
+
+3. **Auto-translate Mode**: Uses GOOGLETRANSLATE formula for English
+
+```bash
+npx i18n-upload -s "your-spreadsheet-id" --auto-translate
+```
+
+**Features:**
+
+- Namespace = Sheet name (automatic detection)
+- Formula escaping for special characters: `+`, `-`, `=`, `@`, `()`, dates, times
+- Creates separate sheet for each namespace
+- Preserves existing translations
+
+**Example Output:**
+
+```
+📤 Starting Google Sheets upload process...
+
+📦 Detected 3 namespace(s): common, constant, home
+
+📤 Uploading namespace 'common' to sheet 'common'...
+✅ Completed upload for namespace 'common'
+
+📤 Uploading namespace 'constant' to sheet 'constant'...
+✅ Completed upload for namespace 'constant'
+
+📤 Uploading namespace 'home' to sheet 'home'...
+✅ Completed upload for namespace 'home'
+```
+
+### `i18n-download`
+
+Download translations from Google Sheets (incremental - only adds new keys).
+
+```bash
+i18n-download [options]
+
+Options:
+  -c, --credentials <path>     Path to credentials file
+  -s, --spreadsheet-id <id>    Google Spreadsheet ID (required)
+  -l, --locales-dir <path>     Path to locales directory
+  -n, --sheet-name <name>      Sheet name
+  --languages <langs>          Comma-separated languages (default: "en,ko")
+  -h, --help                   Display help
+```
+
+**Example:**
+
+```bash
+# Basic download (incremental)
+npx i18n-download -s "your-spreadsheet-id"
+
+# With specific languages
+npx i18n-download -s "your-spreadsheet-id" --languages "en,ko,ja"
+```
+
+**Note:** This command only adds new translations. Existing translations are preserved.
+
+### `i18n-download-force`
+
+Force download all translations, overwriting local files.
+
+```bash
+i18n-download-force [options]
+
+Options:
+  -c, --credentials <path>     Path to credentials file
+  -s, --spreadsheet-id <id>    Google Spreadsheet ID (required)
+  -l, --locales-dir <path>     Path to locales directory
+  -n, --sheet-name <name>      Sheet name
+  --languages <langs>          Comma-separated languages
+  -h, --help                   Display help
+```
+
+**⚠️ Warning:** This overwrites all local translations.
+
+**Example:**
+
+```bash
+npx i18n-download-force -s "your-spreadsheet-id"
 ```
 
 ### `i18n-sheets`
 
-Google Sheets API 설정 및 관리를 위한 도구입니다.
+Manage Google Sheets integration.
 
 ```bash
 i18n-sheets <command>
 
 Commands:
-  init                    Google Sheets 초기 설정
-  auth                    인증 확인
-  create                  새 스프레드시트 생성
-  list                    스프레드시트 목록 조회
-  info <id>               스프레드시트 정보 확인
-  share <id> <email>      스프레드시트 공유
+  init                    Initialize Google Sheets setup
+  auth                    Verify authentication
+  create                  Create new spreadsheet
+  list                    List spreadsheets
+  info <id>               Get spreadsheet info
+  share <id> <email>      Share spreadsheet
 ```
 
-**예시:**
+**Initialize Setup:**
 
 ```bash
-# 초기 설정
-i18n-sheets init
-
-# 새 스프레드시트 생성
-i18n-sheets create "My Project Translations"
-
-# 스프레드시트 공유
-i18n-sheets share "spreadsheet-id" "user@example.com"
+npx i18n-sheets init
 ```
 
-### `i18n-clean-legacy`
+This will:
 
-사용되지 않는 레거시 번역 키를 제거합니다.
+1. Ask if you want namespace separation (separate files vs single file)
+2. Create `common` and `constant` namespaces with sample data
+3. Generate `i18nexus.config.json`
+4. Set up Google Sheets credentials (if provided)
+
+**Example:**
 
 ```bash
-i18n-clean-legacy [options]
+# Initialize setup
+npx i18n-sheets init
 
-Options:
-  -s, --source <dir>      소스 디렉토리
-  -t, --translations <dir> 번역 파일 디렉토리
-  --dry-run               실제 파일 변경 없이 미리보기
-  --backup                삭제 전 백업 생성
-  -v, --verbose           상세 로그 출력
+# Create new spreadsheet
+npx i18n-sheets create "My Project Translations"
+
+# Share spreadsheet
+npx i18n-sheets share "spreadsheet-id" "user@example.com"
 ```
 
-## ⚙️ 설정
+## ⚙️ Configuration
 
 ### i18nexus.config.json
 
 ```json
 {
-  "defaultLanguage": "ko",
-  "supportedLanguages": ["ko", "en", "ja", "zh"],
-  "translationDir": "./locales",
-  "sourceDir": "./app",
+  "sourcePattern": "src/**/*.{ts,tsx}",
+  "translationImportSource": "i18nexus",
+  "languages": ["en", "ko"],
+  "defaultLanguage": "en",
+  "localesDir": "./locales",
+  "fallbackNamespace": ["common", "constant"],
 
   "googleSheets": {
     "spreadsheetId": "your-spreadsheet-id",
-    "credentialsPath": "./google-credentials.json",
-    "sheetNamePattern": "translations-{lang}",
-    "keyColumn": "A",
-    "valueColumn": "B"
-  },
-
-  "extractor": {
-    "patterns": [
-      "t\\(['\"`]([^'\"`]+)['\"`]",
-      "getServerTranslation\\(['\"`]([^'\"`]+)['\"`]"
-    ],
-    "excludeDirs": ["node_modules", ".next", "dist"],
-    "fileExtensions": [".tsx", ".ts", ".jsx", ".js"]
-  },
-
-  "wrapper": {
-    "engine": "babel",
-    "importStatement": "import { useTranslation } from 'i18nexus';",
-    "hookName": "useTranslation",
-    "functionName": "t",
-    "preserveComments": true
+    "credentialsPath": "./credentials.json"
   }
 }
 ```
 
-## 🔐 Google Sheets 설정
+**Options:**
 
-### 1. Google Cloud Console에서 프로젝트 생성
+- `sourcePattern` - Glob pattern for source files to scan
+- `translationImportSource` - Import path for hooks (e.g., `"i18nexus"`, `"@/app/i18n/client"`, `"react-i18next"`)
+- `languages` - Array of language codes
+- `defaultLanguage` - Default language code
+- `localesDir` - Directory for translation files
+- `fallbackNamespace` - Default namespaces to load
+- `googleSheets.spreadsheetId` - Google Spreadsheet ID
+- `googleSheets.credentialsPath` - Path to Google credentials JSON
 
-1. [Google Cloud Console](https://console.cloud.google.com/)에 접속
-2. 새 프로젝트 생성
-3. Google Sheets API 활성화
-4. 서비스 계정 생성
+### Support for Any i18n Library
 
-### 2. 인증 파일 다운로드
+The `translationImportSource` option allows you to use these tools with any i18n library:
 
-1. 서비스 계정의 JSON 키 생성
-2. 다운로드한 파일을 프로젝트 루트에 저장 (예: `google-credentials.json`)
-3. `.gitignore`에 추가하여 버전 관리에서 제외
-
-```gitignore
-google-credentials.json
-```
-
-### 3. 스프레드시트 권한 설정
-
-1. Google Sheets에서 새 스프레드시트 생성
-2. 서비스 계정 이메일에 편집 권한 부여
-3. 스프레드시트 ID를 설정 파일에 추가
-
-### 4. 초기 설정
-
-```bash
-i18n-sheets init
-```
-
-## 📊 워크플로우 예시
-
-### 시나리오 1: 새 프로젝트 시작
-
-```bash
-# 1. 설정 파일 생성
-cat > i18nexus.config.json << EOF
-{
-  "defaultLanguage": "ko",
-  "supportedLanguages": ["ko", "en"],
-  "translationDir": "./locales",
-  "sourceDir": "./app"
-}
-EOF
-
-# 2. 기존 코드에서 번역 키 추출
-i18n-extractor
-
-# 3. Google Sheets 설정
-i18n-sheets init
-
-# 4. 번역 업로드
-i18n-upload
-```
-
-### 시나리오 2: 기존 컴포넌트 마이그레이션
-
-```bash
-# 1. 컴포넌트 자동 변환
-i18n-wrapper app/page.tsx --backup
-
-# 2. 번역 키 추출
-i18n-extractor
-
-# 3. 번역 업로드
-i18n-upload --merge
-```
-
-### 시나리오 3: 번역 업데이트
-
-```bash
-# 1. 최신 번역 다운로드
-i18n-download --backup
-
-# 2. 코드와 동기화
-i18n-extractor
-
-# 3. 누락된 번역 확인
-i18n-extractor --verbose
-```
-
-### 시나리오 4: 레거시 정리
-
-```bash
-# 1. 사용되지 않는 키 찾기
-i18n-extractor --dry-run
-
-# 2. 레거시 키 제거
-i18n-clean-legacy --backup
-
-# 3. 변경사항 업로드
-i18n-upload
-```
-
-## 🔧 고급 사용법
-
-### 커스텀 스크립트 통합
-
-`package.json`에 스크립트 추가:
+**For react-i18next:**
 
 ```json
 {
-  "scripts": {
-    "i18n:extract": "i18n-extractor",
-    "i18n:upload": "i18n-upload --merge",
-    "i18n:download": "i18n-download --backup",
-    "i18n:sync": "npm run i18n:extract && npm run i18n:upload",
-    "i18n:update": "npm run i18n:download && npm run i18n:extract",
-    "i18n:clean": "i18n-clean-legacy --backup"
-  }
+  "translationImportSource": "react-i18next"
 }
 ```
 
-### CI/CD 통합
+**For custom paths:**
 
-#### GitHub Actions 예시
+```json
+{
+  "translationImportSource": "@/app/i18n/client"
+}
+```
+
+The generated types will automatically augment the correct module.
+
+## 🔐 Google Sheets Setup
+
+### 1. Create Google Cloud Project
+
+1. Go to [Google Cloud Console](https://console.cloud.google.com/)
+2. Create a new project
+3. Enable Google Sheets API
+4. Create a service account
+
+### 2. Download Credentials
+
+1. Generate JSON key for service account
+2. Save as `credentials.json` in project root
+3. Add to `.gitignore`:
+
+```gitignore
+credentials.json
+```
+
+### 3. Share Spreadsheet
+
+1. Create a new Google Spreadsheet
+2. Share with service account email (found in credentials.json)
+3. Grant "Editor" permission
+4. Copy spreadsheet ID from URL
+
+### 4. Initialize
+
+```bash
+npx i18n-sheets init
+```
+
+## 📊 Workflows
+
+### Workflow 1: New Project Setup
+
+```bash
+# 1. Initialize configuration
+npx i18n-sheets init
+
+# 2. Auto-wrap existing hardcoded text
+npx i18n-wrapper -p "src/**/*.tsx"
+
+# 3. Extract translation keys
+npx i18n-extractor
+
+# 4. Upload to Google Sheets
+npx i18n-upload -s "your-spreadsheet-id"
+
+# 5. Translate in Google Sheets
+
+# 6. Download translations
+npx i18n-download
+```
+
+### Workflow 2: Update Translations
+
+```bash
+# 1. Extract new keys
+npx i18n-extractor
+
+# 2. Upload new keys only (incremental)
+npx i18n-upload -s "your-spreadsheet-id"
+
+# 3. Translate new keys in Google Sheets
+
+# 4. Download (incremental)
+npx i18n-download
+```
+
+### Workflow 3: Type-Safe Constants
+
+```bash
+# 1. Add constants to constant namespace
+# locales/constant/en.json
+{
+  "category.all": "All",
+  "category.tech": "Technology",
+  "category.design": "Design"
+}
+
+# 2. Extract and generate types
+npx i18n-extractor
+
+# 3. Use in code with type safety
+import type { ConstantKeys } from "@/locales/types/i18nexus";
+
+const CATEGORIES: ConstantKeys[] = [
+  "category.all",
+  "category.tech",
+  "category.design"
+];
+```
+
+## 🎯 Advanced Usage
+
+### CI/CD Integration
+
+#### GitHub Actions Example
 
 ```yaml
 name: i18n Sync
@@ -509,7 +519,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Setup Node
+      - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
           node-version: "18"
@@ -521,77 +531,117 @@ jobs:
         run: npx i18n-extractor
 
       - name: Upload to Google Sheets
-        run: npx i18n-upload
+        run: npx i18n-upload -s "${{ secrets.SPREADSHEET_ID }}"
         env:
           GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }}
 ```
 
-### 프로그래매틱 사용
+### Custom Scripts
 
-```typescript
-import { extractor, uploader, downloader } from "i18nexus-tools";
+Add to `package.json`:
 
-// 번역 키 추출
-const extractResult = await extractor.extract({
-  sourceDir: "./app",
-  outputDir: "./locales",
-  verbose: true,
-});
-
-console.log(`Extracted ${extractResult.totalKeys} keys`);
-
-// Google Sheets에 업로드
-await uploader.upload({
-  translationDir: "./locales",
-  spreadsheetId: "your-id",
-  credentialsPath: "./credentials.json",
-});
-
-// 다운로드
-await downloader.download({
-  outputDir: "./locales",
-  spreadsheetId: "your-id",
-  credentialsPath: "./credentials.json",
-});
+```json
+{
+  "scripts": {
+    "i18n:extract": "i18n-extractor",
+    "i18n:wrap": "i18n-wrapper -p 'src/**/*.tsx'",
+    "i18n:upload": "i18n-upload --merge",
+    "i18n:download": "i18n-download",
+    "i18n:sync": "npm run i18n:extract && npm run i18n:upload",
+    "i18n:update": "npm run i18n:download && npm run i18n:extract"
+  }
+}
 ```
 
-## 🧪 테스트
+### Formula Escaping
+
+The tools automatically escape special characters that Google Sheets might interpret as formulas or special formats:
+
+**Escaped Characters:**
+
+- `+` (plus sign)
+- `-` (minus sign at start)
+- `=` (equals sign)
+- `@` (at sign)
+- `(` and `)` (parentheses)
+- Date-like formats (e.g., `1-2`, `12/31`)
+- Time-like formats (e.g., `12:30`)
+- Scientific notation (e.g., `1e5`)
+
+**Example:**
+
+```json
+// Your translation
+{
+  "untitled": "(Untitled)",
+  "show_more": "+ Show More",
+  "date": "2024-01-01"
+}
+```
+
+These are uploaded with a leading `'` to prevent formula interpretation, and the `'` is automatically removed during download.
+
+## 🔗 Related
+
+- [i18nexus Core](../core) - Core i18n library
+- [Demo App](../../apps/demo) - Live examples and documentation
+- [Type Safety Guide](../../TECH_BLOG_TYPE_SAFETY.md) - Deep dive into type safety
+
+## 🧪 Testing
 
 ```bash
-# 모든 테스트 실행
+# Run tests
 npm test
 
-# 감시 모드
+# Watch mode
 npm run test:watch
 
-# 커버리지
+# Coverage
 npm run test:coverage
 ```
 
-## 🤝 기여하기
+## 🤝 Contributing
 
-기여를 환영합니다! 다음 방법으로 참여할 수 있습니다:
+Contributions are welcome! Here's how you can help:
 
-1. Fork this repository
+1. Fork the repository
 2. Create your feature branch (`git checkout -b feature/amazing-feature`)
 3. Commit your changes (`git commit -m 'Add some amazing feature'`)
 4. Push to the branch (`git push origin feature/amazing-feature`)
 5. Open a Pull Request
 
-## 📄 라이선스
+## 📄 License
 
-MIT License - 자세한 내용은 [LICENSE](./LICENSE) 파일을 참조하세요.
+MIT License - see the [LICENSE](./LICENSE) file for details.
 
-## 📞 지원
+## 📞 Support
 
-- 🐛 [이슈 리포트](https://github.com/i18n-global/i18nexus-tools/issues)
-- 💬 [토론](https://github.com/i18n-global/i18nexus-tools/discussions)
+- 🐛 [Report Issues](https://github.com/i18n-global/i18nexus-tools/issues)
+- 💬 [Discussions](https://github.com/i18n-global/i18nexus-tools/discussions)
 - 📧 Email: support@i18nexus.com
 
-## 🔗 관련 패키지
+## 📈 Version History
 
-- [i18nexus](../core/README.md) - Core i18n library
-- [i18nexus-demo](../../apps/demo/README.md) - Demo application
+### v2.2.0 (Latest)
+
+- ✨ Removed wrapper's redundant generic type generation
+- 🔄 Type inference improvements
+- 📚 Documentation updates
+
+### v2.1.0
+
+- ✨ `translationImportSource` support for any i18n library
+- 🌍 Google Sheets formula escaping
+- 📦 Namespace-based sheet organization
+- 🛠️ `i18n-sheets init` improvements
+
+### v2.0.0
+
+- 🎯 Complete rewrite with TypeScript
+- ⚡ Performance improvements
+- 🔒 Enhanced type safety
+
+See [CHANGELOG.md](./CHANGELOG.md) for full version history.
 
 ---
 

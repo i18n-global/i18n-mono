@@ -1,51 +1,52 @@
 # 🌐 i18nexus
 
-> **Type-safe React i18n toolkit with intelligent automation and SSR support**
+> Type-safe i18n for React with zero runtime overhead
 
-i18nexus는 React 애플리케이션을 위한 현대적이고 타입 안전한 국제화(i18n) 라이브러리입니다. TypeScript의 강력한 타입 시스템을 활용하여 번역 키와 값을 자동으로 검증하고, Next.js의 최신 기능(App Router, Server Components)을 완벽하게 지원합니다.
+[English](./README.md) | [한국어](./README.ko.md)
 
 [![NPM Version](https://img.shields.io/npm/v/i18nexus)](https://www.npmjs.com/package/i18nexus)
 [![NPM Downloads](https://img.shields.io/npm/dm/i18nexus)](https://www.npmjs.com/package/i18nexus)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 [![TypeScript](https://img.shields.io/badge/TypeScript-Ready-blue.svg)](https://www.typescriptlang.org/)
 
-## ✨ 주요 특징
+## ✨ Features
 
-### 🔒 완벽한 타입 안정성
+### 🔒 Full Type Safety
 
-- 번역 키 자동 완성 및 타입 체크
-- 번역 값의 매개변수 타입 검증
-- 컴파일 타임 오류 감지
+- Auto-completion for translation keys
+- Compile-time validation for translation keys and variables
+- Type inference without explicit generics
+- Interpolation variable type checking
 
-### ⚡ 현대적인 React 지원
+### ⚡ Modern React Support
 
-- Next.js 14+ App Router 지원
-- Server Components에서의 번역
-- Client Components에서의 번역
-- React Server Actions 지원
+- Next.js 14+ App Router support
+- Server Components translation
+- Client Components translation
+- React Server Actions support
 
-### 🌍 유연한 네임스페이스
+### 🌍 Flexible Namespace Management
 
-- 페이지별 번역 파일 분리
-- 컴포넌트별 번역 관리
-- 동적 네임스페이스 로딩
-- 폴백 네임스페이스 지원
+- Page-based translation file organization
+- Component-based translation management
+- Dynamic namespace loading
+- Fallback namespace support
 
-### 🎯 개발자 친화적
+### 🎯 Developer Friendly
 
-- 제로 설정으로 빠른 시작
-- 직관적인 API 디자인
-- 상세한 TypeScript 타입
-- 풍부한 문서와 예제
+- Zero configuration for quick start
+- Intuitive API design
+- Comprehensive TypeScript types
+- Rich documentation and examples
 
-### 🔥 성능 최적화
+### 🔥 Performance Optimized
 
-- 경량 번들 사이즈
-- 지연 로딩 지원
-- 효율적인 메모리 사용
-- Hot Module Replacement 지원
+- Lightweight bundle size
+- Lazy loading support
+- Efficient memory usage
+- Hot Module Replacement support
 
-## 📦 설치
+## 📦 Installation
 
 ```bash
 npm install i18nexus
@@ -55,88 +56,76 @@ yarn add i18nexus
 pnpm add i18nexus
 ```
 
-## 🚀 빠른 시작
+## 🚀 Quick Start
 
-### 1. 번역 파일 생성
+### 1. Create Translation Files
 
-```typescript
-// lib/i18n.ts
-import { createI18n } from "i18nexus";
+Create translation files in `locales/[namespace]/[lang].json`:
 
-export const translations = {
-  common: {
-    ko: {
-      환영합니다: "환영합니다",
-      안녕하세요: "안녕하세요, {{name}}님",
-    },
-    en: {
-      환영합니다: "Welcome",
-      안녕하세요: "Hello, {{name}}",
-    },
-  },
-  home: {
-    ko: {
-      시작하기: "시작하기",
-      "문서 보기": "문서 보기",
-    },
-    en: {
-      시작하기: "Get Started",
-      "문서 보기": "View Docs",
-    },
-  },
-} as const;
-
-// 타입 안전한 i18n 시스템 생성
-export const i18n = createI18n(translations, {
-  fallbackNamespace: "common",
-});
+```
+locales/
+├── common/
+│   ├── en.json
+│   └── ko.json
+└── home/
+    ├── en.json
+    └── ko.json
 ```
 
-### 2. Provider 설정
+```json
+// locales/common/en.json
+{
+  "welcome": "Welcome",
+  "hello": "Hello, {{name}}"
+}
+```
 
-Next.js App Router의 루트 레이아웃에 Provider를 추가합니다:
+```json
+// locales/common/ko.json
+{
+  "welcome": "환영합니다",
+  "hello": "안녕하세요, {{name}}님"
+}
+```
+
+### 2. Setup Provider
+
+For Next.js App Router, add Provider to your root layout:
 
 ```tsx
 // app/layout.tsx
-import { headers } from "next/headers";
-import { getServerLanguage } from "i18nexus/server";
-import { i18n } from "@/lib/i18n";
+import { I18nProvider } from "i18nexus";
 
-export default async function RootLayout({
+export default function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const headersList = await headers();
-  const language = getServerLanguage(headersList);
-
   return (
-    <html lang={language}>
+    <html>
       <body>
-        <i18n.I18nProvider initialLanguage={language}>
-          {children}
-        </i18n.I18nProvider>
+        <I18nProvider initialLanguage="en">{children}</I18nProvider>
       </body>
     </html>
   );
 }
 ```
 
-### 3. 컴포넌트에서 사용
+### 3. Use in Components
 
 #### Client Component
 
 ```tsx
 "use client";
-import { i18n } from "@/lib/i18n";
+import { useTranslation } from "i18nexus";
 
-export default function WelcomeClient() {
-  const { t } = i18n.useTranslation("common");
+export default function Welcome() {
+  const { t } = useTranslation("common");
 
   return (
     <div>
-      <h1>{t("환영합니다")}</h1>
-      <p>{t("안녕하세요", { name: "홍길동" })}</p>
+      <h1>{t("welcome")}</h1>
+      <p>{t("hello", { name: "John" })}</p>
     </div>
   );
 }
@@ -145,295 +134,352 @@ export default function WelcomeClient() {
 #### Server Component
 
 ```tsx
-import { i18n } from "@/lib/i18n";
+import { getTranslation } from "i18nexus/server";
 
 export default async function WelcomeServer() {
-  const { t } = await i18n.getServerTranslation("common");
+  const { t } = await getTranslation("common");
 
   return (
     <div>
-      <h1>{t("환영합니다")}</h1>
-      <p>{t("안녕하세요", { name: "홍길동" })}</p>
+      <h1>{t("welcome")}</h1>
+      <p>{t("hello", { name: "John" })}</p>
     </div>
   );
 }
 ```
 
-## 📖 API 레퍼런스
+## 📖 API Reference
 
-### `createI18n(translations, options?)`
+### `useTranslation(namespace)`
 
-타입 안전한 i18n 시스템을 생성합니다.
+Hook for using translations in Client Components.
 
-```typescript
-const i18n = createI18n(translations, {
-  fallbackNamespace: "common",
-  lazy: true,
-  loadNamespace: async (namespace, lang) => {
-    const module = await import(`./locales/${namespace}/${lang}.json`);
-    return module.default;
-  },
-});
-```
+**Parameters:**
 
-**반환값:**
+- `namespace` (string): The namespace to load translations from
 
-- `I18nProvider` - Provider 컴포넌트
-- `useTranslation` - Client Component용 훅
-- `getServerTranslation` - Server Component용 함수
+**Returns:**
 
-### `i18n.useTranslation(namespace?)`
+- `t(key, variables?, styles?)` - Translation function
+- `currentLanguage` (or `lng`) - Current language code
+- `isReady` - Whether translations are loaded
 
-Client Component에서 번역을 사용하는 Hook입니다.
+**Example:**
 
 ```tsx
-const { t } = i18n.useTranslation("common");
+const { t, currentLanguage, isReady } = useTranslation("home");
+
+// Basic usage
+t("title"); // ✅ Type-safe
+
+// With variables
+t("greeting", { name: "Alice" }); // ✅ Type-safe
+
+// With styles (returns ReactElement)
+t("styled", {}, { bold: { fontWeight: "bold" } });
 ```
 
-**반환값:**
+### `getTranslation(namespace)`
 
-- `t(key, variables?)` - 번역 함수
+Function for getting translations in Server Components.
 
-### `i18n.getServerTranslation(namespace?)`
+**Parameters:**
 
-Server Component에서 번역을 가져오는 함수입니다.
+- `namespace` (string): The namespace to load translations from
+
+**Returns:**
+
+- `t(key, variables?, styles?)` - Translation function
+- `language` (or `lng`) - Current language code
+
+**Example:**
 
 ```tsx
-const { t, language } = await i18n.getServerTranslation("common");
+const { t, language } = await getTranslation("home");
+
+console.log(language); // "en" or "ko"
+t("title"); // ✅ Type-safe
 ```
-
-**반환값:**
-
-- `t(key, variables?)` - 번역 함수
-- `language` - 현재 언어 (자동 감지)
 
 ### `useLanguageSwitcher()`
 
-언어 전환 기능을 제공하는 Hook입니다.
+Hook for language switching functionality.
+
+**Returns:**
+
+- `currentLanguage` - Current language code
+- `changeLanguage(lang)` - Function to change language
+- `availableLanguages` - List of available languages
+
+**Example:**
 
 ```tsx
-const { currentLanguage, changeLanguage, availableLanguages } =
-  useLanguageSwitcher();
+"use client";
+import { useLanguageSwitcher } from "i18nexus";
+
+export function LanguageSwitcher() {
+  const { currentLanguage, changeLanguage, availableLanguages } =
+    useLanguageSwitcher();
+
+  return (
+    <select
+      value={currentLanguage}
+      onChange={(e) => changeLanguage(e.target.value)}
+    >
+      {availableLanguages.map((lang) => (
+        <option key={lang} value={lang}>
+          {lang.toUpperCase()}
+        </option>
+      ))}
+    </select>
+  );
+}
 ```
 
-**반환값:**
+## 🎨 Advanced Usage
 
-- `currentLanguage` - 현재 언어
-- `changeLanguage(lang)` - 언어 변경 함수
-- `availableLanguages` - 사용 가능한 언어 목록
+### Namespace Organization
 
-## 🎨 고급 사용법
-
-### 네임스페이스 사용
-
-페이지별 또는 기능별로 번역 파일을 분리할 수 있습니다:
+Organize translation files by page or feature:
 
 ```
 locales/
-├── ko.json              # 공통 번역
-├── en.json
-├── page.tsx/
-│   ├── ko.json          # 페이지 전용 번역
-│   └── en.json
-└── components/
-    ├── header/
-    │   ├── ko.json      # 헤더 컴포넌트 전용 번역
-    │   └── en.json
+├── common/          # Shared translations
+│   ├── en.json
+│   └── ko.json
+├── constant/        # Constant values (dropdowns, labels)
+│   ├── en.json
+│   └── ko.json
+└── home/            # Page-specific translations
+    ├── en.json
+    └── ko.json
 ```
 
-사용 예시:
+### Type-Safe Constants
+
+Use namespace-specific types for type-safe constants:
 
 ```tsx
-// 네임스페이스 지정
-const { t } = useTranslation("page.tsx");
+import { useTranslation } from "i18nexus";
+import type { ConstantKeys } from "@/locales/types/i18nexus";
 
-// 또는 동적 로딩
-const { t, loadNamespace } = useTranslation();
+const CATEGORY_OPTIONS: ConstantKeys[] = [
+  "category.all",
+  "category.tech",
+  "category.design",
+];
 
-useEffect(() => {
-  loadNamespace("components/header");
-}, []);
-```
+function CategoryDropdown() {
+  const { t } = useTranslation("constant");
 
-### 변수 보간
-
-번역 텍스트에 변수를 삽입할 수 있습니다:
-
-```json
-{
-  "welcome": "환영합니다, {{name}}님!",
-  "stats": "{{count}}개의 항목이 있습니다"
+  return (
+    <select>
+      {CATEGORY_OPTIONS.map((key) => (
+        <option key={key} value={key}>
+          {t(key)} {/* ✅ Type-safe */}
+        </option>
+      ))}
+    </select>
+  );
 }
 ```
 
+### Dynamic Keys
+
+For dynamic keys, explicitly type them as `ConstantKeys`:
+
 ```tsx
-t("welcome", { name: "홍길동" }); // "환영합니다, 홍길동님!"
-t("stats", { count: 5 }); // "5개의 항목이 있습니다"
-```
+import type { ConstantKeys } from "@/locales/types/i18nexus";
 
-### 복수형 처리
+function DynamicLabel({ labelKey }: { labelKey: string }) {
+  const { t } = useTranslation("constant");
 
-```json
-{
-  "items": {
-    "zero": "항목이 없습니다",
-    "one": "{{count}}개의 항목",
-    "other": "{{count}}개의 항목들"
-  }
+  // Cast dynamic key to ConstantKeys
+  return <span>{t(labelKey as ConstantKeys)}</span>;
 }
 ```
 
-```tsx
-t("items", { count: 0 }); // "항목이 없습니다"
-t("items", { count: 1 }); // "1개의 항목"
-t("items", { count: 5 }); // "5개의 항목들"
-```
+### Passing `t` as Props
 
-### 쿠키 기반 언어 설정
-
-사용자가 선택한 언어는 자동으로 쿠키에 저장됩니다:
+When passing `t` as a prop, it automatically defaults to the `common` namespace:
 
 ```tsx
-const { changeLanguage } = useTranslation();
+// Parent component
+function ParentComponent() {
+  const { t } = useTranslation("common"); // Explicit namespace
+  return <ChildComponent t={t} />;
+}
 
-// 언어 변경 (자동으로 쿠키에 저장)
-changeLanguage("en");
-
-// 페이지 새로고침 시 저장된 언어로 자동 복원
+// Child component
+function ChildComponent({ t }: { t: (key: string) => string }) {
+  return <p>{t("welcome")}</p>; // ✅ Uses common namespace
+}
 ```
 
-### TypeScript 타입 안정성
+### Styled Translations
 
-번역 키를 자동으로 타입 체크할 수 있습니다:
+Apply inline styles to parts of translated text:
 
 ```tsx
-// 타입 안전 사용
-t("common.welcome"); // ✅ OK
-t("common.invalid"); // ❌ TypeScript 오류
+// Translation file
+{
+  "terms": "I agree to the <bold>Terms</bold> and <link>Privacy Policy</link>"
+}
 
-// 매개변수 타입 체크
-t("common.hello", { name: "홍길동" }); // ✅ OK
-t("common.hello", { age: 30 }); // ❌ TypeScript 오류
+// Component
+const { t } = useTranslation("legal");
+
+const styledText = t("terms", {}, {
+  bold: { fontWeight: "bold" },
+  link: { color: "blue", textDecoration: "underline" }
+});
+
+return <div>{styledText}</div>; // Returns ReactElement
 ```
 
-## 🔧 설정 옵션
+### Variable Interpolation
+
+TypeScript validates required variables:
+
+```tsx
+// Translation file
+{
+  "greeting": "Hello, {{name}}!",
+  "stats": "You have {{count}} new messages"
+}
+
+// Component
+const { t } = useTranslation("messages");
+
+t("greeting", { name: "Alice" }); // ✅ OK
+t("greeting"); // ❌ TypeScript error: 'name' is required
+
+t("stats", { count: 5 }); // ✅ OK
+t("stats", { total: 5 }); // ❌ TypeScript error: 'count' is required
+```
+
+## ⚙️ Configuration
 
 ### i18nexus.config.json
 
+Create a configuration file in your project root:
+
 ```json
 {
-  "defaultLanguage": "ko",
-  "supportedLanguages": ["ko", "en", "ja", "zh"],
-  "translationDir": "./locales",
-  "sourceDir": "./app",
-  "fallbackLanguage": "en",
-  "cookieName": "i18n-language",
-  "enableTypeGeneration": true,
-  "namespaceDelimiter": ".",
-  "variablePattern": "{{(\\w+)}}"
+  "sourcePattern": "src/**/*.{ts,tsx}",
+  "translationImportSource": "i18nexus",
+  "languages": ["en", "ko"],
+  "defaultLanguage": "en",
+  "localesDir": "./locales",
+  "fallbackNamespace": ["common", "constant"]
 }
 ```
 
-**옵션 설명:**
+**Options:**
 
-- `defaultLanguage`: 기본 언어
-- `supportedLanguages`: 지원하는 언어 목록
-- `translationDir`: 번역 파일 디렉토리
-- `sourceDir`: 소스 코드 디렉토리
-- `fallbackLanguage`: 번역이 없을 때 사용할 언어
-- `cookieName`: 언어 설정 쿠키 이름
-- `enableTypeGeneration`: 타입 생성 활성화
-- `namespaceDelimiter`: 네임스페이스 구분자
-- `variablePattern`: 변수 패턴 (정규식)
+- `sourcePattern` - Pattern for source files to extract translations from
+- `translationImportSource` - Import path for translation hooks (e.g., `"i18nexus"`, `"@/app/i18n/client"`)
+- `languages` - List of supported languages
+- `defaultLanguage` - Default language
+- `localesDir` - Directory for translation files
+- `fallbackNamespace` - Namespaces to load by default
 
-## 🛠️ CLI 도구와 함께 사용
+## 🛠️ CLI Tools
 
-i18nexus는 강력한 CLI 도구(`i18nexus-tools`)와 함께 사용할 수 있습니다:
+i18nexus works seamlessly with `i18nexus-tools` for automation:
 
 ```bash
-# CLI 도구 설치
+# Install CLI tools
 npm install -D i18nexus-tools
 
-# 번역 키 자동 추출
+# Extract translation keys from code
 npx i18n-extractor
 
-# Google Sheets 연동
+# Upload translations to Google Sheets
 npx i18n-upload
+
+# Download translations from Google Sheets
 npx i18n-download
 
-# 컴포넌트 자동 래핑
+# Auto-wrap hardcoded text with t()
 npx i18n-wrapper
 ```
 
-자세한 내용은 [i18nexus-tools 문서](../tools/README.md)를 참조하세요.
+Learn more in the [i18nexus-tools documentation](../tools/README.md).
 
-## 📚 추가 문서
+## 🔗 Links
 
-- [API 레퍼런스](./docs/API_REFERENCE.md)
-- [TypeScript 가이드](./docs/TYPESCRIPT_GUIDE.md)
-- [배포 가이드](./docs/DEPLOYMENT_SETUP.md)
-- [트러블슈팅](./docs/TROUBLESHOOTING.md)
-- [마이그레이션 가이드](./docs/guides/migration-guide.md)
-- [베스트 프랙티스](./docs/guides/best-practices.md)
+- [📖 Full Documentation](./docs)
+- [🛠️ CLI Tools](../tools)
+- [🎓 Type Safety Deep Dive](../../TECH_BLOG_TYPE_SAFETY.md)
+- [🎮 Live Demo](https://i18nexus-demo.vercel.app)
+- [💬 Discussions](https://github.com/i18n-global/i18n-mono/discussions)
+- [🐛 Report Issues](https://github.com/i18n-global/i18n-mono/issues)
 
-## 🧪 테스트
+## 🧪 Testing
 
 ```bash
-# 테스트 실행
+# Run tests
 npm test
 
-# 테스트 감시 모드
+# Watch mode
 npm run test:watch
 
-# 커버리지 리포트
+# Coverage report
 npm test -- --coverage
 ```
 
-## 🤝 기여하기
+## 🤝 Contributing
 
-기여를 환영합니다! 다음 방법으로 참여할 수 있습니다:
+Contributions are welcome! Here's how you can help:
 
-1. Fork this repository
+1. Fork the repository
 2. Create your feature branch (`git checkout -b feature/amazing-feature`)
 3. Commit your changes (`git commit -m 'Add some amazing feature'`)
 4. Push to the branch (`git push origin feature/amazing-feature`)
 5. Open a Pull Request
 
-자세한 내용은 [CONTRIBUTING.md](./docs/CONTRIBUTING.md)를 참조하세요.
+Please read [CONTRIBUTING.md](./docs/CONTRIBUTING.md) for details on our code of conduct and development process.
 
-## 📄 라이선스
+## 📄 License
 
-MIT License - 자세한 내용은 [LICENSE](./LICENSE) 파일을 참조하세요.
+MIT License - see the [LICENSE](./LICENSE) file for details.
 
-## 🙏 크레딧
+## 🙏 Acknowledgments
 
-이 프로젝트는 다음 라이브러리들의 영감을 받았습니다:
+This project was inspired by excellent i18n libraries:
 
 - [react-i18next](https://react.i18next.com/)
 - [next-intl](https://next-intl-docs.vercel.app/)
 - [i18next](https://www.i18next.com/)
 
-## 📞 지원
+## 📈 Version History
 
-- 🐛 [이슈 리포트](https://github.com/manNomi/i18nexus/issues)
-- 💬 [토론](https://github.com/manNomi/i18nexus/discussions)
-- 📧 Email: support@i18nexus.com
-- 📖 [Documentation](./docs)
+### v3.3.0 (Latest)
 
-## 📈 버전 히스토리
+- ✨ Type inference improvements - no explicit generics needed
+- 🔄 Wrapper removes redundant generic types
+- 📚 Documentation updates
 
-### v2.11.1 (Latest)
+### v3.2.0
 
-- 🐛 버그 수정 및 안정성 개선
-- 📚 문서 업데이트
+- ✨ Namespace-specific type exports (`ConstantKeys`, `CommonKeys`, etc.)
+- 🎯 Auto-default to `common` namespace when `t` is passed as props
+- 📚 Enhanced TypeScript support
 
-### v2.11.0
+### v3.1.0
 
-- ✨ Server Components 지원 추가
-- ⚡ 성능 최적화
-- 🔒 타입 안정성 강화
+- 🔒 Stricter type checking for dynamic keys
+- 🎨 Function overloads for styled translations
+- ⚡ Performance improvements
 
-자세한 변경 사항은 [CHANGELOG.md](./CHANGELOG.md)를 참조하세요.
+### v3.0.0
+
+- 🌍 Google Sheets formula escaping
+- 📦 Namespace-based sheet organization
+- 🛠️ CLI tool improvements
+
+See [CHANGELOG.md](./CHANGELOG.md) for full version history.
 
 ---
 

@@ -1,6 +1,14 @@
-# i18nexus-tools
+# 🛠️ i18nexus-tools
 
-한국어 React 애플리케이션을 위한 간단하고 강력한 국제화 CLI 도구
+> i18n 워크플로우를 자동화하는 강력한 CLI 도구
+
+[English](./README.md) | [한국어](./README.ko.md)
+
+[![NPM Version](https://img.shields.io/npm/v/i18nexus-tools)](https://www.npmjs.com/package/i18nexus-tools)
+[![NPM Downloads](https://img.shields.io/npm/dm/i18nexus-tools)](https://www.npmjs.com/package/i18nexus-tools)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
+
+---
 
 ## 설치
 
@@ -452,7 +460,8 @@ export default async function RootLayout({
               { code: "ko", name: "한국어", flag: "🇰🇷" },
               { code: "en", name: "English", flag: "🇺🇸" },
             ],
-          }}>
+          }}
+        >
           {children}
         </I18nProvider>
       </body>
