@@ -158,7 +158,7 @@ export function useTranslation(namespace?: string): UseTranslationReturn<any> {
   const currentTranslations = getCurrentTranslations();
 
   const translate = ((
-    key: any,
+    key: string,
     variables?: TranslationVariables,
     styles?: TranslationStyles,
   ): string | React.ReactElement => {
@@ -169,7 +169,7 @@ export function useTranslation(namespace?: string): UseTranslationReturn<any> {
     }
 
     return interpolate(translatedText, variables);
-  }) as TranslationFunction<any>;
+  }) as TranslationFunction<string>;
 
   // 네임스페이스가 로드되었는지 확인
   const isNamespaceReady = namespace ? loadedNamespaces.has(namespace) : true;

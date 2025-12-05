@@ -600,8 +600,8 @@ export function createI18n<
             }),
           );
 
-          // 현재 URL로 이동
-          window.location.href = window.location.href;
+          // 페이지 새로고침
+          window.location.reload();
         }
       }
     },

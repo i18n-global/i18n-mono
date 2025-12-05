@@ -3,10 +3,7 @@
  */
 import { createI18n, CreateI18nOptions } from "./createI18n";
 import type { NamespaceTranslations } from "../components/I18nProvider";
-import {
-  loadI18nexusConfig,
-  loadI18nexusConfigSilently,
-} from "./config-loader";
+import { loadI18nexusConfigSilently } from "./config-loader";
 
 /**
  * i18nexus.config.json에서 fallbackNamespace를 자동으로 읽어 적용
@@ -26,7 +23,8 @@ export function createI18nWithConfig<
   // 옵션이 config 파일보다 우선
   const mergedOptions: CreateI18nOptions<TTranslations> = {
     fallbackNamespace:
-      (options?.fallbackNamespace ?? (config?.fallbackNamespace as any)) ||
+      (options?.fallbackNamespace ??
+        (config?.fallbackNamespace as keyof TTranslations | undefined)) ||
       undefined,
     enableFallback: options?.enableFallback ?? config?.enableFallback ?? true,
   };
@@ -46,7 +44,8 @@ export function createI18nWithConfigSync<
 ) {
   const mergedOptions: CreateI18nOptions<TTranslations> = {
     fallbackNamespace:
-      (options?.fallbackNamespace ?? (config?.fallbackNamespace as any)) ||
+      (options?.fallbackNamespace ??
+        (config?.fallbackNamespace as keyof TTranslations | undefined)) ||
       undefined,
     enableFallback: options?.enableFallback ?? config?.enableFallback ?? true,
   };
@@ -54,8 +53,5 @@ export function createI18nWithConfigSync<
   return createI18n(translations, mergedOptions);
 }
 
-export {
-  loadI18nexusConfig,
-  loadI18nexusConfigSilently,
-} from "./config-loader";
+export { loadI18nexusConfigSilently } from "./config-loader";
 export type { I18nexusConfig } from "./config-loader";
