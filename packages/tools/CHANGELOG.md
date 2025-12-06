@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.3.12] - 2025-12-06
+
+### 🐛 Bug Fixes
+
+- **타입 생성기 개선**: `I18nProvider` 타입 정의를 실제 구현과 일치하도록 업데이트
+  - `translations` prop이 이제 optional (lazy loading 시 불필요)
+  - `loadNamespace` prop 추가 (lazy loading 지원)
+  - `onLanguageChange` prop 추가
+  - `languageManagerOptions`를 실제 구현과 일치하도록 수정
+  - JSDoc에 eager/lazy loading 예제 추가
+
+---
+
 ## [2.3.11] - 2025-12-06
 
 ### ✨ Features
