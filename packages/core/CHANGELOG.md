@@ -33,6 +33,28 @@ All notable changes to this project will be documented in this file.
 
 ---
 
+# Changelog
+
+All notable changes to this project will be documented in this file.
+
+## [3.3.3] - 2025-12-06
+
+### 🐛 Bug Fixes
+
+- **서버 번역 경로 해석 개선**: `i18nexus.config.json` 파일 위치를 기준으로 경로 계산
+  - `process.cwd()` 대신 config 파일 디렉토리를 기준으로 `localesDir` 해석
+  - Next.js 빌드 환경에서 경로 해석 오류 해결
+  - "Cannot find module './locales/common/ko.json'" 오류 수정
+
+- **서버 번역 함수 수정**: `createServerTranslation`과 `getServerTranslations`에서 translations 구조 올바르게 해석
+  - `translations` 구조: `{ [namespace]: { [key]: value } }` (언어별 파일에서 이미 로드됨)
+  - 이전에는 `translations[language]`로 접근하여 항상 빈 객체 반환
+  - 이제 모든 namespace의 번역을 병합하여 사용
+
+- **디버깅 개선**: 개발 환경에서 번역 파일 로드 및 키 누락 경고 추가
+
+---
+
 ## [3.3.2] - 2025-12-06
 
 ### 🐛 Bug Fixes

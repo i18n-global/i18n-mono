@@ -195,6 +195,13 @@ export function createServerTranslation(
     variables?: ServerTranslationVariables | string,
     fallback?: string,
   ): string {
+    // 디버깅: 번역 키가 없을 때 경고
+    if (!allTranslations[key] && process.env.NODE_ENV === "development") {
+      console.warn(
+        `[i18nexus] Translation key not found: "${key}". Available keys: ${Object.keys(allTranslations).slice(0, 5).join(", ")}...`,
+      );
+    }
+
     if (typeof variables === "string") {
       // 두 번째 인자가 문자열이면 fallback으로 사용
       return allTranslations[key] || variables || key;
@@ -403,7 +410,18 @@ export async function getTranslation<NS extends string = string>(
     // 파일 읽기
     const fileContent = await fs.promises.readFile(translationFilePath, "utf8");
     const translationData = JSON.parse(fileContent);
+
+    // translationData는 { "key": "value" } 형태
+    // translations는 { [namespace]: { "key": "value" } } 형태로 저장
     translations = { [resolvedNamespace]: translationData };
+
+    // 디버깅: 개발 환경에서 번역 파일 로드 확인
+    if (process.env.NODE_ENV === "development") {
+      const keyCount = Object.keys(translationData).length;
+      console.log(
+        `[i18nexus] Loaded ${keyCount} translations from ${translationFilePath}`,
+      );
+    }
   } catch (error) {
     // Handle namespace not found
     if (
