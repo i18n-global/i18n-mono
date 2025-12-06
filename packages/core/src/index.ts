@@ -20,22 +20,9 @@ export type {
   UseLanguageSwitcherReturn,
 } from "./hooks/useTranslation";
 
-// 레거시 API (deprecated - Provider + useTranslation 사용 권장)
-/**
- * @deprecated createI18n은 글로벌 싱글톤 패턴으로 테스트 격리와 SSR에 문제가 있을 수 있습니다.
- * 대신 I18nProvider와 useTranslation을 사용하세요.
- */
-export { createI18n } from "./utils/createI18n";
-export type {
-  CreateI18nReturn,
-  CreateI18nOptions,
-  ExtractNamespaces,
-  ExtractNamespaceKeys,
-  ExtractAllKeys,
-  ExtractFallbackKeys,
-  ExtractNamespaceWithFallback,
-  ExtractI18nKeys,
-} from "./utils/createI18n";
+// 레거시 API 제거됨 (v3.3.1+)
+// createI18n, createI18nWithConfig는 제거되었습니다.
+// I18nProvider와 useTranslation을 사용하세요.
 
 // 타입 안전한 번역 유틸리티
 export {

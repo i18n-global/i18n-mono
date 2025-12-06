@@ -9,6 +9,7 @@ import {
 } from "../ast/ast-helpers";
 import {
   ensureNamedImport,
+  ensureMultipleNamedImports,
   ensureUseClientDirective,
 } from "../manager/import-manager";
 import { STRING_CONSTANTS } from "../utils/constants";
@@ -229,6 +230,20 @@ export function applyTranslationsToAST(
       : config.translationImportSource;
     ensureNamedImport(ast, effectiveImportSource, functionName);
   });
+
+  // 클라이언트 모드일 때 useLanguageSwitcher와 I18nProvider도 자동 import
+  // (i18nexus 사용 시에만)
+  if (
+    isClientMode &&
+    config.translationImportSource === "i18nexus" &&
+    usedTranslationFunctions.size > 0
+  ) {
+    // useLanguageSwitcher와 I18nProvider를 함께 import
+    ensureMultipleNamedImports(ast, config.translationImportSource, [
+      "useLanguageSwitcher",
+      "I18nProvider",
+    ]);
+  }
 }
 
 /**

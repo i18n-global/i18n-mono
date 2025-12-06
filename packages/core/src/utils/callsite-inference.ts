@@ -4,8 +4,27 @@
  */
 
 import * as pathLib from "path";
-import type { I18nexusConfig } from "./config-loader";
 import { inferNamespaceFromFile } from "./namespace-inference";
+
+export interface I18nexusConfig {
+  fallbackNamespace?: string;
+  namespaceLocation?: string;
+  namespacing?: {
+    enabled: boolean;
+    basePath: string;
+    defaultNamespace: string;
+    framework?:
+      | "nextjs-app"
+      | "nextjs-pages"
+      | "tanstack-file"
+      | "tanstack-folder"
+      | "react-router"
+      | "remix"
+      | "other";
+    ignorePatterns?: string[];
+    strategy?: "first-folder" | "full-path" | "last-folder";
+  };
+}
 
 /**
  * Parse Error.stack to extract the file path of the caller

@@ -2,7 +2,6 @@
 
 import * as fs from "fs";
 import * as path from "path";
-import { loadConfigSilently as loadFullConfig } from "./config-loader";
 import { inferNamespaceFromCallSite } from "./callsite-inference";
 import {
   getCachedTranslations,
@@ -13,6 +12,7 @@ import {
 type LocalConfig = {
   localesDir?: string;
   defaultLanguage?: string;
+  fallbackNamespace?: string;
 };
 
 /** 프로젝트 루트에서 i18nexus 설정 파일 로드 (조용히) */
@@ -277,7 +277,7 @@ export async function getTranslation<NS extends string = string>(
   // 1. Load config
   let config;
   try {
-    config = await loadFullConfig();
+    config = await loadConfigSilently();
   } catch {
     config = null;
   }

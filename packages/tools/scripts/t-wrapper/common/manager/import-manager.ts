@@ -58,6 +58,29 @@ export function ensureNamedImport(
   return hasSpecifier;
 }
 
+/**
+ * AST에 여러 named import를 한 번에 추가
+ *
+ * @param ast - Babel AST
+ * @param source - import source (e.g., "i18nexus")
+ * @param importedNames - import할 이름들 (e.g., ["useTranslation", "useLanguageSwitcher"])
+ */
+export function ensureMultipleNamedImports(
+  ast: t.File,
+  source: string,
+  importedNames: string[],
+): boolean {
+  let modified = false;
+
+  for (const name of importedNames) {
+    if (ensureNamedImport(ast, source, name)) {
+      modified = true;
+    }
+  }
+
+  return modified;
+}
+
 /** AST에 "use client" 디렉티브가 필요한지 확인하고 추가 */
 export function ensureUseClientDirective(ast: t.File): boolean {
   // 이미 존재하면 패스

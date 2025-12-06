@@ -1198,6 +1198,32 @@ declare module "i18nexus" {
     isReady: boolean;
   };
 
+  /**
+   * Language switcher hook (Client Component)
+   *
+   * @returns Language switching utilities
+   *
+   * @example
+   * ```tsx
+   * const { changeLanguage, availableLanguages } = useLanguageSwitcher();
+   * changeLanguage("en");  // ✅ Change to English
+   * ```
+   */
+  export function useLanguageSwitcher(): {
+    currentLanguage: string;
+    availableLanguages: Array<{ code: string; name: string; flag?: string }>;
+    changeLanguage: (lang: string) => Promise<void>;
+    switchLng: (lang: string) => Promise<void>;
+    switchToNextLanguage: () => Promise<void>;
+    switchToPreviousLanguage: () => Promise<void>;
+    getLanguageConfig: (
+      code?: string,
+    ) => { code: string; name: string; flag?: string } | undefined;
+    detectBrowserLanguage: () => string | null;
+    resetLanguage: () => void;
+    isLoading: boolean;
+  };
+
   // Individual namespace key types (for use in constants and type definitions)
   export type AdminDashboardKeys = TranslationKeys["admin-dashboard"];
   export type CliKeys = TranslationKeys["cli"];

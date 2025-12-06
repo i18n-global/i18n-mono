@@ -1,7 +1,6 @@
 /** Next.js App Router 서버 컴포넌트용 유틸리티 */
 import * as fs from "fs";
 import * as path from "path";
-import { loadConfigSilently as loadFullConfig } from "./config-loader";
 import { inferNamespaceFromCallSite } from "./callsite-inference";
 import { getCachedTranslations, cacheTranslations, invalidateCache as invalidateTranslationCache, } from "./translation-cache";
 /** 프로젝트 루트에서 i18nexus 설정 파일 로드 (조용히) */
@@ -172,7 +171,7 @@ export async function getTranslation(namespace, options) {
     // 1. Load config
     let config;
     try {
-        config = await loadFullConfig();
+        config = await loadConfigSilently();
     }
     catch {
         config = null;
@@ -244,7 +243,9 @@ export async function getTranslation(namespace, options) {
     }
     catch (error) {
         // Handle namespace not found
-        if (options?.useFallbackOnError && config?.fallbackNamespace && config.fallbackNamespace !== resolvedNamespace) {
+        if (options?.useFallbackOnError &&
+            config?.fallbackNamespace &&
+            config.fallbackNamespace !== resolvedNamespace) {
             console.warn(`⚠️  Namespace '${resolvedNamespace}' not found, using fallback '${config.fallbackNamespace}'`);
             try {
                 const fallbackTranslations = await import(`${localesDir}/${config.fallbackNamespace}/${language}.json`);
