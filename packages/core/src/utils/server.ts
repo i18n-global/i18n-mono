@@ -247,6 +247,8 @@ export async function loadTranslations(
 
 /** 서버 번역 컨텍스트 생성 (설정 자동 로드, 헤더 자동 감지) */
 export interface GetTranslationOptions {
+  /** Force specific language (bypasses header/cookie detection) */
+  language?: string;
   localesDir?: string;
   cookieName?: string;
   defaultLanguage?: string;
@@ -330,22 +332,30 @@ export async function getTranslation<NS extends string = string>(
   const cookieName = options?.cookieName || "i18n-language";
   const availableLanguages = options?.availableLanguages || [];
 
-  // 2. Get current language from headers
-  let headersInstance: Headers;
-  try {
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    const { headers } = await import("next/headers");
-    headersInstance = await headers();
-  } catch {
-    headersInstance = new Headers();
-  }
+  // 2. Get current language
+  let language: string;
 
-  const language = getServerLanguage(headersInstance, {
-    cookieName,
-    defaultLanguage,
-    availableLanguages,
-  });
+  // If language is explicitly provided, use it (for static export or dynamic routes)
+  if (options?.language) {
+    language = options.language;
+  } else {
+    // Otherwise, detect from headers
+    let headersInstance: Headers;
+    try {
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      const { headers } = await import("next/headers");
+      headersInstance = await headers();
+    } catch {
+      headersInstance = new Headers();
+    }
+
+    language = getServerLanguage(headersInstance, {
+      cookieName,
+      defaultLanguage,
+      availableLanguages,
+    });
+  }
 
   // 3. Determine namespace (priority order)
   let resolvedNamespace = namespace;

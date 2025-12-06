@@ -19,6 +19,8 @@ export declare function getServerTranslations<T extends Record<string, Record<st
 export declare function loadTranslations(localesDir: string): Promise<Record<string, Record<string, string>>>;
 /** 서버 번역 컨텍스트 생성 (설정 자동 로드, 헤더 자동 감지) */
 export interface GetTranslationOptions {
+    /** Force specific language (bypasses header/cookie detection) */
+    language?: string;
     localesDir?: string;
     cookieName?: string;
     defaultLanguage?: string;
