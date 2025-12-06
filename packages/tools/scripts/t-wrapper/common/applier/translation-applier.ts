@@ -231,18 +231,37 @@ export function applyTranslationsToAST(
     ensureNamedImport(ast, effectiveImportSource, functionName);
   });
 
-  // 클라이언트 모드일 때 useLanguageSwitcher와 I18nProvider도 자동 import
-  // (i18nexus 사용 시에만)
-  if (
-    isClientMode &&
-    config.translationImportSource === "i18nexus" &&
-    usedTranslationFunctions.size > 0
-  ) {
-    // useLanguageSwitcher와 I18nProvider를 함께 import
-    ensureMultipleNamedImports(ast, config.translationImportSource, [
-      "useLanguageSwitcher",
-      "I18nProvider",
-    ]);
+  // i18nexus 사용 시 useLanguageSwitcher와 I18nProvider도 자동 import
+  // (클라이언트 모드이고, 파일에 useTranslation이 있는 경우)
+  if (isClientMode && config.translationImportSource === "i18nexus") {
+    // 파일에 이미 useTranslation import가 있는지 확인
+    let hasUseTranslation = false;
+    for (const node of ast.program.body) {
+      if (
+        t.isImportDeclaration(node) &&
+        node.source.value === config.translationImportSource
+      ) {
+        for (const spec of node.specifiers) {
+          if (
+            t.isImportSpecifier(spec) &&
+            t.isIdentifier(spec.imported) &&
+            spec.imported.name === "useTranslation"
+          ) {
+            hasUseTranslation = true;
+            break;
+          }
+        }
+        if (hasUseTranslation) break;
+      }
+    }
+
+    // useTranslation이 있거나 새로 추가된 경우
+    if (hasUseTranslation || usedTranslationFunctions.size > 0) {
+      ensureMultipleNamedImports(ast, config.translationImportSource, [
+        "useLanguageSwitcher",
+        "I18nProvider",
+      ]);
+    }
   }
 }
 

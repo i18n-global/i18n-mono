@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.3.10] - 2025-12-06
+
+### ✨ Features
+
+- **extractor 개선**: 기존 파일에도 `useLanguageSwitcher`와 `I18nProvider` 자동 import
+  - 파일에 이미 `useTranslation` import가 있으면 자동으로 `useLanguageSwitcher`와 `I18nProvider`도 추가
+  - wrapper 실행 시 기존 파일들도 자동으로 import 업데이트
+
+---
+
 ## [2.3.9] - 2025-12-06
 
 ### ✨ Features
