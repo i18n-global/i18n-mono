@@ -223,7 +223,11 @@ export function applyTranslationsToAST(
 
   // 사용된 번역 함수 가져와서 임포트 구문 추가
   usedTranslationFunctions.forEach((functionName) => {
-    ensureNamedImport(ast, config.translationImportSource, functionName);
+    // 서버 모드일 때는 import source에 /server 추가
+    const effectiveImportSource = isServerMode
+      ? `${config.translationImportSource}/server`
+      : config.translationImportSource;
+    ensureNamedImport(ast, effectiveImportSource, functionName);
   });
 }
 

@@ -11,6 +11,9 @@ const projectConfig = loadConfig();
 const config: Partial<ScriptConfig> = {
   sourcePattern: projectConfig.sourcePattern,
   translationImportSource: projectConfig.translationImportSource,
+  mode: projectConfig.mode,
+  framework: projectConfig.framework,
+  serverTranslationFunction: projectConfig.serverTranslationFunction,
 };
 
 for (let i = 0; i < args.length; i++) {
