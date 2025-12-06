@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.3.11] - 2025-12-06
+
+### ✨ Features
+
+- **타입 생성기 개선**: `I18nProvider` 컴포넌트 타입 정의 추가
+  - `declare module "i18nexus"`에서 `I18nProvider` 컴포넌트 타입 정의 포함
+  - i18nexus 사용 시에만 추가 (다른 i18n 라이브러리에는 영향 없음)
+  - 이제 생성된 타입 정의 파일에서 `I18nProvider`를 정상적으로 import 가능
+
+---
+
 ## [2.3.10] - 2025-12-06
 
 ### ✨ Features

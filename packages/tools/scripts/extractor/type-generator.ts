@@ -371,6 +371,48 @@ function generateTypeContent(
     content += `    resetLanguage: () => void;\n`;
     content += `    isLoading: boolean;\n`;
     content += `  };\n\n`;
+
+    // I18nProvider component (i18nexus 사용자에 한해서만 추가)
+    if (includeJsDocs) {
+      content += `  /**\n`;
+      content += `   * I18n Provider component (Client Component)\n`;
+      content += `   * \n`;
+      content += `   * Provides translation context to all child components\n`;
+      content += `   * \n`;
+      content += `   * @example\n`;
+      content += `   * \`\`\`tsx\n`;
+      content += `   * <I18nProvider\n`;
+      content += `   *   translations={translations}\n`;
+      content += `   *   initialLanguage="ko"\n`;
+      content += `   *   fallbackNamespace="common"\n`;
+      content += `   * >\n`;
+      content += `   *   <App />\n`;
+      content += `   * </I18nProvider>\n`;
+      content += `   * \`\`\`\n`;
+      content += `   */\n`;
+    }
+    content += `  export function I18nProvider<TTranslations extends Record<string, Record<string, Record<string, string>>> = Record<string, Record<string, Record<string, string>>>>(\n`;
+    content += `    props: {\n`;
+    content += `      translations: TTranslations;\n`;
+    content += `      initialLanguage?: string;\n`;
+    content += `      fallbackNamespace?: keyof TTranslations;\n`;
+    content += `      enableFallback?: boolean;\n`;
+    content += `      lazy?: boolean;\n`;
+    content += `      loadNamespace?: (namespace: string, lang: string) => Promise<Record<string, string>>;\n`;
+    content += `      preloadNamespaces?: Array<keyof TTranslations>;\n`;
+    content += `      languageManagerOptions?: {\n`;
+    content += `        defaultLanguage?: string;\n`;
+    content += `        availableLanguages?: Array<{ code: string; name: string; flag?: string }>;\n`;
+    content += `        cookieName?: string;\n`;
+    content += `        cookieOptions?: {\n`;
+    content += `          maxAge?: number;\n`;
+    content += `          path?: string;\n`;
+    content += `          sameSite?: "strict" | "lax" | "none";\n`;
+    content += `        };\n`;
+    content += `      };\n`;
+    content += `      children: React.ReactNode;\n`;
+    content += `    }\n`;
+    content += `  ): React.ReactElement;\n\n`;
   }
 
   // Export individual namespace key types for use in constants
