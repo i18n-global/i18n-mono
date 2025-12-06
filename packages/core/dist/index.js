@@ -16,4 +16,6 @@ export { LanguageManager, defaultLanguageManager, } from "./utils/languageManage
 export { defineConfig } from "./utils/types";
 // 동적 번역 유틸리티
 export { createDynamicTranslation, buildTranslationParams, buildConditionalTranslation, mapToTranslationParams, } from "./utils/dynamicTranslation";
+// 서버 유틸리티 (Next.js App Router / React Server Components)
+export { getTranslation, getServerLanguage, createServerTranslation, getServerTranslations, parseAcceptLanguage, parseCookies, invalidateCache, } from "./utils/server";
 //# sourceMappingURL=index.js.map

@@ -1,5 +1,3 @@
-"use client";
-
 /**
  * Dynamically load a namespace translation file
  *

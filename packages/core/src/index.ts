@@ -67,3 +67,19 @@ export {
   buildConditionalTranslation,
   mapToTranslationParams,
 } from "./utils/dynamicTranslation";
+
+// 서버 유틸리티 (Next.js App Router / React Server Components)
+export {
+  getTranslation,
+  getServerLanguage,
+  createServerTranslation,
+  getServerTranslations,
+  parseAcceptLanguage,
+  parseCookies,
+  invalidateCache,
+} from "./utils/server";
+export type {
+  GetTranslationReturn,
+  GetTranslationOptions,
+  ServerTranslationVariables,
+} from "./utils/server";

@@ -2,6 +2,33 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.4.0] - 2025-12-06
+
+### ✨ Features
+
+- **타입 생성 리팩토링**: `i18nexus` 원본 타입 재사용으로 타입 안전성 대폭 향상
+  - `UseTranslationReturn`, `UseLanguageSwitcherReturn`, `I18nProviderProps` import 및 재사용
+  - `GetTranslationReturn`, `GetTranslationOptions` import 및 재사용
+  - Type augmentation 방식으로 원본 타입 확장 (완전 재정의 제거)
+  - `i18nexus` 패키지 타입과 완벽히 동기화
+  - IDE 자동완성 개선 (원본 JSDoc 포함)
+
+### 🔄 Breaking Changes
+
+- **타입 생성 방식 변경**: `i18nexus@3.4.0` 이상 필요
+  - 기존 프로젝트: `npx i18n-extractor` 재실행으로 타입 재생성 필요
+  - 사용 방법은 동일 (코드 변경 불필요)
+  - 생성된 타입 파일을 직접 수정한 경우 영향 받을 수 있음
+
+### 🎯 Benefits
+
+- 타입 충돌 완전 제거
+- 패키지 업데이트 시 타입 자동 동기화
+- 유지보수 비용 감소
+- 타입 정확성 향상
+
+---
+
 ## [2.3.12] - 2025-12-06
 
 ### 🐛 Bug Fixes

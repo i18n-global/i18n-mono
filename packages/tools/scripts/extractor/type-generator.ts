@@ -264,13 +264,28 @@ function generateTypeContent(
 
   // Module augmentation
   const importSource = config.translationImportSource || "i18nexus";
+  const isI18nexus = importSource === "i18nexus";
 
   content += `// ============================================\n`;
   content += `// Module Augmentation\n`;
   content += `// ============================================\n\n`;
+
+  // Import original types from the package (i18nexus only)
+  if (isI18nexus) {
+    content += `import type {\n`;
+    content += `  UseTranslationReturn,\n`;
+    content += `  UseLanguageSwitcherReturn,\n`;
+    content += `  I18nProviderProps,\n`;
+    content += `} from '${importSource}';\n`;
+    content += `import type {\n`;
+    content += `  GetTranslationReturn,\n`;
+    content += `  GetTranslationOptions,\n`;
+    content += `} from '${importSource}/server';\n\n`;
+  }
+
   content += `declare module "${importSource}" {\n`;
 
-  // useTranslation overload
+  // useTranslation: Use original type with narrowed generics
   if (includeJsDocs) {
     content += `  /**\n`;
     content += `   * Type-safe translation hook (Client Component)\n`;
@@ -287,64 +302,59 @@ function generateTypeContent(
     content += `   * \`\`\`\n`;
     content += `   */\n`;
   }
-  // Generate helper types for interpolation variable validation
-  content += `  // Helper type to extract variable names from keys\n`;
-  content += `  type ExtractVariables<K> = \n`;
 
-  // Build union of all KeyVariables types
-  const varsTypeNames = sortedNamespaces
-    .map((ns) => `${capitalize(toCamelCase(ns))}KeyVariables`)
-    .filter((name) => {
-      const ns = sortedNamespaces.find(
-        (n) => `${capitalize(toCamelCase(n))}KeyVariables` === name,
-      );
-      const keyInfoList = namespaceKeysWithInfo[ns!] || [];
-      return keyInfoList.some((info) => info.variables.length > 0);
-    });
-
-  if (varsTypeNames.length > 0) {
-    content += `    K extends keyof (${varsTypeNames.join(" & ")}) ? \n`;
-    content += `      (${varsTypeNames.join(" & ")})[K] : \n`;
-    content += `      never;\n\n`;
+  if (isI18nexus) {
+    // Use original type from the package
+    content += `  export function useTranslation<NS extends TranslationNamespace = TranslationNamespace>(\n`;
+    content += `    namespace: NS\n`;
+    content += `  ): UseTranslationReturn<TranslationKeys[NS]>;\n\n`;
   } else {
-    content += `    never;\n\n`;
+    // For non-i18nexus packages, generate full type definition
+    content += `  // Helper type to extract variable names from keys\n`;
+    content += `  type ExtractVariables<K> = \n`;
+
+    const varsTypeNames = sortedNamespaces
+      .map((ns) => `${capitalize(toCamelCase(ns))}KeyVariables`)
+      .filter((name) => {
+        const ns = sortedNamespaces.find(
+          (n) => `${capitalize(toCamelCase(n))}KeyVariables` === name,
+        );
+        const keyInfoList = namespaceKeysWithInfo[ns!] || [];
+        return keyInfoList.some((info) => info.variables.length > 0);
+      });
+
+    if (varsTypeNames.length > 0) {
+      content += `    K extends keyof (${varsTypeNames.join(" & ")}) ? \n`;
+      content += `      (${varsTypeNames.join(" & ")})[K] : \n`;
+      content += `      never;\n\n`;
+    } else {
+      content += `    never;\n\n`;
+    }
+
+    content += `  export function useTranslation<NS extends TranslationNamespace = TranslationNamespace>(\n`;
+    content += `    namespace: NS\n`;
+    content += `  ): {\n`;
+    content += `    t: {\n`;
+    content += `      <K extends TranslationKeys[NS]>(\n`;
+    content += `        key: K\n`;
+    content += `      ): string;\n`;
+    content += `      <K extends TranslationKeys[NS]>(\n`;
+    content += `        key: K,\n`;
+    content += `        variables: Record<string, string | number>\n`;
+    content += `      ): string;\n`;
+    content += `      <K extends TranslationKeys[NS]>(\n`;
+    content += `        key: K,\n`;
+    content += `        variables: Record<string, string | number>,\n`;
+    content += `        styles: Record<string, React.CSSProperties>\n`;
+    content += `      ): React.ReactElement;\n`;
+    content += `    };\n`;
+    content += `    currentLanguage: string;\n`;
+    content += `    lng: string;  // Alias for currentLanguage (react-i18next compatibility)\n`;
+    content += `    isReady: boolean;\n`;
+    content += `  };\n\n`;
   }
 
-  // useTranslation with function overloads for better type inference
-  // Generic type is automatically inferred from namespace parameter
-  // Usage: useTranslation("Gallery") - no need to specify <"Gallery">
-  // The generic type NS will be inferred from the namespace argument
-  content += `  export function useTranslation<NS extends TranslationNamespace = TranslationNamespace>(\n`;
-  content += `    namespace: NS\n`;
-  content += `  ): {\n`;
-
-  // Overload 1: No variables, no styles → string
-  content += `    t: {\n`;
-  content += `      <K extends TranslationKeys[NS]>(\n`;
-  content += `        key: K\n`;
-  content += `      ): string;\n`;
-
-  // Overload 2: Variables only → string
-  content += `      <K extends TranslationKeys[NS]>(\n`;
-  content += `        key: K,\n`;
-  content += `        variables: Record<string, string | number>\n`;
-  content += `      ): string;\n`;
-
-  // Overload 3: Variables + styles → ReactElement
-  content += `      <K extends TranslationKeys[NS]>(\n`;
-  content += `        key: K,\n`;
-  content += `        variables: Record<string, string | number>,\n`;
-  content += `        styles: Record<string, React.CSSProperties>\n`;
-  content += `      ): React.ReactElement;\n`;
-
-  content += `    };\n`;
-  content += `    currentLanguage: string;\n`;
-  content += `    lng: string;  // Alias for currentLanguage (react-i18next compatibility)\n`;
-  content += `    isReady: boolean;\n`;
-  content += `  };\n\n`;
-
   // useLanguageSwitcher hook (i18nexus 사용자에 한해서만 추가)
-  const isI18nexus = importSource === "i18nexus";
   if (isI18nexus) {
     if (includeJsDocs) {
       content += `  /**\n`;
@@ -359,18 +369,8 @@ function generateTypeContent(
       content += `   * \`\`\`\n`;
       content += `   */\n`;
     }
-    content += `  export function useLanguageSwitcher(): {\n`;
-    content += `    currentLanguage: string;\n`;
-    content += `    availableLanguages: Array<{ code: string; name: string; flag?: string }>;\n`;
-    content += `    changeLanguage: (lang: string) => Promise<void>;\n`;
-    content += `    switchLng: (lang: string) => Promise<void>;\n`;
-    content += `    switchToNextLanguage: () => Promise<void>;\n`;
-    content += `    switchToPreviousLanguage: () => Promise<void>;\n`;
-    content += `    getLanguageConfig: (code?: string) => { code: string; name: string; flag?: string } | undefined;\n`;
-    content += `    detectBrowserLanguage: () => string | null;\n`;
-    content += `    resetLanguage: () => void;\n`;
-    content += `    isLoading: boolean;\n`;
-    content += `  };\n\n`;
+    // Use original type from the package
+    content += `  export function useLanguageSwitcher(): UseLanguageSwitcherReturn;\n\n`;
 
     // I18nProvider component (i18nexus 사용자에 한해서만 추가)
     if (includeJsDocs) {
@@ -403,31 +403,9 @@ function generateTypeContent(
       content += `   * \`\`\`\n`;
       content += `   */\n`;
     }
+    // Use original type from the package
     content += `  export function I18nProvider<TTranslations extends Record<string, Record<string, Record<string, string>>> = Record<string, Record<string, Record<string, string>>>>(\n`;
-    content += `    props: {\n`;
-    content += `      children: React.ReactNode;\n`;
-    content += `      /** Optional translations for eager loading (required if loadNamespace not provided) */\n`;
-    content += `      translations?: TTranslations;\n`;
-    content += `      /** Lazy loading function (provides automatic lazy mode) */\n`;
-    content += `      loadNamespace?: (namespace: string, lang: string) => Promise<Record<string, string>>;\n`;
-    content += `      /** Server-side initial language (for SSR/Next.js App Router) */\n`;
-    content += `      initialLanguage?: string;\n`;
-    content += `      /** Fallback namespace (auto-preloaded in lazy mode) */\n`;
-    content += `      fallbackNamespace?: keyof TTranslations;\n`;
-    content += `      /** Additional namespaces to preload */\n`;
-    content += `      preloadNamespaces?: Array<keyof TTranslations>;\n`;
-    content += `      /** Callback when language changes */\n`;
-    content += `      onLanguageChange?: (language: string) => void;\n`;
-    content += `      /** Language manager configuration */\n`;
-    content += `      languageManagerOptions?: {\n`;
-    content += `        defaultLanguage?: string;\n`;
-    content += `        availableLanguages?: Array<{ code: string; name: string; flag?: string }>;\n`;
-    content += `        cookieName?: string;\n`;
-    content += `        enableLocalStorage?: boolean;\n`;
-    content += `        enableAutoDetection?: boolean;\n`;
-    content += `        storageKey?: string;\n`;
-    content += `      };\n`;
-    content += `    }\n`;
+    content += `    props: I18nProviderProps<TTranslations>\n`;
     content += `  ): React.ReactElement;\n\n`;
   }
 
@@ -443,13 +421,13 @@ function generateTypeContent(
   // Server module augmentation
   content += `declare module "${importSource}/server" {\n`;
 
-  // getTranslation overload
   if (includeJsDocs) {
     content += `  /**\n`;
     content += `   * Type-safe translation function (Server Component)\n`;
     content += `   * \n`;
     content += `   * @template NS - The namespace to use\n`;
-    content += `   * @param namespace - The namespace string\n`;
+    content += `   * @param namespace - The namespace string (optional, auto-inferred)\n`;
+    content += `   * @param options - Optional configuration\n`;
     content += `   * @returns Translation utilities with type-safe keys\n`;
     content += `   * \n`;
     content += `   * @example\n`;
@@ -460,21 +438,31 @@ function generateTypeContent(
     content += `   * \`\`\`\n`;
     content += `   */\n`;
   }
-  content += `  export function getTranslation<NS extends TranslationNamespace>(\n`;
-  content += `    namespace: NS,\n`;
-  content += `    options?: {\n`;
-  content += `      localesDir?: string;\n`;
-  content += `      cookieName?: string;\n`;
-  content += `      defaultLanguage?: string;\n`;
-  content += `      availableLanguages?: string[];\n`;
-  content += `    }\n`;
-  content += `  ): Promise<{\n`;
-  content += `    t: (key: TranslationKeys[NS]) => string;\n`;
-  content += `    language: string;\n`;
-  content += `    lng: string;  // Alias for language (react-i18next compatibility)\n`;
-  content += `    translations: Record<string, Record<string, string>>;\n`;
-  content += `    dict: Record<string, string>;\n`;
-  content += `  }>;\n`;
+
+  if (isI18nexus) {
+    // Use original type from the package
+    content += `  export function getTranslation<NS extends TranslationNamespace = TranslationNamespace>(\n`;
+    content += `    namespace?: NS,\n`;
+    content += `    options?: GetTranslationOptions\n`;
+    content += `  ): Promise<GetTranslationReturn<NS>>;\n`;
+  } else {
+    // For non-i18nexus packages, generate full type definition
+    content += `  export function getTranslation<NS extends TranslationNamespace>(\n`;
+    content += `    namespace: NS,\n`;
+    content += `    options?: {\n`;
+    content += `      localesDir?: string;\n`;
+    content += `      cookieName?: string;\n`;
+    content += `      defaultLanguage?: string;\n`;
+    content += `      availableLanguages?: string[];\n`;
+    content += `    }\n`;
+    content += `  ): Promise<{\n`;
+    content += `    t: (key: TranslationKeys[NS]) => string;\n`;
+    content += `    language: string;\n`;
+    content += `    lng: string;  // Alias for language (react-i18next compatibility)\n`;
+    content += `    translations: Record<string, Record<string, string>>;\n`;
+    content += `    dict: Record<string, string>;\n`;
+    content += `  }>;\n`;
+  }
 
   content += `}\n`;
 

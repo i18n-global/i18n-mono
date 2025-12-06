@@ -1156,6 +1156,16 @@ declare type TranslationKeys = {
 // Module Augmentation
 // ============================================
 
+import type {
+  UseTranslationReturn,
+  UseLanguageSwitcherReturn,
+  I18nProviderProps,
+} from "i18nexus";
+import type {
+  GetTranslationReturn,
+  GetTranslationOptions,
+} from "i18nexus/server";
+
 declare module "i18nexus" {
   /**
    * Type-safe translation hook (Client Component)
@@ -1171,32 +1181,9 @@ declare module "i18nexus" {
    * t("typo");   // ❌ Compile error!
    * ```
    */
-  // Helper type to extract variable names from keys
-  type ExtractVariables<K> = K extends keyof CommonKeyVariables
-    ? CommonKeyVariables[K]
-    : never;
-
   export function useTranslation<
     NS extends TranslationNamespace = TranslationNamespace,
-  >(
-    namespace: NS,
-  ): {
-    t: {
-      <K extends TranslationKeys[NS]>(key: K): string;
-      <K extends TranslationKeys[NS]>(
-        key: K,
-        variables: Record<string, string | number>,
-      ): string;
-      <K extends TranslationKeys[NS]>(
-        key: K,
-        variables: Record<string, string | number>,
-        styles: Record<string, React.CSSProperties>,
-      ): React.ReactElement;
-    };
-    currentLanguage: string;
-    lng: string; // Alias for currentLanguage (react-i18next compatibility)
-    isReady: boolean;
-  };
+  >(namespace: NS): UseTranslationReturn<TranslationKeys[NS]>;
 
   /**
    * Language switcher hook (Client Component)
@@ -1209,20 +1196,42 @@ declare module "i18nexus" {
    * changeLanguage("en");  // ✅ Change to English
    * ```
    */
-  export function useLanguageSwitcher(): {
-    currentLanguage: string;
-    availableLanguages: Array<{ code: string; name: string; flag?: string }>;
-    changeLanguage: (lang: string) => Promise<void>;
-    switchLng: (lang: string) => Promise<void>;
-    switchToNextLanguage: () => Promise<void>;
-    switchToPreviousLanguage: () => Promise<void>;
-    getLanguageConfig: (
-      code?: string,
-    ) => { code: string; name: string; flag?: string } | undefined;
-    detectBrowserLanguage: () => string | null;
-    resetLanguage: () => void;
-    isLoading: boolean;
-  };
+  export function useLanguageSwitcher(): UseLanguageSwitcherReturn;
+
+  /**
+   * I18nProvider component (Client Component)
+   *
+   * Provides i18n context to child components. Supports both eager and lazy loading.
+   *
+   * @template TTranslations - The namespace translations structure
+   * @param props - Props for the I18nProvider
+   * @returns React.ReactElement
+   *
+   * @example
+   * ```tsx
+   * // Lazy loading (recommended)
+   * <I18nProvider
+   *   loadNamespace={async (ns, lang) => {
+   *     const data = await import(\`./locales/\${ns}/\${lang}.json\`);
+   *     return data.default;
+   *   }}
+   *   fallbackNamespace="common"
+   * >
+   *   <App />
+   * </I18nProvider>
+   *
+   * // Eager loading
+   * <I18nProvider translations={translations}>
+   *   <App />
+   * </I18nProvider>
+   * ```
+   */
+  export function I18nProvider<
+    TTranslations extends Record<
+      string,
+      Record<string, Record<string, string>>
+    > = Record<string, Record<string, Record<string, string>>>,
+  >(props: I18nProviderProps<TTranslations>): React.ReactElement;
 
   // Individual namespace key types (for use in constants and type definitions)
   export type AdminDashboardKeys = TranslationKeys["admin-dashboard"];
@@ -1263,7 +1272,8 @@ declare module "i18nexus/server" {
    * Type-safe translation function (Server Component)
    *
    * @template NS - The namespace to use
-   * @param namespace - The namespace string
+   * @param namespace - The namespace string (optional, auto-inferred)
+   * @param options - Optional configuration
    * @returns Translation utilities with type-safe keys
    *
    * @example
@@ -1273,19 +1283,10 @@ declare module "i18nexus/server" {
    * t("typo");   // ❌ Compile error!
    * ```
    */
-  export function getTranslation<NS extends TranslationNamespace>(
-    namespace: NS,
-    options?: {
-      localesDir?: string;
-      cookieName?: string;
-      defaultLanguage?: string;
-      availableLanguages?: string[];
-    },
-  ): Promise<{
-    t: (key: TranslationKeys[NS]) => string;
-    language: string;
-    lng: string; // Alias for language (react-i18next compatibility)
-    translations: Record<string, Record<string, string>>;
-    dict: Record<string, string>;
-  }>;
+  export function getTranslation<
+    NS extends TranslationNamespace = TranslationNamespace,
+  >(
+    namespace?: NS,
+    options?: GetTranslationOptions,
+  ): Promise<GetTranslationReturn<NS>>;
 }
