@@ -9,6 +9,8 @@ All notable changes to this project will be documented in this file.
 - **타입 생성기 수정**: `i18n-extractor`가 생성하는 타입 정의에 `useLanguageSwitcher` 추가
   - `declare module "i18nexus"`에서 `useLanguageSwitcher` 훅 타입 정의 포함
   - 이제 생성된 타입 정의 파일에서 `useLanguageSwitcher`를 정상적으로 import 가능
+  - **i18nexus 사용자에 한해서만 추가**: `translationImportSource`가 `"i18nexus"`일 때만 `useLanguageSwitcher` 타입 정의 생성
+  - 다른 i18n 라이브러리(예: `react-i18next`) 사용 시에는 생성되지 않음
 
 ---
 
