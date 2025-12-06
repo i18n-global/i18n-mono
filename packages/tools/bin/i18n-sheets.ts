@@ -9,7 +9,7 @@ import { loadConfig } from "../scripts/config-loader";
 import { generateNamespaceIndexFile } from "../scripts/extractor/output-generator";
 import * as fs from "fs";
 import * as path from "path";
-import * as readline from "readline";
+import inquirer from "inquirer";
 
 const program = new Command();
 
@@ -248,7 +248,7 @@ program
     "./credentials.json",
   )
   .option("-l, --locales <dir>", "Locales directory", "./locales")
-  .option("--languages <langs>", "Comma-separated list of languages", "en,ko")
+  .option("--languages <langs>", "Comma-separated list of languages")
   .option(
     "--typescript, --ts",
     "Generate TypeScript config file (.ts) instead of JSON",
@@ -256,7 +256,6 @@ program
   .option(
     "--namespace-location <path>",
     "Namespace location path (e.g., 'page', 'src/pages')",
-    "page",
   )
   .option("--fallback-namespace <name>", "Fallback namespace name", "common")
   .option("--non-interactive", "Skip interactive prompts and use defaults")
@@ -264,46 +263,120 @@ program
     try {
       console.log("🚀 Initializing i18nexus project...\n");
 
-      // Interactive prompts (unless --non-interactive is set)
+      let projectMode: "client" | "server" | "both" = "client";
       let useNamespaceStructure = true;
+      let languages: string[] = [];
+      let defaultLanguage = "ko";
+      let sourcePattern = "app/**/*.{ts,tsx}";
+      let namespaceLocation = "app";
 
+      // Interactive prompts (unless --non-interactive is set)
       if (!options.nonInteractive) {
-        const rl = readline.createInterface({
-          input: process.stdin,
-          output: process.stdout,
-        });
+        const answers = await inquirer.prompt([
+          {
+            type: "list",
+            name: "mode",
+            message: "프로젝트 모드를 선택하세요:",
+            choices: [
+              {
+                name: "🖥️  Client Components (React, Next.js with 'use client')",
+                value: "client",
+              },
+              {
+                name: "⚡ Server Components (Next.js App Router, RSC)",
+                value: "server",
+              },
+              {
+                name: "🔄 Both (Mixed client and server components)",
+                value: "both",
+              },
+            ],
+            default: "client",
+          },
+          {
+            type: "list",
+            name: "defaultLanguage",
+            message: "기본 언어를 선택하세요:",
+            choices: [
+              { name: "🇰🇷 Korean (ko)", value: "ko" },
+              { name: "🇺🇸 English (en)", value: "en" },
+              { name: "🇯🇵 Japanese (ja)", value: "ja" },
+              { name: "Other", value: "other" },
+            ],
+            default: "ko",
+          },
+          {
+            type: "input",
+            name: "languages",
+            message: "지원할 언어를 입력하세요 (쉼표로 구분):",
+            default: (answers: any) => {
+              if (answers.defaultLanguage === "other") return "en,ko";
+              return answers.defaultLanguage === "ko" ? "ko,en" : "en,ko";
+            },
+            validate: (input: string) => {
+              const langs = input.split(",").map((l) => l.trim());
+              return langs.length > 0
+                ? true
+                : "최소 1개 언어를 입력해야 합니다";
+            },
+          },
+          {
+            type: "input",
+            name: "sourcePattern",
+            message: "소스 코드 위치를 입력하세요:",
+            default: "app/**/*.{ts,tsx}",
+          },
+          {
+            type: "confirm",
+            name: "useNamespaceStructure",
+            message: "네임스페이스 지원을 활성화하시겠습니까?",
+            default: true,
+          },
+          {
+            type: "input",
+            name: "namespaceLocation",
+            message: "네임스페이스 자동 추론 기준 경로:",
+            default: "app",
+            when: (answers: any) => answers.useNamespaceStructure,
+          },
+        ]);
 
-        const askQuestion = (question: string): Promise<string> =>
-          new Promise((resolve) => rl.question(question, resolve));
-
-        // Question: 네임스페이스 별로 나눌래? vs 하나로 합칠래?
-        console.log("\n📁 번역 파일을 어떻게 구성하시겠습니까?");
-        console.log("");
-        console.log("   1️⃣  네임스페이스별로 분리 (권장)");
-        console.log("      📂 locales/home/ko.json");
-        console.log("      📂 locales/about/ko.json");
-        console.log("      📂 locales/common/ko.json");
-        console.log("      ✅ 페이지별 lazy loading 가능");
-        console.log("      ✅ 대규모 프로젝트에 적합");
-        console.log("");
-        console.log("   2️⃣  하나로 통합");
-        console.log("      📄 locales/ko.json");
-        console.log("      📄 locales/en.json");
-        console.log("      ✅ 간단한 구조");
-        console.log("      ✅ 소규모 프로젝트에 적합");
-        console.log("");
-
-        const structureAnswer = await askQuestion("   선택 (1/2) [기본: 1]: ");
-        useNamespaceStructure =
-          !structureAnswer.trim() || structureAnswer.trim() === "1";
-
-        rl.close();
-        console.log("");
+        projectMode = answers.mode;
+        useNamespaceStructure = answers.useNamespaceStructure;
+        defaultLanguage =
+          answers.defaultLanguage === "other" ? "en" : answers.defaultLanguage;
+        languages = answers.languages.split(",").map((l: string) => l.trim());
+        sourcePattern = answers.sourcePattern;
+        namespaceLocation = answers.namespaceLocation || "app";
+      } else {
+        // Non-interactive mode: use defaults or CLI options
+        languages = options.languages
+          ? options.languages.split(",").map((l: string) => l.trim())
+          : ["ko", "en"];
+        defaultLanguage = languages[0];
+        namespaceLocation = options.namespaceLocation || "app";
       }
 
-      const languages = options.languages
-        .split(",")
-        .map((l: string) => l.trim());
+      console.log("");
+
+      // Determine import source and mode based on project mode
+      let translationImportSource = "i18nexus";
+      let mode: "client" | "server" | undefined = undefined;
+      let serverTranslationFunction: string | undefined = undefined;
+      let framework: "nextjs" | "react" = "nextjs";
+
+      if (projectMode === "server") {
+        translationImportSource = "i18nexus/server";
+        mode = "server";
+        serverTranslationFunction = "getTranslation";
+      } else if (projectMode === "client") {
+        mode = "client";
+        framework = "nextjs";
+      } else {
+        // both mode
+        mode = undefined; // auto-detect
+        serverTranslationFunction = "getTranslation";
+      }
 
       // 1. i18nexus.config 파일 생성 (.ts 또는 .json)
       if (options.typescript || options.ts) {
@@ -311,16 +384,27 @@ program
         const languagesArray = languages
           .map((l: string) => `"${l}"`)
           .join(", ");
+
+        const modeConfig = mode ? `\n  mode: "${mode}",` : "";
+        const serverFunctionConfig = serverTranslationFunction
+          ? `\n  serverTranslationFunction: "${serverTranslationFunction}",`
+          : "";
+        const frameworkConfig =
+          mode === "client" ? `\n  framework: "${framework}",` : "";
+
         const tsContent = `import { defineConfig } from "i18nexus";
 
 export const config = defineConfig({
   languages: [${languagesArray}] as const,
-  defaultLanguage: "${languages[0]}",
+  defaultLanguage: "${defaultLanguage}",
   localesDir: "${options.locales}",
-  sourcePattern: "src/**/*.{ts,tsx,js,jsx}",
-  translationImportSource: "i18nexus",
-  fallbackNamespace: "${options.fallbackNamespace || "common"}",
-  namespaceLocation: "${options.namespaceLocation || "page"}",
+  sourcePattern: "${sourcePattern}",
+  translationImportSource: "${translationImportSource}",${modeConfig}${serverFunctionConfig}${frameworkConfig}
+  fallbackNamespace: "${options.fallbackNamespace || "common"}",${
+    useNamespaceStructure
+      ? `\n  namespaceLocation: "${namespaceLocation}",`
+      : ""
+  }
   useNamespaceStructure: ${useNamespaceStructure},${
     options.spreadsheet
       ? `
@@ -348,10 +432,10 @@ export type AppLanguages = typeof config.languages[number];
         // JSON config 파일 생성
         const configData: any = {
           languages: languages,
-          defaultLanguage: languages[0],
+          defaultLanguage: defaultLanguage,
           localesDir: options.locales,
-          sourcePattern: "src/**/*.{js,jsx,ts,tsx}",
-          translationImportSource: "i18nexus",
+          sourcePattern: sourcePattern,
+          translationImportSource: translationImportSource,
           fallbackNamespace: options.fallbackNamespace || "common",
           useNamespaceStructure,
           googleSheets: {
@@ -361,9 +445,22 @@ export type AppLanguages = typeof config.languages[number];
           },
         };
 
+        // Add mode-specific configuration
+        if (mode) {
+          configData.mode = mode;
+        }
+
+        if (serverTranslationFunction) {
+          configData.serverTranslationFunction = serverTranslationFunction;
+        }
+
+        if (mode === "client") {
+          configData.framework = framework;
+        }
+
         // 네임스페이스 구조 사용 시에만 namespaceLocation 추가
         if (useNamespaceStructure) {
-          configData.namespaceLocation = options.namespaceLocation || "page";
+          configData.namespaceLocation = namespaceLocation;
         }
 
         fs.writeFileSync(
@@ -508,7 +605,60 @@ GOOGLE_CREDENTIALS_PATH=${options.credentials}
         }
       }
 
+      // 7. 예제 파일 생성
+      const examplesDir = "examples";
+      if (!fs.existsSync(examplesDir)) {
+        fs.mkdirSync(examplesDir, { recursive: true });
+      }
+
+      if (projectMode === "server" || projectMode === "both") {
+        const serverExampleContent = `import { getTranslation } from "${translationImportSource}";
+
+export default async function ServerExample() {
+  const { t } = await getTranslation();
+  
+  return (
+    <div>
+      <h1>{t("환영합니다")}</h1>
+      <p>{t("서버 컴포넌트 예제입니다")}</p>
+    </div>
+  );
+}
+`;
+        fs.writeFileSync(
+          path.join(examplesDir, "server-component-example.tsx"),
+          serverExampleContent,
+        );
+        console.log("✅ Created examples/server-component-example.tsx");
+      }
+
+      if (projectMode === "client" || projectMode === "both") {
+        const clientExampleContent = `"use client";
+
+import { useTranslation } from "i18nexus";
+
+export default function ClientExample() {
+  const { t } = useTranslation();
+  
+  return (
+    <div>
+      <h1>{t("환영합니다")}</h1>
+      <p>{t("클라이언트 컴포넌트 예제입니다")}</p>
+    </div>
+  );
+}
+`;
+        fs.writeFileSync(
+          path.join(examplesDir, "client-component-example.tsx"),
+          clientExampleContent,
+        );
+        console.log("✅ Created examples/client-component-example.tsx");
+      }
+
       console.log("\n✅ i18nexus project initialized successfully!");
+      console.log(
+        `\n📦 Project Mode: ${projectMode === "both" ? "Mixed (Client + Server)" : projectMode === "server" ? "Server Components" : "Client Components"}`,
+      );
 
       if (useNamespaceStructure) {
         console.log("\n📝 Project structure:");
@@ -527,7 +677,7 @@ GOOGLE_CREDENTIALS_PATH=${options.credentials}
       }
 
       console.log("\n📝 Next steps:");
-      console.log("1. Update i18nexus.config.json with your project settings");
+      console.log("1. Check the example files in the 'examples/' directory");
       console.log("2. Run 'npx i18n-wrapper' to wrap hardcoded strings");
       console.log("3. Run 'npx i18n-extractor' to extract translation keys");
 

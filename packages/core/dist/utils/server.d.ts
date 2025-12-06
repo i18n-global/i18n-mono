@@ -18,30 +18,62 @@ export declare function getServerTranslations<T extends Record<string, Record<st
 /** 디렉토리에서 번역 파일 동적 로드 */
 export declare function loadTranslations(localesDir: string): Promise<Record<string, Record<string, string>>>;
 /** 서버 번역 컨텍스트 생성 (설정 자동 로드, 헤더 자동 감지) */
+export interface GetTranslationOptions {
+    localesDir?: string;
+    cookieName?: string;
+    defaultLanguage?: string;
+    availableLanguages?: string[];
+    /** Disable automatic namespace inference */
+    disableAutoInference?: boolean;
+    /** Use fallback namespace on error */
+    useFallbackOnError?: boolean;
+    /** Disable caching (useful for development) */
+    disableCache?: boolean;
+}
+export interface GetTranslationReturn<NS extends string = string> {
+    /** Type-safe translation function */
+    t: (key: string, variables?: Record<string, string | number>, fallback?: string) => string;
+    /** Current language */
+    language: string;
+    /** Language alias (react-i18next compatibility) */
+    lng: string;
+    /** Current namespace */
+    namespace: NS;
+    /** Translations object */
+    translations: Record<string, Record<string, string>>;
+    /** Current language dictionary */
+    dict: Record<string, string>;
+}
 /**
  * Get server-side translation function with namespace support
  *
+ * Features:
+ * - Automatic namespace inference from file path
+ * - Falls back to config.fallbackNamespace if inference fails
+ * - Translation caching for performance
+ * - Clear error messages
+ *
  * @example
  * ```tsx
- * // Server Component
+ * // Automatic namespace inference
+ * export default async function Page() {
+ *   const { t } = await getTranslation();
+ *   return <h1>{t("title")}</h1>;
+ * }
+ *
+ * // Explicit namespace
  * export default async function Page() {
  *   const { t } = await getTranslation<"home">("home");
  *   return <h1>{t("title")}</h1>;
  * }
  * ```
  */
-export declare function getTranslation<NS extends string = string>(namespace?: NS, options?: {
-    localesDir?: string;
-    cookieName?: string;
-    defaultLanguage?: string;
-    availableLanguages?: string[];
-}): Promise<{
-    t: (key: string, variables?: ServerTranslationVariables | string, fallback?: string) => string;
-    language: string;
-    lng: string;
-    translations: Record<string, Record<string, string>>;
-    dict: Record<string, string>;
-}>;
+export declare function getTranslation<NS extends string = string>(namespace?: NS, options?: GetTranslationOptions): Promise<GetTranslationReturn<NS>>;
+/**
+ * Invalidate translation cache
+ * Useful for development or when translations are updated
+ */
+export declare function invalidateCache(namespace?: string, language?: string): void;
 /**
  * @deprecated Use getTranslation() instead
  */
@@ -51,13 +83,7 @@ export declare function createServerI18n(options?: {
     defaultLanguage?: string;
     availableLanguages?: string[];
     translations?: Record<string, Record<string, string>>;
-}): Promise<{
-    t: (key: string, variables?: ServerTranslationVariables | string, fallback?: string) => string;
-    language: string;
-    lng: string;
-    translations: Record<string, Record<string, string>>;
-    dict: Record<string, string>;
-}>;
+}): Promise<GetTranslationReturn<string>>;
 /** 미리 로드된 번역으로 서버 i18n 컨텍스트 생성 */
 export declare function createServerI18nWithTranslations(headers: Headers, translations: Record<string, Record<string, string>>, options?: {
     cookieName?: string;

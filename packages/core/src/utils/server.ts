@@ -2,6 +2,13 @@
 
 import * as fs from "fs";
 import * as path from "path";
+import { loadConfigSilently as loadFullConfig } from "./config-loader";
+import { inferNamespaceFromCallSite } from "./callsite-inference";
+import {
+  getCachedTranslations,
+  cacheTranslations,
+  invalidateCache as invalidateTranslationCache,
+} from "./translation-cache";
 
 type LocalConfig = {
   localesDir?: string;
@@ -207,12 +214,56 @@ export async function loadTranslations(
 }
 
 /** 서버 번역 컨텍스트 생성 (설정 자동 로드, 헤더 자동 감지) */
+export interface GetTranslationOptions {
+  localesDir?: string;
+  cookieName?: string;
+  defaultLanguage?: string;
+  availableLanguages?: string[];
+  /** Disable automatic namespace inference */
+  disableAutoInference?: boolean;
+  /** Use fallback namespace on error */
+  useFallbackOnError?: boolean;
+  /** Disable caching (useful for development) */
+  disableCache?: boolean;
+}
+
+export interface GetTranslationReturn<NS extends string = string> {
+  /** Type-safe translation function */
+  t: (
+    key: string,
+    variables?: Record<string, string | number>,
+    fallback?: string,
+  ) => string;
+  /** Current language */
+  language: string;
+  /** Language alias (react-i18next compatibility) */
+  lng: string;
+  /** Current namespace */
+  namespace: NS;
+  /** Translations object */
+  translations: Record<string, Record<string, string>>;
+  /** Current language dictionary */
+  dict: Record<string, string>;
+}
+
 /**
  * Get server-side translation function with namespace support
  *
+ * Features:
+ * - Automatic namespace inference from file path
+ * - Falls back to config.fallbackNamespace if inference fails
+ * - Translation caching for performance
+ * - Clear error messages
+ *
  * @example
  * ```tsx
- * // Server Component
+ * // Automatic namespace inference
+ * export default async function Page() {
+ *   const { t } = await getTranslation();
+ *   return <h1>{t("title")}</h1>;
+ * }
+ *
+ * // Explicit namespace
  * export default async function Page() {
  *   const { t } = await getTranslation<"home">("home");
  *   return <h1>{t("title")}</h1>;
@@ -221,16 +272,12 @@ export async function loadTranslations(
  */
 export async function getTranslation<NS extends string = string>(
   namespace?: NS,
-  options?: {
-    localesDir?: string;
-    cookieName?: string;
-    defaultLanguage?: string;
-    availableLanguages?: string[];
-  },
-) {
+  options?: GetTranslationOptions,
+): Promise<GetTranslationReturn<NS>> {
+  // 1. Load config
   let config;
   try {
-    config = await loadConfigSilently();
+    config = await loadFullConfig();
   } catch {
     config = null;
   }
@@ -241,6 +288,7 @@ export async function getTranslation<NS extends string = string>(
   const cookieName = options?.cookieName || "i18n-language";
   const availableLanguages = options?.availableLanguages || [];
 
+  // 2. Get current language from headers
   let headersInstance: Headers;
   try {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -257,32 +305,126 @@ export async function getTranslation<NS extends string = string>(
     availableLanguages,
   });
 
-  // Load translations for the specific namespace
-  let translations: Record<string, Record<string, string>>;
-  if (namespace) {
+  // 3. Determine namespace (priority order)
+  let resolvedNamespace = namespace;
+
+  // Try automatic inference if no namespace provided
+  if (!resolvedNamespace && !options?.disableAutoInference) {
     try {
-      const nsTranslations = await import(
-        `${localesDir}/${namespace}/${language}.json`
-      );
-      translations = { [namespace]: nsTranslations.default };
-    } catch {
-      // Fallback to loading all translations
-      translations = await loadTranslations(localesDir);
+      const inferred = inferNamespaceFromCallSite(config);
+      if (inferred) {
+        resolvedNamespace = inferred as NS;
+      }
+    } catch (error) {
+      // Inference failed, continue to fallback
+      console.warn("⚠️  Failed to infer namespace from call site:", error);
     }
-  } else {
-    translations = await loadTranslations(localesDir);
   }
 
+  // Fallback to config.fallbackNamespace
+  if (!resolvedNamespace && config?.fallbackNamespace) {
+    resolvedNamespace = config.fallbackNamespace as NS;
+  }
+
+  // Final fallback to "common"
+  if (!resolvedNamespace) {
+    resolvedNamespace = "common" as NS;
+  }
+
+  // 4. Check cache first
+  if (!options?.disableCache) {
+    const cached = getCachedTranslations(resolvedNamespace, language);
+    if (cached) {
+      const t = createServerTranslation(language, cached);
+      const dict = getServerTranslations(language, cached);
+
+      return {
+        t,
+        language,
+        lng: language,
+        namespace: resolvedNamespace,
+        translations: cached,
+        dict,
+      };
+    }
+  }
+
+  // 5. Load translations
+  let translations: Record<string, Record<string, string>>;
+
+  try {
+    const nsTranslations = await import(
+      `${localesDir}/${resolvedNamespace}/${language}.json`
+    );
+    translations = { [resolvedNamespace]: nsTranslations.default };
+  } catch (error) {
+    // Handle namespace not found
+    if (
+      options?.useFallbackOnError &&
+      config?.fallbackNamespace &&
+      config.fallbackNamespace !== resolvedNamespace
+    ) {
+      console.warn(
+        `⚠️  Namespace '${resolvedNamespace}' not found, using fallback '${config.fallbackNamespace}'`,
+      );
+
+      try {
+        const fallbackTranslations = await import(
+          `${localesDir}/${config.fallbackNamespace}/${language}.json`
+        );
+        translations = {
+          [config.fallbackNamespace]: fallbackTranslations.default,
+        };
+        resolvedNamespace = config.fallbackNamespace as NS;
+      } catch (fallbackError) {
+        throw new Error(
+          `Failed to load namespace '${resolvedNamespace}' and fallback '${config.fallbackNamespace}':\n` +
+            `  Primary error: ${error}\n` +
+            `  Fallback error: ${fallbackError}\n\n` +
+            `Please ensure the namespace files exist at:\n` +
+            `  - ${localesDir}/${resolvedNamespace}/${language}.json\n` +
+            `  - ${localesDir}/${config.fallbackNamespace}/${language}.json`,
+        );
+      }
+    } else {
+      throw new Error(
+        `Failed to load namespace '${resolvedNamespace}' for language '${language}':\n` +
+          `  Error: ${error}\n\n` +
+          `Please ensure the file exists at:\n` +
+          `  ${localesDir}/${resolvedNamespace}/${language}.json\n\n` +
+          `Tips:\n` +
+          `  - Run 'npx i18n-extractor' to generate translation files\n` +
+          `  - Check that the namespace name matches your folder structure\n` +
+          `  - Set fallbackNamespace in i18nexus.config.json for automatic fallback`,
+      );
+    }
+  }
+
+  // 6. Cache translations
+  if (!options?.disableCache) {
+    cacheTranslations(resolvedNamespace, language, translations);
+  }
+
+  // 7. Create translation function
   const t = createServerTranslation(language, translations);
   const dict = getServerTranslations(language, translations);
 
   return {
     t,
     language,
-    lng: language, // Alias for react-i18next compatibility
+    lng: language,
+    namespace: resolvedNamespace,
     translations,
     dict,
   };
+}
+
+/**
+ * Invalidate translation cache
+ * Useful for development or when translations are updated
+ */
+export function invalidateCache(namespace?: string, language?: string): void {
+  invalidateTranslationCache(namespace, language);
 }
 
 /**

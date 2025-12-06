@@ -18,6 +18,24 @@ export interface I18nexusConfig {
   fallbackNamespace?: string;
   /** Fallback 활성화 (기본: true) */
   enableFallback?: boolean;
+  /** Namespace location for automatic inference */
+  namespaceLocation?: string;
+  /** Namespacing configuration */
+  namespacing?: {
+    enabled: boolean;
+    basePath: string;
+    defaultNamespace: string;
+    framework?:
+      | "nextjs-app"
+      | "nextjs-pages"
+      | "tanstack-file"
+      | "tanstack-folder"
+      | "react-router"
+      | "remix"
+      | "other";
+    ignorePatterns?: string[];
+    strategy?: "first-folder" | "full-path" | "last-folder";
+  };
 }
 
 /** i18nexus.config.json 설정 파일 로드 */
@@ -48,6 +66,8 @@ export function loadI18nexusConfig(
       localesDir: config.localesDir,
       sourcePattern: config.sourcePattern,
       translationImportSource: config.translationImportSource,
+      namespaceLocation: config.namespaceLocation,
+      namespacing: config.namespacing,
     };
   } catch (error) {
     if (!options?.silent) {
@@ -65,4 +85,9 @@ export function loadI18nexusConfigSilently(
   configPath: string = "i18nexus.config.json",
 ): I18nexusConfig | null {
   return loadI18nexusConfig(configPath, { silent: true });
+}
+
+/** Alias for server-side usage */
+export async function loadConfigSilently(): Promise<I18nexusConfig | null> {
+  return loadI18nexusConfigSilently();
 }
