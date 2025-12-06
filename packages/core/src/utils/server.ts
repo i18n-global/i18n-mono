@@ -180,8 +180,15 @@ export function createServerTranslation(
   language: string,
   translations: Record<string, Record<string, string>>,
 ) {
-  const currentTranslations =
-    translations[language] || translations["en"] || {};
+  // translations 구조: { [namespace]: { [key]: value } }
+  // 모든 namespace의 번역을 병합하여 사용 (fallback 지원)
+  const allTranslations: Record<string, string> = {};
+  for (const namespace of Object.keys(translations)) {
+    const namespaceTranslations = translations[namespace];
+    if (namespaceTranslations && typeof namespaceTranslations === "object") {
+      Object.assign(allTranslations, namespaceTranslations);
+    }
+  }
 
   return function translate(
     key: string,
@@ -189,10 +196,11 @@ export function createServerTranslation(
     fallback?: string,
   ): string {
     if (typeof variables === "string") {
-      return currentTranslations[key] || variables || key;
+      // 두 번째 인자가 문자열이면 fallback으로 사용
+      return allTranslations[key] || variables || key;
     }
 
-    const translatedText = currentTranslations[key] || fallback || key;
+    const translatedText = allTranslations[key] || fallback || key;
     return interpolateServer(translatedText, variables);
   };
 }
@@ -200,8 +208,17 @@ export function createServerTranslation(
 /** 타입 안전한 서버 번역 객체 반환 */
 export function getServerTranslations<
   T extends Record<string, Record<string, string>>,
->(language: string, translations: T): T[keyof T] {
-  return (translations[language] || translations["en"] || {}) as T[keyof T];
+>(language: string, translations: T): Record<string, string> {
+  // translations 구조: { [namespace]: { [key]: value } }
+  // 모든 namespace의 번역을 병합하여 반환
+  const allTranslations: Record<string, string> = {};
+  for (const namespace of Object.keys(translations)) {
+    const namespaceTranslations = translations[namespace];
+    if (namespaceTranslations && typeof namespaceTranslations === "object") {
+      Object.assign(allTranslations, namespaceTranslations);
+    }
+  }
+  return allTranslations;
 }
 
 /** 디렉토리에서 번역 파일 동적 로드 */

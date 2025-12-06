@@ -120,18 +120,36 @@ function interpolateServer(text, variables) {
 }
 /** 서버 컴포넌트용 번역 함수 생성 */
 export function createServerTranslation(language, translations) {
-    const currentTranslations = translations[language] || translations["en"] || {};
+    // translations 구조: { [namespace]: { [key]: value } }
+    // 모든 namespace의 번역을 병합하여 사용 (fallback 지원)
+    const allTranslations = {};
+    for (const namespace of Object.keys(translations)) {
+        const namespaceTranslations = translations[namespace];
+        if (namespaceTranslations && typeof namespaceTranslations === "object") {
+            Object.assign(allTranslations, namespaceTranslations);
+        }
+    }
     return function translate(key, variables, fallback) {
         if (typeof variables === "string") {
-            return currentTranslations[key] || variables || key;
+            // 두 번째 인자가 문자열이면 fallback으로 사용
+            return allTranslations[key] || variables || key;
         }
-        const translatedText = currentTranslations[key] || fallback || key;
+        const translatedText = allTranslations[key] || fallback || key;
         return interpolateServer(translatedText, variables);
     };
 }
 /** 타입 안전한 서버 번역 객체 반환 */
 export function getServerTranslations(language, translations) {
-    return (translations[language] || translations["en"] || {});
+    // translations 구조: { [namespace]: { [key]: value } }
+    // 모든 namespace의 번역을 병합하여 반환
+    const allTranslations = {};
+    for (const namespace of Object.keys(translations)) {
+        const namespaceTranslations = translations[namespace];
+        if (namespaceTranslations && typeof namespaceTranslations === "object") {
+            Object.assign(allTranslations, namespaceTranslations);
+        }
+    }
+    return allTranslations;
 }
 /** 디렉토리에서 번역 파일 동적 로드 */
 export async function loadTranslations(localesDir) {
