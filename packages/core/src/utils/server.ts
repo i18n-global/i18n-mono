@@ -283,6 +283,14 @@ export async function getTranslation<NS extends string = string>(
   }
 
   const localesDir = options?.localesDir || config?.localesDir || "./locales";
+
+  // 상대 경로를 절대 경로로 변환 (서버 컴포넌트에서 동적 import 경로 문제 해결)
+  const resolvedLocalesDir = localesDir.startsWith("/")
+    ? localesDir
+    : localesDir.startsWith(".")
+      ? path.resolve(process.cwd(), localesDir)
+      : path.resolve(process.cwd(), localesDir);
+
   const defaultLanguage =
     options?.defaultLanguage || config?.defaultLanguage || "en";
   const cookieName = options?.cookieName || "i18n-language";
@@ -352,11 +360,23 @@ export async function getTranslation<NS extends string = string>(
   // 5. Load translations
   let translations: Record<string, Record<string, string>>;
 
+  // 서버 환경에서는 fs를 사용하여 파일 직접 읽기 (동적 import 경로 문제 해결)
+  const translationFilePath = path.join(
+    resolvedLocalesDir,
+    resolvedNamespace,
+    `${language}.json`,
+  );
+
   try {
-    const nsTranslations = await import(
-      `${localesDir}/${resolvedNamespace}/${language}.json`
-    );
-    translations = { [resolvedNamespace]: nsTranslations.default };
+    // 파일이 존재하는지 확인
+    if (!fs.existsSync(translationFilePath)) {
+      throw new Error(`File not found: ${translationFilePath}`);
+    }
+
+    // 파일 읽기
+    const fileContent = await fs.promises.readFile(translationFilePath, "utf8");
+    const translationData = JSON.parse(fileContent);
+    translations = { [resolvedNamespace]: translationData };
   } catch (error) {
     // Handle namespace not found
     if (
@@ -369,11 +389,23 @@ export async function getTranslation<NS extends string = string>(
       );
 
       try {
-        const fallbackTranslations = await import(
-          `${localesDir}/${config.fallbackNamespace}/${language}.json`
+        const fallbackFilePath = path.join(
+          resolvedLocalesDir,
+          config.fallbackNamespace,
+          `${language}.json`,
         );
+
+        if (!fs.existsSync(fallbackFilePath)) {
+          throw new Error(`File not found: ${fallbackFilePath}`);
+        }
+
+        const fallbackContent = await fs.promises.readFile(
+          fallbackFilePath,
+          "utf8",
+        );
+        const fallbackData = JSON.parse(fallbackContent);
         translations = {
-          [config.fallbackNamespace]: fallbackTranslations.default,
+          [config.fallbackNamespace]: fallbackData,
         };
         resolvedNamespace = config.fallbackNamespace as NS;
       } catch (fallbackError) {
@@ -382,8 +414,8 @@ export async function getTranslation<NS extends string = string>(
             `  Primary error: ${error}\n` +
             `  Fallback error: ${fallbackError}\n\n` +
             `Please ensure the namespace files exist at:\n` +
-            `  - ${localesDir}/${resolvedNamespace}/${language}.json\n` +
-            `  - ${localesDir}/${config.fallbackNamespace}/${language}.json`,
+            `  - ${resolvedLocalesDir}/${resolvedNamespace}/${language}.json\n` +
+            `  - ${resolvedLocalesDir}/${config.fallbackNamespace}/${language}.json`,
         );
       }
     } else {
@@ -391,7 +423,7 @@ export async function getTranslation<NS extends string = string>(
         `Failed to load namespace '${resolvedNamespace}' for language '${language}':\n` +
           `  Error: ${error}\n\n` +
           `Please ensure the file exists at:\n` +
-          `  ${localesDir}/${resolvedNamespace}/${language}.json\n\n` +
+          `  ${resolvedLocalesDir}/${resolvedNamespace}/${language}.json\n\n` +
           `Tips:\n` +
           `  - Run 'npx i18n-extractor' to generate translation files\n` +
           `  - Check that the namespace name matches your folder structure\n` +
