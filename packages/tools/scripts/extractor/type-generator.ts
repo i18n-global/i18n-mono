@@ -343,32 +343,35 @@ function generateTypeContent(
   content += `    isReady: boolean;\n`;
   content += `  };\n\n`;
 
-  // useLanguageSwitcher hook
-  if (includeJsDocs) {
-    content += `  /**\n`;
-    content += `   * Language switcher hook (Client Component)\n`;
-    content += `   * \n`;
-    content += `   * @returns Language switching utilities\n`;
-    content += `   * \n`;
-    content += `   * @example\n`;
-    content += `   * \`\`\`tsx\n`;
-    content += `   * const { changeLanguage, availableLanguages } = useLanguageSwitcher();\n`;
-    content += `   * changeLanguage("en");  // ✅ Change to English\n`;
-    content += `   * \`\`\`\n`;
-    content += `   */\n`;
+  // useLanguageSwitcher hook (i18nexus 사용자에 한해서만 추가)
+  const isI18nexus = importSource === "i18nexus";
+  if (isI18nexus) {
+    if (includeJsDocs) {
+      content += `  /**\n`;
+      content += `   * Language switcher hook (Client Component)\n`;
+      content += `   * \n`;
+      content += `   * @returns Language switching utilities\n`;
+      content += `   * \n`;
+      content += `   * @example\n`;
+      content += `   * \`\`\`tsx\n`;
+      content += `   * const { changeLanguage, availableLanguages } = useLanguageSwitcher();\n`;
+      content += `   * changeLanguage("en");  // ✅ Change to English\n`;
+      content += `   * \`\`\`\n`;
+      content += `   */\n`;
+    }
+    content += `  export function useLanguageSwitcher(): {\n`;
+    content += `    currentLanguage: string;\n`;
+    content += `    availableLanguages: Array<{ code: string; name: string; flag?: string }>;\n`;
+    content += `    changeLanguage: (lang: string) => Promise<void>;\n`;
+    content += `    switchLng: (lang: string) => Promise<void>;\n`;
+    content += `    switchToNextLanguage: () => Promise<void>;\n`;
+    content += `    switchToPreviousLanguage: () => Promise<void>;\n`;
+    content += `    getLanguageConfig: (code?: string) => { code: string; name: string; flag?: string } | undefined;\n`;
+    content += `    detectBrowserLanguage: () => string | null;\n`;
+    content += `    resetLanguage: () => void;\n`;
+    content += `    isLoading: boolean;\n`;
+    content += `  };\n\n`;
   }
-  content += `  export function useLanguageSwitcher(): {\n`;
-  content += `    currentLanguage: string;\n`;
-  content += `    availableLanguages: Array<{ code: string; name: string; flag?: string }>;\n`;
-  content += `    changeLanguage: (lang: string) => Promise<void>;\n`;
-  content += `    switchLng: (lang: string) => Promise<void>;\n`;
-  content += `    switchToNextLanguage: () => Promise<void>;\n`;
-  content += `    switchToPreviousLanguage: () => Promise<void>;\n`;
-  content += `    getLanguageConfig: (code?: string) => { code: string; name: string; flag?: string } | undefined;\n`;
-  content += `    detectBrowserLanguage: () => string | null;\n`;
-  content += `    resetLanguage: () => void;\n`;
-  content += `    isLoading: boolean;\n`;
-  content += `  };\n\n`;
 
   // Export individual namespace key types for use in constants
   content += `  // Individual namespace key types (for use in constants and type definitions)\n`;
