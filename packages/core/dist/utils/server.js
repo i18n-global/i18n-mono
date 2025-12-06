@@ -3,17 +3,18 @@ import * as fs from "fs";
 import * as path from "path";
 import { inferNamespaceFromCallSite } from "./callsite-inference";
 import { getCachedTranslations, cacheTranslations, invalidateCache as invalidateTranslationCache, } from "./translation-cache";
-/** 프로젝트 루트에서 i18nexus 설정 파일 로드 (조용히) */
+/** 프로젝트 루트에서 i18nexus 설정 파일 로드 (조용히) - config 디렉토리 경로도 반환 */
 async function loadConfigSilently() {
     try {
         const configPath = path.resolve(process.cwd(), "i18nexus.config.json");
         if (fs.existsSync(configPath)) {
             const raw = await fs.promises.readFile(configPath, "utf8");
             try {
-                return JSON.parse(raw);
+                const config = JSON.parse(raw);
+                return { config, configDir: path.dirname(configPath) };
             }
             catch {
-                return null;
+                return { config: null, configDir: process.cwd() };
             }
         }
         const altPath = path.resolve(process.cwd(), "i18nexus.config.js");
@@ -22,18 +23,19 @@ async function loadConfigSilently() {
                 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
                 // @ts-ignore
                 const mod = await import(altPath);
-                return mod && mod.default
+                const config = mod && mod.default
                     ? mod.default
                     : mod;
+                return { config, configDir: path.dirname(altPath) };
             }
             catch {
-                return null;
+                return { config: null, configDir: process.cwd() };
             }
         }
-        return null;
+        return { config: null, configDir: process.cwd() };
     }
     catch {
-        return null;
+        return { config: null, configDir: process.cwd() };
     }
 }
 /** Accept-Language 헤더 파싱하여 가장 적합한 언어 반환 */
@@ -168,21 +170,23 @@ export async function loadTranslations(localesDir) {
  * ```
  */
 export async function getTranslation(namespace, options) {
-    // 1. Load config
+    // 1. Load config (with config directory path)
     let config;
+    let configDir;
     try {
-        config = await loadConfigSilently();
+        const result = await loadConfigSilently();
+        config = result.config;
+        configDir = result.configDir;
     }
     catch {
         config = null;
+        configDir = process.cwd();
     }
     const localesDir = options?.localesDir || config?.localesDir || "./locales";
-    // 상대 경로를 절대 경로로 변환 (서버 컴포넌트에서 동적 import 경로 문제 해결)
+    // config 파일 위치를 기준으로 locales 경로 계산 (더 안정적)
     const resolvedLocalesDir = localesDir.startsWith("/")
         ? localesDir
-        : localesDir.startsWith(".")
-            ? path.resolve(process.cwd(), localesDir)
-            : path.resolve(process.cwd(), localesDir);
+        : path.resolve(configDir, localesDir);
     const defaultLanguage = options?.defaultLanguage || config?.defaultLanguage || "en";
     const cookieName = options?.cookieName || "i18n-language";
     const availableLanguages = options?.availableLanguages || [];

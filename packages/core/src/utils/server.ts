@@ -15,16 +15,22 @@ type LocalConfig = {
   fallbackNamespace?: string;
 };
 
-/** 프로젝트 루트에서 i18nexus 설정 파일 로드 (조용히) */
-async function loadConfigSilently(): Promise<LocalConfig | null> {
+type ConfigWithPath = {
+  config: LocalConfig | null;
+  configDir: string;
+};
+
+/** 프로젝트 루트에서 i18nexus 설정 파일 로드 (조용히) - config 디렉토리 경로도 반환 */
+async function loadConfigSilently(): Promise<ConfigWithPath> {
   try {
     const configPath = path.resolve(process.cwd(), "i18nexus.config.json");
     if (fs.existsSync(configPath)) {
       const raw = await fs.promises.readFile(configPath, "utf8");
       try {
-        return JSON.parse(raw) as LocalConfig;
+        const config = JSON.parse(raw) as LocalConfig;
+        return { config, configDir: path.dirname(configPath) };
       } catch {
-        return null;
+        return { config: null, configDir: process.cwd() };
       }
     }
 
@@ -34,17 +40,19 @@ async function loadConfigSilently(): Promise<LocalConfig | null> {
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
         const mod = await import(altPath);
-        return mod && mod.default
-          ? (mod.default as LocalConfig)
-          : (mod as LocalConfig);
+        const config =
+          mod && mod.default
+            ? (mod.default as LocalConfig)
+            : (mod as LocalConfig);
+        return { config, configDir: path.dirname(altPath) };
       } catch {
-        return null;
+        return { config: null, configDir: process.cwd() };
       }
     }
 
-    return null;
+    return { config: null, configDir: process.cwd() };
   } catch {
-    return null;
+    return { config: null, configDir: process.cwd() };
   }
 }
 
@@ -274,22 +282,24 @@ export async function getTranslation<NS extends string = string>(
   namespace?: NS,
   options?: GetTranslationOptions,
 ): Promise<GetTranslationReturn<NS>> {
-  // 1. Load config
-  let config;
+  // 1. Load config (with config directory path)
+  let config: LocalConfig | null;
+  let configDir: string;
   try {
-    config = await loadConfigSilently();
+    const result = await loadConfigSilently();
+    config = result.config;
+    configDir = result.configDir;
   } catch {
     config = null;
+    configDir = process.cwd();
   }
 
   const localesDir = options?.localesDir || config?.localesDir || "./locales";
 
-  // 상대 경로를 절대 경로로 변환 (서버 컴포넌트에서 동적 import 경로 문제 해결)
+  // config 파일 위치를 기준으로 locales 경로 계산 (더 안정적)
   const resolvedLocalesDir = localesDir.startsWith("/")
     ? localesDir
-    : localesDir.startsWith(".")
-      ? path.resolve(process.cwd(), localesDir)
-      : path.resolve(process.cwd(), localesDir);
+    : path.resolve(configDir, localesDir);
 
   const defaultLanguage =
     options?.defaultLanguage || config?.defaultLanguage || "en";

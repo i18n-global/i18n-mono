@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file.
 
+## [3.3.3] - 2025-12-06
+
+### 🐛 Bug Fixes
+
+- **서버 번역 경로 해석 개선**: `i18nexus.config.json` 파일 위치를 기준으로 경로 계산
+  - `process.cwd()` 대신 config 파일 디렉토리를 기준으로 `localesDir` 해석
+  - Next.js 빌드 환경에서 경로 해석 오류 해결
+  - "Cannot find module './locales/common/ko.json'" 오류 수정
+
+---
+
 ## [3.3.2] - 2025-12-06
 
 ### 🐛 Bug Fixes
