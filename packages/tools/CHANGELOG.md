@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.3.8] - 2025-12-06
+
+### 🐛 Bug Fixes
+
+- **타입 생성기 수정**: `i18n-extractor`가 생성하는 타입 정의에 `useLanguageSwitcher` 추가
+  - `declare module "i18nexus"`에서 `useLanguageSwitcher` 훅 타입 정의 포함
+  - 이제 생성된 타입 정의 파일에서 `useLanguageSwitcher`를 정상적으로 import 가능
+
+---
+
 ## [2.3.7] - 2025-12-06
 
 ### 🐛 Bug Fixes
