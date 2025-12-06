@@ -13,6 +13,4 @@ export type { LanguageConfig, LanguageManagerOptions, } from "./utils/languageMa
 export { defineConfig } from "./utils/types";
 export type { ExtractLanguages } from "./utils/types";
 export { createDynamicTranslation, buildTranslationParams, buildConditionalTranslation, mapToTranslationParams, } from "./utils/dynamicTranslation";
-export { getTranslation, getServerLanguage, createServerTranslation, getServerTranslations, parseAcceptLanguage, parseCookies, invalidateCache, } from "./utils/server";
-export type { GetTranslationReturn, GetTranslationOptions, ServerTranslationVariables, } from "./utils/server";
 //# sourceMappingURL=index.d.ts.map

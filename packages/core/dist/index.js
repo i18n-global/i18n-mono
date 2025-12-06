@@ -16,6 +16,7 @@ export { LanguageManager, defaultLanguageManager, } from "./utils/languageManage
 export { defineConfig } from "./utils/types";
 // 동적 번역 유틸리티
 export { createDynamicTranslation, buildTranslationParams, buildConditionalTranslation, mapToTranslationParams, } from "./utils/dynamicTranslation";
-// 서버 유틸리티 (Next.js App Router / React Server Components)
-export { getTranslation, getServerLanguage, createServerTranslation, getServerTranslations, parseAcceptLanguage, parseCookies, invalidateCache, } from "./utils/server";
+// 서버 유틸리티는 "i18nexus/server"에서만 import 가능
+// import { getTranslation } from "i18nexus/server";
+// 클라이언트 번들에 fs 모듈이 포함되는 것을 방지하기 위해 메인 export에서 제거됨
 //# sourceMappingURL=index.js.map
