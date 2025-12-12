@@ -2,6 +2,60 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.5.0] - 2025-12-06
+
+### ✨ Features
+
+- **Google Sheets 다중 시트 자동 동기화**: 폴더 구조와 시트 구조 자동 매핑
+  - `downloadAllSheets()`: Spreadsheet의 모든 시트를 자동으로 감지하여 네임스페이스별 폴더로 다운로드
+  - `uploadAllNamespaces()`: `locales/` 폴더의 모든 네임스페이스를 각 시트로 자동 업로드
+  - 시트 이름 = 네임스페이스 이름 (자동 매핑)
+  - Config에서 `sheetName` 불필요 (자동 감지)
+
+- **타입 생성 명령어 분리**: 추출과 타입 생성 책임 분리
+  - 신규 명령어: `npx i18n-type` (타입 생성 전용)
+  - `i18n-extractor`에서 타입 생성 로직 제거
+  - 독립적으로 타입만 생성 가능
+
+- **Fallback Namespace 타입 확장**: 타입 안전성 향상
+  - `useTranslation<NS>()`: `TranslationKeys[NS] | CommonKeys` (fallback 포함)
+  - `getTranslation<NS>()`: `GetTranslationReturn<NS, TranslationKeys[NS] | CommonKeys>`
+  - Config의 `fallbackNamespace` 설정 시 자동으로 모든 네임스페이스에 fallback 키 타입 포함
+
+### 🔄 Breaking Changes
+
+- **타입 생성 워크플로우 변경**: 타입 생성이 별도 명령어로 분리됨
+  - 이전: `npx i18n-extractor` (추출 + 타입 생성)
+  - 이후: `npx i18n-extractor` (추출만) → `npx i18n-type` (타입 생성)
+  - 기존 프로젝트: `npx i18n-type` 실행하여 타입 재생성 필요
+
+### 📋 마이그레이션 가이드
+
+**이전 워크플로우:**
+
+```bash
+npx i18n-extractor  # 추출 + 타입 생성
+```
+
+**새로운 워크플로우:**
+
+```bash
+npx i18n-extractor  # 추출만
+npx i18n-type       # 타입 생성만
+```
+
+**Google Sheets 사용:**
+
+```bash
+# 이전: sheetName 지정 필요
+npx i18n-download -s "id" -n "Translations"
+
+# 이후: 자동 감지 (모든 시트)
+npx i18n-download -s "id"
+```
+
+---
+
 ## [2.4.0] - 2025-12-06
 
 ### ✨ Features
