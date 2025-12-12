@@ -163,11 +163,13 @@ if (require.main === module) {
         console.log(`
 Usage: i18n-upload [options]
 
+Upload translations from ALL namespace folders to Google Sheets automatically.
+Each namespace folder becomes a sheet (e.g., locales/common/ → "common" sheet).
+
 Options:
   -c, --credentials <path>     Path to Google Sheets credentials file (default: "./credentials.json")
   -s, --spreadsheet-id <id>    Google Spreadsheet ID (required)
   -l, --locales-dir <path>     Path to locales directory (default: "./locales")
-  -n, --sheet-name <name>      Sheet name (ignored when namespaces are detected)
   -a, --auto-translate         Enable auto-translation mode (English uses GOOGLETRANSLATE formula)
   -f, --force                  Force mode: Clear all existing data and re-upload everything
   -h, --help                   Show this help message
@@ -184,6 +186,13 @@ Examples:
   
   # With custom paths
   i18n-upload -c "./my-creds.json" -s "your-spreadsheet-id" -l "./translations"
+
+How it works:
+  - Automatically detects all namespace folders in locales directory
+  - Each namespace folder becomes a sheet (auto-creates if not exists)
+  - locales/common/ → "common" sheet
+  - locales/dashboard/ → "dashboard" sheet
+  - No need to specify sheet names in config!
         `);
         process.exit(0);
         break;

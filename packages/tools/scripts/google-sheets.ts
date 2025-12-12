@@ -719,6 +719,147 @@ export class GoogleSheetsManager {
   }
 
   /**
+   * Spreadsheet의 모든 시트 목록 조회
+   */
+  async getAllSheetNames(): Promise<string[]> {
+    if (!this.sheets) {
+      throw new Error(
+        "Google Sheets client not initialized. Call authenticate() first.",
+      );
+    }
+
+    try {
+      const spreadsheet = await this.sheets.spreadsheets.get({
+        spreadsheetId: this.config.spreadsheetId,
+      });
+
+      const sheetNames =
+        spreadsheet.data.sheets
+          ?.map((sheet) => sheet.properties?.title)
+          .filter((name): name is string => !!name) || [];
+
+      return sheetNames;
+    } catch (error) {
+      console.error("❌ Failed to get sheet names:", error);
+      throw error;
+    }
+  }
+
+  /**
+   * 모든 시트의 번역을 자동으로 다운로드하여 네임스페이스별 폴더에 저장
+   * 각 시트 이름이 네임스페이스가 됩니다.
+   */
+  async downloadAllSheets(
+    localesDir: string,
+    languages: string[] = ["en", "ko"],
+  ): Promise<void> {
+    try {
+      console.log("📥 Downloading all sheets from Google Sheets...");
+
+      // 1. 모든 시트 이름 조회
+      const sheetNames = await this.getAllSheetNames();
+
+      if (sheetNames.length === 0) {
+        console.log("📝 No sheets found in spreadsheet");
+        return;
+      }
+
+      console.log(
+        `📋 Found ${sheetNames.length} sheets: ${sheetNames.join(", ")}`,
+      );
+
+      // 2. 각 시트별로 다운로드
+      for (const sheetName of sheetNames) {
+        console.log(`\n📥 Downloading sheet: "${sheetName}"`);
+
+        // 해당 시트용 GoogleSheetsManager 인스턴스 생성
+        const sheetManager = new GoogleSheetsManager({
+          credentialsPath: this.config.credentialsPath,
+          spreadsheetId: this.config.spreadsheetId,
+          sheetName: sheetName,
+          namespace: sheetName, // 시트 이름을 네임스페이스로 사용
+        });
+
+        // 인증 (이미 인증된 sheets 클라이언트 재사용)
+        sheetManager.sheets = this.sheets;
+
+        // 해당 시트의 데이터를 locales/[namespace]/ 에 저장
+        await sheetManager.saveTranslationsToLocal(localesDir, languages);
+      }
+
+      console.log("\n✅ All sheets downloaded successfully");
+    } catch (error) {
+      console.error("❌ Failed to download all sheets:", error);
+      throw error;
+    }
+  }
+
+  /**
+   * locales 폴더의 모든 네임스페이스를 자동으로 업로드
+   * 각 네임스페이스 폴더가 하나의 시트가 됩니다.
+   */
+  async uploadAllNamespaces(
+    localesDir: string,
+    autoTranslate: boolean = false,
+    force: boolean = false,
+  ): Promise<void> {
+    try {
+      console.log("📤 Uploading all namespaces to Google Sheets...");
+
+      if (!fs.existsSync(localesDir)) {
+        throw new Error(`Locales directory not found: ${localesDir}`);
+      }
+
+      // 1. locales 폴더의 하위 디렉토리 목록 조회 (네임스페이스)
+      const namespaces = fs.readdirSync(localesDir).filter((item) => {
+        const fullPath = path.join(localesDir, item);
+        // 디렉토리이고, types 같은 특수 폴더는 제외
+        return (
+          fs.statSync(fullPath).isDirectory() &&
+          item !== "types" &&
+          !item.startsWith(".")
+        );
+      });
+
+      if (namespaces.length === 0) {
+        console.log("📝 No namespaces found in locales directory");
+        return;
+      }
+
+      console.log(
+        `📋 Found ${namespaces.length} namespaces: ${namespaces.join(", ")}`,
+      );
+
+      // 2. 각 네임스페이스별로 업로드
+      for (const namespace of namespaces) {
+        console.log(`\n📤 Uploading namespace: "${namespace}"`);
+
+        // 해당 네임스페이스용 GoogleSheetsManager 인스턴스 생성
+        const sheetManager = new GoogleSheetsManager({
+          credentialsPath: this.config.credentialsPath,
+          spreadsheetId: this.config.spreadsheetId,
+          sheetName: namespace, // 네임스페이스 이름을 시트 이름으로 사용
+          namespace: namespace,
+        });
+
+        // 인증 (이미 인증된 sheets 클라이언트 재사용)
+        sheetManager.sheets = this.sheets;
+
+        // 시트가 없으면 생성
+        await sheetManager.ensureWorksheet();
+
+        // 해당 네임스페이스의 번역을 시트에 업로드
+        await sheetManager.uploadTranslations(localesDir, autoTranslate, force);
+      }
+
+      console.log("\n✅ All namespaces uploaded successfully");
+    } catch (error) {
+      console.error("❌ Failed to upload all namespaces:", error);
+      throw error;
+    }
+  }
+
+  /**
    * 스프레드시트 상태 확인
    */
   async getStatus(): Promise<{

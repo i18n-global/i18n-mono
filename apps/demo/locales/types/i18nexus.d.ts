@@ -1174,16 +1174,19 @@ declare module "i18nexus" {
    * @param namespace - The namespace string
    * @returns Translation utilities with type-safe keys
    *
+   * Note: Keys from the fallback namespace "common" are automatically included.
+   *
    * @example
    * ```tsx
    * const { t } = useTranslation<"home">("home");
-   * t("title");  // ✅ OK
+   * t("title");  // ✅ OK (from home namespace)
+   * t("common-key");  // ✅ OK (from fallback namespace)
    * t("typo");   // ❌ Compile error!
    * ```
    */
   export function useTranslation<
     NS extends TranslationNamespace = TranslationNamespace,
-  >(namespace: NS): UseTranslationReturn<TranslationKeys[NS]>;
+  >(namespace: NS): UseTranslationReturn<TranslationKeys[NS] | CommonKeys>;
 
   /**
    * Language switcher hook (Client Component)
@@ -1288,5 +1291,5 @@ declare module "i18nexus/server" {
   >(
     namespace?: NS,
     options?: GetTranslationOptions,
-  ): Promise<GetTranslationReturn<NS>>;
+  ): Promise<GetTranslationReturn<NS, TranslationKeys[NS] | CommonKeys>>;
 }

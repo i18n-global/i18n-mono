@@ -45,7 +45,7 @@ const DEFAULT_CONFIG: Required<DownloadConfig> = {
 
 export async function downloadTranslations(
   config: Partial<DownloadConfig> = {},
-  options: { force?: boolean } = {}
+  options: { force?: boolean } = {},
 ) {
   const finalConfig = { ...DEFAULT_CONFIG, ...config };
 
@@ -60,7 +60,7 @@ export async function downloadTranslations(
 
     if (!fs.existsSync(finalConfig.credentialsPath)) {
       console.error(
-        `❌ Credentials file not found: ${finalConfig.credentialsPath}`
+        `❌ Credentials file not found: ${finalConfig.credentialsPath}`,
       );
       process.exit(1);
     }
@@ -75,20 +75,15 @@ export async function downloadTranslations(
     // 인증
     await sheetsManager.authenticate();
 
-    // 번역 파일 다운로드 (force 옵션에 따라 전체 또는 증분)
-    if (options.force) {
-      console.log("🔄 Force mode: Overwriting all translations...");
-      await sheetsManager.saveTranslationsToLocal(
-        finalConfig.localesDir,
-        finalConfig.languages
-      );
-    } else {
-      console.log("📝 Incremental mode: Adding new translations only...");
-      await sheetsManager.saveTranslationsToLocalIncremental(
-        finalConfig.localesDir,
-        finalConfig.languages
-      );
-    }
+    // 모든 시트 자동 다운로드 (sheetName 무시)
+    console.log("📥 Downloading all sheets automatically...");
+    await sheetsManager.downloadAllSheets(
+      finalConfig.localesDir,
+      finalConfig.languages,
+    );
+
+    // Note: 이전에는 단일 시트만 다운로드했지만, 이제는 모든 시트를 자동으로 다운로드합니다.
+    // force 옵션은 개별 시트 다운로드 시 적용되며, 각 시트는 locales/[namespace]/ 폴더에 저장됩니다.
 
     // index.tsx 생성 (선택사항)
     // generateIndexFile(finalConfig.localesDir, finalConfig.languages);
@@ -141,14 +136,13 @@ if (require.main === module) {
         console.log(`
 Usage: i18n-download [options]
 
-Download translations from Google Sheets (incremental - only adds new keys).
-Use i18n-download-force to overwrite existing translations.
+Download translations from ALL sheets in Google Spreadsheet automatically.
+Each sheet becomes a namespace folder (e.g., "common" sheet → locales/common/).
 
 Options:
   -c, --credentials <path>     Path to Google Sheets credentials file (default: "./credentials.json")
   -s, --spreadsheet-id <id>    Google Spreadsheet ID (required)
   -l, --locales-dir <path>     Path to locales directory (default: "./locales")
-  -n, --sheet-name <name>      Sheet name (default: "Translations")
   --languages <langs>          Comma-separated list of languages (default: "en,ko")
   -h, --help                   Show this help message
 
@@ -157,7 +151,12 @@ Examples:
   i18n-download -c "./my-creds.json" -s "your-spreadsheet-id" -l "./translations"
   i18n-download -s "your-spreadsheet-id" --languages "en,ko,ja"
 
-Note: This command only adds new translations. To force overwrite, use i18n-download-force.
+How it works:
+  - Automatically detects all sheets in the spreadsheet
+  - Each sheet name becomes a namespace (folder)
+  - "common" sheet → locales/common/en.json, locales/common/ko.json
+  - "dashboard" sheet → locales/dashboard/en.json, locales/dashboard/ko.json
+  - No need to specify sheet names in config!
         `);
         process.exit(0);
         break;

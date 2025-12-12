@@ -301,9 +301,12 @@ export class TranslationExtractor {
           useI18nexusLibrary,
         );
 
-        // TypeScript 타입 정의 파일 생성
+        // TypeScript 타입 정의 파일 생성은 별도 명령어로 분리됨
         if (!this.config.dryRun) {
-          this.generateTypeDefinitions();
+          console.log(
+            "\n💡 Tip: Generate TypeScript type definitions by running:",
+          );
+          console.log("   npx i18n-type");
         }
       } else {
         // 레거시 모드: 기존 방식 유지
@@ -335,35 +338,15 @@ export class TranslationExtractor {
   }
 
   /**
-   * Generate TypeScript type definitions for type-safe translations
+   * @deprecated Type generation is now separated to i18n-type command
+   * Run `npx i18n-type` to generate TypeScript type definitions
    */
   private generateTypeDefinitions(): void {
-    try {
-      // Read extracted translations from locale files
-      const translations = readExtractedTranslations(this.config.outputDir);
-
-      if (Object.keys(translations).length === 0) {
-        console.warn("⚠️  No translations found. Skipping type generation.");
-        return;
-      }
-
-      // Generate type definition file in locales/types
-      const typeOutputPath = pathLib.join(
-        this.config.outputDir,
-        "types",
-        "i18nexus.d.ts",
-      );
-
-      generateTypeDefinitions(translations, {
-        outputPath: typeOutputPath,
-        includeJsDocs: true,
-        fallbackNamespace: this.config.namespacing.defaultNamespace,
-        translationImportSource: this.config.translationImportSource,
-      });
-    } catch (error) {
-      console.error("❌ Failed to generate type definitions:", error);
-      // Don't throw - type generation failure shouldn't block extraction
-    }
+    // This method is kept for backward compatibility but does nothing
+    // Type generation is now handled by the separate i18n-type command
+    console.warn(
+      "\n⚠️  generateTypeDefinitions() is deprecated. Use 'npx i18n-type' instead.",
+    );
   }
 }
 

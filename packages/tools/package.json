@@ -9,6 +9,7 @@
     "i18n-wrapper-swc": "dist/bin/i18n-wrapper-swc.js",
     "i18n-wrapper-swc-worker": "dist/bin/i18n-wrapper-swc-worker.js",
     "i18n-extractor": "dist/bin/i18n-extractor.js",
+    "i18n-type": "dist/bin/i18n-type.js",
     "i18n-upload": "dist/bin/i18n-upload.js",
     "i18n-download": "dist/bin/i18n-download.js",
     "i18n-download-force": "dist/bin/i18n-download-force.js",

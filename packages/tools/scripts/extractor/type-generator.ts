@@ -286,6 +286,9 @@ function generateTypeContent(
   content += `declare module "${importSource}" {\n`;
 
   // useTranslation: Use original type with narrowed generics
+  const fallbackNs = config.fallbackNamespace;
+  const hasFallback = fallbackNs && sortedNamespaces.includes(fallbackNs);
+
   if (includeJsDocs) {
     content += `  /**\n`;
     content += `   * Type-safe translation hook (Client Component)\n`;
@@ -293,11 +296,18 @@ function generateTypeContent(
     content += `   * @template NS - The namespace to use\n`;
     content += `   * @param namespace - The namespace string\n`;
     content += `   * @returns Translation utilities with type-safe keys\n`;
+    if (hasFallback) {
+      content += `   * \n`;
+      content += `   * Note: Keys from the fallback namespace "${fallbackNs}" are automatically included.\n`;
+    }
     content += `   * \n`;
     content += `   * @example\n`;
     content += `   * \`\`\`tsx\n`;
     content += `   * const { t } = useTranslation<"home">("home");\n`;
-    content += `   * t("title");  // ✅ OK\n`;
+    content += `   * t("title");  // ✅ OK (from home namespace)\n`;
+    if (hasFallback) {
+      content += `   * t("${fallbackNs}-key");  // ✅ OK (from fallback namespace)\n`;
+    }
     content += `   * t("typo");   // ❌ Compile error!\n`;
     content += `   * \`\`\`\n`;
     content += `   */\n`;
@@ -305,9 +315,17 @@ function generateTypeContent(
 
   if (isI18nexus) {
     // Use original type from the package
-    content += `  export function useTranslation<NS extends TranslationNamespace = TranslationNamespace>(\n`;
-    content += `    namespace: NS\n`;
-    content += `  ): UseTranslationReturn<TranslationKeys[NS]>;\n\n`;
+    // If fallbackNamespace is configured, include its keys in all namespaces
+    if (hasFallback) {
+      const fallbackTypeName = `${capitalize(toCamelCase(fallbackNs!))}Keys`;
+      content += `  export function useTranslation<NS extends TranslationNamespace = TranslationNamespace>(\n`;
+      content += `    namespace: NS\n`;
+      content += `  ): UseTranslationReturn<TranslationKeys[NS] | ${fallbackTypeName}>;\n\n`;
+    } else {
+      content += `  export function useTranslation<NS extends TranslationNamespace = TranslationNamespace>(\n`;
+      content += `    namespace: NS\n`;
+      content += `  ): UseTranslationReturn<TranslationKeys[NS]>;\n\n`;
+    }
   } else {
     // For non-i18nexus packages, generate full type definition
     content += `  // Helper type to extract variable names from keys\n`;
@@ -441,10 +459,19 @@ function generateTypeContent(
 
   if (isI18nexus) {
     // Use original type from the package
-    content += `  export function getTranslation<NS extends TranslationNamespace = TranslationNamespace>(\n`;
-    content += `    namespace?: NS,\n`;
-    content += `    options?: GetTranslationOptions\n`;
-    content += `  ): Promise<GetTranslationReturn<NS>>;\n`;
+    // If fallbackNamespace is configured, include its keys in all namespaces
+    if (hasFallback) {
+      const fallbackTypeName = `${capitalize(toCamelCase(fallbackNs!))}Keys`;
+      content += `  export function getTranslation<NS extends TranslationNamespace = TranslationNamespace>(\n`;
+      content += `    namespace?: NS,\n`;
+      content += `    options?: GetTranslationOptions\n`;
+      content += `  ): Promise<GetTranslationReturn<NS, TranslationKeys[NS] | ${fallbackTypeName}>>;\n`;
+    } else {
+      content += `  export function getTranslation<NS extends TranslationNamespace = TranslationNamespace>(\n`;
+      content += `    namespace?: NS,\n`;
+      content += `    options?: GetTranslationOptions\n`;
+      content += `  ): Promise<GetTranslationReturn<NS>>;\n`;
+    }
   } else {
     // For non-i18nexus packages, generate full type definition
     content += `  export function getTranslation<NS extends TranslationNamespace>(\n`;
