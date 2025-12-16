@@ -8,7 +8,7 @@ on:
 
 jobs:
   detect-changes:
-    name: Detect Changed Packages
+    name: 🔍 Detect Changed Packages
     runs-on: ubuntu-latest
     outputs:
       core: ${{ steps.filter.outputs.core }}
@@ -38,99 +38,113 @@ jobs:
               - 'turbo.json'
               - 'package.json'
 
-  build-and-test:
-    name: Build and Test
-    runs-on: ubuntu-latest
+  core:
+    name: 🧩 Core Package
     needs: detect-changes
+    if: needs.detect-changes.outputs.core == 'true'
+    runs-on: ubuntu-latest
     
     steps:
-      - name: Checkout code
+      - name: 📥 Checkout code
         uses: actions/checkout@v4
 
-      - name: Setup Node.js
+      - name: 📦 Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: "20"
 
-      - name: Enable Corepack
+      - name: 🔧 Enable Corepack
         run: corepack enable
 
-      - name: Install dependencies
+      - name: 📦 Install dependencies
         run: npm ci
 
-      - name: Build core packages first
-        if: needs.detect-changes.outputs.core == 'true' || needs.detect-changes.outputs.tools == 'true'
-        run: |
-          if [ "${{ needs.detect-changes.outputs.core }}" == "true" ]; then
-            npx turbo run build --filter=i18nexus
-          fi
-          if [ "${{ needs.detect-changes.outputs.tools }}" == "true" ]; then
-            npx turbo run build --filter=i18nexus-tools
-          fi
+      - name: 🔍 Lint
+        run: npx turbo run lint --filter=i18nexus
         continue-on-error: false
 
-      - name: Lint
-        run: |
-          FILTERS=""
-          if [ "${{ needs.detect-changes.outputs.core }}" == "true" ]; then
-            FILTERS="$FILTERS --filter=i18nexus"
-          fi
-          if [ "${{ needs.detect-changes.outputs.tools }}" == "true" ]; then
-            FILTERS="$FILTERS --filter=i18nexus-tools"
-          fi
-          # demo는 CI에서 제외 (Vercel에서 자동 빌드)
-          # if [ "${{ needs.detect-changes.outputs.demo }}" == "true" ]; then
-          #   FILTERS="$FILTERS --filter=i18nexus-demo"
-          # fi
-          if [ -n "$FILTERS" ]; then
-            npx turbo run lint $FILTERS
-          else
-            echo "No packages changed, skipping lint"
-          fi
-        continue-on-error: false
-
-      - name: Build with Turbo cache
-        run: |
-          FILTERS=""
-          if [ "${{ needs.detect-changes.outputs.core }}" == "true" ]; then
-            FILTERS="$FILTERS --filter=i18nexus"
-          fi
-          if [ "${{ needs.detect-changes.outputs.tools }}" == "true" ]; then
-            FILTERS="$FILTERS --filter=i18nexus-tools"
-          fi
-          # demo는 CI에서 제외 (Vercel에서 자동 빌드)
-          # if [ "${{ needs.detect-changes.outputs.demo }}" == "true" ]; then
-          #   FILTERS="$FILTERS --filter=i18nexus-demo"
-          # fi
-          if [ -n "$FILTERS" ]; then
-            npx turbo run build $FILTERS
-          else
-            echo "No packages changed, skipping build"
-          fi
+      - name: 🧪 Test
+        run: npx turbo run test --filter=i18nexus
         env:
           TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
           TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
-        continue-on-error: true
+        continue-on-error: false
 
-      - name: Test with Turbo cache
-        run: |
-          FILTERS=""
-          if [ "${{ needs.detect-changes.outputs.core }}" == "true" ]; then
-            FILTERS="$FILTERS --filter=i18nexus"
-          fi
-          if [ "${{ needs.detect-changes.outputs.tools }}" == "true" ]; then
-            FILTERS="$FILTERS --filter=i18nexus-tools"
-          fi
-          # demo는 CI에서 제외 (Vercel에서 자동 빌드)
-          # if [ "${{ needs.detect-changes.outputs.demo }}" == "true" ]; then
-          #   FILTERS="$FILTERS --filter=i18nexus-demo"
-          # fi
-          if [ -n "$FILTERS" ]; then
-            npx turbo run test $FILTERS
-          else
-            echo "No packages changed, skipping test"
-          fi
+      - name: 🏗️ Build
+        run: npx turbo run build --filter=i18nexus
         env:
           TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
           TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
-        continue-on-error: true
+        continue-on-error: false
+
+  tools:
+    name: 🛠️ Tools Package
+    needs: detect-changes
+    if: needs.detect-changes.outputs.tools == 'true'
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+
+      - name: 📦 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: 🔧 Enable Corepack
+        run: corepack enable
+
+      - name: 📦 Install dependencies
+        run: npm ci
+
+      - name: 🔍 Lint
+        run: npx turbo run lint --filter=i18nexus-tools
+        continue-on-error: false
+
+      - name: 🧪 Test
+        run: npx turbo run test --filter=i18nexus-tools
+        env:
+          TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
+          TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
+        continue-on-error: false
+
+      - name: 🏗️ Build
+        run: npx turbo run build --filter=i18nexus-tools
+        env:
+          TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
+          TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
+        continue-on-error: false
+
+  demo:
+    name: 🎨 Demo App
+    needs: detect-changes
+    if: needs.detect-changes.outputs.demo == 'true'
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+
+      - name: 📦 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: 🔧 Enable Corepack
+        run: corepack enable
+
+      - name: 📦 Install dependencies
+        run: npm ci
+
+      - name: 🔍 Lint
+        run: npx turbo run lint --filter=i18nexus-demo
+        continue-on-error: false
+
+      - name: 🏗️ Build
+        run: npx turbo run build --filter=i18nexus-demo
+        env:
+          TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
+          TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
+          NEXT_PUBLIC_VERCEL_ENV: production
+        continue-on-error: false
