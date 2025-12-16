@@ -42,7 +42,7 @@
     "i18next",
     "localization"
   ],
-  "author": "i18nexus",
+  "author": "manNomi <hanmw110@naver.com>",
   "license": "MIT",
   "engines": {
     "node": ">=18.0.0",

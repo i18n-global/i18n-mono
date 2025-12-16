@@ -1,0 +1,13 @@
+{
+  "languages": ["en", "ko"],
+  "defaultLanguage": "ko",
+  "localesDir": "./locales",
+  "sourcePattern": "src/**/*.{ts,tsx}",
+  "translationImportSource": "i18nexus",
+  "fallbackNamespace": "common",
+  "googleSheets": {
+    "spreadsheetId": "test-spreadsheet-id",
+    "credentialsPath": "./credentials.json",
+    "sheetName": "Translations"
+  }
+}

@@ -4,31 +4,27 @@ on:
   push:
     branches: [main]
     paths:
-      - "packages/**"
-      - "apps/**"
+      - "packages/core/**"
+      - "packages/tools/**"
       - ".github/workflows/deploy.yml"
-      - "turbo.json"
-      - "package.json"
   workflow_dispatch:
     inputs:
       package:
-        description: "Package to deploy (all, core, tools, demo)"
+        description: "Package to deploy (core, tools, all)"
         required: false
         type: choice
         options:
           - all
           - core
           - tools
-          - demo
 
 jobs:
   detect-changes:
-    name: Detect Changed Packages
+    name: 🔍 Detect Changed Packages
     runs-on: ubuntu-latest
     outputs:
       core: ${{ steps.filter.outputs.core }}
       tools: ${{ steps.filter.outputs.tools }}
-      demo: ${{ steps.filter.outputs.demo }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -40,18 +36,11 @@ jobs:
           filters: |
             core:
               - 'packages/core/**'
-              - '.github/workflows/deploy.yml'
             tools:
               - 'packages/tools/**'
-              - '.github/workflows/deploy.yml'
-            demo:
-              - 'apps/demo/**'
-              - 'packages/core/**'
-              - 'packages/tools/**'
-              - '.github/workflows/deploy.yml'
 
   deploy-core:
-    name: Deploy Core to NPM
+    name: 📦 Deploy Core to NPM
     needs: detect-changes
     if: |
       needs.detect-changes.outputs.core == 'true' ||
@@ -62,12 +51,12 @@ jobs:
       contents: write
       id-token: write
     steps:
-      - name: Checkout code
+      - name: 📥 Checkout code
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      - name: Setup Node.js
+      - name: 📦 Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: "20"
@@ -75,55 +64,52 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
-      - name: Install dependencies
+      - name: 📦 Install dependencies
         run: npm ci
 
-      - name: Build with Turbo
+      - name: 🏗️ Build
         run: npx turbo run build --filter=i18nexus
 
-      - name: Get current version
+      - name: 📋 Get version
         id: version
         working-directory: packages/core
         run: |
           VERSION=$(node -p "require('./package.json').version")
           echo "version=$VERSION" >> $GITHUB_OUTPUT
-          echo "Current version: $VERSION"
 
-      - name: Check if version exists on npm
+      - name: 🔍 Check if version exists
         id: check-version
         run: |
           VERSION="${{ steps.version.outputs.version }}"
           if npm view i18nexus@$VERSION version 2>/dev/null; then
             echo "exists=true" >> $GITHUB_OUTPUT
-            echo "Version $VERSION already published"
           else
             echo "exists=false" >> $GITHUB_OUTPUT
-            echo "Version $VERSION is new"
           fi
         continue-on-error: true
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
-      - name: Publish to NPM
+      - name: 📤 Publish to NPM
         if: steps.check-version.outputs.exists != 'true'
         working-directory: packages/core
         run: npm publish --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
-      - name: Create Git Tag
+      - name: 🏷️ Create Git Tag
         if: steps.check-version.outputs.exists != 'true'
         run: |
           VERSION="${{ steps.version.outputs.version }}"
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git config user.name "manNomi"
+          git config user.email "hanmw110@naver.com"
           git tag -a "core-v$VERSION" -m "Release i18nexus@$VERSION" || true
           git push origin "core-v$VERSION" || true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   deploy-tools:
-    name: Deploy Tools to NPM
+    name: 🛠️ Deploy Tools to NPM
     needs: detect-changes
     if: |
       needs.detect-changes.outputs.tools == 'true' ||
@@ -134,12 +120,12 @@ jobs:
       contents: write
       id-token: write
     steps:
-      - name: Checkout code
+      - name: 📥 Checkout code
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      - name: Setup Node.js
+      - name: 📦 Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: "20"
@@ -147,92 +133,46 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
-      - name: Install dependencies
+      - name: 📦 Install dependencies
         run: npm ci
 
-      - name: Build with Turbo
+      - name: 🏗️ Build
         run: npx turbo run build --filter=i18nexus-tools
 
-      - name: Get current version
+      - name: 📋 Get version
         id: version
         working-directory: packages/tools
         run: |
           VERSION=$(node -p "require('./package.json').version")
           echo "version=$VERSION" >> $GITHUB_OUTPUT
-          echo "Current version: $VERSION"
 
-      - name: Check if version exists on npm
+      - name: 🔍 Check if version exists
         id: check-version
         run: |
           VERSION="${{ steps.version.outputs.version }}"
           if npm view i18nexus-tools@$VERSION version 2>/dev/null; then
             echo "exists=true" >> $GITHUB_OUTPUT
-            echo "Version $VERSION already published"
           else
             echo "exists=false" >> $GITHUB_OUTPUT
-            echo "Version $VERSION is new"
           fi
         continue-on-error: true
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
-      - name: Publish to NPM
+      - name: 📤 Publish to NPM
         if: steps.check-version.outputs.exists != 'true'
         working-directory: packages/tools
         run: npm publish --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
-      - name: Create Git Tag
+      - name: 🏷️ Create Git Tag
         if: steps.check-version.outputs.exists != 'true'
         run: |
           VERSION="${{ steps.version.outputs.version }}"
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git config user.name "manNomi"
+          git config user.email "hanmw110@naver.com"
           git tag -a "tools-v$VERSION" -m "Release i18nexus-tools@$VERSION" || true
           git push origin "tools-v$VERSION" || true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-  deploy-demo:
-    name: Build Demo (Vercel 배포는 Vercel Dashboard에서 자동 처리)
-    needs: detect-changes
-    if: |
-      needs.detect-changes.outputs.demo == 'true' ||
-      github.event.inputs.package == 'demo' ||
-      github.event.inputs.package == 'all'
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-    
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: "20"
-
-      - name: Enable Corepack
-        run: corepack enable
-
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Build with Turbo
-        run: npx turbo run build --filter=i18nexus-demo
-        env:
-          NEXT_PUBLIC_VERCEL_ENV: production
-
-      - name: Build Success Notice
-        run: |
-          echo "✅ Demo 앱 빌드 완료"
-          echo ""
-          echo "📝 Vercel 배포는 Vercel Dashboard에서 자동으로 처리됩니다:"
-          echo "   1. Vercel Dashboard → Add New Project"
-          echo "   2. GitHub 저장소: i18n-global/i18n-mono 선택"
-          echo "   3. Root Directory: apps/demo 설정"
-          echo "   4. Deploy 버튼 클릭"
-          echo ""
-          echo "💡 Vercel이 자동으로 GitHub push를 감지하여 배포합니다."
