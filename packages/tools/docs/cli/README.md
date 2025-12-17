@@ -8,6 +8,7 @@ Complete reference for all i18nexus-tools CLI commands.
 | ------------------- | ----------------------------- | ----------------------------------- |
 | `i18n-wrapper`      | Wrap strings with t()         | [→ Details](./i18n-wrapper.md)      |
 | `i18n-extractor`    | Extract translation keys      | [→ Details](./i18n-extractor.md)    |
+| `i18n-type`         | Generate TypeScript types     | [→ Details](./i18n-type.md)         |
 | `i18n-clean-legacy` | Remove unused keys            | [→ Details](./i18n-clean-legacy.md) |
 | `i18n-upload`       | Upload to Google Sheets       | [→ Details](./i18n-upload.md)       |
 | `i18n-download`     | Download from Google Sheets   | [→ Details](./i18n-download.md)     |
@@ -54,7 +55,24 @@ npx i18n-extractor [options]
 
 [→ Full Documentation](./i18n-extractor.md)
 
-#### 3. i18n-clean-legacy
+#### 3. i18n-type
+
+Generates TypeScript type definitions from translation JSON files.
+
+```bash
+npx i18n-type [options]
+```
+
+**Key Features:**
+
+- Automatic type generation from JSON files
+- Fallback namespace support
+- Module augmentation for any i18n library
+- Namespace-specific type exports
+
+[→ Full Documentation](./i18n-type.md)
+
+#### 4. i18n-clean-legacy
 
 Removes unused and invalid translation keys.
 
@@ -139,10 +157,16 @@ npx i18n-wrapper
 # 2. Extract keys
 npx i18n-extractor
 
-# 3. Add translations
+# 3. Generate types
+npx i18n-type
+
+# 4. Add translations
 # Edit locales/en.json
 
-# 4. Deploy
+# 5. Regenerate types (if needed)
+npx i18n-type
+
+# 6. Deploy
 ```
 
 ### Google Sheets Workflow
@@ -151,9 +175,10 @@ npx i18n-extractor
 # 1. Initialize
 npx i18n-sheets init
 
-# 2. Wrap & extract
+# 2. Wrap & extract & generate types
 npx i18n-wrapper
 npx i18n-extractor
+npx i18n-type
 
 # 3. Upload
 npx i18n-upload
@@ -175,7 +200,10 @@ npx i18n-clean-legacy
 # 2. Re-extract keys
 npx i18n-extractor
 
-# 3. Upload to Google Sheets
+# 3. Regenerate types
+npx i18n-type
+
+# 4. Upload to Google Sheets
 npx i18n-upload --force
 
 # 4. Download translations
@@ -384,6 +412,7 @@ npx i18n-download --help
 
 - [i18n-wrapper](./i18n-wrapper.md) - String wrapping
 - [i18n-extractor](./i18n-extractor.md) - Key extraction
+- [i18n-type](./i18n-type.md) - Type generation
 - [i18n-clean-legacy](./i18n-clean-legacy.md) - Key cleanup
 - [i18n-upload](./i18n-upload.md) - Google Sheets upload
 - [i18n-download](./i18n-download.md) - Google Sheets download

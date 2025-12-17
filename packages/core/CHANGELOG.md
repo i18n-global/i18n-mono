@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Unreleased]
+
+### 🗑️ Removed
+
+- **Deprecated `createServerI18n()` function removed**: Use `getTranslation()` instead
+  - The deprecated function has been completely removed from the codebase
+  - Migration: Replace `createServerI18n()` calls with `getTranslation()`
+  - See [API Reference](./docs/api/server.md) for migration guide
+
+### 📚 Documentation
+
+- Updated API documentation to reflect `getTranslation()` as the primary server function
+- Removed references to deprecated `createServerI18n()` from documentation
+
 ## [3.4.1] - 2025-12-06
 
 ### 🐛 Bug Fixes

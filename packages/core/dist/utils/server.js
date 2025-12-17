@@ -357,12 +357,6 @@ export async function getTranslation(namespace, options) {
 export function invalidateCache(namespace, language) {
     invalidateTranslationCache(namespace, language);
 }
-/**
- * @deprecated Use getTranslation() instead
- */
-export async function createServerI18n(options) {
-    return getTranslation(undefined, options);
-}
 /** 미리 로드된 번역으로 서버 i18n 컨텍스트 생성 */
 export function createServerI18nWithTranslations(headers, translations, options) {
     const language = getServerLanguage(headers, options);

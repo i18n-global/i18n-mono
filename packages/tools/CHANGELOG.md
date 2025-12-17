@@ -2,6 +2,23 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Unreleased]
+
+### 🗑️ Removed
+
+- **Deprecated code cleanup**:
+  - Removed `i18n-extractor-backup.ts` (unused backup file)
+  - Removed deprecated `generateTypeDefinitions()` method from extractor
+  - Removed unused `swc-utils.ts` (not imported anywhere)
+  - Removed unused imports from extractor
+
+### 📚 Documentation
+
+- Added `i18n-type.md` CLI documentation
+- Updated CLI README to include `i18n-type` command
+- Updated main README to reflect separated type generation workflow
+- Removed type generation references from `i18n-extractor` documentation
+
 ## [2.5.0] - 2025-12-06
 
 ### ✨ Features

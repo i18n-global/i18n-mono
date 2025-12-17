@@ -6,13 +6,13 @@ i18nexus core v3에서는 **Context 기반 아키텍처**로 완전히 전환되
 
 ### 변경 사항
 
-| 항목 | v2 (Old) | v3 (New) |
-|------|----------|----------|
-| **메인 API** | `createI18n()` (싱글톤) | `I18nProvider` + `useTranslation()` |
-| **상태 관리** | 글로벌 싱글톤 | React Context |
-| **테스트 격리** | ❌ 어려움 | ✅ 완벽 |
-| **SSR 지원** | ⚠️ 제한적 | ✅ 완전 지원 |
-| **네임스페이스** | ✅ 지원 | ✅ 지원 + Lazy Loading |
+| 항목             | v2 (Old)                | v3 (New)                            |
+| ---------------- | ----------------------- | ----------------------------------- |
+| **메인 API**     | `createI18n()` (싱글톤) | `I18nProvider` + `useTranslation()` |
+| **상태 관리**    | 글로벌 싱글톤           | React Context                       |
+| **테스트 격리**  | ❌ 어려움               | ✅ 완벽                             |
+| **SSR 지원**     | ⚠️ 제한적               | ✅ 완전 지원                        |
+| **네임스페이스** | ✅ 지원                 | ✅ 지원 + Lazy Loading              |
 
 ---
 
@@ -135,7 +135,7 @@ import { i18n } from "@/locales";
 
 export default function HomePage() {
   const { t } = i18n.useTranslation("home");
-  
+
   return <h1>{t("title")}</h1>;
 }
 ```
@@ -149,7 +149,7 @@ import { useTranslation } from "i18nexus";
 
 export default function HomePage() {
   const { t } = useTranslation("home");
-  
+
   return <h1>{t("title")}</h1>;
 }
 ```
@@ -164,11 +164,7 @@ export default function HomePage() {
 import { i18n } from "@/locales";
 
 export function LanguageSwitcher() {
-  return (
-    <button onClick={() => i18n.changeLanguage("en")}>
-      English
-    </button>
-  );
+  return <button onClick={() => i18n.changeLanguage("en")}>English</button>;
 }
 ```
 
@@ -181,12 +177,8 @@ import { useLanguageSwitcher } from "i18nexus";
 
 export function LanguageSwitcher() {
   const { changeLanguage } = useLanguageSwitcher();
-  
-  return (
-    <button onClick={() => changeLanguage("en")}>
-      English
-    </button>
-  );
+
+  return <button onClick={() => changeLanguage("en")}>English</button>;
 }
 ```
 
@@ -224,9 +216,11 @@ describe("Component", () => {
 const { t } = i18n.useTranslation(); // ❌ 쿠키 무시
 
 // After: 서버에서 initialLanguage 사용
-<I18nProvider initialLanguage={language}> {/* ✅ SSR 지원 */}
+<I18nProvider initialLanguage={language}>
+  {" "}
+  {/* ✅ SSR 지원 */}
   {children}
-</I18nProvider>
+</I18nProvider>;
 ```
 
 ### ✅ 3. React 패러다임 준수
@@ -346,14 +340,10 @@ export default function HomePage() {
     <div>
       <h1>{t("title")}</h1>
       <p>{t("description")}</p>
-      
-      <button onClick={() => changeLanguage("en")}>
-        English
-      </button>
-      <button onClick={() => changeLanguage("ko")}>
-        한국어
-      </button>
-      
+
+      <button onClick={() => changeLanguage("en")}>English</button>
+      <button onClick={() => changeLanguage("ko")}>한국어</button>
+
       <p>Current: {currentLanguage}</p>
     </div>
   );
@@ -365,4 +355,3 @@ export default function HomePage() {
 ## 결론
 
 v3는 더 안전하고, 테스트하기 쉽고, React 생태계와 잘 통합됩니다. 🚀
-

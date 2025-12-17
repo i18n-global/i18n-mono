@@ -6,7 +6,7 @@ Complete API reference for i18nexus server-side utilities.
 
 ```typescript
 import {
-  createServerI18n,
+  getTranslation,
   getServerLanguage,
   parseAcceptLanguage,
   createServerTranslation,
@@ -22,18 +22,22 @@ import type { ServerTranslationVariables } from "i18nexus/server";
 
 ## Functions
 
-### `createServerI18n()`
+### `getTranslation()`
 
-All-in-one server i18n setup with automatic header detection.
+Get translation function for Server Components with automatic language detection.
 
 ```typescript
-async function createServerI18n(options?: {
-  localesDir?: string;
-  cookieName?: string;
-  defaultLanguage?: string;
-  availableLanguages?: string[];
-  translations?: Record<string, Record<string, string>>;
-}): Promise<{
+async function getTranslation<NS extends string = string>(
+  namespace?: NS,
+  options?: {
+    localesDir?: string;
+    cookieName?: string;
+    defaultLanguage?: string;
+    availableLanguages?: string[];
+    language?: string;
+    translations?: Record<string, Record<string, string>>;
+  },
+): Promise<{
   t: TranslationFunction;
   language: string;
   translations: Record<string, Record<string, string>>;
@@ -43,10 +47,12 @@ async function createServerI18n(options?: {
 
 **Parameters:**
 
+- `namespace` - Optional namespace to load translations from
 - `options.localesDir` - Directory containing translation files (default: `"./locales"`)
 - `options.cookieName` - Cookie name for language storage (default: `"i18n-language"`)
 - `options.defaultLanguage` - Fallback language (default: `"en"`)
 - `options.availableLanguages` - List of supported languages for Accept-Language detection
+- `options.language` - Explicit language code (bypasses cookie/header detection)
 - `options.translations` - Pre-loaded translations object
 
 **Returns:**
@@ -60,12 +66,12 @@ async function createServerI18n(options?: {
 
 ```typescript
 export default async function Page() {
-  const { t, language } = await createServerI18n({
+  const { t, language } = await getTranslation("home", {
     availableLanguages: ["en", "ko", "ja"],
     defaultLanguage: "en",
   });
 
-  return <h1>{t("Welcome {{name}}", { name: "User" })}</h1>;
+  return <h1>{t("welcome")}</h1>;
 }
 ```
 
@@ -82,7 +88,7 @@ function getServerLanguage(
     cookieName?: string;
     defaultLanguage?: string;
     availableLanguages?: string[];
-  }
+  },
 ): string;
 ```
 
@@ -127,7 +133,7 @@ Parse Accept-Language header and find best match.
 ```typescript
 function parseAcceptLanguage(
   acceptLanguage: string,
-  availableLanguages: string[]
+  availableLanguages: string[],
 ): string | null;
 ```
 
@@ -167,11 +173,11 @@ Create translation function for Server Components.
 ```typescript
 function createServerTranslation(
   language: string,
-  translations: Record<string, Record<string, string>>
+  translations: Record<string, Record<string, string>>,
 ): (
   key: string,
   variables?: ServerTranslationVariables | string,
-  fallback?: string
+  fallback?: string,
 ) => string;
 ```
 
@@ -216,7 +222,7 @@ Get translations object for current language.
 ```typescript
 function getServerTranslations(
   language: string,
-  translations: Record<string, Record<string, string>>
+  translations: Record<string, Record<string, string>>,
 ): Record<string, string>;
 ```
 
@@ -245,7 +251,7 @@ Load translations from directory.
 
 ```typescript
 async function loadTranslations(
-  localesDir: string
+  localesDir: string,
 ): Promise<Record<string, Record<string, string>>>;
 ```
 
@@ -277,7 +283,7 @@ function createServerI18nWithTranslations(
     cookieName?: string;
     defaultLanguage?: string;
     availableLanguages?: string[];
-  }
+  },
 ): {
   t: TranslationFunction;
   language: string;
@@ -344,7 +350,7 @@ t("Hello {{name}}, {{count}} items, {{price}} KRW", variables);
 ### 1. Use Accept-Language Detection
 
 ```typescript
-const { t, language } = await createServerI18n({
+const { t, language } = await getTranslation("common", {
   availableLanguages: ["en", "ko", "ja", "zh"],
   defaultLanguage: "en",
 });
@@ -374,7 +380,7 @@ export const config = defineConfig({
 });
 
 // Usage
-const { t } = await createServerI18n({
+const { t } = await getTranslation("common", {
   availableLanguages: [...config.languages],
   defaultLanguage: config.defaultLanguage,
 });

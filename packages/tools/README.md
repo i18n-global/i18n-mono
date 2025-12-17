@@ -94,8 +94,11 @@ Create `i18nexus.config.json` in your project root:
 # 1. Auto-wrap hardcoded text
 npx i18n-wrapper -p "src/**/*.tsx"
 
-# 2. Extract translation keys and generate types
+# 2. Extract translation keys
 npx i18n-extractor
+
+# 3. Generate TypeScript types
+npx i18n-type
 
 # 3. Upload to Google Sheets
 npx i18n-upload --spreadsheet-id "your-id"

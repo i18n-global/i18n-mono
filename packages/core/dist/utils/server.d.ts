@@ -76,16 +76,6 @@ export declare function getTranslation<NS extends string = string>(namespace?: N
  * Useful for development or when translations are updated
  */
 export declare function invalidateCache(namespace?: string, language?: string): void;
-/**
- * @deprecated Use getTranslation() instead
- */
-export declare function createServerI18n(options?: {
-    localesDir?: string;
-    cookieName?: string;
-    defaultLanguage?: string;
-    availableLanguages?: string[];
-    translations?: Record<string, Record<string, string>>;
-}): Promise<GetTranslationReturn<string>>;
 /** 미리 로드된 번역으로 서버 i18n 컨텍스트 생성 */
 export declare function createServerI18nWithTranslations(headers: Headers, translations: Record<string, Record<string, string>>, options?: {
     cookieName?: string;
