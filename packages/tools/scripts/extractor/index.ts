@@ -34,11 +34,6 @@ import {
   validateNamespace,
   NamespacingConfig,
 } from "./namespace-inference";
-import {
-  generateTypeDefinitions,
-  readExtractedTranslations,
-  type ExtractedTranslations,
-} from "./type-generator";
 
 export interface ExtractorConfig {
   sourcePattern?: string;
@@ -335,18 +330,6 @@ export class TranslationExtractor {
       console.error(CONSOLE_MESSAGES.EXTRACTION_FAILED, error);
       throw error;
     }
-  }
-
-  /**
-   * @deprecated Type generation is now separated to i18n-type command
-   * Run `npx i18n-type` to generate TypeScript type definitions
-   */
-  private generateTypeDefinitions(): void {
-    // This method is kept for backward compatibility but does nothing
-    // Type generation is now handled by the separate i18n-type command
-    console.warn(
-      "\n⚠️  generateTypeDefinitions() is deprecated. Use 'npx i18n-type' instead.",
-    );
   }
 }
 
