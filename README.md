@@ -175,6 +175,80 @@ npx i18n-type
 1. `apps/demo/locales/types/i18nexus.d.ts` 생성 여부
 2. `apps/demo/locales/<namespace>/en.json`, `ko.json` 반영 여부
 
+## 페이지별 타입 생성 방법 (상세)
+
+이 리포(`apps/demo`)는 `i18nexus.config.json`에서 아래처럼 페이지 기반 설정을 사용합니다.
+
+1. `namespaceLocation: "page"`
+2. `sourcePattern: "{app,page,widgets,features,entities,shared}/**/*.{js,jsx,ts,tsx}"`
+3. `fallbackNamespace: "common"`
+
+즉, `page/*` 레이어를 기준으로 namespace를 관리하고 타입을 생성합니다.
+
+### 단계별 절차
+
+1. 번역 대상 코드 작성
+
+- `t("키")`를 직접 쓰거나 하드코딩 문자열을 작성합니다.
+- 하드코딩 문자열은 `i18n-wrapper`로 자동 변환 가능합니다.
+
+2. 문자열 래핑 (필요한 경우)
+
+```bash
+cd /Users/manwook-han/Desktop/i18nexus/i18nexus-turborepo/apps/demo
+npx i18n-wrapper -p "{app,page,widgets,features,entities,shared}/**/*.{js,jsx,ts,tsx}"
+```
+
+3. 키 추출(페이지/네임스페이스별 JSON 생성/병합)
+
+```bash
+npx i18n-extractor
+```
+
+4. 타입 생성
+
+```bash
+npx i18n-type
+```
+
+5. 결과 확인
+
+1. `locales/<namespace>/en.json`, `locales/<namespace>/ko.json` 생성/업데이트 확인
+1. `locales/types/i18nexus.d.ts` 생성 확인
+1. `TranslationNamespace`에 기대한 페이지 namespace가 포함됐는지 확인
+
+## 페이지별 타입 생성 후 i18n 사용법 (간단)
+
+### Client Component
+
+```tsx
+"use client";
+
+import { useTranslation } from "i18nexus";
+
+export default function HomeTitle() {
+  const { t } = useTranslation<"home">("home");
+  return <h1>{t("홈")}</h1>;
+}
+```
+
+### Server Component
+
+```tsx
+import { getTranslation } from "i18nexus/server";
+
+export default async function HomeServer() {
+  const { t } = await getTranslation<"home">("home");
+  return <p>{t("설명")}</p>;
+}
+```
+
+### fallback namespace 사용 팁
+
+1. 현재 demo 설정의 fallback은 `common`입니다.
+2. 공통 문구는 `locales/common/*.json`에 두고, 페이지 전용 문구는 각 namespace로 분리하세요.
+3. 타입 생성 후에는 존재하지 않는 키 사용 시 TypeScript 단계에서 빠르게 잡을 수 있습니다.
+
 ## Google Sheets 동기화 (선택)
 
 사전 준비:
@@ -229,8 +303,9 @@ npx i18n-download -s "<SPREADSHEET_ID>"
 1) 의존성 설치
 2) 모노레포 빌드/테스트/린트 검증
 3) demo i18n 워크플로우(wrapper/extractor/type) 검증
-4) demo 앱 실행 확인
-5) 실패 시 원인과 수정 시도를 포함한 최종 리포트 작성
+4) 페이지별 타입 생성 결과 및 사용법(useTranslation/getTranslation) 검증
+5) demo 앱 실행 확인
+6) 실패 시 원인과 수정 시도를 포함한 최종 리포트 작성
 
 [필수 규칙]
 1. destructive git 명령 금지 (git reset --hard, checkout -- 등)
@@ -273,6 +348,12 @@ npx i18n-download -s "<SPREADSHEET_ID>"
    - npx i18n-wrapper -p "{app,page,widgets,features,entities,shared}/**/*.{js,jsx,ts,tsx}"
    - npx i18n-extractor
    - npx i18n-type
+   - page 기반 타입 확인:
+     - locales/types/i18nexus.d.ts 에서 TranslationNamespace 확인
+     - locales/<namespace>/en.json, ko.json 생성 여부 확인
+   - 사용법 확인:
+     - client: useTranslation<"home">("home")
+     - server: getTranslation<"home">("home")
    - 생성 파일 확인:
      - locales/types/i18nexus.d.ts
    - 필요한 경우 package script도 점검:
@@ -291,9 +372,10 @@ npx i18n-download -s "<SPREADSHEET_ID>"
    - B. 설치 결과
    - C. build/test/lint 결과 (루트 + 실패한 패키지 재검증 결과)
    - D. i18n 워크플로우 결과 (wrapper/extractor/type, 생성 파일)
-   - E. demo 실행 확인 결과
-   - F. 실패 항목이 있으면 명령/에러 핵심 3줄/다음 조치
-   - G. 추천 후속 작업 1~3개
+   - E. 페이지별 타입 생성/사용법 검증 결과
+   - F. demo 실행 확인 결과
+   - G. 실패 항목이 있으면 명령/에러 핵심 3줄/다음 조치
+   - H. 추천 후속 작업 1~3개
 ```
 
 ## 빠른 문제해결
